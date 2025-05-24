@@ -127,6 +127,87 @@ def convert_labels_to_binary(labels: List[str]) -> List[int]:
     return [1 if label == "T" else 0 for label in labels]
 
 
+def calculate_avg_response_time_without_outliers(response_times: List[float]) -> Dict[str, Any]:
+    """
+    Calculate average response time after removing outliers using IQR method.
+
+    Args:
+        response_times (List[float]): List of response times
+
+    Returns:
+        Dict[str, Any]: Dictionary with statistics about response times
+    """
+    if not response_times:
+        return {
+            "avg_response_time": None,
+            "outliers_removed": 0,
+            "total_samples": 0,
+            "min_time": None,
+            "max_time": None
+        }
+
+    # Convert to numpy array for easier calculations
+    all_times = []
+    for time_val in response_times:
+        try:
+            all_times.append(float(time_val))
+        except (ValueError, TypeError):
+            pass
+
+    total_samples = len(all_times)
+
+    if total_samples == 0:
+        return {
+            "avg_response_time": None,
+            "outliers_removed": 0,
+            "total_samples": 0,
+            "min_time": None,
+            "max_time": None
+        }
+
+    # Handle case with very few elements (need at least 4 for quartiles)
+    if total_samples <= 4:
+        return {
+            "avg_response_time": np.mean(all_times),
+            "outliers_removed": 0,
+            "total_samples": total_samples,
+            "min_time": min(all_times),
+            "max_time": max(all_times)
+        }
+
+    # Calculate quartiles
+    q1 = np.percentile(all_times, 25)
+    q3 = np.percentile(all_times, 75)
+    iqr = q3 - q1
+
+    # Define bounds for outliers (1.5 * IQR method)
+    lower_bound = q1 - 1.5 * iqr
+    upper_bound = q3 + 1.5 * iqr
+
+    # Filter out outliers
+    filtered_times = [x for x in all_times if lower_bound <= x <= upper_bound]
+    outliers_removed = total_samples - len(filtered_times)
+
+    # Calculate average of filtered data
+    if filtered_times:
+        avg_time = np.mean(filtered_times)
+        min_time = min(filtered_times)
+        max_time = max(filtered_times)
+    else:
+        # If all are outliers, use original data
+        avg_time = np.mean(all_times)
+        min_time = min(all_times)
+        max_time = max(all_times)
+
+    return {
+        "avg_response_time": avg_time,
+        "outliers_removed": outliers_removed,
+        "total_samples": total_samples,
+        "min_time": min_time,
+        "max_time": max_time
+    }
+
+
 def evaluate_results(results: List[Dict[str, Any]], config: Dict[str, Any],
                      dataset_name: str, full_evaluation: bool = False) -> Dict[str, Any]:
     """Evaluate results against ground truth using scikit-learn"""
@@ -250,6 +331,17 @@ def evaluate_results(results: List[Dict[str, Any]], config: Dict[str, Any],
     # Get detailed classification report
     class_report = classification_report(y_true, y_pred, labels=["T", "F"], output_dict=True, zero_division=0)
 
+    # Calculate response time statistics if available
+    response_time_stats = None
+    response_times = []
+    for result in results:
+        if result.get("success", False) and "response_time" in result:
+            response_times.append(result["response_time"])
+
+    if response_times:
+        response_time_stats = calculate_avg_response_time_without_outliers(response_times)
+        print(f"{CYAN}   Response time analysis: {len(response_times)} samples collected{END}")
+
     evaluation_results = {
         "dataset": dataset_name,
         "total_items": total_items if full_evaluation else len(results),
@@ -265,7 +357,8 @@ def evaluate_results(results: List[Dict[str, Any]], config: Dict[str, Any],
         "confusion_matrix": confusion_dict,
         "label_distribution": dict(Counter(y_true)),
         "prediction_distribution": dict(Counter(y_pred)),
-        "classification_report": class_report
+        "classification_report": class_report,
+        "response_time_stats": response_time_stats
     }
 
     if full_evaluation:
@@ -297,6 +390,25 @@ def print_evaluation_results(results: Dict[str, Any], file_name: str) -> None:
     print(f"  Precision ({results.get('f1_type', 'unknown')}): {CYAN}{results.get('precision', 0):.4f}{END}")
     print(f"  Recall ({results.get('f1_type', 'unknown')}): {CYAN}{results.get('recall', 0):.4f}{END}")
     print(f"  F1-Score ({results.get('f1_type', 'unknown')}): {MAGENTA}{results.get('f1_score', 0):.4f}{END}")
+
+    # Response time statistics
+    response_time_stats = results.get('response_time_stats')
+    if response_time_stats and response_time_stats["avg_response_time"] is not None:
+        print(f"\n{BOLD}⏱️  Response Time Analysis:{END}")
+        print(f"  Average response time: {GREEN}{response_time_stats['avg_response_time']:.3f}s{END}")
+        print(f"  Min response time: {CYAN}{response_time_stats['min_time']:.3f}s{END}")
+        print(f"  Max response time: {CYAN}{response_time_stats['max_time']:.3f}s{END}")
+        print(f"  Total samples: {response_time_stats['total_samples']}")
+        if response_time_stats['outliers_removed'] > 0:
+            print(f"  Outliers removed: {YELLOW}{response_time_stats['outliers_removed']}{END} (using IQR method)")
+        else:
+            print(f"  Outliers removed: {GREEN}0{END}")
+    elif response_time_stats and response_time_stats["total_samples"] == 0:
+        print(f"\n{BOLD}⏱️  Response Time Analysis:{END}")
+        print(f"  {YELLOW}No valid response time data found{END}")
+    else:
+        print(f"\n{BOLD}⏱️  Response Time Analysis:{END}")
+        print(f"  {YELLOW}Response time data not available in results{END}")
 
     # Confusion matrix
     confusion_matrix = results.get('confusion_matrix', {})
@@ -352,7 +464,6 @@ def get_results_files(results_dir: str = "./results") -> List[str]:
 
     print(f"{GREEN}✓ Found {len(json_files)} result files{END}")
     return sorted(json_files)
-
 
 def main():
     """Main function"""
