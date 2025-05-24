@@ -1,0 +1,79 @@
+# FactCheck Configuration File
+
+# Dataset configuration
+dataset:
+  name: "FactBench"  # Options: DBpedia, YAGO, FactBench
+
+# Method configuration
+method:
+  name: "DKA"  # Options: DKA, GIV-Z, GIV-F, RAG
+
+# LLM configuration
+llm:
+  # Available models:
+  # Commercial: gpt-4o-mini and all models available here: https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=global-standard%2Cstandard-chat-completions
+  # Open Source: Qwen2.5:7B, Llama3.1:8B, Gemma2:9B, Mistral:7B, QWQ:32B and all models available here: https://ollama.com/library
+  mode: 'open_source'  # Options: commercial, open_source
+  model: "qwen2.5:7B"
+
+  # Model parameters
+  parameters:
+    temperature: 0.75
+    top_p: 0.9
+    max_tokens: 512
+
+
+# majority vote
+majority_vote:
+  mode: 'commercial'  # Options: commercial, open_source
+  num_votes: 3 # Number of votes for each model
+  llms:
+    - "mistral:7B"
+    - "qwen2.5:7B"
+    - "llama3.1:8B"
+    - "gemma2:9B"
+  higher_parameter_model:
+    qwen2.5:7b: 'qwen2.5:7b'
+    mistral:7b: 'mistral:7b'
+    llama3.1:8b: 'llama3.1:8b'
+    gemma2:9b: 'gemma2:9b'
+  commercial_model:
+    - "gpt-4o-mini"
+    - "gpt-4o"
+
+rag:
+  embedding_model: 'bge-small-en-v1.5'
+  chunking_strategy: 'sliding_window'  # Options: fixed_size, sliding_window, small2big
+  chunk_size: 512 # needed for fixed_size
+  chunks_small2big: [128, 256, 512] # needed for small2big
+  window_size: 3 # suggest: choose a number between 2 and 10
+  similarity_cutoff: 0.3
+  top_k: 6
+
+
+OpenAI: # OpenAI API configuration, get your API key from azure portal
+  azure_endpoint: '' # Your Azure OpenAI endpoint, e.g., https://<your-resource-name>.openai.azure.com/
+  api_key: ""  # Your OpenAI API key,
+  api_version: "" # API version, e.g., 2023-05-15
+
+# Evaluation configuration
+evaluation:
+  metrics:   # Evaluation metrics
+    accuracy: 'balanced'  # Options: balanced, normal -- suggest: balanced
+    f1_score: "macro"  # Options: micro, macro, weighted -- suggest: macro
+
+
+openlit: true # Whether to use OpenLit for token and real-cost calculation. should be setup by yourself -> https://github.com/openlit/openlit -- recommend docker
+
+# Knowledge Graph configuration
+knowledge_graph:
+  kg_ids: ['correct_death_00106', 'correct_death_00040']  # Comma-separated list of IDs, e.g., ["id1", "id2", "id3"]
+
+# Output configuration
+output:
+  directory: "./results"
+
+# Logging configuration
+logging:
+  level: "INFO"  # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
