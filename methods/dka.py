@@ -19,6 +19,39 @@ CYAN = "\033[96m"
 BOLD = "\033[1m"
 END = "\033[0m"
 
+
+def save_dka_results(results: List[Dict[str, Any]], config: Dict[str, Any]) -> Optional[str]:
+    """
+    Save DKA results to a file
+
+    Args:
+        results (List[Dict[str, Any]]): List of results from the DKA method
+        config (Dict[str, Any]): Configuration dictionary
+
+    Returns:
+        Optional[str]: Path to the saved results file
+    """
+    output_dir = config.get("output_dir", "results")
+    os.makedirs(output_dir, exist_ok=True)
+    dataset = config.get("dataset", {}).get("name")
+    llm_config = config.get("llm", {})
+    llm_model = llm_config.get("model")
+    llm_mode = llm_config.get("mode").replace("_", "-")
+
+    results_file = os.path.join(
+        output_dir,
+        f'{dataset}_{llm_mode}_{llm_model}_dka_{time.strftime("%Y%m%d-%H%M%S")}.json'
+    )
+
+    try:
+        with open(results_file, 'w') as f:
+            json.dump(results, f, indent=4)
+        print(f"{GREEN}✓ DKA results saved to {results_file}{END}")
+        return results_file
+    except Exception as e:
+        print(f"{RED}✗ Failed to save DKA results: {str(e)}{END}")
+        return None
+
 def create_dka_prompt(fact: Dict[str, Any], dataset_name: str) -> str:
     """
     Create DKA-specific prompt for fact verification
@@ -72,7 +105,7 @@ def run_dka_method(config: Dict[str, Any]) -> None:
 
     # Load dataset
     print(f"\n{BOLD}📚 Loading Dataset...{END}")
-    facts, _ = load_dataset(dataset_name, kg_ids=kg_ids)
+    facts = load_dataset(dataset_name, kg_ids=kg_ids)
 
     if not facts:
         print(f"{RED}✗ No facts to process. Exiting DKA method.{END}")
@@ -119,7 +152,7 @@ def run_dka_method(config: Dict[str, Any]) -> None:
                 "s": fact.get("s", ""),
                 "p": fact.get("p", ""),
                 "o": fact.get("o", ""),
-                "label": fact.get("label")  # Ground truth if available
+                "label": "T" if fact.get("label") else "F"  # Ground truth if available
             },
             "prompt": prompt,
             "response": response.content,
@@ -174,9 +207,9 @@ def run_dka_method(config: Dict[str, Any]) -> None:
 
     # Save results
     print(f"\n{BOLD}💾 Saving DKA Results...{END}")
-    # results_file = save_dka_results(results, config)
+    results_file = save_dka_results(results, config)
 
-    # if results_file:
-    #     print(f"{GREEN}✅ DKA method completed successfully!{END}")
-    # else:
-    #     print(f"{YELLOW}⚠️ DKA method completed but failed to save results{END}")
+    if results_file:
+        print(f"{GREEN}✅ DKA method completed successfully!{END}")
+    else:
+        print(f"{YELLOW}⚠️ DKA method completed but failed to save results{END}")

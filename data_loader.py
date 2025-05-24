@@ -1,9 +1,7 @@
 import json
-
-import json
+import logging
 import os
 from typing import Dict, List, Tuple, Any, Optional, Set
-import logging
 
 # Define colors for output
 GREEN = "\033[92m"
@@ -18,11 +16,12 @@ END = "\033[0m"
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 def load_dataset(
         dataset_name: str = "FactBench",
         dataset_file: str = "kg.json",
         kg_ids: Optional[List[str]] = None
-) -> Tuple[List[Tuple[str, Any]], Dict[str, Any]]:
+) -> list[tuple[str, Any]]:
     """
     Enhanced dataset loading function with comprehensive error handling and filtering.
 
@@ -54,19 +53,18 @@ def load_dataset(
         raise FileNotFoundError(f"Dataset directory not found: {dataset_dir}")
 
     # Load knowledge graph data
-    kg = _load_knowledge_graph(kg_file_path, dataset_name, kg_ids)
-
-    # Load ground truth data
-    gt = _load_ground_truth(gt_file_path, kg)
+    kg = _load_knowledge_graph(kg_file_path, dataset_name, gt_file_path, kg_ids)
 
     # Print summary statistics
-    _print_dataset_summary(dataset_name, kg, gt, kg_ids)
+    _print_dataset_summary(dataset_name, kg, kg_ids)
 
-    return kg, gt
+    return kg
+
 
 def _load_knowledge_graph(
         kg_file_path: str,
         dataset_name: str,
+        gt_file_path: str,
         kg_ids: Optional[List[str]] = None
 ) -> List[Tuple[str, Any]]:
     """
@@ -111,7 +109,17 @@ def _load_knowledge_graph(
 
     kg = _prepare_kg(kg, dataset_name)
 
+    # Load ground truth data
+    gt = _load_ground_truth(gt_file_path, kg)
+
+    for fact_id, triple in kg:
+        if fact_id in gt:
+            triple['label'] = gt[fact_id]
+        else:
+            triple['label'] = None
+
     return kg
+
 
 def _apply_dataset_filtering(kg: List[Tuple[str, Any]], dataset_name: str) -> List[Tuple[str, Any]]:
     """
@@ -157,6 +165,7 @@ def _apply_dataset_filtering(kg: List[Tuple[str, Any]], dataset_name: str) -> Li
 
     return kg
 
+
 def _apply_id_filtering(kg: List[Tuple[str, Any]], kg_ids: List[str]) -> List[Tuple[str, Any]]:
     """
     Filter knowledge graph by specific IDs.
@@ -187,11 +196,12 @@ def _apply_id_filtering(kg: List[Tuple[str, Any]], kg_ids: List[str]) -> List[Tu
         if len(missing_ids) <= 10:  # Show missing IDs if not too many
             print(f'  {RED}Missing IDs: {list(missing_ids)}{END}')
         else:
-            print(f'  {RED}Missing IDs: {list(missing_ids)[:10]}... (and {len(missing_ids)-10} more){END}')
+            print(f'  {RED}Missing IDs: {list(missing_ids)[:10]}... (and {len(missing_ids) - 10} more){END}')
 
     print(f'  {GREEN}✓ ID filtering: kept {len(kg)}/{original_count} facts{END}')
 
     return kg
+
 
 def _load_ground_truth(gt_file_path: str, kg: List[Tuple[str, Any]]) -> Dict[str, Any]:
     """
@@ -226,7 +236,7 @@ def _load_ground_truth(gt_file_path: str, kg: List[Tuple[str, Any]]) -> Dict[str
     print(f'  {GREEN}✓ Loaded {len(gt_raw)} ground truth labels{END}')
 
     # Create set of knowledge graph IDs for efficient lookup
-    kg_ids = {k for k, _ in kg}
+    kg_ids = {k[0] for k in kg}
 
     # Filter ground truth to only include facts present in knowledge graph
     gt = {k: v for k, v in gt_raw.items() if k in kg_ids}
@@ -248,7 +258,6 @@ def _load_ground_truth(gt_file_path: str, kg: List[Tuple[str, Any]]) -> Dict[str
 def _print_dataset_summary(
         dataset_name: str,
         kg: List[Tuple[str, Any]],
-        gt: Dict[str, Any],
         kg_ids: Optional[List[str]]
 ) -> None:
     """Print a summary of the loaded dataset."""
@@ -256,7 +265,6 @@ def _print_dataset_summary(
     print(f'\n{BOLD}{GREEN}📊 Dataset Summary:{END}')
     print(f'  Dataset: {dataset_name}')
     print(f'  Total facts: {len(kg)}')
-    print(f'  Ground truth labels: {len(gt)}')
 
     if kg_ids is not None:
         print(f'  ID filtering: {len(kg_ids)} requested → {len(kg)} found')
@@ -267,12 +275,13 @@ def _print_dataset_summary(
         sample_size = min(3, len(kg))
         for i in range(sample_size):
             fact_id, triple = kg[i]
-            gt_label = gt.get(fact_id, 'No label')
-            print(f'  {i+1}. ID: {fact_id}')
+            # gt_label = gt.get(fact_id, 'No label')
+            print(f'  {i + 1}. ID: {fact_id}')
             print(f'     Triple: {triple}')
-            print(f'     Label: {gt_label}')
+            # print(f'     Label: {gt_label}')
 
     print(f'{GREEN}✅ Dataset loaded successfully!{END}\n')
+
 
 def validate_dataset_structure(dataset_name: str, dataset_file: str = "kg.json") -> bool:
     """
@@ -341,6 +350,7 @@ def validate_dataset_structure(dataset_name: str, dataset_file: str = "kg.json")
         print(f'{GREEN}✅ Dataset structure is valid{END}')
         return True
 
+
 def _prepare_kg(kg: List[Tuple[str, Any]], dataset_name: str) -> List[Tuple[str, Any]]:
     """
     Prepare the knowledge graph by converting it to a list of tuples.
@@ -360,14 +370,14 @@ def _prepare_kg(kg: List[Tuple[str, Any]], dataset_name: str) -> List[Tuple[str,
         if dataset_name == 'FactBench':
             prepared_kg.append((
                 knowledge_graph[0],
-                {'s': knowledge_graph[1][0],'p': knowledge_graph[1][1],'o': knowledge_graph[1][2]}
+                {'s': knowledge_graph[1][0], 'p': knowledge_graph[1][1], 'o': knowledge_graph[1][2]}
             ))
         elif dataset_name in ['DBpedia']:
             s, p, o = str(knowledge_graph[1]).split('/')[-1].replace('_', ' ')
-            prepared_kg.append((knowledge_graph[0], {'s': s,'p': p,'o': o}))
+            prepared_kg.append((knowledge_graph[0], {'s': s, 'p': p, 'o': o}))
         else:
             s, p, o = str(knowledge_graph[1]).replace('_', ' ')
-            prepared_kg.append((knowledge_graph[0], {'s': s,'p': p,'o': o}))
+            prepared_kg.append((knowledge_graph[0], {'s': s, 'p': p, 'o': o}))
 
     print(f'  {GREEN}✓ Knowledge graph prepared with {len(prepared_kg)} facts{END}')
 
