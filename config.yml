@@ -26,16 +26,17 @@ llm:
 # majority vote
 majority_vote:
   mode: 'commercial'  # Options: commercial, open_source
+  final_tie_breaker: 'most_consistent' # Options: least_consistent, most_consistent, Null (for commercial)
   num_votes: 3 # Number of votes for each model
   llms:
     - "mistral:7B"
     - "qwen2.5:7B"
-    - "llama3.1:8B"
+    - "llama3.1:7B"
     - "gemma2:9B"
   higher_parameter_model:
     qwen2.5:7b: 'qwen2.5:7b'
     mistral:7b: 'mistral:7b'
-    llama3.1:8b: 'llama3.1:7b'
+    llama3.1:7b: 'llama3.1:latest'
     gemma2:9b: 'gemma2:9b'
   commercial_model:
     - "gpt-4o-mini"

@@ -68,6 +68,13 @@ def load_results_file(file_path: str) -> List[Dict[str, Any]]:
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             results = json.load(f)
+
+        if 'majority-vote' in file_path:
+            # Normalize the response for majority vote files -- as they contain more detailed results
+            results = results.get('results', [])
+            for result in results:
+                result['response'] = result['majority_decision']
+
         return results
     except FileNotFoundError:
         print(f"{RED}✗ Results file not found: {file_path}{END}")

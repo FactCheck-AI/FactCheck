@@ -52,6 +52,29 @@ class ConsistencyResult:
 
 
 @dataclass
+class TieBreakerResult:
+    """Represents results from all tie-breaker strategies"""
+    fact_id: str
+    commercial_result: Optional[str] = None
+    commercial_model: Optional[str] = None
+    commercial_response: Optional[str] = None
+    most_consistent_result: Optional[str] = None
+    most_consistent_model: Optional[str] = None
+    most_consistent_response: Optional[str] = None
+    least_consistent_result: Optional[str] = None
+    least_consistent_model: Optional[str] = None
+    least_consistent_response: Optional[str] = None
+    strategies_attempted: List[str] = None
+    strategies_successful: List[str] = None
+
+    def __post_init__(self):
+        if self.strategies_attempted is None:
+            self.strategies_attempted = []
+        if self.strategies_successful is None:
+            self.strategies_successful = []
+
+
+@dataclass
 class MajorityVoteStats:
     """Statistics for majority voting process"""
     total_facts: int
@@ -61,6 +84,9 @@ class MajorityVoteStats:
     tie_percentage: float
     decidable_facts: int
     consistency_scores: List[ConsistencyResult]
+    commercial_ties_resolved: int = 0
+    most_consistent_ties_resolved: int = 0
+    least_consistent_ties_resolved: int = 0
 
 
 @dataclass
@@ -73,8 +99,8 @@ class MergedResult:
     confidence: float
     consensus_level: str
     tie_broken: bool = False
-    tie_breaker_model: Optional[str] = None
-    tie_breaker_response: Optional[str] = None
+    tie_breaker_results: Optional[TieBreakerResult] = None
+    final_tie_breaker_used: Optional[str] = None
 
 
 class ResultMerger:
@@ -89,6 +115,11 @@ class ResultMerger:
         # Initialize tie-breaker models
         self.tie_breaker_clients = {}
         self._initialize_tie_breakers()
+
+        # Track tie-breaker results for separate file saving
+        self.commercial_tie_results = []
+        self.most_consistent_tie_results = []
+        self.least_consistent_tie_results = []
 
     def _initialize_tie_breakers(self):
         """Initialize tie-breaker models"""
@@ -134,7 +165,7 @@ class ResultMerger:
         filtered_files = []
         for file_path in dataset_files:
             filename = os.path.basename(file_path)
-            if not any(keyword in filename.lower() for keyword in ['majority', 'consensus', 'merged']):
+            if not any(keyword in filename.lower() for keyword in ['majority', 'consensus', 'merged', 'tie']):
                 filtered_files.append(file_path)
 
         return sorted(filtered_files)
@@ -265,7 +296,7 @@ class ResultMerger:
             model = parts[2]
             method = parts[3]
 
-            return dataset, model, method
+            return dataset, model.lower(), method
 
         # Fallback parsing
         dataset = parts[0] if parts else 'unknown'
@@ -429,8 +460,8 @@ class ResultMerger:
 
     def apply_majority_voting_with_ties(self, merged_results: Dict[str, List[ModelResult]],
                                         consistency_scores: List[ConsistencyResult]) -> Tuple[List[MergedResult], MajorityVoteStats]:
-        """Apply majority voting with advanced tie-breaking"""
-        print(f"\n{BOLD}{BLUE}🗳️  Applying majority voting with tie resolution...{END}")
+        """Apply majority voting with comprehensive tie-breaking"""
+        print(f"\n{BOLD}{BLUE}🗳️  Applying majority voting with comprehensive tie resolution...{END}")
 
         # Load ground truth facts for tie-breaking
         try:
@@ -454,7 +485,10 @@ class ResultMerger:
             ties_resolved=0,
             tie_percentage=0.0,
             decidable_facts=0,
-            consistency_scores=consistency_scores
+            consistency_scores=consistency_scores,
+            commercial_ties_resolved=0,
+            most_consistent_ties_resolved=0,
+            least_consistent_ties_resolved=0
         )
 
         for fact_id, model_results in merged_results.items():
@@ -471,8 +505,8 @@ class ResultMerger:
             print(f"  Votes: {dict(vote_counts)}")
 
             tie_broken = False
-            tie_breaker_model = None
-            tie_breaker_response = None
+            tie_breaker_results = None
+            final_tie_breaker_used = None
 
             # Determine if we have a clear majority or tie
             if len(most_common) >= 2 and most_common[0][1] == most_common[1][1]:
@@ -480,21 +514,36 @@ class ResultMerger:
                 print(f"  {YELLOW}🔀 Tie detected!{END}")
                 stats.ties_encountered += 1
 
-                # Try to resolve tie
-                tie_result = self._resolve_tie_advanced(
+                # Try ALL tie-breaking strategies comprehensively
+                tie_breaker_results = self._resolve_tie_comprehensive(
                     fact_id, facts_dict.get(fact_id, {}),
                     most_consistent, least_consistent
                 )
 
-                if tie_result:
-                    majority_decision, tie_breaker_model, tie_breaker_response = tie_result
+                # Determine which strategy to use as final decision
+                final_decision, final_tie_breaker_used = self._choose_final_tie_breaker(self.config, tie_breaker_results)
+
+                if final_decision:
+                    majority_decision = final_decision
                     tie_broken = True
                     stats.ties_resolved += 1
-                    print(f"  {GREEN}✓ Tie resolved by {tie_breaker_model}: {majority_decision}{END}")
+
+                    # Update strategy-specific counters
+                    if final_tie_breaker_used and "commercial" in final_tie_breaker_used:
+                        stats.commercial_ties_resolved += 1
+                    elif final_tie_breaker_used and "most_consistent" in final_tie_breaker_used:
+                        stats.most_consistent_ties_resolved += 1
+                    elif final_tie_breaker_used and "least_consistent" in final_tie_breaker_used:
+                        stats.least_consistent_ties_resolved += 1
+
+                    print(f"  {GREEN}✓ Tie resolved by {final_tie_breaker_used}: {majority_decision}{END}")
                 else:
                     # Default to first vote
                     majority_decision = most_common[0][0]
-                    print(f"  {RED}✗ Tie resolution failed, using: {majority_decision}{END}")
+                    print(f"  {RED}✗ All tie resolution strategies failed, using: {majority_decision}{END}")
+
+                # Store tie results for separate file saving
+                self._store_tie_results(fact_id, facts_dict.get(fact_id, {}), tie_breaker_results, model_results)
 
             else:
                 # Clear majority
@@ -520,8 +569,8 @@ class ResultMerger:
                 confidence=confidence,
                 consensus_level=consensus_level,
                 tie_broken=tie_broken,
-                tie_breaker_model=tie_breaker_model,
-                tie_breaker_response=tie_breaker_response
+                tie_breaker_results=tie_breaker_results,
+                final_tie_breaker_used=final_tie_breaker_used
             )
 
             majority_results.append(merged_result)
@@ -535,43 +584,135 @@ class ResultMerger:
         print(f"  Facts with majority decision: {stats.facts_with_majority}")
         print(f"  Ties encountered: {stats.ties_encountered}")
         print(f"  Ties resolved: {stats.ties_resolved}")
+        print(f"  Commercial ties resolved: {stats.commercial_ties_resolved}")
+        print(f"  Most consistent ties resolved: {stats.most_consistent_ties_resolved}")
+        print(f"  Least consistent ties resolved: {stats.least_consistent_ties_resolved}")
         print(f"  Tie percentage: {stats.tie_percentage:.1f}%")
         if stats.ties_encountered > 0:
             print(f"  Tie resolution rate: {stats.ties_resolved/stats.ties_encountered:.1%}")
 
         return majority_results, stats
 
-    def _resolve_tie_advanced(self, fact_id: str, fact_data: Dict[str, Any],
-                              most_consistent: Optional[ConsistencyResult],
-                              least_consistent: Optional[ConsistencyResult]) -> Optional[Tuple[str, str, str]]:
-        """Advanced tie resolution using consistency-based model selection"""
+    def _resolve_tie_comprehensive(self, fact_id: str, fact_data: Dict[str, Any],
+                                   most_consistent: Optional[ConsistencyResult],
+                                   least_consistent: Optional[ConsistencyResult]) -> TieBreakerResult:
+        """Tie resolution using ALL available strategies"""
 
-        # Strategy 1: Use commercial model if available
+        tie_result = TieBreakerResult(fact_id=fact_id)
+
+        # Strategy 1: Commercial model
         if "commercial" in self.tie_breaker_clients:
+            tie_result.strategies_attempted.append("commercial")
             model_name, client = self.tie_breaker_clients["commercial"]
             result = self._query_tie_breaker(client, fact_data)
             if result:
-                return result, f"commercial_{model_name}", result
+                tie_result.commercial_result = result
+                tie_result.commercial_model = model_name
+                tie_result.commercial_response = result
+                tie_result.strategies_successful.append("commercial")
+                print(f"    {GREEN}✓ Commercial ({model_name}): {result}{END}")
+            else:
+                print(f"    {RED}✗ Commercial ({model_name}): Failed{END}")
 
-        # Strategy 2: Use higher parameter version of most consistent model
+        # Strategy 2: Most consistent model (higher parameter)
         if most_consistent:
-            tie_breaker_key = f"higher_{most_consistent.model_name}"
+            tie_breaker_key = f"higher_{most_consistent.model_name}".lower()
             if tie_breaker_key in self.tie_breaker_clients:
+                tie_result.strategies_attempted.append("most_consistent")
                 model_name, client = self.tie_breaker_clients[tie_breaker_key]
                 result = self._query_tie_breaker(client, fact_data)
                 if result:
-                    return result, f"higher_param_{model_name}_most_consistent", result
+                    tie_result.most_consistent_result = result
+                    tie_result.most_consistent_model = model_name
+                    tie_result.most_consistent_response = result
+                    tie_result.strategies_successful.append("most_consistent")
+                    print(f"    {GREEN}✓ Most consistent ({model_name}): {result}{END}")
+                else:
+                    print(f"    {RED}✗ Most consistent ({model_name}): Failed{END}")
 
-        # Strategy 3: Use higher parameter version of least consistent model
+        # Strategy 3: Least consistent model (higher parameter)
         if least_consistent:
-            tie_breaker_key = f"higher_{least_consistent.model_name}"
+            tie_breaker_key = f"higher_{least_consistent.model_name}".lower()
             if tie_breaker_key in self.tie_breaker_clients:
+                tie_result.strategies_attempted.append("least_consistent")
                 model_name, client = self.tie_breaker_clients[tie_breaker_key]
                 result = self._query_tie_breaker(client, fact_data)
                 if result:
-                    return result, f"higher_param_{model_name}_least_consistent", result
+                    tie_result.least_consistent_result = result
+                    tie_result.least_consistent_model = model_name
+                    tie_result.least_consistent_response = result
+                    tie_result.strategies_successful.append("least_consistent")
+                    print(f"    {GREEN}✓ Least consistent ({model_name}): {result}{END}")
+                else:
+                    print(f"    {RED}✗ Least consistent ({model_name}): Failed{END}")
 
-        return None
+        return tie_result
+
+    def _choose_final_tie_breaker(self, config, tie_result: TieBreakerResult) -> Tuple[Optional[str], Optional[str]]:
+        """Choose which tie-breaker result to use as final decision"""
+        # Priority order: Commercial > Most Consistent > Least Consistent -- if not specified, defaults to commercial
+
+        majority_vote_config = config.get("majority_vote", {})
+        tie_breaker_mode = majority_vote_config.get("mode", "commercial")
+        final_tie_breaker = majority_vote_config.get("final_tie_breaker", "commercial")
+
+        if final_tie_breaker not in ["commercial", "most_consistent", "least_consistent"]:
+            if tie_breaker_mode in ["commercial"]:
+                final_tie_breaker = "commercial"  # Default to commercial if invalid
+            else:
+                final_tie_breaker = "most_consistent"
+
+        if tie_result.commercial_result and final_tie_breaker == "commercial":
+            return tie_result.commercial_result, f"commercial_{tie_result.commercial_model}"
+        elif tie_result.most_consistent_result and final_tie_breaker == "most_consistent":
+            return tie_result.most_consistent_result, f"most_consistent_{tie_result.most_consistent_model}"
+        elif tie_result.least_consistent_result and final_tie_breaker == "least_consistent":
+            return tie_result.least_consistent_result, f"least_consistent_{tie_result.least_consistent_model}"
+        else:
+            return None, None
+
+    def _store_tie_results(self, fact_id: str, fact_data: Dict[str, Any],
+                           tie_result: TieBreakerResult, model_results: List[ModelResult]):
+        """Store tie results for separate file saving"""
+
+        base_tie_result = {
+            "id": fact_id,
+            "method": "TieBreaker",
+            "fact": fact_data,
+            "original_votes": [{"model": mr.model_name, "response": mr.normalized_response} for mr in model_results],
+            "success": True,
+            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+        }
+
+        # Store commercial tie result
+        if tie_result.commercial_result:
+            commercial_result = base_tie_result.copy()
+            commercial_result.update({
+                "tie_breaker_model": tie_result.commercial_model,
+                "response": tie_result.commercial_result,
+                "tie_breaker_type": "commercial"
+            })
+            self.commercial_tie_results.append(commercial_result)
+
+        # Store most consistent tie result
+        if tie_result.most_consistent_result:
+            most_consistent_result = base_tie_result.copy()
+            most_consistent_result.update({
+                "tie_breaker_model": tie_result.most_consistent_model,
+                "response": tie_result.most_consistent_result,
+                "tie_breaker_type": "most_consistent"
+            })
+            self.most_consistent_tie_results.append(most_consistent_result)
+
+        # Store least consistent tie result
+        if tie_result.least_consistent_result:
+            least_consistent_result = base_tie_result.copy()
+            least_consistent_result.update({
+                "tie_breaker_model": tie_result.least_consistent_model,
+                "response": tie_result.least_consistent_result,
+                "tie_breaker_type": "least_consistent"
+            })
+            self.least_consistent_tie_results.append(least_consistent_result)
 
     def _query_tie_breaker(self, client: LLMClient, fact_data: Dict[str, Any]) -> Optional[str]:
         """Query a tie-breaker model"""
@@ -619,11 +760,59 @@ class ResultMerger:
         else:
             return "tie"
 
+    def save_separate_tie_files(self, output_dir: str = "./results") -> Dict[str, Optional[str]]:
+        """Save separate files for each tie-breaker strategy"""
+        saved_files = {
+            "commercial": None,
+            "most_consistent": None,
+            "least_consistent": None
+        }
+
+        timestamp = time.strftime('%Y%m%d-%H%M%S')
+
+        # Save commercial tie results
+        if self.commercial_tie_results:
+            filename = f"{self.dataset_name}_tie-commercial_{timestamp}.json"
+            filepath = os.path.join(output_dir, filename)
+            try:
+                with open(filepath, 'w', encoding='utf-8') as f:
+                    json.dump(self.commercial_tie_results, f, indent=4, ensure_ascii=False)
+                saved_files["commercial"] = filepath
+                print(f"{GREEN}✓ Commercial tie results saved to {filename}{END}")
+            except Exception as e:
+                print(f"{RED}✗ Failed to save commercial tie results: {str(e)}{END}")
+
+        # Save most consistent tie results
+        if self.most_consistent_tie_results:
+            filename = f"{self.dataset_name}_tie-most-consistent_{timestamp}.json"
+            filepath = os.path.join(output_dir, filename)
+            try:
+                with open(filepath, 'w', encoding='utf-8') as f:
+                    json.dump(self.most_consistent_tie_results, f, indent=4, ensure_ascii=False)
+                saved_files["most_consistent"] = filepath
+                print(f"{GREEN}✓ Most consistent tie results saved to {filename}{END}")
+            except Exception as e:
+                print(f"{RED}✗ Failed to save most consistent tie results: {str(e)}{END}")
+
+        # Save least consistent tie results
+        if self.least_consistent_tie_results:
+            filename = f"{self.dataset_name}_tie-least-consistent_{timestamp}.json"
+            filepath = os.path.join(output_dir, filename)
+            try:
+                with open(filepath, 'w', encoding='utf-8') as f:
+                    json.dump(self.least_consistent_tie_results, f, indent=4, ensure_ascii=False)
+                saved_files["least_consistent"] = filepath
+                print(f"{GREEN}✓ Least consistent tie results saved to {filename}{END}")
+            except Exception as e:
+                print(f"{RED}✗ Failed to save least consistent tie results: {str(e)}{END}")
+
+        return saved_files
+
     def save_comprehensive_results(self, merged_results: List[MergedResult],
                                    stats: MajorityVoteStats,
                                    file_paths: List[str],
                                    output_dir: str = "./results") -> Optional[str]:
-        """Save  results with all statistics"""
+        """Save comprehensive results with all statistics"""
         os.makedirs(output_dir, exist_ok=True)
 
         # Prepare results
@@ -640,6 +829,9 @@ class ResultMerger:
                 "facts_with_majority": stats.facts_with_majority,
                 "ties_encountered": stats.ties_encountered,
                 "ties_resolved": stats.ties_resolved,
+                "commercial_ties_resolved": stats.commercial_ties_resolved,
+                "most_consistent_ties_resolved": stats.most_consistent_ties_resolved,
+                "least_consistent_ties_resolved": stats.least_consistent_ties_resolved,
                 "tie_percentage": stats.tie_percentage,
                 "tie_resolution_rate": (stats.ties_resolved / stats.ties_encountered * 100) if stats.ties_encountered > 0 else 0.0
             },
@@ -672,6 +864,21 @@ class ResultMerger:
                     "source_file": model_result.source_file
                 })
 
+            # Convert tie breaker results
+            tie_breaker_info = None
+            if result.tie_breaker_results:
+                tie_breaker_info = {
+                    "strategies_attempted": result.tie_breaker_results.strategies_attempted,
+                    "strategies_successful": result.tie_breaker_results.strategies_successful,
+                    "commercial_result": result.tie_breaker_results.commercial_result,
+                    "commercial_model": result.tie_breaker_results.commercial_model,
+                    "most_consistent_result": result.tie_breaker_results.most_consistent_result,
+                    "most_consistent_model": result.tie_breaker_results.most_consistent_model,
+                    "least_consistent_result": result.tie_breaker_results.least_consistent_result,
+                    "least_consistent_model": result.tie_breaker_results.least_consistent_model,
+                    "final_tie_breaker_used": result.final_tie_breaker_used
+                }
+
             result_dict = {
                 "id": result.fact_id,
                 "method": "MajorityVote",
@@ -680,8 +887,7 @@ class ResultMerger:
                 "confidence": result.confidence,
                 "consensus_level": result.consensus_level,
                 "tie_broken": result.tie_broken,
-                "tie_breaker_model": result.tie_breaker_model,
-                "tie_breaker_response": result.tie_breaker_response,
+                "tie_breaker_info": tie_breaker_info,
                 "individual_votes": individual_votes,
                 "success": result.majority_decision != "UNKNOWN"
             }
@@ -696,7 +902,12 @@ class ResultMerger:
             with open(filepath, 'w', encoding='utf-8') as f:
                 json.dump(comprehensive_results, f, indent=4, ensure_ascii=False)
 
-            print(f"\n{GREEN}✓ Results saved to {filepath}{END}")
+            print(f"\n{GREEN}✓ Comprehensive results saved to {filepath}{END}")
+
+            # Also save separate tie files
+            print(f"\n{BLUE}💾 Saving separate tie-breaker files...{END}")
+            tie_files = self.save_separate_tie_files(output_dir)
+
             return filepath
 
         except Exception as e:
@@ -706,7 +917,7 @@ class ResultMerger:
 
 def main():
     """main function with interactive features"""
-    parser = argparse.ArgumentParser(description="Majority Voting")
+    parser = argparse.ArgumentParser(description="Majority Voting with Tie Resolution")
     parser.add_argument("--config", type=str, default="config.yml",
                         help="Path to configuration file")
     parser.add_argument("--results-dir", type=str, default="./results",
@@ -720,8 +931,8 @@ def main():
 
     args = parser.parse_args()
 
-    print(f"{BOLD}{CYAN}Result Merger for Majority Voting{END}")
-    print("=" * 60)
+    print(f"{BOLD}{CYAN}Result Merger for Majority Voting with Comprehensive Tie Resolution{END}")
+    print("=" * 70)
 
     # Load configuration
     try:
@@ -784,7 +995,7 @@ def main():
     # Calculate consistency scores
     consistency_scores = merger.calculate_consistency_scores(merged_by_fact)
 
-    # Apply majority voting with advanced tie-breaking
+    # Apply majority voting with comprehensive tie-breaking
     majority_results, stats = merger.apply_majority_voting_with_ties(merged_by_fact, consistency_scores)
 
     # Save results
@@ -793,10 +1004,11 @@ def main():
     )
 
     if output_file:
-        print(f"\n{BOLD}{GREEN}🎉 Majority Voting Completed Successfully!{END}")
-        print(f"Output file: {output_file}")
+        print(f"\n{BOLD}{GREEN}🎉 Majority Voting with Tie Resolution Completed Successfully!{END}")
+        print(f"Main output file: {output_file}")
+        print(f"\nSeparate tie-breaker files have been saved for each strategy.")
         print(f"\nTo evaluate the results, run:")
-        print(f"python evaluate.py --file {output_file}")
+        print(f"python evaluation.py --file {output_file}")
     else:
         print(f"\n{YELLOW}⚠️ Majority voting completed but failed to save results{END}")
 
