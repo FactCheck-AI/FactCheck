@@ -31,7 +31,9 @@ class LLMResponse:
     content: str
     success: bool
     error_message: Optional[str] = None
-    # tokens_used: Optional[int] = None
+    tokens_used: Optional[int] = None
+    prompt_tokens: Optional[int] = None
+    completion_tokens: Optional[int] = None
     # cost: Optional[float] = None
     response_time: Optional[float] = None
     model_used: Optional[str] = None
@@ -299,7 +301,9 @@ class LLMClient:
             return LLMResponse(
                 content=content,
                 success=True,
-                # tokens_used=tokens_used,
+                tokens_used=tokens_used,
+                prompt_tokens=prompt_tokens,
+                completion_tokens=completion_tokens,
                 # cost=cost
             )
         except Exception as e:

@@ -158,6 +158,7 @@ def run_dka_method(config: Dict[str, Any]) -> None:
             "response": response.content,
             "success": response.success,
             "error_message": response.error_message,
+            "response_time": response.response_time,
             # "tokens_used": response.tokens_used,
             # "cost": response.cost or 0.0,
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
