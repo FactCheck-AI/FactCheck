@@ -9,6 +9,8 @@ import logging
 
 from datetime import datetime, timedelta
 
+from openai import AzureOpenAI
+
 # Define colors for output
 GREEN = "\033[92m"
 RED = "\033[91m"
@@ -109,6 +111,7 @@ class LLMClient:
         self.mode = self.llm_config.get("mode", "open_source")
         self.model = self.llm_config.get("model", "")
         self.parameters = self.llm_config.get("parameters", {})
+        self.azure_client = None
 
         # Rate limiting
         # self.rate_limiter = RateLimiter(max_calls_per_minute=60)
@@ -135,34 +138,16 @@ class LLMClient:
         if not self.openai_config.get("api_key"):
             raise ValueError("OpenAI API key is required for commercial models")
 
-        # Configure OpenAI client
-        openai.api_key = self.openai_config.get("api_key")
+        if not self.openai_config.get("azure_endpoint"):
+            raise ValueError("Azure endpoint is required for Azure OpenAI models")
 
-        # Check if using Azure OpenAI
-        azure_endpoint = self.openai_config.get("azure_endpoint")
-        if azure_endpoint:
-            openai.api_type = "azure"
-            openai.api_base = azure_endpoint
-            openai.api_version = self.openai_config.get("api_version", "2024-02-15-preview")
-            logger.info(f"Using Azure OpenAI endpoint: {azure_endpoint}")
-        else:
-            openai.api_type = "openai"
-            openai.api_base = "https://api.openai.com/v1"
-            logger.info("Using OpenAI API")
 
-        # Test the connection
-        try:
-            # Simple test call to verify credentials
-            if azure_endpoint:
-                # For Azure, we might need different model names
-                test_model = self.model
-            else:
-                test_model = self.model
+        self.azure_client = AzureOpenAI(
+            azure_endpoint = self.openai_config.get("azure_endpoint"),
+            api_key= self.openai_config.get("api_key"),
+            api_version= self.openai_config.get("api_version", "2024-12-01-preview")
+        )
 
-            logger.info(f"Testing connection with model: {test_model}")
-
-        except Exception as e:
-            logger.warning(f"Could not test connection: {str(e)}")
 
     def _init_ollama_client(self):
         """Initialize Ollama client"""
@@ -286,23 +271,18 @@ class LLMClient:
             # Prepare the request parameters
             request_params = {
                 "model": self.model,
-                "messages": [{"role": "user", "content": prompt}],
+                "messages": [{"role": "system", "content": "You are an AI assistant that helps people find information."}, {"role": "user", "content": prompt}],
                 "temperature": self.parameters.get("temperature", 0.7),
                 "top_p": self.parameters.get("top_p", 0.9),
                 "max_tokens": self.parameters.get("max_tokens", 512),
                 "timeout": timeout
             }
 
-            # Add frequency and presence penalty if specified
-            if "frequency_penalty" in self.parameters:
-                request_params["frequency_penalty"] = self.parameters["frequency_penalty"]
-            if "presence_penalty" in self.parameters:
-                request_params["presence_penalty"] = self.parameters["presence_penalty"]
-
-            logger.debug(f"Making request to {self.model} with params: {request_params}")
-
             # Make the API call
-            response = openai.ChatCompletion.create(**request_params)
+            response = self.azure_client.chat.completions.create(
+                messages=[{"role": "system", "content": "You are an AI assistant that helps people find information."}, {"role": "user", "content": prompt}],
+                model=self.model,
+            )
 
             # Extract response data
             content = response.choices[0].message.content.strip()
@@ -311,40 +291,16 @@ class LLMClient:
             completion_tokens = response.usage.completion_tokens
 
             # Calculate cost
-            cost = self._calculate_commercial_cost(prompt_tokens, completion_tokens, self.model)
+            # cost = self._calculate_commercial_cost(prompt_tokens, completion_tokens, self.model)
 
-            logger.debug(f"Response: {len(content)} chars, {tokens_used} tokens, ${cost:.6f}")
+            # logger.debug(f"Response: {len(content)} chars, {tokens_used} tokens, ${cost:.6f}")
+            logger.debug(f"Response: {len(content)} chars, {tokens_used}")
 
             return LLMResponse(
                 content=content,
                 success=True,
                 # tokens_used=tokens_used,
                 # cost=cost
-            )
-
-        except openai.error.RateLimitError as e:
-            return LLMResponse(
-                content="",
-                success=False,
-                error_message=f"Rate limit exceeded: {str(e)}"
-            )
-        except openai.error.InvalidRequestError as e:
-            return LLMResponse(
-                content="",
-                success=False,
-                error_message=f"Invalid request: {str(e)}"
-            )
-        except openai.error.AuthenticationError as e:
-            return LLMResponse(
-                content="",
-                success=False,
-                error_message=f"Authentication failed: {str(e)}"
-            )
-        except openai.error.APIError as e:
-            return LLMResponse(
-                content="",
-                success=False,
-                error_message=f"OpenAI API error: {str(e)}"
             )
         except Exception as e:
             return LLMResponse(
