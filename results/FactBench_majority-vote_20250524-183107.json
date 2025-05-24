@@ -1,0 +1,172 @@
+{
+    "metadata": {
+        "dataset": "FactBench",
+        "source_files": [
+            "FactBench_open-source_gemma2:9b_dka_20250524-103959.json",
+            "FactBench_open-source_llama3.1:7B_dka_20250524-100023.json",
+            "FactBench_open-source_mistral:7B_dka_20250524-100024.json",
+            "FactBench_open-source_qwen2.5:7B_dka_20250524-100025.json"
+        ],
+        "majority_threshold": 3,
+        "generation_timestamp": "2025-05-24 18:31:07",
+        "total_facts": 2,
+        "decidable_facts": 2
+    },
+    "statistics": {
+        "facts_with_majority": 1,
+        "ties_encountered": 1,
+        "ties_resolved": 0,
+        "tie_percentage": 50.0,
+        "tie_resolution_rate": 0.0
+    },
+    "consistency_scores": [
+        {
+            "model_name": "open-source_llama3.17B",
+            "consistency_score": 1.0,
+            "agreements": 1,
+            "total_facts": 1,
+            "source_file": "FactBench_open-source_llama3.1:7B_dka_20250524-100023.json"
+        },
+        {
+            "model_name": "open-source_mistral7B",
+            "consistency_score": 1.0,
+            "agreements": 1,
+            "total_facts": 1,
+            "source_file": "FactBench_open-source_mistral:7B_dka_20250524-100024.json"
+        },
+        {
+            "model_name": "open-source_qwen2.57B",
+            "consistency_score": 1.0,
+            "agreements": 1,
+            "total_facts": 1,
+            "source_file": "FactBench_open-source_qwen2.5:7B_dka_20250524-100025.json"
+        },
+        {
+            "model_name": "open-source_gemma29b",
+            "consistency_score": 0.0,
+            "agreements": 0,
+            "total_facts": 1,
+            "source_file": "FactBench_open-source_gemma2:9b_dka_20250524-103959.json"
+        }
+    ],
+    "results": [
+        {
+            "id": "correct_death_00106",
+            "method": "MajorityVote",
+            "fact": {
+                "s": "Roscoe Arbuckle",
+                "p": "deathPlace",
+                "o": "New York City",
+                "label": 1
+            },
+            "majority_decision": "F",
+            "confidence": 0.5,
+            "consensus_level": "tie",
+            "tie_broken": false,
+            "tie_breaker_model": null,
+            "tie_breaker_response": null,
+            "individual_votes": [
+                {
+                    "model_name": "open-source_gemma29b",
+                    "method": "dka",
+                    "response": "F",
+                    "normalized_response": "F",
+                    "success": true,
+                    "response_time": 2.26899790763855,
+                    "timestamp": "2025-05-24 10:39:59",
+                    "source_file": "FactBench_open-source_gemma2:9b_dka_20250524-103959.json"
+                },
+                {
+                    "model_name": "open-source_llama3.17B",
+                    "method": "dka",
+                    "response": "F",
+                    "normalized_response": "F",
+                    "success": true,
+                    "response_time": 0.0,
+                    "timestamp": "2025-05-24 10:00:23",
+                    "source_file": "FactBench_open-source_llama3.1:7B_dka_20250524-100023.json"
+                },
+                {
+                    "model_name": "open-source_mistral7B",
+                    "method": "dka",
+                    "response": "T",
+                    "normalized_response": "T",
+                    "success": true,
+                    "response_time": 0.0,
+                    "timestamp": "2025-05-24 10:00:23",
+                    "source_file": "FactBench_open-source_mistral:7B_dka_20250524-100024.json"
+                },
+                {
+                    "model_name": "open-source_qwen2.57B",
+                    "method": "dka",
+                    "response": "T",
+                    "normalized_response": "T",
+                    "success": true,
+                    "response_time": 0.0,
+                    "timestamp": "2025-05-24 10:00:23",
+                    "source_file": "FactBench_open-source_qwen2.5:7B_dka_20250524-100025.json"
+                }
+            ],
+            "success": true
+        },
+        {
+            "id": "correct_death_00040",
+            "method": "MajorityVote",
+            "fact": {
+                "s": "Andrew Johnson",
+                "p": "deathPlace",
+                "o": "Elizabethton, Tennessee",
+                "label": 1
+            },
+            "majority_decision": "T",
+            "confidence": 0.75,
+            "consensus_level": "strong_majority",
+            "tie_broken": false,
+            "tie_breaker_model": null,
+            "tie_breaker_response": null,
+            "individual_votes": [
+                {
+                    "model_name": "open-source_gemma29b",
+                    "method": "dka",
+                    "response": "F",
+                    "normalized_response": "F",
+                    "success": true,
+                    "response_time": 0.1417841911315918,
+                    "timestamp": "2025-05-24 10:39:59",
+                    "source_file": "FactBench_open-source_gemma2:9b_dka_20250524-103959.json"
+                },
+                {
+                    "model_name": "open-source_llama3.17B",
+                    "method": "dka",
+                    "response": "T",
+                    "normalized_response": "T",
+                    "success": true,
+                    "response_time": 0.0,
+                    "timestamp": "2025-05-24 10:00:23",
+                    "source_file": "FactBench_open-source_llama3.1:7B_dka_20250524-100023.json"
+                },
+                {
+                    "model_name": "open-source_mistral7B",
+                    "method": "dka",
+                    "response": "T",
+                    "normalized_response": "T",
+                    "success": true,
+                    "response_time": 0.0,
+                    "timestamp": "2025-05-24 10:00:23",
+                    "source_file": "FactBench_open-source_mistral:7B_dka_20250524-100024.json"
+                },
+                {
+                    "model_name": "open-source_qwen2.57B",
+                    "method": "dka",
+                    "response": "T",
+                    "normalized_response": "T",
+                    "success": true,
+                    "response_time": 0.0,
+                    "timestamp": "2025-05-24 10:00:23",
+                    "source_file": "FactBench_open-source_qwen2.5:7B_dka_20250524-100025.json"
+                }
+            ],
+            "success": true
+        }
+    ]
+}
