@@ -19,6 +19,7 @@ from llama_index.core.schema import NodeWithScore, QueryBundle
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.ollama import Ollama
 from pydantic import Field
+from llama_index.llms.azure_openai import AzureOpenAI
 
 from data_loader import load_dataset
 from llm_client import LLMClient
@@ -71,8 +72,10 @@ class SimilarityNodePostprocessor(BaseNodePostprocessor):
                 new_nodes.append(node)
             print(new_nodes)
 
-        logger.info(f"Filtered {len(nodes)} nodes to {len(new_nodes)} nodes using similarity cutoff {self.similarity_cutoff}")
+        logger.info(
+            f"Filtered {len(nodes)} nodes to {len(new_nodes)} nodes using similarity cutoff {self.similarity_cutoff}")
         return new_nodes
+
 
 def few_shot_examples_fn(**kwargs):
     queries = [
@@ -92,6 +95,7 @@ Query: {query}
 Response: {response_dict}"""
         result_strs.append(result_str)
     return "\n\n".join(result_strs)
+
 
 def get_directory_size(directory: str) -> int:
     """Calculate directory size in bytes."""
@@ -116,7 +120,19 @@ def init_llm_settings(config: Dict[str, Any]) -> None:
 
     # Initialize LLM
     model_name = llm_config.get("model", "gemma2:9b")
-    llm = Ollama(model=model_name, request_timeout=300.0)
+    open_source = llm_config.get("mode", "open_source") == "open_source"
+
+    if open_source:
+        llm = Ollama(model=model_name, request_timeout=300.0)
+    else:
+        openai_config = llm_config.get("OpenAI", {})
+        llm = AzureOpenAI(
+            model=model_name,
+            deployment_name=model_name,
+            api_key=openai_config.get("api_key"),
+            azure_endpoint=openai_config.get("azure_endpoint"),
+            api_version=openai_config.get("api_version", "2023-05-15"),
+        )
 
     # Initialize embedding model
     embedding_model_name = rag_config.get("embedding_model", "BAAI/bge-small-en-v1.5")
@@ -278,6 +294,7 @@ def get_documents_directory(fact_id: str, dataset_name: str) -> str:
     base_dir = f"./rag_dataset/{dataset_name}/{fact_id}"
     return base_dir
 
+
 def get_answer_from_llm(json_string: str, actual_answer: str) -> str:
     decoded_object = json_repair.repair_json(json_string, return_objects=True)
     if decoded_object['output'] == 'yes':
@@ -351,7 +368,7 @@ def run_rag_method(config: Dict[str, Any]) -> None:
 
     for i, fact_kg in enumerate(facts):
         identifier, fact = fact_kg
-        print(f"\n{BLUE}Processing fact {i+1}/{len(facts)}: {identifier}{END}")
+        print(f"\n{BLUE}Processing fact {i + 1}/{len(facts)}: {identifier}{END}")
         print(f"  Fact: {fact.get('s', '')} {fact.get('p', '')} {fact.get('o', '')}")
 
         try:
@@ -511,7 +528,7 @@ def run_rag_method(config: Dict[str, Any]) -> None:
     print(f"  Failed predictions: {len(facts) - successful_predictions}")
     print(f"  Failed retrievals: {failed_retrievals}")
     print(f"  Duration: {duration:.2f} seconds")
-    print(f"  Avg time per fact: {duration/len(facts):.2f} seconds")
+    print(f"  Avg time per fact: {duration / len(facts):.2f} seconds")
 
     # Save results
     print(f"\n{BOLD}💾 Saving RAG Results...{END}")
