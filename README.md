@@ -1,3 +1,5 @@
+from sympy import python
+
 # FactCheck: Knowledge Graph Validation via Large Language Models
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -97,31 +99,8 @@ ollama pull mistral:7b
 
 ### Basic Fact Verification
 
-```python
-from config import ConfigReader, run_fact_check_experiment
-
-# Load configuration
-config_reader = ConfigReader("config.yml")
-config = config_reader.load_config()
-
-# Validate configuration
-validation_result = config_reader.validate_config()
-if validation_result.is_valid:
-    # Run experiment
-    run_fact_check_experiment(config)
-```
-
-### Command Line Usage
-
 ```bash
-# Run with default configuration
-python main.py
-
-# Evaluate results
-python evaluate.py --file results/your_results.json
-
-# Full evaluation against ground truth
-python evaluate.py --file results/your_results.json --full
+python main.py # Run with default configuration in `config.yml`
 ```
 
 ## 📊 Datasets
@@ -186,13 +165,21 @@ Combines predictions from multiple models using majority voting with tie-breakin
 
 ```yaml
 majority_vote:
-  mode: 'open_source'
-  num_votes: 3
+  mode: 'commercial'  # Options: commercial, open_source
+  final_tie_breaker: 'most_consistent' # Options: least_consistent, most_consistent, Null (for commercial)
+  num_votes: 3 # Number of votes for each model
   llms:
     - "mistral:7B"
     - "qwen2.5:7B"
-    - "llama3.1:8B"
+    - "llama3.1:7B"
     - "gemma2:9B"
+  higher_parameter_model:
+    qwen2.5:7b: 'qwen2.5:7b'
+    mistral:7b: 'mistral:7b'
+    llama3.1:7b: 'llama3.1:latest'
+    gemma2:9b: 'gemma2:9b'
+  commercial_model:
+    - "gpt-4o-mini"
 ```
 
 ## ⚙️ Configuration
@@ -247,72 +234,50 @@ OpenAI:
 
 ### 1. Single Model Evaluation
 
-```python
-from llm_client import LLMClient
-from data_loader import load_dataset
-
-# Load configuration
-config = {
-    "llm": {
-        "mode": "open_source",
-        "model": "gemma2:9B",
-        "parameters": {"temperature": 0.7}
-    }
-}
-
-# Initialize client
-client = LLMClient(config)
-
-# Load dataset
-facts = load_dataset("FactBench")
-
-# Evaluate single fact
-for fact_id, fact in facts[:5]:
-    prompt = f"Fact: {fact['s']} {fact['p']} {fact['o']}\nIs this fact true? Reply T or F:"
-    response = client.generate_response(prompt)
-    print(f"Fact: {fact_id}, Prediction: {response.content}")
+```bash
+python main.py
 ```
 
 ### 2. Batch Evaluation
 
-```python
-from methods.dka import run_dka_method
-
-# Configure for batch processing
-config = {
-    "dataset": {"name": "FactBench"},
-    "method": {"name": "DKA"},
-    "llm": {"mode": "open_source", "model": "gemma2:9B"},
-    "knowledge_graph": {"kg_ids": None}  # Process all facts
-}
-
-# Run DKA method
-run_dka_method(config)
+```bash
+python evaluation.py --file results/factbench_results.json
 ```
 
-### 3. Custom Evaluation
+For full evaluation use `--full` flag to include all metrics.
 
-```python
-from evaluate import evaluate_results, load_results_file
-
-# Load results
-results = load_results_file("results/factbench_results.json")
-
-# Evaluate with custom metrics
-config = {
-    "evaluation": {
-        "metrics": {
-            "accuracy": "balanced",
-            "f1_score": "macro"
-        }
-    }
-}
-
-# Get evaluation metrics
-eval_results = evaluate_results(results, config, "FactBench")
-print(f"Balanced Accuracy: {eval_results['accuracy']:.3f}")
-print(f"F1-Score: {eval_results['f1_score']:.3f}")
+```bash
+python evaluation.py --file results/factbench_results.json --full
 ```
+
+### 3. Majority Vote Consensus
+This module is interactive. You can run it as follows:
+```bash
+python consensus.py --dataset FactBench
+```
+if you don't specify files it will ask you to enter which files you want to use for the consensus.
+The output example will be:
+```markdown
+Found 3 files for FactBench:
+   1. FactBench_open-source_gemma2:9b_rag_20250527-103716.json
+      Model: open-source_gemma2:9b, Method: rag
+      Facts: 2, Success: 100.0%
+   2. FactBench_open-source_qwen2.5:7B_rag_20250527-103404.json
+      Model: open-source_qwen2.5:7B, Method: rag
+      Facts: 2, Success: 100.0%
+   3. FactBench_open-source_qwen2.5:7B_rag_20250527-103603.json
+      Model: open-source_qwen2.5:7B, Method: rag
+      Facts: 2, Success: 100.0%
+
+How many files do you want to select? (1-3): 
+```
+Or you can simply define the files you want to use for the consensus:
+```bash
+python consensus.py --files results/factbench_open-source_gemma2:9b_rag_20250527-103716.json results/factbench_open-source_qwen2.5:7B_rag_20250527-103404.json
+```
+
+#### 🚧 Todo:
+- [ ] add parallel processing for the consensus
 
 ## 📈 Results
 
@@ -330,7 +295,7 @@ print(f"F1-Score: {eval_results['f1_score']:.3f}")
 1. **Model Rankings**: Gemma2 > Qwen2.5 > Mistral > Llama3.1 > GPT-4o mini
 2. **Dataset Difficulty**: FactBench (easiest) > DBpedia > YAGO (hardest due to class imbalance)
 3. **Cost-Performance Trade-off**: RAG provides best accuracy but 10× computational cost
-4. **Consensus Benefits**: 3-5% improvement over individual models
+4. **Consensus Benefits**: 1-5% improvement over individual models
 
 ## 🌐 Web Platform
 
@@ -354,6 +319,9 @@ factcheck-benchmark/
 ├── llm_client.py              # LLM client implementations
 ├── evaluate.py                # Evaluation metrics and analysis
 ├── requirements.txt           # Python dependencies
+├── prompts/                   # Prompt templates for each methodology
+├── consensus.py               # Multi-model consensus implementation
+├── rag_dataset/              # RAG dataset -- filtered -- for complete dataset refer to mockapi
 ├── methods/
 │   ├── dka.py                 # Direct Knowledge Assessment
 │   ├── giv.py                 # Guided Iterative Verification
@@ -369,46 +337,9 @@ factcheck-benchmark/
 ### Key Files
 
 - **`config.py`**: Comprehensive configuration validation with support for multiple LLM providers
-- **`data_loader.py`**: Unified dataset loading with filtering and preprocessing capabilities
-- **`llm_client.py`**: Abstracted LLM client supporting both Ollama and Azure OpenAI
 - **`evaluate.py`**: Scikit-learn based evaluation with balanced accuracy and F1-macro metrics
 - **`methods/`**: Implementation of all verification methodologies
-
-## 🔬 Advanced Usage
-
-### Custom RAG Configuration
-
-```python
-# Advanced RAG setup
-config = {
-    "method": {"name": "RAG"},
-    "rag": {
-        "embedding_model": "bge-small-en-v1.5",
-        "chunking_strategy": "sliding_window",
-        "chunk_size": 512,
-        "window_size": 3,
-        "similarity_cutoff": 0.3,
-        "top_k": 6
-    }
-}
-```
-
-### Multi-model Consensus Setup
-
-```python
-# Configure consensus with tie-breaking
-config = {
-    "majority_vote": {
-        "mode": "open_source",
-        "num_votes": 4,
-        "llms": ["gemma2:9B", "qwen2.5:7B", "llama3.1:8B", "mistral:7B"],
-        "higher_parameter_model": {
-            "gemma2:9b": "gemma2:27b",
-            "qwen2.5:7b": "qwen2.5:14b"
-        }
-    }
-}
-```
+- **`prompts/`**: Contains prompt templates for each methodology
 
 ## 📊 Evaluation Metrics
 
@@ -447,20 +378,14 @@ ollama list
 config["llm"]["model"] = "gemma2:2b"  # Instead of 9b
 ```
 
-3. **Azure OpenAI Rate Limits**
-```yaml
-# Add retry configuration
-llm:
-  parameters:
-    max_retries: 3
-    timeout: 60
-```
+[//]: # (### Performance Optimization)
 
-### Performance Optimization
+[//]: # ()
+[//]: # (- [ ] **Parallel Processing**: Use consensus methods for better accuracy)
 
-- **Parallel Processing**: Use consensus methods for better accuracy
-- **Caching**: Enable result caching for repeated evaluations
-- **Model Selection**: Choose models based on accuracy vs. speed requirements
+[//]: # (- [ ] **Caching**: Enable result caching for repeated evaluations)
+
+[//]: # (- [ ] **Model Selection**: Choose models based on accuracy vs. speed requirements)
 
 ## 📚 Citation
 
@@ -470,12 +395,12 @@ If you use this benchmark in your research, please cite:
 @article{shami2025factcheck,
   title={Knowledge Graph Validation via Large Language Models},
   author={Shami, Farzad and Marchesin, Stefano and Silvello, Gianmaria},
-  journal={Proceedings of the VLDB Endowment},
+  journal={},
   volume={14},
   number={1},
   pages={XXX-XXX},
   year={2025},
-  publisher={VLDB Endowment}
+  publisher={}
 }
 ```
 
@@ -488,7 +413,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 - **New Datasets**: Integration of additional KG datasets
 - **Model Support**: Adding support for new LLM architectures
 - **Evaluation Metrics**: Implementation of additional evaluation measures
-- **Optimization**: Performance improvements and efficiency enhancements
+- **Optimization**: Performance improvements and efficiency enhancements -- **important aspect**
 
 ## 📄 License
 
@@ -496,7 +421,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔗 Links
 
-- **Paper**: [VLDB 2025 Proceedings](#)
+- **Paper**: [2025 Proceedings](#)
 - **Dataset**: [Hugging Face Repository](https://huggingface.co/FactCheck-AI)
 - **Web Platform**: [https://factcheck.dei.unipd.it/](https://factcheck.dei.unipd.it/)
 - **Issues**: [GitHub Issues](https://github.com/FactCheck-AI/factcheck-benchmark/issues)
