@@ -1,0 +1,1707 @@
+Les personnes aveugles s'appuient sur les lecteurs d'écran pour savoir ce qu'il y a à l'écran. Cela fonctionne bien pour le texte normal, mais la façon dont ils restituent d'autres types de contenu est parfois plus difficile à prévoir. C'est pourquoi Deque a effectué des recherches sur la façon dont les lecteurs d'écran prononcent les caractères spéciaux, les abréviations, les dates et les numéros de téléphone : Why Don&CloseCurlyQuote;t Screen Readers Always Read What&CloseCurlyQuote;s on the Screen? Part 1: Punctuation and Typographic Symbols.
+
+Depuis la publication initiale en 2014, de nombreuses mises à jour ont été apportées aux systèmes d'exploitation, aux navigateurs et aux lecteurs d'écran. Pour fournir des informations actualisées, nous avons refait le test en utilisant les dernières versions des lecteurs d'écran, et les 3 combinaisons de lecteurs d'écran et de navigateurs les plus utilisées selon la dernière Webaim Survey on screen reader usage.
+
+L'objectif était de déterminer quels caractères pourront être utilisés en toute sécurité en 2023, et si une régression s'est produite dans la manière dont les lecteurs d'écran prononcent les caractères spéciaux depuis 2014.
+
+L'environnement de test
+
+Page de test
+
+Nous avons utilisé exactement le même tableau que Deque pour les tests, afin de faciliter la comparaison.
+
+La page HTML de test a été marquée comme étant en anglais afin d'obtenir des résultats cohérents avec tous les lecteurs d'écran. Les lecteurs d'écran ont été réglés sur une voix anglaise.
+
+Nous prévoyons de réaliser le même test en français. Inscrivez-vous à notre lettre d'information pour être informé de la disponibilité de ce test !
+
+Comme Deque, nous avons effectué le test avec le caractère spécial seul (seul) et dans une phrase (en contexte).
+
+Technologies d'assistance
+
+Les paramètres de verbosité vocale, qui influencent le degré de prononciation de la ponctuation par le lecteur d'écran, ont été ramenés à la valeur d'usine par défaut, car il s'agit du paramètre le plus fréquemment utilisé par les utilisateurs.
+
+Les combinaisons de navigateur et de lecteur d'écran étaient les suivantes
+
+Safari 16.3 et VoiceOver sur macOS Monterey 12.6.3
+
+Verbosité par défaut : moyenne
+
+Ponctuation : quelques
+
+Voix : Daniel
+
+Chrome (version 110.0.5481.178) et NVDA (version 2022.4.0022.4.0.27401) sur Windows 10
+
+Niveau de ponctuation/symboles : un peu
+
+Voix : Microsoft Zira Desktop (anglais États-Unis)
+
+Chrome (version 110.0.5481.178) et JAWS (version 2023.2302.15) sur Windows 10
+
+Niveau de verbosité du Web : moyen
+
+Voix : Eloquence (usine)
+
+Nous n'avons pas testé les lecteurs d'écran mobiles. Si vous souhaitez le faire, ou tester la prise en charge d'un autre lecteur d'écran, n'hésitez pas à utiliser nos page HTML de test.
+
+Différences entre le mode lecture et le mode tableau
+
+NVDA et JAWS disposent de deux modes principaux pour visualiser et interagir avec les données : le mode lecture et le mode tableau. Le mode tableau permet aux utilisateurs de naviguer et d'interagir avec les tableaux d'un document. Les deux lecteurs d'écran transmettent alors la structure du tableau et identifient les colonnes, les lignes et les cellules. Les utilisateurs pourront naviguer dans le tableau à l'aide de leur clavier, se déplacer entre les cellules et les lignes et lire le contenu de chaque cellule. Le mode lecture permet de lire ce qui est à l'écran, dans l'ordre où il apparaît. Dans ce mode, la présence d'un tableau sera annoncée, mais sa structure ne sera pas lue.
+
+Nous avons constaté quelques différences entre le mode lecture et le mode tableau. Dans deux cas, cela s'est traduit par des différences dans NVDA :
+
+¡ (point d'exclamation inversé, tapé comme &iexcl;)
+
+¿ (point d'interrogation inversé, tapé comme &iquest ;)
+
+Bien que Deque ait testé la prise en charge des lecteurs d'écran en mode tableau en 2014, nous avons décidé d'effectuer le test en mode lecture, car les caractères spéciaux seront la plupart du temps utilisés en dehors des tableaux. L'environnement de test, avec les caractères placés à l'intérieur d'un tableau, ne devrait pas interférer avec les résultats.
+
+Conclusion du test
+
+Le tableau complet de la façon dont chaque lecteur d'écran lit chaque caractère se trouve en fin du présent article, en anglais.
+
+Caractères sûrs en 2023
+
+Les caractères suivants sont lus par tous les lecteurs d'écran en 2023, à la fois en contexte et seuls.
+
+@ (le symbole de l'arobase)
+
+& (esperluette, écrite sous la forme & ou &amp ; dans le balisage) / (barre oblique)
+
+© (copyright, écrit &copy;)
+
+® (enregistré, écrit comme &reg ;)
+
+™ (marque déposée, &trade;)
+
+• (puce, écrit &#8226;)
+
+$ (dollar)
+
+#8364; (euro, écrit & #amp;8364;)
+
+£ (livre sterling, écrit &pound;)
+
+¥ (Yen, écrit &yen;)
+
+% (pourcentage)
+
+½ (un demi, écrit &frac12;)
+
+¼ (un quart, en &frac14;)
+
+&frac15; (un quart, en &frac15;)
+
+¾ (trois quarts, en &frac34;)
+
+° (degrés, écrit &deg;)
+
+# (signe dièse)
+
+^ (caret)
+
+`* (astérisque)
+
+† (dague, écrit &dagger;)
+
+‡ (double dague, écrit &Dagger;)
+
+→ (flèche droite, écrit &rarr;)
+
+← (flèche gauche, écrit &larr;)
+
+&ShortUpArrow; (flèche vers le haut, écrite comme &uarr;)
+
+↓ (flèche vers le bas, écrite comme &darr;)
+
+↔ (flèche horizontale, écrite comme &harr;)
+
+&DoubleLeftArrow; (double flèche gauche, notée &lArr;)
+
+&DoubleRightArrow; (flèche double droite, notée &rArr;)
+
+&DoubleUpArrow; (flèche double vers le haut, notée &uArr;)
+
+⇓ (flèche double vers le bas, écrite comme &dArr;)
+
+♠ (pique, écrit &spades;)
+
+♣ (clubs, écrit &clubs;)
+
+♥ (cœurs, écrit &hearts;)
+
+&diamondsuit; (diamants, écrit &diams;)
+
+`+ (plus)
+
+− (moins, &minus;)
+
+± (plus ou moins, écrit &plusmn;)
+
+÷ (divisé par, écrit &divide;)
+
+× (multiplié par, écrit &times;)
+
+= (égal)
+
+≠ (pas égal, écrit &ne;)
+
+&ap; (approximativement égal, écrit &asymp;)
+
+‰ (par mil, écrit &permil;)
+
+&lt ; (moins que, écrit &amplt;)
+
+> (plus grand que, écrit comme >)
+
+≤ (inférieur ou égal à, écrit &le;)
+
+≥ (supérieur ou égal à, noté &ge;)
+
+′ (premier, écrit &prime;)
+
+″ (double prime, écrit ″)
+
+∑ (somme, notée &sum;)
+
+Caractères non lus en 2023
+
+Ces caractères ne sont pas correctement lus par au moins un lecteur d'écran en 2023 :
+
+~ (tilde)
+
+' (backtick)
+
+! (point d'exclamation)
+
+¡ (point d'exclamation inversé, écrit &iexcl;)
+
+( (parenthèse gauche)
+
+) (parenthèse droite)
+
+`- (tiret)
+
+— (tiret m, écrit —)
+
+– (tiret n, écrit &ndash;)
+
+_ (trait de soulignement)
+
+, (virgule)
+
+... (point)
+
+... (pseudo-ellipse, trois points)
+
+… (ellipse, écrite comme &#8230;)
+
+\ (barre oblique inverse)
+
+| (barre verticale)
+
+? (point d'interrogation)
+
+¿ (point d'interrogation inversé, écrit &ampiquest;)
+
+; (point-virgule)
+
+: (deux points)
+
+" (guillemet)
+
+" (guillemet, écrit &quot;)
+
+“ (guillemet double gauche, écrit &ldquo;)
+
+&CloseCurlyDoubleQuote; (guillemet double droit, écrit &rdquo;)
+
+« (double crochet d'angle gauche, écrit &laquo;)
+
+» (crochet double droit, écrit &raquo;)
+
+‹ (crochet simple gauche, écrit &#8249;)
+
+› (crochet d'angle simple droit, qui s'écrit &#8250;)
+
+' (guillemet simple ou apostrophe)
+
+&CloseCurlyQuote; (guillemet simple droit, écrit &rsquo;)
+
+‘ (guillemet simple gauche, écrit &lsquo;)
+
+{ (accolade gauche)
+
+} (accolade droite)
+
+[ (accolade gauche)
+
+] (crochet droit)
+
+§ (section, écrit &sect;)
+
+¶ (paragraphe, écrit comme &para;)
+
+· (petite puce, écrite sous la forme &middot;)
+
+&DoubleLeftRightArrow; (double flèche horizontale, &hArr;)
+
+µ (microns, écrit &micro;)
+
+Améliorations notables depuis 2014
+
+Lors de son test, Deque a découvert que JAWS prononçait cinq caractères de manière incorrecte, en lisant un caractère différent dans ces cas. Dans notre test, ces bugs ont été corrigés :
+
+Le signe moins ( - ) est désormais lu comme "moins" dans un contexte mathématique. En 2014, JAWS le lisait comme "tiret".
+
+Le signe moins que ou égal ( ≤ ) est désormais lu comme "moins que ou égal à" dans le contexte mathématique. En 2014, JAWS l'a lu comme "égal".
+
+Le signe plus grand que ou égal ( ≥ ) se lit désormais comme "plus grand que ou égal à" dans le contexte mathématique. En 2014, JAWS l'a lu comme "égal".
+
+Le signe approximativement (ou presque) égal ( &ap; ) est désormais lu comme "presque égal à". En 2014, JAWS l'a lu comme "tilde".
+
+Le signe non égal ( ≠ ) se lit désormais comme "non égal". En 2014, JAWS le lisait comme "point d'interrogation".
+
+Nous n'avons pas découvert de nouveaux bugs.
+
+L'autre conclusion de leurs résultats était que NVDA était le lecteur d'écran le moins verbeux, ce qui reste vrai. Mais NVDA s'est beaucoup amélioré, même si certains caractères ne sont toujours lus que seuls ou dans leur contexte.
+
+De nombreux caractères qui n'étaient pas sûrs en 2014 sont désormais lus par les trois lecteurs d'écran.
+
+Régressions depuis 2014
+
+Certaines choses ont empiré depuis 2014, par exemple, le symbole ¶ (paragraphe, écrit &para;) n'est plus lu par NVDA. Le symbole € (symbole de l'euro, écrit &#8364;) est maintenant lu comme "signe de l'euro vingt et un" par JAWS.
+
+A retenir
+
+La leçon générale à tirer de ce test approfondi de l'assistance actuellement offerte par les lecteurs d'écran les plus répandus pour les caractères spéciaux est qu'il est essentiel de:
+
+Tester votre contenu avec plusieurs lecteurs d'écran
+
+N'utiliser les caractères spéciaux que lorsqu'ils sont nécessaires
+
+Faire attention lorsque vous copiez du texte d'un traitement de texte vers un fichier HTML ou le CMS de votre site web. Certains traitements de texte et éditeurs de texte convertissent automatiquement les caractères (par exemple, trois points en une ellipse). Dans la mesure du possible, utilisez toujours l'entité HTML.
+
+Suivre l'évolution du support HTML par les outils d'assistance
+
+Chez Eleven Ways, nous veillons à inclure le test avec des outils d'assistance à jour dans le protocole de vérification de l'accessibilité des sites et des apps, en plus du test automatisé et du test semi-automatisé. Contactez-nous pour un audit approfondi de votre site ou de votre application.
+
+Résultats complets du test (en anglais)
+
+Les signes de ponctuation grammaticaux
+
+Symbol The character by itself In Context JAWS NVDA VoiceOver tilde ~ https:// www.website.com/ ~user
+
+By itself: “tilde&CloseCurlyDoubleQuote;
+
+In context: yes
+
+“H T T P S colon slash slash double you double you double dot website dot com slash tilde user&CloseCurlyDoubleQuote;
+
+By itself: no
+
+In context: no
+
+“H T T P S slash slash double you double you double you dot website dot com slash user&CloseCurlyDoubleQuote;
+
+(NVDA does NOT mention the tilde or the colon.)
+
+By itself: “tilde&CloseCurlyDoubleQuote;
+
+In context: yes;
+
+“H T T P S slash slash double you double you double you dot website dot com slash tilde user&CloseCurlyDoubleQuote;
+
+(VoiceOver reads the tilde, but not the colon)
+
+backtick mark ` &id=`1`
+
+By itself: “grave&CloseCurlyDoubleQuote;, the “a&CloseCurlyDoubleQuote; is pronounced with an “ah&CloseCurlyDoubleQuote; sound, like the “a&CloseCurlyDoubleQuote; in “bravo&CloseCurlyDoubleQuote;
+
+In context: yes
+
+“and I D equals grave one grave&CloseCurlyDoubleQuote;
+
+By itself: no
+
+In context: no
+
+“and I D equals one&CloseCurlyDoubleQuote; (NVDA does NOT pronounce the tick mark)
+
+By itself: “accent&CloseCurlyDoubleQuote;
+
+In context: “and I D equals one&CloseCurlyDoubleQuote;.
+
+exclamation mark !
+
+This is exciting!
+
+This is exciting.
+
+By itself: “exclaim&CloseCurlyDoubleQuote;
+
+In context: no
+
+JAWS does not change voice inflection at all.
+
+By itself: no
+
+In context: no
+
+NVDA changes the inflection very slightly (almost imperceptibly) when there is an exclamation mark at the end of a sentence.
+
+By itself: “exclamation mark&CloseCurlyDoubleQuote;
+
+In context: no
+
+VoiceOver does not change voice inflection at all when a sentence ends in an exclamation mark.
+
+inverted exclamation mark, typed as &iexcl; ¡
+
+Intersante. ¡Ay caramba¡
+
+Intersante. Ay caramba.
+
+By itself: “inverted exclaim&CloseCurlyDoubleQuote;
+
+In context: no
+
+In the sentence, JAWS does not change the inflection or the inverted exclamation mark at the beginning.
+
+By itself: "inverted exclamation point"
+
+In context: no
+
+NVDA reads the exclamation with a different inflection, and does mention the inverted exclamation mark at the beginning when in reading mode (but not in table mode)
+
+By itself: “inverted exclamation mark&CloseCurlyDoubleQuote;
+
+In context: yes
+
+VoiceOver does NOT change voice inflection. (It also does NOT change language, even though lang=&CloseCurlyDoubleQuote;es&CloseCurlyDoubleQuote; is added to the td tag.
+
+at symbol @ I have a message for @paul
+
+By itself: “at&CloseCurlyDoubleQuote;
+
+In context: yes
+
+“I have a message for at Paul&CloseCurlyDoubleQuote;
+
+By itself: “at&CloseCurlyDoubleQuote;
+
+In context: yes
+
+“I have a message for at Paul&CloseCurlyDoubleQuote;
+
+By itself: “at&CloseCurlyDoubleQuote;
+
+In context: yes
+
+“I have a message for at Paul&CloseCurlyDoubleQuote;
+
+caret ^ This is ^not the worst I&CloseCurlyQuote;ve seen
+
+By itself: “caret&CloseCurlyDoubleQuote;
+
+In context: yes
+
+“This is caret not the worst I&CloseCurlyQuote;ve seen&CloseCurlyDoubleQuote;
+
+By itself: "caret"
+
+In context: yes
+
+“This is caret not the worst I&CloseCurlyQuote;ve seen
+
+By itself: “caret&CloseCurlyDoubleQuote;
+
+In context: yes
+
+“This is caret not the worst I&CloseCurlyQuote;ve seen&CloseCurlyDoubleQuote;
+
+ampersand, typed as &amp; &
+
+M&Ms
+
+BB&T
+
+black & white
+
+By itself: “and&CloseCurlyDoubleQuote;
+
+In context: yes
+
+“M and M S,&CloseCurlyDoubleQuote;
+
+“B B and T,&CloseCurlyDoubleQuote;
+
+“black and white&CloseCurlyDoubleQuote;
+
+By itself: “and&CloseCurlyDoubleQuote;
+
+In context: yes
+
+“M and M S,&CloseCurlyDoubleQuote;
+
+“B B and T,&CloseCurlyDoubleQuote;
+
+“black and white&CloseCurlyDoubleQuote;
+
+By itself: “and&CloseCurlyDoubleQuote;
+
+In context: yes
+
+“M and M S,&CloseCurlyDoubleQuote;
+
+“B B and T,&CloseCurlyDoubleQuote;
+
+“black and white&CloseCurlyDoubleQuote;
+
+ampersand &
+
+M&Ms
+
+BB&T
+
+black & white
+
+By itself: “and&CloseCurlyDoubleQuote;
+
+In context: yes
+
+“M and M S,&CloseCurlyDoubleQuote;
+
+“B B and T,&CloseCurlyDoubleQuote;
+
+“black and white&CloseCurlyDoubleQuote;
+
+By itself: “and&CloseCurlyDoubleQuote;
+
+In context: yes
+
+“M and M S,&CloseCurlyDoubleQuote;
+
+“B B and T,&CloseCurlyDoubleQuote;
+
+“black and white&CloseCurlyDoubleQuote;
+
+By itself: “and&CloseCurlyDoubleQuote;
+
+In context: yes
+
+“M and M S,&CloseCurlyDoubleQuote;
+
+“B B and T,&CloseCurlyDoubleQuote;
+
+“black and white&CloseCurlyDoubleQuote;
+
+left parenthesis ( I am (understandably) excited.
+
+By itself: “left paren&CloseCurlyDoubleQuote;
+
+In context: yes
+
+“I am left paren understandably right paren excited&CloseCurlyDoubleQuote;
+
+By itself: no
+
+In context: no
+
+NVDA does not say anything, just a short pause.
+
+By itself: “left parenthesis&CloseCurlyDoubleQuote;
+
+In context: no
+
+VoiceOver pauses briefly for the opening and closing parentheses, but does not say anything.
+
+right parenthesis ) I am (understandably) excited.
+
+By itself: “right paren&CloseCurlyDoubleQuote;
+
+In context: yes
+
+“I am left paren understandably right paren excited&CloseCurlyDoubleQuote;
+
+By itself: no
+
+In context: no
+
+NVDA does not say anything, just a short pause.
+
+By itself: “right parenthesis&CloseCurlyDoubleQuote;
+
+In context: no
+
+VoiceOver pauses briefly for the opening and closing parentheses, but does not say anything.
+
+dash (minus/hyphen) -
+
+blue-green.
+
+This is - not unexpectedly - a parenthetical clause.
+
+By itself: “dash&CloseCurlyDoubleQuote;
+
+In context: yes
+
+“blue dash green&CloseCurlyDoubleQuote;
+
+“This is dash not unexpectedly dash a parenthetical clause.&CloseCurlyDoubleQuote;
+
+By itself: no
+
+In context: NVDA does not say anything, nor does it pause; it reads straight through
+
+By itself: “dash&CloseCurlyDoubleQuote;
+
+In context: VoiceOver pauses briefly for each of the dashes, but does not say anything.
+
+m dash, typed as &mdash; — This is also—not unexpectedly—a parenthetical clause.
+
+By itself: “m dash&CloseCurlyDoubleQuote;
+
+In context: “This is also m dash not unexpectedly m dash a parenthetical clause.&CloseCurlyDoubleQuote;
+
+By itself: no
+
+In context: NVDA does not say anything, nor does it pause; it reads straight through
+
+By itself: “m dash&CloseCurlyDoubleQuote;
+
+In context: VoiceOver does not read the dash, instead pauses briefly.
+
+n dash, typed as &ndash; –
+
+This is another – not unexpectedly – parenthetical clause.
+
+This is another–not unexpectedly–parenthetical clause.
+
+By itself: “n dash&CloseCurlyDoubleQuote;
+
+In context: “This is another n dash not unexpectedly n dash parenthetical clause.&CloseCurlyDoubleQuote;
+
+By itself: no
+
+In context: NVDA does not say anything, nor does it pause; it reads straight through
+
+By itself: “n dash&CloseCurlyDoubleQuote;
+
+In context: VoiceOver pauses briefly for each of the dashes, without saying anything, but ONLY IF there are spaces between the words and the dashes. Without spaces, VoiceOver does not pause at all.
+
+underscore _ my_file_name.jpg
+
+By itself: “underline&CloseCurlyDoubleQuote;
+
+In context: “my underline file underline name dot J P G&CloseCurlyDoubleQuote;
+
+By itself: no
+
+In context:
+
+“my file name dot J P G&CloseCurlyDoubleQuote; (NVDA does not say “underline&CloseCurlyDoubleQuote;)
+
+By itself: “underscore&CloseCurlyDoubleQuote;
+
+In context: “my underscore file underscore name dot jaypeg&CloseCurlyDoubleQuote;
+
+comma , The house is green, red, and orange.
+
+By itself: comma
+
+In context: JAWS pauses briefly, but does not say “comma&CloseCurlyDoubleQuote;
+
+By itself: no
+
+In context: NVDA pauses briefly, but does not say “comma&CloseCurlyDoubleQuote;
+
+By itself: “comma&CloseCurlyDoubleQuote;
+
+In context: VoiceOver pauses briefly, but does not say “comma&CloseCurlyDoubleQuote;
+
+period . I like cheese.
+
+By itself: “period&CloseCurlyDoubleQuote;
+
+In context: JAWS pauses, but does not say “period&CloseCurlyDoubleQuote;
+
+By itself: “dot&CloseCurlyDoubleQuote;
+
+In context: NVDA pauses, but does not say “period&CloseCurlyDoubleQuote;
+
+By itself: “period&CloseCurlyDoubleQuote;
+
+In context: VoiceOver pauses, but does not say “period&CloseCurlyDoubleQuote;
+
+three periods (pseudo ellipsis) ... This sentence trails off… And here is another sentence.
+
+By itself: “dotdotdot&CloseCurlyDoubleQuote;
+
+In context: “This sentence trails off and here is another sentence&CloseCurlyDoubleQuote;. JAWS pauses briefly at the spot of the ellipsis.
+
+By itself: no
+
+In context: NVDA pauses briefly, but does not read the periods
+
+By itself: "dot"
+
+In context: VoiceOver does not read the character but it does pause longer than normal.
+
+ellipses typed as &#8230; … This sentence trails off… And here is another sentence.
+
+By itself: “ellipses&CloseCurlyDoubleQuote;
+
+In context: JAWS does not say “ellipses,&CloseCurlyDoubleQuote; but it does pause longer than normal.
+
+By itself: no
+
+In context: NVDA pauses briefly, but does not read the ellipses
+
+By itself: “ellipses&CloseCurlyDoubleQuote;
+
+In context: VoiceOver does not say “ellipses,&CloseCurlyDoubleQuote; but it does pause longer than normal.
+
+forward slash /
+
+home/products/widgets
+
+Give him/her a prize.
+
+https://www.deque.com
+
+By itself: “slash&CloseCurlyDoubleQuote;
+
+In context:
+
+“home slash products slash widgets&CloseCurlyDoubleQuote;
+
+“Give him slash her a prize&CloseCurlyDoubleQuote;
+
+H T T P S slash slash double you double you double you dot deque dot com&CloseCurlyDoubleQuote;
+
+By itself: “slash&CloseCurlyDoubleQuote;
+
+In context:
+
+“home slash products slash widgets&CloseCurlyDoubleQuote;
+
+“Give him slash her a prize&CloseCurlyDoubleQuote;
+
+“H T T P S colon slash slash double you double you double you dot deque dot com&CloseCurlyDoubleQuote;
+
+By itself: “slash&CloseCurlyDoubleQuote;
+
+In context:
+
+“home slash products slash widgets&CloseCurlyDoubleQuote;
+
+“Give him slash her a prize&CloseCurlyDoubleQuote;
+
+H T T P S colon slash slash double you double you double you dot deque dot com&CloseCurlyDoubleQuote;
+
+backslash \ c:\folder\file.docx
+
+By itself: “backslash&CloseCurlyDoubleQuote;
+
+In context: “c colon backslash folder backslash file dot docx&CloseCurlyDoubleQuote;
+
+By itself: no
+
+In context: no. NVDA reads the words without a pause in between.
+
+By itself: “backslash&CloseCurlyDoubleQuote;
+
+In context: “c backslash folder backslash file docx&CloseCurlyDoubleQuote;
+
+vertical bar | Products | Our web site
+
+By itself: “vertical bar&CloseCurlyDoubleQuote;
+
+In context: “Products vertical bar our web site&CloseCurlyDoubleQuote;
+
+By itself: no
+
+In context: no. NVDA reads the words without a pause.
+
+By itself: "vertical line"
+
+In context: “Products vertical line our web site&CloseCurlyDoubleQuote;
+
+question mark ?
+
+What do you mean?
+
+Are you angry??
+
+Are you still angry?!?
+
+By itself: “question?&CloseCurlyDoubleQuote;
+
+In context:
+
+JAWS changes the voice inflection of the last word in a sentence if the sentence ends in a question mark, to make it sound like someone asking a question.
+
+Two question marks, or question marks mixed with exclamation marks are read the same as a single question mark.
+
+By itself: no
+
+In context:
+
+NVDA changes the voice inflection of the last word in a sentence if the sentence ends in a question mark, to make it sound like someone is asking a question
+
+Two question marks, or question marks mixed with exclamation marks are read the same as a single question mark.
+
+By itself: “question mark&CloseCurlyDoubleQuote;
+
+In context:
+
+VoiceOver changes the voice inflection of the last word in a sentence if the sentence ends in a question mark, to make it sound like someone asking a question.
+
+Two question marks, or question marks mixed with exclamation marks are read the same as a single question mark.
+
+inverted question mark, typed as &iquest; ¿ No estoy seguro. ¿Quién soy?
+
+No estoy seguro. Quién soy.
+
+By itself: “inverted question&CloseCurlyDoubleQuote;
+
+In context: JAWS does not change the inflection for the question, and does not mention the inverted question mark at the beginning.
+
+By itself: "inverted question mark"
+
+In context: NVDA does mention the inverted question mark at the beginning of the sentence in reading mode (but not in table mode).
+
+By itself: “inverted question mark&CloseCurlyDoubleQuote;
+
+In context: VoiceOver does NOT change inflection (and it ignores the lang=&CloseCurlyDoubleQuote;es&CloseCurlyDoubleQuote; set on the td tag)
+
+semi-colon ; The sentence paused; but not for long.
+
+By itself: “semi-colon&CloseCurlyDoubleQuote;
+
+In context: “The sentence paused semi-colon but not for long&CloseCurlyDoubleQuote;
+
+By itself: no
+
+In context: NVDA pauses briefly, but does NOT read the semi-colon
+
+By itself: “semi-colon&CloseCurlyDoubleQuote;
+
+In context: VoiceOver pauses briefly, but does NOT say “semi-colon&CloseCurlyDoubleQuote;
+
+colon : Gaseous: having the properties of a gas.
+
+https://www.deque.com
+
+By itself: “colon&CloseCurlyDoubleQuote;
+
+In context:
+
+“Gaseous colon having the properties of a gas&CloseCurlyDoubleQuote;
+
+“H T T P colon slash slash deque dot com&CloseCurlyDoubleQuote;
+
+By itself: no
+
+In context: NVDA pauses briefly, but does NOT read the colon
+
+By itself: “colon&CloseCurlyDoubleQuote;
+
+In context: “H T T P S colon slash slash double you double you double dot deque dot com&CloseCurlyDoubleQuote;
+
+double quotation mark “ I feel “fine,&CloseCurlyDoubleQuote; she said, sarcastically.
+
+By itself: “left quote&CloseCurlyDoubleQuote;
+
+In context: “I feel left quote fine right quote she said sarcastically&CloseCurlyDoubleQuote;
+
+By itself: no
+
+In context: NVDA does not read the character.
+
+By itself: “left double quotation mark&CloseCurlyDoubleQuote;
+
+In context: VoiceOver pauses briefly but does NOT read the character.
+
+double quotation mark, typed as &quot; " I feel "fine," she said, sarcastically.
+
+By itself: “quote&CloseCurlyDoubleQuote;
+
+In context: “I feel quote fine quote she said sarcastically&CloseCurlyDoubleQuote;
+
+By itself: no
+
+In context: NVDA does not read out the character.
+
+By itself: “quotation mark&CloseCurlyDoubleQuote;
+
+In context: VoiceOver pauses briefly but does read the character.
+
+right double quotation mark &CloseCurlyDoubleQuote; I feel “fine,&CloseCurlyDoubleQuote; she said, sarcastically.
+
+By itself: “right quote&CloseCurlyDoubleQuote;
+
+In context: “I feel left quote fine right quote she said sarcastically&CloseCurlyDoubleQuote;
+
+By itself: no
+
+In context: “I feel fine, she said, sarcastically&CloseCurlyDoubleQuote;
+
+By itself: “right double quotation mark&CloseCurlyDoubleQuote;
+
+In context: VoiceOver pauses briefly but does NOT read the character.
+
+left double quotation mark “ I feel “fine,&CloseCurlyDoubleQuote; she said, sarcastically.
+
+By itself: “left quote&CloseCurlyDoubleQuote;
+
+In context: “I feel left quote fine right quote she said sarcastically&CloseCurlyDoubleQuote;
+
+By itself: no
+
+In context: “I feel fine, she said, sarcastically&CloseCurlyDoubleQuote;
+
+By itself: “left double quotation mark&CloseCurlyDoubleQuote;
+
+In context: VoiceOver pauses briefly but does NOT read out the character.
+
+left double angle bracket, typed as &laquot; « This is a «word» surrounded by angle brackets.
+
+By itself: “left double angle bracket&CloseCurlyDoubleQuote;
+
+In context: “This is a left double angle bracket word right double angle bracket surrounded by angle brackets&CloseCurlyDoubleQuote;
+
+By itself: "double left pointing angle bracket"
+
+In context: “This is a double left pointing angle bracket word double right pointing angle bracket surrounded by angle brackets&CloseCurlyDoubleQuote;
+
+By itself: “left pointing double arrow&CloseCurlyDoubleQuote;
+
+In context: VoiceOver pauses briefly, but does not pronounce the angle bracket.
+
+right double angle bracket, typed as &raquot; » Home » Products
+
+By itself: "right double angle bracket"
+
+In context: "Home double angle bracket products"
+
+By itself: "double right pointing angle bracket"
+
+In context: "Home double right pointing angle bracket products"
+
+By itself: "right pointing double arrow"
+
+In context: VoiceOver does not pronounce the angle bracket.
+
+‹ (written as &#8249;) ‹ This is a ‹word› surrounded by angle brackets. By itself: "single left pointing angle quotation mark"
+
+In context: "This is a single left pointing angle quotation mark word single right pointing angle quotation mark surrounded by angle brackets"
+
+By itself: no
+
+In context: "This is a word surrounded by angle brackets"
+
+By itself: "angle quotation mark"
+
+In context: VoiceOver pauses briefly, but does not pronounce the angle bracket.
+
+› (written as &#8250;) › Home › Products By itself: single right pointing angle quotation mark
+
+In context: "Home single right pointing angle quotation mark products"
+
+By itself: no
+
+In context: "Home products"
+
+By itself: "angle quotation mark"
+
+In context: VoiceOver pauses briefly, but does not pronounce the angle bracket.
+
+single quotation mark, or apostrophe ‘
+
+Don&CloseCurlyQuote;t rock the boat.
+
+This is Mary&CloseCurlyQuote;s.
+
+This is a ‘quotation&CloseCurlyQuote; of sorts.
+
+By itself: "apostrophe"
+
+In context:
+
+"Don&CloseCurlyQuote;t rock the boat"
+
+"This is Mary&CloseCurlyQuote;s"
+
+"This is a apostrophe quotation apostrophe of sorts"
+
+By itself: no
+
+In context:
+
+"Don&CloseCurlyQuote;t rock the boat"
+
+"This is Mary&CloseCurlyQuote;s"
+
+"This is a quotation of sorts" (NVDA does not pause or read the character here)
+
+By itself: "apostrophe"
+
+In context:
+
+"Don&CloseCurlyQuote;t rock the boat"
+
+"This is Mary&CloseCurlyQuote;s"
+
+"This is a quotation of sorts" (VoiceOver pauses briefly, but does NOT say "apostrophe" here)
+
+right single quotation mark, or right apostrophe, typed as &rsquo; &CloseCurlyQuote;
+
+Don&CloseCurlyQuote;t rock the boat.
+
+This is Mary&CloseCurlyQuote;s
+
+This is a ‘quotation&CloseCurlyQuote; of sorts.
+
+By itself: "apostrophe"
+
+In context:
+
+"Don&CloseCurlyQuote;t rock the boat"
+
+"This is Mary&CloseCurlyQuote;s"
+
+"This is a apostrophe quotation apostrophe of sorts"
+
+By itself: no
+
+In context:
+
+"Don&CloseCurlyQuote;t rock the boat"
+
+"This is Mary&CloseCurlyQuote;s"
+
+"This is a quotation of sorts" (NVDA does not read the character)
+
+By itself: "right single quotation mark"
+
+In context:
+
+"Don&CloseCurlyQuote;t rock the boat"
+
+"This is Mary&CloseCurlyQuote;s"
+
+"This is a quotation of sorts" (VoiceOver pauses briefly, but does NOT say read the character)
+
+left single quotation mark, or left apostrophe, typed as &lsquo; ‘ This is a ‘quotation&CloseCurlyQuote; of sorts.
+
+By itself: "apostrophe"
+
+In context: "This is a apostrophe quotation apostrophe of sorts"
+
+By itself: no
+
+In context: "This is a quotation of sorts" (NVDA does not read out the character)
+
+By itself: "left single quotation mark"
+
+In context: "This is a quotation of sorts"
+
+(VoiceOver pauses briefly, but does NOT read out the character)
+
+left brace { You should {brace} yourself.
+
+By itself: "left brace"
+
+In context: "You should left brace brace right brace yourself"
+
+By itself: no
+
+In context: "You should brace yourself" (NVDA does not read out the character)
+
+“By itself: "left curly bracket"
+
+In context: "You should left curly bracket brace right curly bracket yourself"
+
+right brace } You should {brace} yourself.
+
+By itself: "right brace"
+
+In context: "You should left brace brace right brace yourself"
+
+By itself: no
+
+In context: "You should brace yourself" (NVDA does not read out the character)
+
+By itself: "right curly bracket"
+
+In context: "You should left curly bracket brace right curly bracket yourself"
+
+left bracket [ You should [bracket] your words.
+
+By itself: "left bracket"
+
+In context: "You should left bracket bracket right bracket your words"
+
+By itself: no
+
+In context: "You should left bracket bracket right bracket your words"
+
+By itself: "left bracket"
+
+In context: "You should bracket your words" (VoiceOver pauses briefly, but does NOT read out the character)
+
+right bracket ] You should [bracket] your words.
+
+By itself: "right bracket"
+
+In context: "You should left bracket bracket right bracket your words"
+
+By itself: no
+
+In context: "You should left bracket bracket right bracket your words"
+
+By itself: "right bracket"
+
+In context: "You should bracket your words" (VoiceOver pauses briefly, but does NOT read out the character)
+
+Symboles typographiques
+
+Symbol The character by itself In Context JAWS NVDA VoiceOver paragraph symbol, written as &para; ¶ Have you seen ¶3 on page 3?
+
+By itself: "paragraph"
+
+In context: "Have you seen paragraph three on page three?"
+
+By itself: no
+
+In context: no, "Have you seen three on page three?"
+
+By itself: I think VoiceOver says “pilcrow&CloseCurlyDoubleQuote; but it is really hard to understand.
+
+In context: "Have you seen pilcrow three on page three?"
+
+small bullet, written as &middot; · · A phrase · and another phrase
+
+By itself: "dot"
+
+In context: "dot a phrase dot and another phrase"
+
+By itself: no
+
+In context: "A phrase and another phrase" (NVDA does NOT read the small bullet)
+
+By itself: "middle dot"
+
+In context: the first dot is announced in a unintelligble way. The second dot does not get announced, VoiceOver pauses there briefly
+
+medium bullet, written as &#8226; • • A phrase • and another phrase
+
+By itself: "bullet"
+
+In context: "bullet a phrase bullet and another phrase"
+
+By itself: "bullet"
+
+In context: "Bullet a 2phrase bullet and another phrase"
+
+By itself: "bullet"
+
+In context: "Bullet a phrase bullet and another phrase"
+
+dagger, written as &dagger; † Read the footnote†
+
+By itself: "single dagger"
+
+In context: "Read the footnote single dagger"
+
+By itself: "dagger"
+
+In context: "Read the footnote dagger"
+
+By itself: "dagger"
+
+In context: "Read the footnote dagger"
+
+double dagger, written as &Dagger; ‡ Read the other footnote‡
+
+By itself: "double dagger"
+
+In context: "Read the other footnote double dagger"
+
+By itself: "double dagger"
+
+In context: "Read the other footnote double dagger"
+
+By itself: "double dagger"
+
+In context: "Read the other footnote double dagger"
+
+right arrow, written as &rarr; → Press the → key
+
+By itself: "rightwards arrow"
+
+In context: "Press the rightwards arrow key"
+
+By itself: "right arrow"
+
+In context: "Press the right arrow key"
+
+By itself: "right arrow"
+
+In context: "Press the right arrow key"
+
+left arrow, written as &lrarr; ← Press the ← key
+
+By itself: "leftwards arrow"
+
+In context: "Press the leftwards arrow key"
+
+By itself: "left arrow"
+
+In context: "Press the left arrow key"
+
+By itself: "left arrow"
+
+In context: "Press the left arrow key"
+
+up arrow, written as &uarr; &ShortUpArrow; Press the &ShortUpArrow; key
+
+By itself: "upwards arrow"
+
+In context: "Press the upwards arrow key"
+
+By itself: "up arrow"
+
+In context: "Press the up arrow key"
+
+By itself: "up arrow"
+
+In context: "Press the up arrow key"
+
+down arrow, written as &darr; ↓ Press the ↓ key
+
+By itself: "downwards arrow"
+
+In context: "Press the downwards arrow key"
+
+By itself: "down arrow"
+
+In context: "Press the down arrow key"
+
+By itself: "down arrow"
+
+In context: "Press the down arrow key"
+
+horizontal arrow, written as &harr; ↔ Move ↔ horizontally.
+
+By itself: "left right arrow"
+
+In context: "Move left right arrow horizontally"
+
+By itself: "left right arrow"
+
+In context: "Move left right arrow horizontally"
+
+By itself: "left right arrow"
+
+In context: "Move left right arrow horizontally"
+
+double right arrow, written as &rArr; &DoubleRightArrow; Look over there &DoubleRightArrow; at that shark.
+
+By itself: "rightwards double arrow"
+
+In context: "Look over there rightwards double arrow at that shark"
+
+By itself: "double right arrow"
+
+In context: "Look over there double right arrow at that shark"
+
+By itself: "rightwards double arrow"
+
+In context: "Look over there rightwards double arrow at that shark"
+
+double left arrow, written as &lAarr; &DoubleLeftArrow; Look over there &DoubleLeftArrow; at that dolphin.
+
+By itself: "leftwards triple arrow"
+
+In context: "Look over there leftwards triple arrow at that dolphin"
+
+By itself: "leftwards double arrow"
+
+In context: "Look over there leftwards double arrow at that dolphin"
+
+By itself: "leftwards double arrow"
+
+In context: "Look over there leftwards double arrow at that dolphin"
+
+double up arrow, written as &uArr; &DoubleUpArrow; Look up there &DoubleUpArrow; at that platypus.
+
+By itself: "upwards double arrow"
+
+In context: "Look up there upwards double arrow at that platypus"
+
+By itself: "upwards double arrow"
+
+In context: "Look up there upwards double arrow at that platypus"
+
+By itself: "upwards double arrow"
+
+In context: "Look over there upwards double arrow at that platypus"
+
+double down arrow, written as &dArr; ⇓ Look down there ⇓ at that echidna.
+
+By itself: "downwards double arrow"
+
+In context: "Look down there downwards double arrow at that echidna"
+
+By itself: "downwards double arrow"
+
+In context: "Look down there downwards double arrow at that echidna"
+
+By itself: "downwards double arrow"
+
+In context: "Look over there downwards double arrow at that echidna"
+
+double horizontal arrow, written as &hArr; &DoubleLeftRightArrow; I&CloseCurlyQuote;m &DoubleLeftRightArrow; confused.
+
+By itself: "left right double arrow"
+
+In context: "I&CloseCurlyQuote;m left right double arrow confused"
+
+By itself: "left right double arrow"
+
+In context: "I&CloseCurlyQuote;m left right double arrow confused"
+
+By itself: "left right double arrow"
+
+In context: Voiceover does NOT read the double arrow, and does NOT pause.
+
+playing cards: spades, written as &spades; ♠ Let&CloseCurlyQuote;s call a ♠ a ♠.
+
+By itself: "black spades suit"
+
+In context: "Let&CloseCurlyQuote;s call a black spades suit a black spades suit"
+
+By itself: "spades suit"
+
+In context: "Let&CloseCurlyQuote;s call a spades suit a spade suit"
+
+By itself: "black spades cards suit"
+
+In context: "Let&CloseCurlyQuote;s call a black spades cards suit a black spades cards suit"
+
+playing cards: clubs, written as &clubs; ♣ I found a ♣. Today is my lucky day.
+
+By itself: "black club suit"
+
+In context: "I found a black club suit. Today is my lucky day"
+
+By itself: "club suit"
+
+In context: "I found a club suit. Today is my lucky day"
+
+By itself: "black clubs cards suit"
+
+In context: "I found a black clubs cards suit. Today is my lucky day"
+
+playing cards: hearts, written as &hearts; ♥ I ♥ you.
+
+By itself: "black heart suit"
+
+In context: "I black heart suit you?"
+
+By itself: yes ("hearts suit")
+
+In context: "I hearts suit you"
+
+By itself: "red hearts cards suit"
+
+In context: "I red hearts cards suit you"
+
+playing cards: diamonds, written as &diams; &diamondsuit; Someone once said a &diamondsuit; is a girl&CloseCurlyQuote;s best friend.
+
+By itself: "black diamond suit"
+
+In context: "Someone once said a black diamond suit is a girl&CloseCurlyQuote;s best friend"
+
+By itself: "black diamond"
+
+In context: "Someone once said a black diamond is a girl&CloseCurlyQuote;s best friend"
+
+By itself: "red diamonds cards suit"
+
+In context: "Someone once said a red diamonds cards suit is a girl&CloseCurlyQuote;s best friend"
+
+Monnaie
+
+Symbol The character by itself In Context JAWS NVDA VoiceOver dollar symbol $ $21
+
+By itself: “dollar&CloseCurlyDoubleQuote;
+
+In context: "dollar twenty one"
+
+By itself: "dollar"
+
+In context: "twenty one dollars"
+
+By itself: "Dollar"
+
+In context: "twentyone dollars"
+
+Euro symbol, written as &#8364; € €21
+
+By itself: "euro sign"
+
+In context: "euro sign twenty one"
+
+By itself: "euro"
+
+In context: "twenty one euros"
+
+By itself: "Euro two one"
+
+In context: "twentyone euros"
+
+Yen symbol, written as &yen; ¥ ¥500
+
+By itself: "yen"
+
+In context: "Yen five hundred"
+
+By itself: "Yen"
+
+In context: "five hundred Yen"
+
+By itself: "Yen"
+
+In context: "500 yen"
+
+Pound symbol, written as &pound; £ £10
+
+By itself: "pounds"
+
+In context: "ten pounds"
+
+By itself: "Pound"
+
+In context: "ten pounds"
+
+By itself: "Pound"
+
+In context: "10 pounds"
+
+Symboles mathématiques
+
+Symbol The character by itself In Context JAWS NVDA VoiceOver plus + 5+2
+
+By itself: "plus"
+
+In context: "5 plus 2"
+
+y itself: "plus"
+
+In context: "five plus two"
+
+By itself: "plus"
+
+In context: "five plus two"
+
+minus, written as &minus; − 5−2
+
+By itself: "minus"
+
+In context: "5 minus 2"
+
+By itself: "minus"
+
+In context: "five minus two"
+
+By itself: "minus"
+
+In context: "five minus two"
+
+plus or minus, written as &plusmn; ± 5±2
+
+By itself: "plus or minus"
+
+In context: "5 plus or minus 2"
+
+By itself: "plus or minus two"
+
+In context: "five plus or minus two"
+
+By itself: "plus or minus"
+
+In context: "five plus or minus two"
+
+divided by, written as &divide; ÷ 5÷2
+
+By itself: "divided by"
+
+In context: "5 divided by 2"
+
+By itself: "divide by"
+
+In context: "five divide by two"
+
+By itself: "divided by"
+
+In context: "five divided by two"
+
+multiplied by, written as &times; × 5×2
+
+By itself: "times"
+
+In context: "5 times 2"
+
+By itself: "times"
+
+In context: "five times two"
+
+By itself: "times"
+
+In context: "five times two"
+
+equal sign = 5=3+2
+
+By itself: "equals"
+
+In context: "5 equals 3 plus 2"
+
+By itself: "equals"
+
+In context: "five equals three plus two"
+
+By itself: "equals"
+
+In context: "Five equals three plus two"
+
+not equal, written as &ne; ≠ 5≠2
+
+By itself: "not equal"
+
+In context: "5 not equal to 2"
+
+By itself: "not equal to"
+
+In context: "five not equal to two"
+
+By itself: "not equals"
+
+In context: "five not equals two"
+
+approximately equal, written as &asymp; &ap;
+
+5&ap;4.999
+
+5 &ap; 4.999
+
+By itself: "almost equal to"
+
+In context: "5 almost equals to 4.999"
+
+By itself: "almost equal to"
+
+In context: "five almost equal to four point nine nine nine"
+
+By itself: "Almost equal to"
+
+In context: "five almost equal to four point nine nine nine"
+
+percent % 5%
+
+By itself: "percent"
+
+In context: "5 percent"
+
+By itself: "percent"
+
+In context: "5 percent"
+
+By itself: "percent"
+
+In context: "five percent"
+
+percent with 2-digit denominator, written as &permil; ‰ 5‰
+
+By itself: "per mil"
+
+In context: "five per mil"
+
+By itself: "per mil"
+
+In context: "five per mil"
+
+By itself: "per mil sign"
+
+In context: "five per mil sign"
+
+fraction: half, written as &frac12; ½ ½ cup
+
+By itself: "one half"
+
+In context: "one half cup"
+
+By itself: "one half"
+
+In context: "one half cup"
+
+By itself: "one half"
+
+In context: "one half cup"
+
+fraction: one quarter, written as &frac14; ¼ ¼ liter
+
+By itself: "one fourth"
+
+In context: "one fourth liter"
+
+By itself: "one quarter"
+
+In context: "one quarter liter"
+
+By itself: "one fourth"
+
+In context: "one fourth liter"
+
+fraction: three quarters, written as &frac34; ¾ ¾ kilometer
+
+By itself: "three fourths"
+
+In context: "three fourths kilometer"
+
+By itself: "three quarters"
+
+In context: "three quarters kilometer"
+
+By itself: "three fourth"
+
+In context: "three fourth kilometer"
+
+less than, written as &lt; < 5<6
+
+By itself: "less than"
+
+In context: "5 less than 6"
+
+By itself: "less"
+
+In context: "five less six"
+
+By itself: "less"
+
+In context: "five less than six"
+
+greater than, written as &gt; > 5>4
+
+By itself: "greater"
+
+In context: "5 greater 4"
+
+By itself: "greater"
+
+In context: "five greater four"
+
+By itself: "greater"
+
+In context: "five greater than four"
+
+less than or equal, written as &le; ≤ 5≤x
+
+By itself: "less than or equal to"
+
+In context: "5 less then or equal to x"
+
+By itself: "less or equal to"
+
+In context: "five less or equal to x"
+
+By itself: "less than or equal to"
+
+In context: "five less than or equal to x"
+
+greater than or equal, written as &ge; ≥ 5≥y
+
+By itself: "greater than or equal to"
+
+In context: "5 greater than or equal to y"
+
+By itself: "greater than or equal to"
+
+In context: "five greater than or equal to y"
+
+By itself: "greater than or equal to"
+
+In context: "five greater than or equal to y"
+
+prime, written as &prime; ′ 1′
+
+By itself: "prime"
+
+In context: "one prime"
+
+By itself: "prime"
+
+In context: "one prime"
+
+By itself: "prime"
+
+In context: "one prime"
+
+double prime, written as &Prime; ″ 1″
+
+By itself: "double prime"
+
+In context: "one double prime"
+
+By itself: "double prime"
+
+In context: "one double prime"
+
+By itself: "double prime"
+
+In context: "one double prime"
+
+degree, written as &deg; ° 90°
+
+By itself: "degrees"
+
+In context: "ninety degrees"
+
+By itself: "degrees"
+
+In context: "ninety degrees"
+
+By itself: "degrees"
+
+In context: "ninety degrees"
+
+sum, written as &sum; ∑ ∑i=x+y
+
+By itself: "summation" (prefaced with something that is hard to understand)
+
+In context: "summation i equals x plus y"
+
+By itself: "(prefaced with something that is hard to understand) summation" (prefaced with something that is hard to understand)
+
+In context: "(prefaced with something that is hard to understand) summation i equals x plus y"
+
+By itself: "summation" (prefaced with something that is hard to understand)
+
+In context: "(prefaced with something that is hard to understand) summation i equals x plus y"
+
+microns, written as &micro; µ 5µ
+
+By itself: "mu" (sounds like "myoo")
+
+In context: "5 mu"
+
+By itself: "micro"
+
+In context: "five mu"
+
+By itself: "Greek small letter mu" (sounds like "myoo")
+
+In context: VoiceOver does NOT read the character. It simply says “five&CloseCurlyDoubleQuote;

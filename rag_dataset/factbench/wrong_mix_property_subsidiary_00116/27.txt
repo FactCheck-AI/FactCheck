@@ -1,0 +1,47 @@
+In this fast-paced world we work in, one of the things that is often overlooked on the network is, oddly enough, time. Time is critical in the function of all things on the network and, with the addition of services, it becomes even more critical.
+
+Inaccurate time on the network means inaccurate time on devices such as phones, computers, files and the like. Certificate failures can happen on servers and other devices. Login issues may occur with single sign-on and time stamp exchanges. Troubleshooting issues becomes difficult when time stamps do not line up in logs.
+
+Network Time Protocol (NTP) has been around for decades and most companies have it configured in their environment. But the question that organizations may need to ask themselves is whether their NTP is configured correctly. To answer that question, you need to understand the protocol a little better.
+
+Before we get to that, I want to define the terminology I’ll be discussing in this first blog to lay the groundwork for subsequent blogs in this series.
+
+NTP Server/Client
+
+To start, let’s get a clear idea of the NTP server/client relationship. NTP servers communicate time to NTP clients’ time polling requests. NTP clients poll NTP servers for a time synchronization check. An NTP client determines which NTP server it has configured to poll as either a “truechimer” or a “falseticker.” Where possible, it is preferred to use Cisco routers and switches for NTP as they provide client/server NTP services out of the box and are easily configured.
+
+Polling
+
+NTP syncs are based on dynamically changing polling intervals. Intervals increase as the client continues to receive “good” time confirmations from a particular NTP server.
+
+Truechimer
+
+A truechimer is an NTP source that has been determined by the NTP client to be correct based on NTP clock selection algorithms and reference clocks.
+
+Falseticker
+
+A falseticker is an NTP source that has been determined by the NTP client to be providing inaccurate time because of incorrect configuration, software failure or intentional actions. A falseticker can only be determined by comparison to other NTP sources.
+
+Stratum
+
+Stratum describes the number of hops an NTP client is away from a truechimer. This characteristic is used for loop avoidance and not for determining if one NTP server is more in sync than another.
+
+A Stratum 0 device is a hardware-attached clock, such as GPS or atomic, that can only be used as a reference clock. It is the most accurate time source.
+
+Stratum 1 devices are the most accurate NTP time sources accessible via a network connection. They may only peer (align) with other Stratum 1 servers.
+
+Stratum 2-15 devices are all network-connected NTP servers, each a hop farther away from the Stratum 0 reference clock. Stratum 4 is the minimum stratum level for most Cisco UC applications.
+
+Stratum 16 is used to identify an unsynchronized NTP client.
+
+Clock Offset
+
+The term “clock offset” refers to the difference a client (with NTP software running) detects between an NTP source and itself.
+
+Leap Seconds/Time Smearing
+
+Standard NTP deals with leap seconds by simply double-counting a second (58, 59, 00, 00). “Time smearing” is a newer concept introduced by Google that adds several milliseconds per day for weeks leading up to the actual leap second, allowing clients to avoid double-counting. Due to the differences in the handling of leap seconds, NTP sources using time-smearing (Google time servers) should never be mixed with NTP sources that use double-counting and vice versa.
+
+Applying the Terms
+
+Having a clear understanding of the terms is key to making smart decisions about the right configuration for your situation. In the second blog of this series, I’ll lay out the pros and cons of different approaches to configuration. And in the final blog, I’ll provide some guidance on the right and wrong sources for NTP servers.

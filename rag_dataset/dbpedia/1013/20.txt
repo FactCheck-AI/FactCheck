@@ -1,0 +1,71 @@
+In the 1980s, many interested parties began developing concepts of advanced television, or HDTV, geared at reproducing superior-quality 16:9 aspect ratio pictures when seated at three times the picture height. The International Telecommunications Union (ITU) defines HDTV as:
+
+“…[A] system designed to allow viewing at about three times the picture height, such that the system is virtually, or nearly, transparent to the quality of portrayal that would have been perceived in the original scene or performance by a discerning viewer with normal visual acuity. Such factors include improved motion portrayal and improved perception of depth.”
+
+A tall order indeed!
+
+In the United States, the development of the advanced television concepts was entrusted to the Advanced Television Systems Committee (ATSC), a private sector organization of corporations, associations and educational institutions. It was responsible for exploring the need for and developing the documentation of the advanced television system.
+
+Video system characteristics
+
+The ATSC standard supports a range of program materials originating in different picture formats. Two program format levels, SDTV (480 active lines) and HDTV (720 and 1080 active lines), are represented.
+
+Table 1. 4:3 aspect ratio ATSC picture formats Active H-samples Active lines Scanning mode Frame rate (Hz)* 640 480 Progressive 60(60/M), 30(30/M), 24(24/M) Interlaced 30(30/M) 704 480 Progressive 60(60/M), 30(30/M), 24(24/M) Interlaced 30(30/M) * M=1.001 is a frame rate divisor for NTSC-friendly systems.
+
+Table 1 summarizes the 4:3 aspect ratio SDTV ATSC formats. The scanning mode may be progressive or interlaced, and several frame rates are specified. The formats are, respectively:
+
+a VGA format (640 pixels × 480 lines)
+
+a slightly modified CCIR 601 format (704 H samples × 480 lines).
+
+The modification consists in reducing the number of active samples per line to 704 and active scanning lines per frame to 480. This is an MPEG-2 requirement to the effect that the number of active pixels per line and active lines per frame be a multiple of the pixels and lines in a DCT block (8 pixels × 8 lines).
+
+Table 2 on page 24 summarizes the 16:9 aspect ratio formats. NTSC-friendly frame rates are obtained by dividing the nominal frame rate by M=1.001. The formats are:
+
+SDTV format (704 H samples × 480 lines) modified to MPEG-2 requirements as explained above. This format may use the progressive or interlaced scanning mode at several frame rates. SMPTE standards 293M (progressive scanning) and 294M (bit-serial interface) define the production aspects of the format.
+
+HDTV format A (1280 H samples × 720 lines). This format uses exclusively progressive scanning at several frame rates and is described in the SMPTE 296M standard.
+
+HDTV format B (1920 H samples × 1080 lines). This format uses exclusively progressive or interlaced scanning at frame rates not exceeding 30Hz. This restriction is due to the fact that a progressive 60Hz frame rate would result in a non-compressed bit-serial rate of 3Gb/s, which exceeded the bit-rate compression capabilities at the time the ATSC standard was developed. SMPTE Standards 274M (scanning) and 292M (bit-serial interface) define several formats, including progressive scanning, which, currently, is not an ATSC format.
+
+Table 2. 16:9 aspect ratio ATSC picture formats SMPTE production standard Active H-samples Active lines Scanning mode Frame rate (Hz)* 293M (Progressive scanning)
+
+294M (Serial interface) 704 480 Progressive 60(60/M), 30(30/M), 24(24/M) Interlaced 30(30/M) 296M (Scanning and interface) 1280 720 Progressive 60(60/M), 30(30/M), 24(24/M) 274M (Scanning)
+
+292M (Serial interface) 1920 1080 Progressive 30(30/M), 24(24/M) Interlaced 30(30/M) * M=1.001 is a frame rate divisor for NTSC-friendly systems.
+
+Accounting for all picture scanning formats and frame rates, the ATSC standard supports 18 picture formats, based on the nominal frame rates of 60Hz, 30Hz and 24Hz. If we take into consideration the NTSC-friendly rates of 59.94Hz, 29.97Hz and 23.976Hz, we end up with 36 picture formats. The latter frame rates will simplify interworking with NTSC material during the simulcast period.
+
+Table 3. ATSC audio service types Designation Type of service Number of channels Compressed bit rate (in Kb/s) Complete main (CM) Main audio 1 to 5.1 64 to 384 Music and effects (ME) Main audio 1 to 5.1 64 to 384 Visually impaired (VI) Associated 1 128 Hearing impaired (HI) Associated 1 128 Dialogue (D) Associated 1 128 Commentary (C) Associated 1 128 Emergency (C) Associated 1 128 Voice-over (VO) Associated 1 128
+
+The audio system characteristics
+
+The ATSC standard document A-52 defines audio characteristics. The digital compression system is a constrained subset of the AC-3 system developed by Dolby Laboratories. It encodes five full-bandwidth audio channels (3Hz to 20kHz) including left, center, right, left and right surround and one reduced bandwidth, low-frequency enhancement (LFE) channel (3Hz to 120Hz) by compressing the resulting 5.184Mb/s data stream into a 384Kb/s data stream. The LFE channel carries about one- tenth of the bandwidth of the other channels, so the AC-2 system is frequently mentioned as carrying 5.1 channels. Table 3 summarizes the audio service type contained in an AC-3 elementary stream.
+
+Transmission considerations
+
+Table 4 on page 26 shows essential (active) bit rates of ATSC-recommended production scanning formats, with 10 bits/sample resolution, before bit-rate reduction and compression are applied. The total bit rates, including the samples in the horizontal and vertical blanking areas, are shown in brackets.
+
+The ATSC terrestrial transmission standard defines the bit-stream content and transport and its digital transmission in the specified 6MHz RF channel. The nominal transmission bit rate depends on the chosen digital RF modulation scheme. The ATSC chosen scheme, 8VSB, limits the transmission bit rate to 19.38Mb/s. This constraint offers no other alternative but bit-rate reduction and compression to accommodate all the ATSC formats.
+
+The video compression scheme is based on the main profile syntax of the MPEG-2 video standard. It uses a motion-compensated discrete cosine transform (DCT) algorithm and B-frame prediction. The video encoder supports the wide motion estimation range needed for tracking fast-motion pictures. In addition, it uses source-adaptive coding, field and frame motion vectors and other techniques to improve compression efficiency. In all ATSC-suggested formats, it is possible to transmit film material in its native progressive 24fps format and eliminate the 3/2 pull-down concept used in NTSC countries. This reduces the transmitted bit rate and eases the task of the MPEG-2 encoder. The receiver reconstructs the interlaced or progressive display.
+
+Table 4. Active and total bit rates for various formats Active (total) video format H-samples × lines Nominal frame rate (Hz)* Active (total) nominal bit rate (in Mb/s)* 640 × 480 (840 × 525) 30 interlaced 184 (252) 30 progressive 184 (252) 60 progressive 368 (504) 720 × 480 (858 × 525) 30 interlaced 207 (270) 30 progressive 207 (270) 60 progressive 414 (540) 1280 × 720 (1650 × 750) 30 progressive 553 (742) 60 progressive 1106 (1485) 1920 × 1080 (2200 × 1125) 30 interlaced 1244 (1485) 30 progressive 1244 (1485) * For NTSC-friendly systems, this figure is divided by M=1.001.
+
+The ATSC system employs multiple picture formats, digital audio and video compression. The compressed video and associated audio data streams are packetized into a packetized elementary stream (PES). One (i.e., one HDTV program) or several (i.e., multiple SDTV programs) PES together with auxiliary and control data and program and system information protocol (PSIP) are fed to a transport stream multiplexer, which combines them into a 19.38Mb/s data stream.
+
+The packetization separates audio, video and auxiliary data into fixed-size units suitable for forward error correction, program stream multiplexing and switching, time synchronization, flexibility and extendibility, and compatibility with the ATM format. The 19.38Mb/s data stream feeds a channel encoder, which in turn feeds the RF modulator of the terrestrial transmitter operating in an allocated 6MHz RF channel.
+
+Receiver and display considerations
+
+The receiver reverses the functions of the RF transmission and encoding and, after decompression, generates video and audio signals suitable for the display format and listening conditions chosen. For economic reasons and to simplify receiver design, TV receivers may not display different formats. Depending on its class, the receiver may be built to display all transmitted formats or in a native, receiver-specific display, in one of the three picture formats (1920 × 1080, 1280 × 720 or 720 × 480). In the end, the display device determines the picture detail. Triple CRT (green, blue and red) forward or reverse projection systems offer the best resolution as the picture quality depends on the beam focus that can be tightly controlled. The resolution of the relatively obsolete triple-gun direct-display CRT depends on the beam focus as well as the phosphor dot density.
+
+LCD and Plasma devices feature progressive (non-interlaced) displays. Because their native format is typically 1280 × 720, they will work best with a 1280 × 720 HDTV format. They will, however, require deinterlacing and down-scaling from a 1920 × 1080 HDTV format to their native format. This, by necessity, will affect the displayed picture quality.
+
+Reception problems
+
+The ATSC chosen modulation scheme, 8VSB, provides adequate reception when outside, rooftop, reception antennas are used. Indoor antennas provide unreliable reception. However, rooftop antennas are rarely used except in isolated and remote reception sites and, in any event, are impractical — if not impossible — to use in large cities with many high-rise buildings.
+
+For this reason, more than 80 percent of North American viewers receive analog cable TV. Because cable operators have chosen a different type of digital TV modulation, a separate set-top digital cable TV tuner is required, or a new generation of cable-compatible ATSC receivers will need to be made available.
+
+Michael Robin, a fellow of the SMPTE and former engineer with the Canadian Broadcasting's engineering headquarters, is an independent broadcast consultant located in Montreal. He is co-author of “Digital Television Fundamentals,” published by McGraw-Hill and translated into Chinese and Japanese.

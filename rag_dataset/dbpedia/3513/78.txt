@@ -1,0 +1,27 @@
+Not sure if this would classify as a comment or an answer, but it's useful information nonethelss:
+
+So in reading this question I HAVE to point this out - ever heard of the paper?:
+
+Arvind Narayanan and Vitaly Shmatikov. "Robust De-anonymization of Large Datasets (How to Break Anonymity of the Netﬂix Prize Dataset)". The University of Texas at Austin February 5, 2008.
+
+Full text is at: http://arxiv.org/pdf/cs/0610105v2.pdf
+
+It's quite a famous paper and was even on the news when it got published.
+
+Here's the abstract:
+
+We present a new class of statistical de-anonymization attacks against high-dimensional micro-data, such as individual preferences, recommendations, transaction records and so on. Our techniques are robust to perturbation in the data and tolerate some mistakes in the adversary’s background knowledge. We apply our de-anonymization methodology to the Netﬂix Prize dataset, which contains anonymous movie ratings of 500,000 subscribers of Netﬂix, the world’s largest online movie rental service. We demonstrate that an adversary who knows only a little bit about an individual subscriber can easily identify this subscriber’s record in the dataset. Using the >>>Internet Movie Database<<< as the source of background knowledge, we successfully identiﬁed the Netﬂix records of known users, uncovering their apparent political preferences and other potentially sensitive information.
+
+I looked at their citations for clues but they only thing they cite verbatim is:
+
+IMDb. The Internet Movie Database. http://www.imdb.com/, 2007.
+
+This is also quite a while ago too. However going through the full text of that article, you may be able to glean some clues as to how they got their data and replicate those - so this could potentially help you.
+
+As was alluded to in one in a comments you should check out http://www.imdb.com/interfaces which would allow you to either download manually via ftp or through a terminal interface. I am pretty sure the restrictions on the data only pertain to commercial usages but you should verify that before diving in head first. Also, you could check out http://www.themoviedb.org or http://www.omdbapi.com. themoviedb API is free but has api request limits, and it does not natively include the IMDBid in a typical search which can make integrating data from multiple sources difficult. OMDb API used to be totally free but now restricts api access though the cost for 100,000 requests is 1$/month so it is very reasonable and it does include the IMDBid in its general search.
+
+UPDATE:
+
+So as @lonstar, likely in order to save on costs, imdb now requires that users foot the bill for downloading by using a S3 Pay Account. However, there is a mirror site that is still operational hosted by Freie Universitat Berlin, ftp://ftp.fu-berlin.de/pub/misc/movies/database/temporaryaccess/ .
+
+Although, given that the name of the ftp parent directory is "temporaryaccess" it may not be long for this world. :(

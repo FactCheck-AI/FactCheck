@@ -1,0 +1,63 @@
+Hello all,
+
+Just wondering about the "actual" NTP clock Stratum version requirements when
+
+installing Cisco CUCM. As the three sources below show varying results;
+
+So first we have the install guides;
+
+Note
+
+Cisco recommends that you use an external NTP server to ensure accurate system time on the first node. Ensure the external NTP server is stratum 9 or higher (meaning stratums 1-9). Subsequent nodes in the cluster will get their time from the first node.When you are installing Cisco Unity Connection on a virtual machine, you must specify an external NTP server.
+
+http://www.cisco.com/en/US/docs/voice_ip_comm/cucm/install/8_6_1/install/cmins861.html#wp804989
+
+Then the SRND;
+
+Unified CM automatically synchronizes the NTP time of all subscribers in the cluster to the publisher. During installation, each subscriber is automatically configured to point to an NTP server running on the publisher. The publisher considers itself to be a master server and provides time for the cluster based on its internal hardware clock unless it is configured to synchronize from an external server. Cisco highly recommends configuring the publisher to point to a Stratum-1, Stratum-2, or Stratum-3 NTP server to ensure that the cluster time is synchronized with an external time source.
+
+http://www.cisco.com/en/US/docs/voice_ip_comm/cucm/srnd/8x/netstruc.html#wpxref14097
+
+And finally the NTP White Paper;
+
+For Cisco Unified CallManager Versions 5.0 and later:
+
+– Manual configuration of the ntpd.conf file is not allowed.
+
+– Cisco Unified CallManager prompts the administrator to specify the external NTP server at publisher installation and automatically populates the ntpd.conf file on the publisher server.
+
+– The ntpd.conf files of all other cluster servers are automatically configured to point to the publisher as the NTP source.
+
+• Configure the publisher to point to a traceable stratum 1 clock source.
+
+• Configure network latency between the publisher and the dedicated clock source so that it is within 40 milliseconds round-trip time (RTT).
+
+http://www.cisco.com/en/US/prod/collateral/voicesw/ps6788/vcallcon/ps556/prod_white_paper0900aecd8037fdb5.html
+
+Thanks for any light you can shed on this.
+
+Cheers!
+
+Rob
+
+"Spend your life waiting,
+
+for a moment that just don't come,
+
+Well, don't waste your time waiting"
+
+-Springsteen
+
+Hi,
+
+we also experienced this discrepancy on this deployment, anyway we just followed the SRND - besides having a more reliable clocking will lead to stability and help us a lot on our troubleshooting.
+
+Actually, my question in reference to the OS administration guide on NTP settings (Versions 5.x up to 10.X has this note)
+
+"NOTE: After deleting, modifying, or adding NTP server, you must restart all the other nodes in the cluster for the changes to take affect."
+
+- is a cluster reboot really required?
+
+- what will be the impact if this is not followed?
+
+thanks for the advice!

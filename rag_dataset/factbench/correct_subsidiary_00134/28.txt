@@ -1,0 +1,125 @@
+If you’ve ever wished that building modern, scalable, distributed cloud-based apps could be made as easy as building basic Windows desktop or client-server apps used to be, you are not alone.
+
+First showcased at CloudNative London 2019, the Ecstasy language has been co-created by Cameron Purdy and Gene Gleyzer, co-founders of Tangosol, a maker of in-memory data grid software, with exactly this goal in mind. Ecstasy is a new, strongly typed, modular, general-purpose, C-family programming language.
+
+Alongside the language itself, the Ecstasy project comprises a new portable binary format and instruction set, and a new managed runtime that is designed to support JIT, AOT and adaptive compilation.
+
+Java is used to run the current Ecstasy toolchain (the compiler and the runtime); it requires JDK 17, the latest LTS release. The whole project is open source, and licensed under Apache 2.0. It is sponsored by xqiz.it with, to date, no outside funding.
+
+Ecstasy is not intended for use as a systems programming language — in other words, it isn’t designed for writing an operating system or a word processor. Instead, it has specifically been designed for modern, serverless-style cloud architectures, and is intended to support modern development practices such as CI/CD.
+
+The language is currently at version 0.3 and is not yet ready for production use, as the project’s GitHub README makes clear: “This is a large and extremely ambitious project, and it may yet be several years before this project is certified for production use.”
+
+That said, although the language implementation is not mature, the language design is complete, and Purdy and Gleyzer both have extensive prior experience working on languages and programming tools.
+
+After Oracle acquired Tangosol, Purdy became the Oracle senior vice president for enterprise Java, WebLogic, Coherence, Traffic Director, HTTP, JDBC, and Exalogic products. He and Gleyzer have worked together for about 30 years.
+
+“Our first job together was in a company that was making a couple of programming languages and programming tools,” “and we built an IDE in Java which was a component-based environment,” Purdy told The New Stack,
+
+“When we left that company we bought the technology we had built and it’s actually what Coherence” — Tangasol’s flagship product — “was built in.”
+
+Ecstasy’s Design Goals
+
+According to a blog post on the language’s official website, the Ecstasy team had five initial design goals:
+
+Correctness, aka Predictability. The behavior of a language must be obvious, correct and predictable. This also incorporates The Principle of Least Surprise.
+
+Security. While generally not a priority for language design, it is self-evident that security is not something that one adds to a system; security is either in the foundation and the substrate of a system, or it does not exist. Specifically, a language must not make possible the access to (or even make detectable the existence of) any resource that is not explicitly granted to the running software.
+
+Composability. High-level computer languages are about composition. Specifically, a language should enable a developer to locate each piece of design and logic in its one best and natural place.
+
+Readability. Code is written once and referenced many times. What we call “code” should be a thing of beauty, where form follows function.
+
+Lastly, a language must be recursive in its design. There is no other mechanism that predictably folds in complexity and naturally enables encapsulation. It’s turtles, the whole way down.”
+
+In addition, the language is intended to be very easy to get started with.
+
+“After I left Oracle I was playing around and I realized that everything has just got so complicated,” Purdy told us. “If you go back 30 years, you had Access, PowerBuilder, Delphi or whatever. You installed it, and two hours later you’d have a working demo. How is it after 30 years, and with massive investment, we’ve actually made it harder to build stuff, and way more complicated to manage?
+
+“So my number one goal for Ecstasy was ‘I want a developer to be able to be up and running with an app inside an hour — from start, to deployment, to showing a friend. One hour.’ It has to be simple, and it has to make sense … and then we want to be able to run 10,000 applications on a single server.”
+
+The ‘Turtles Type System’
+
+Ecstasy’s emphasis on predictability is perhaps best illustrated via the type system, known as the Turtles Type System, because it is bootstrapped on itself.
+
+As in Smalltalk, everything in Ecstasy is an object, and all Ecstasy types are built out of other Ecstasy types. In other words, unlike in Java or C#, there is no secondary primitive type system and chars, ints, bits, and booleans are all objects.
+
+In common with Java and C# there is a single root called Object — although, In Ecstasy, Object is an interface, not a class.
+
+Technically the type system supports a long and rather intimidating-looking list of features. It is fully generic and fully reified, covariant, module-based, transitively closed, type-checked and type-safe.
+
+The majority of type safety checks are performed by the compiler and re-checked by the link-time verifier, with only those checks in which the types cannot be fully known beforehand performed at runtime — specifically to allow support for type variance.
+
+“The Ecstasy language rules automatically handle covariance and contravariance,” Purdy wrote in an email response to The New Stack. “And that saves the developer from all that nonsensical gibberish that you see in e.g. Java, like:
+
+void putAll(Map<? extends K, ? extends V> m);
+
+Or in Scala, like:
+
+trait EventListener[-E] { def listen(e:E) }
+
+(The minus sign in Scala indicates contravariance.)
+
+There are many cases, though, in which the support for type variance implies (i.e. requires) runtime type checks,” Purdy said. “What Ecstasy does is to prevent obvious variance errors at compile time, but then do the necessary type checks at runtime as if you had added explicit type casts.
+
+“As a result of these rules, in Ecstasy you almost never have to ‘cast.’ That’s probably one of the things that always stands out to me when I go back to working in Java — I have casts everywhere.”
+
+Functions and tuples are prominent in the language, with support for multiple (and named) returns, optional (and named) parameters, lambdas, partial and complete argument binding, and currying.
+
+Although it sounds complex, the features of the type system feel very carefully matched to the overall design of the language. Ecstasy, Purdy said, also “doesn’t have to build on some external foundation; it is self-contained and fully self-referential.”
+
+In practice, the type system is one of the things that makes Ecstasy code easy to read and pleasant to work with.
+
+Another important aspect of Ecstasy’s design is that it has a sense of familiarity. “We worked really hard to make the type system feel like other older type systems.” Purdy told us. “We patterned the feel primarily after Java and C#, but also some Smalltalk, Ruby and Python.”
+
+That familiarity extends to the language syntax itself. Ecstasy isn’t a terse language and, although there are differences, by design it intentionally feels very familiar to anyone who has written code using languages like Java, C# or Swift, much in the same way that Java did for developers coming to it from C++.
+
+Here, for example, is the canonical “Hello World” app in Ecstasy taken from the examples in the project’s GitHub repo.
+
+The XVM Runtime and Security
+
+A key to understanding Ecstasy is its container-based runtime, called the XVM. Unlike an operating system container, code running within an Ecstasy container has no access to any operating system or hardware resources. The runtime also cannot host native code. You can see this from the list of XVM byte codes, which is extremely constrained.
+
+“We set out to create a different runtime model,” Purdy said, “where by default your app has zero capabilities.”
+
+What this means is that the app has to declare all the resources that it needs, which are then provided via Inversion of Control (IoC). In the “hello world” example presented previously, the code depends on its container to provide something that implements the console interface.
+
+Everything is injected as interfaces rather than classes. As a consequence, anything can be easily mocked for testing. “When you deploy your app, and it needs a file system, if I’m running it in test I can just give it a fake filesystem in memory and I’ll throw it away when I’m done,” Purdy said. “I can run a thousand of those in parallel, and everything becomes mockable.”
+
+This has major security benefits. For one thing, no code running in the container can do something that it hasn’t been given the right to do. In addition, resources are automatically limited in their surface area to the programming interfaces defined by the host, and the host environment can decide precisely what to provide for each of those requested resources.
+
+This means that any security bugs introduced via injection are limited in scope to the design of the relatively small number of interfaces that will be supported for resource injection and the various injectable implementations of those interfaces.
+
+Moreover, “once you have this as a basic building block, things like API keys are no longer the domain of the application,” Purdy said. “If you need an API key, you can ask to be injected with an API key, so now I can take my application source code, give it to someone else, and they don’t have my keys.”
+
+The Memory Model and Concurrency
+
+In a similar way, the Ecstasy managed runtime doesn’t surface the concept of a thread. Ecstasy uses an actor model similar to Erlang’s processes. In Ecstasy, these are known as services and can be used by a developer to break code into potentially concurrent units.
+
+A service is a programming abstraction for an independent von Neumann machine, which can perhaps best be thought of as a category of a class that represents a sphere of mutability.
+
+“Data that changes is inside of a service, and only that service can change that data,” Purdy said. “If you are outside of the service, you may think you can see the data but you actually can’t; when you are accessing the data that is inside that service, you are actually sending a request to the service to access that data for you.”
+
+Likewise, when one service wants to modify the data in another service it does so via a property, and that property access becomes a proxied call to the other service. This proxied call can be inlined if there is no contention — “basically it’s an erased semaphore at that point,” Purdy told us.
+
+To put this another way, the only two things that can leave one service boundary and enter another are immutable data or a reference to another service, which makes for a very simple memory model.
+
+A service acts like a combination of a work queue and a thread, in which any call from outside of the context of the service (i.e., any call into the service from any other conceptual thread of execution) is converted into a work item placed into the work queue, and an associated future result provided to the caller as a return value.
+
+From a concurrency point of view, every call into the service creates a new fiber or virtual thread. Within the service only one fiber can be running at one time. A fiber doesn’t have to run to completion — it can run until blocked.
+
+The choice of how to allocate hardware threads to potentially concurrent and asynchronous work is made by the runtime. In essence, this is applying adaptive compilation to the problems of concurrency and threading.
+
+The runtime is also specifically optimized for modern CPU cache line behavior. “What we’re designing for from a runtime perspective is eliminating all read and write barriers,” Purdy said. “Because single-threaded code, particularly when running out of L2 or L3 cache, is blazingly fast, but the second you hit a read barrier you’ve just thrown away 200, maybe 400 clock cycles.”
+
+Next Steps for Learning Ecstasy
+
+Readers who want to try Ecstasy for themselves should take a look at the language blog, which includes a useful, and surprisingly extensive introduction for a language this young; it also includes a section for programmers coming from Java.
+
+I also found a trip through the source code helpful, and in particular ecstasy.x, which is the module definition; Object.x, which is the root Object; and Service.x, which is the key to understanding the concurrency model
+
+There is still a huge amount of work to do, and plenty of opportunities for contributions from the community. The project has a code of conduct and a guide for contributors.
+
+The next stage, which Purdy and Gleyzer have just started to prototype, is to build a Platform-as-a-Service (PaaS) that will allow the team to show off all this capability.
+
+“We’re about six years into this, and we’re just now building the actual project we intended to build,” Purdy said. “It’s the longest road to a minimal viable product you’ve ever heard of!”

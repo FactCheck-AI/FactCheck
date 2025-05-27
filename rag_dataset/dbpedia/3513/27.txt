@@ -1,0 +1,17 @@
+You can use IMDB API located at
+
+www.omdbapi.com
+
+You can search for movie names like this -
+
+http://www.omdbapi.com/?t=hangover%202
+
+{ "Title":"The Hangover Part II", "Year":"2011", "Rated":"R", "Released":"26 May 2011", "Genre":"Comedy", "Director":"Todd Phillips", "Writer":"Craig Mazin, Scot Armstrong", "Actors":"Bradley Cooper, Zach Galifianakis, Ed Helms, Justin Bartha", "Plot":"Right after the bachelor party in Las Vegas, Phil, Stu, Alan, and Doug jet to Thailand for Stu's wedding. Stu's plan for a subdued pre-wedding brunch, however, goes seriously awry.", "Poster":"http://ia.media-imdb.com/images/M/MV5BMTM2MTM4MzY2OV5BMl5BanBnXkFtZTcwNjQ3NzI4NA@@._V1_SX320.jpg"," Runtime":"1 hr 42 mins", "Rating":"7.1", "Votes":"13547", "ID":"tt1411697", "Response":"True" }
+
+You can get the "ID" (tt1411697) from this JSON response.
+
+As mentioned, IMDB does not have a web service. imdbapi works by screen scraping. The flat files available for download are a legacy from IMDB's pre-Amazon days, and the information there is incomplete. (You could not build your own IMDB with just the files that are available)
+
+However, Rotten Tomatoes does have a nice web interface that returns, among other things, the imdb id of the films - in the alternate_ids section. So, you could use the Rotten Tomatoes API to obtain the imdb id without screen scraping imdb directly.
+
+Rotten Tomatoes' database is less extensive than IMDB's, but it does a pretty good job with modern (1995+) US releases.

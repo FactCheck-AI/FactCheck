@@ -1,0 +1,215 @@
+Introduction
+
+A logic program is a declarative specification of what holds, and of what follows from what. By applying inference rules to such a specification, one can deduce logical consequences of such programs, and answer queries that are formulated in terms of logical formulas.
+
+Prolog is the most widely used logic programming language. A Prolog program is a sequence of Horn clauses. Horn clauses are a Turing-complete subset of first-order predicate logic. See turing.pl for a proof that such clauses suffice to model a Turing machine.
+
+Some aspects of the following only apply to Prolog. However, the most essential points also apply to other logic programming languages, such as Mercury.
+
+= is an atom and infix operator
+
+We start with a few observations about Prolog syntax. With this perspective, we ignore what things actually mean, and are only concerned with how they are written down.
+
+Syntactically, the equals sign = (U+003D, EQUALS SIGN) is an atom. This can be readily verified on the Prolog top-level:
+
+?- atom(=). true.
+
+In this respect = is similar to any other atom, such as a or prolog.
+
+We can also use = as a functor in compound terms. The following examples are all valid Prolog terms, where = is the principal functor:
+
+=(a)
+
+=(a, b)
+
+=(a, b, c)
+
+=(a, =(b,c))
+
+=(=(=(a)))
+
+In this sense, there is nothing special about =. A term like =(a, =(b,c)) is just as valid a Prolog term as f(X, g(Y,Z))).
+
+Yet, = is syntactically a bit special because—like several other functors—it is a predefined infix operator. We can verify this with:
+
+?- current_op(P, A, =). P = 700, A = xfx.
+
+As a consequence, we can use operator notation for =, if we want. This means that we can write a term of the form =(X, Y) equivalently as X = Y. This may mean that we have to add parentheses for disambiguation. For example, using operator notation wherever possible, the above cases become:
+
+=(a)
+
+a = b
+
+=(a, b, c)
+
+a = (b = c)
+
+=(=(=(a)))
+
+Note in particular that the term =(a, b, c) is a term with functor = and 3 arguments, and therefore not of the shape =(X, Y).
+
+Equality
+
+In predicate logic, equality is a binary relation, typically denoted by the symbol =. There are several ways to define it. In some cases, one can define equality in terms of other concepts. For example, when stating the axioms of set theory, one can define a = b in terms of &in;:
+
+∀x (a &in; x &leftrightarrow; b &in; x) ∧ ∀y (y &in; a &leftrightarrow; y &in; b)
+
+Alternatively, we can formalize the axioms we expect of equality, and add these axioms or axiom schemata to our systems. An example of this approach are the Peano axioms in their original formulation.
+
+Let us define a binary Prolog predicate that expresses equality of logical terms. Let us call this predicate equality. We want equality(A, B) to hold if and only if A is equal to B. We can immediately write down several concrete cases that we expect to hold. Using Prolog facts, we can ensure that these cases also do hold. For example:
+
+equality(a, a). equality(b, b). equality(c, c). equality(f(a), f(a)). equality(f(a,b), f(a,b)).
+
+However, enumerating concrete ground terms is not sufficient: We want to express equality generally, that is, for all possible terms. Thus, we need to capture an infinite set of cases by a finite specification. Formally, we want to express the axiom schema:
+
+x = x
+
+where x can be any term.
+
+Prolog lets us express this schema by a single Prolog fact:
+
+equality(X, X).
+
+In this fact, X is a logic variable. Since variables in Prolog clauses are implicitly universally quantified, we can read this as: "For all terms X, equality(X, X) is true."
+
+Note that Prolog implicitly considers only Herbrand interpretations of logic programs. Therefore, (implicit) universal quantification in Prolog automatically ranges over Prolog terms. The properties we expect from equality follow from this definition.
+
+Equality is a built-in predicate in Prolog, and it is denoted by the predicate name =. This means that the binary predicate (=)/2 is already defined when you start your Prolog system. We can read a goal of the form =(A, B) as: "True iff A is equal to B." Since = is already predefined as an infix operator, we can write this goal equivalently as A = B. This is only a syntactic variation, and denotes exactly the same goal.
+
+If (=)/2 were not already predefined, you could define it yourself by a single Prolog fact:
+
+X = X.
+
+This means that we do not need to define our own equality/2 predicate. We can simply use (=)/2 instead.
+
+Unification
+
+At the same time, the Prolog predicate (=)/2 denotes unification of terms.
+
+How is this possible? How can = denote equality and unification?
+
+The reason for this is that we can read Prolog predicates in different ways: One reading is called declarative reading and focuses on what the predicates mean. Another reading is called procedural and focuses on how a predicate is executed by the Prolog engine when you run a Prolog program.
+
+These views are, in some ways, complementary. For example, focusing on the meaning of predicates allows you to apply logical reasoning to understand your programs. On the other hand, focusing on operational aspects allows you to understand certain performance characteristics that are not evident from a purely declarative perspective.
+
+Operationally, we can regard Prolog's execution mechanism as a specific form of resolution, which is a theorem-proving technique for first-order logic. In this approach, unification plays an important role. In resolution, and also during execution of a Prolog program, unification occurs implicitly when a clause is selected. We can also explicitly unify two terms by invoking said predicate (=)/2. As we have seen, it is possible to define this predicate in terms of implicit unification.
+
+Unification is a quite versatile mechanism that subsumes checking, assignment and matching which you may know from other programming languages. Indeed, built-in unification is one of the defining characteristics of all logic programming languages, and one of the features that allow us to obtain short and general programs with this paradigm. Due to this versatility, we can often use Prolog programs in multiple directions.
+
+Here are a few example queries and answers that illustrate different usage modes of (=)/2:
+
+?- a = a. true. ?- X = f(a). X = f(a). ?- h(c,d) = h(X,Y). X = c, Y = d. ?- f(X, b) = f(g(a), Y). X = g(a), Y = b.
+
+Speaking procedurally, we can thus use (=)/2 to:
+
+check equality (if both arguments are instantiated)
+
+assign terms to variables (if one argument is a variable)
+
+match terms (if one argument is ground)
+
+unify terms (in all preceding cases, and also if both arguments contain variables).
+
+From a declarative perspective, the meaning of (=)/2 is the same in all examples: Declaratively, we ask whether these terms are equal, and Prolog tells us the set of solutions, which we can read as conditions under which the terms are equal.
+
+Equations and Identities
+
+As a motivating example, consider a notation that is commonly used in mathematics:
+
+x2 = 9 and how this is different from, say:
+
+x + 0 = x
+
+Both are equations, and you will find both examples in actual textbooks. Yet, there is an important difference between them, which you can intuitively sense if you feel that the first equation asks you to "solve" something, and the second doesn't. But what is the reason for this difference?
+
+Formally, we call a syntactic element of the form:
+
+Left = Right
+
+an equation. Equations occur in many branches of mathematics. For example, we may be asked to determine whether positive integers x, y and z exist such that:
+
+xn + yn = zn
+
+Formally, we may ask for which n the following formula is valid, and for which n it is false:
+
+∃x∃y∃z (xn + yn = zn)
+
+The existential quantifier ∃ is read as "there exists". For this concrete task, see Fermat's Last Theorem.
+
+On the other hand, we also use equations to denote identities. For example, in an algebraic group, the following identities must hold (e denotes the identity element, and i(x) denotes the inverse of x) for all x, y and z:
+
+e•x = x
+
+i(x)•x = e
+
+(x•y)•z = x•(y•z)
+
+In these identities, there is nothing to search or solve for. They state what does hold in groups.
+
+Formally, identities are universally quantified equations. We can make this explicit by using the universal quantifier ∀ ("for all"):
+
+∀x (e•x = x)
+
+∀x (i(x)•x = e)
+
+∀x∀y∀z ((x•y)•z = x•(y•z))
+
+There are many well-known identities in mathematics, such as trigonometric identities.
+
+Thus, the key difference between the two equations in the motivating example is in how the occuring variables are quantified.
+
+Semantic unification
+
+In many practical applications of Prolog and logic, equality as defined above is not sufficient to conveniently work with the terms we are interested in.
+
+For example, we may want to use Prolog to reason about integers. Thus, we want to regard the integer expression 1+3 as equal to to 4, and also as equal to 5-1 etc.
+
+Syntactically, these are all different terms. For example, the term +(1,3) is clearly not equal to the term -(5,1), since even their outermost functors are different.
+
+We thus want to generalize the concept of equality to take into account additional axioms. We call the resulting generalization of unification semantic unification, or unification modulo theories.
+
+Formally, a theory is specified by identities that hold over the domain of interest. For example, over integers, we expect the identity:
+
+∀x (x + 0 = x)
+
+to hold.
+
+Prolog systems often provide dedicated provisions for reasoning over specialized domains. Such extensions are referred to as CLP(X), constraint logic programming over the domain X.
+
+Accordingly, syntactic variants of (=)/2 are used to unify terms modulo specific theories. For example, the predicate (#=)/2 is available in several widely used Prolog systems and denotes equality of integer expressions.
+
+Here is an example of its use:
+
+?- 7 #= X + 3. X = 4.
+
+Thus, the system has deduced that X must be 4 so that X+3 is semantically equal to 7.
+
+Formally, we have posted a query involving an equation over integers:
+
+∃x (7 = x + 3)
+
+And Prolog has answered by stating a concrete solution that makes the sentence true if we take the axioms over integers into account.
+
+Syntactic unification is a special case of semantic unification (over the theory &emptyset;), where no additional axioms are taken into account. Plain Prolog can therefore be regarded as CLP(H), constraint logic programming over Herbrand terms.
+
+Unification modulo theories is not decidable in general, not even over ground terms which contain no variables. If unification modulo theories were always easily decidable, we could have solved Fermat's Last Theorem with a single Prolog query:
+
+?- X^N + Y^N #= Z^N, N #> 2.
+
+to which the system would have replied false, indicating that there is no solution. Therefore, Prolog systems must in general delay such unifications and give conditional answers.
+
+Summary
+
+For logic programmers, the equals sign = denotes equality of terms. (=)/2 is available as a built-in predicate, and we could define it within Prolog if it were not already available.
+
+Declaratively, we can read the goal A = B as "true iff A is equal to B".
+
+Procedurally, we can read the goal A = B as "unify A with B".
+
+Unification is a versatile mechanism that subsumes checking, assignment and matching. It is implicitly applied in the execution strategy of Prolog, which is a specific form of a theorem-proving technique called resolution.
+
+Syntactic variants of = denote semantic unification, which is also called unification modulo theories. In particular, (#=)/2 denotes unification over integer expressions in several widely used Prolog systems.
+
+More about Prolog: The Power of Prolog
+
+Main page

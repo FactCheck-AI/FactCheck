@@ -1,0 +1,175 @@
+Table of Contents
+
+Below you will find a collection of frequently asked questions regarding development of the GIMP.
+
+GIMP Development
+
+Who coordinates GIMP development?
+
+GIMP development is coordinated by Wilber the GIMP along with a loosely knit team of GIMP developers. The developers can be reached mostly through IRC (see the Discuss page) and the bug tracking system.
+
+How can I become a GIMP developer?
+
+If you are a developer who wants to start contributing code to GIMP, the best way to get to know its structure is by fixing bugs reported in Gitlab. Pick a bug, perhaps ask the advice of another developer as to whether he/she thinks it will be an easy bug or not, and then fix it and contribute a merge request.
+
+The Core Development section is where you want to start.
+
+Where can I discuss GIMP development?
+
+Developments related issues can be brought up on IRC and the bug tracking system.
+
+The GIMP has its own IRC channel on GIMPNet where most of the active developers hang out. Join us in #gimp on irc.gimp.org.
+
+Every once in a while, GIMP developers get together for a few days to throw a GIMP Developers Conference (historically referred to as GIMPCon), or during Libre Graphics Meeting. These days, a hacking event called “Wilber Week” also sometimes happen.
+
+See the Conferences section.
+
+Where can I find documentation for the GIMP API?
+
+You can pass -Dgi-docgen=enabled to meson.
+
+After running ninja you can find the GIMP API reference in the devel-docs directory.
+
+Pre-generated API documentation is included in the official GIMP tarballs.
+
+The API reference will normally be installed in $PREFIX/share/doc/. An online version of the GIMP API reference can be found here.
+
+Note: these are the instructions for the master branch of GIMP, future GIMP 3.0. For 2.10 instructions: pass --enable-gtk-doc to the configure script and find installed docs in $PREFIX/share/gtk-doc/html.
+
+How do I make a stack trace?
+
+A stack trace is a list of function calls that leads to some point in the program. Debugging tools like gdb can get stack traces from crashed applications so that developers can figure out what went wrong. By including a stack trace with your bug report, it will be much easier for the developers to fix the reported problem.
+
+Information on how to make a stack trace can be found in the document Getting Stack Traces.
+
+What is the best way to submit a patch?
+
+The best way to submit a patch is to open a bug report in Gitlab and attach the patch there, or create a merge request, along with a description of what it does and why it should be applied.
+
+An introduction to how this is done can be found in the Submit your first patch document.
+
+What is the preferred coding style used in GIMP?
+
+Please follow the GIMP coding style document throughout the GIMP project. This coding style is enforced for every new code in the official repositories.
+
+Try to make use of GLib’s object system as much as possible. Do not create wrappers around functions of parent classes. If you end up duplicating code, try to create a common parent class and implement the common methods there.
+
+Don’t include headers in headers except where unavoidable (e.g. for deriving objects). Opaque typedefs go to app/base/base-types.h, app/core/core-types.h etc. See devel-docs/includes.txt for a detailed description of the include policy.
+
+Don’t use the GTK wrappers around the GLib object and signal system.
+
+How can I configure my editor for this coding style?
+
+We provide configuration files for a few editors and welcome more configuration files for anyone wishing to contribute one for their favorite editor or Integrated Development Environment (IDE).
+
+Who coordinates the GIMP translation efforts?
+
+Any help with translations is appreciated. If you want to help, please get in contact with the people from the GNOME Translation Project who coordinate all translation efforts for projects hosted in the GNOME GIT repository.
+
+Translations is organized by teams for each language. The recommended way is therefore to contact the specific team for your language (each team may have different rule, their dedicated page will give you specifics).
+
+Exceptionally if no team exists for your language already, you may propose to create a new one.
+
+Note that you usually don’t need to get in touch with developers to start and translate GIMP since everything happens through GNOME localization infrastructure. Yet if you want to discuss with developers, or if you have any problem with the aforementionned procedure, all contributors are happy to mingle. Feel free to get in touch with developers.
+
+How can I support GIMP development?
+
+By using GIMP and reporting any bugs you find in Gitlab, you’re helping a great deal. But there are other non-technical ways of supporting the development of The GIMP as well.
+
+GIMP has a web site, application documentation, lots of tutorials, and more. Unfortunately, as GIMP develops over time, much of this documentation needs to be re-written or freshened up, documentation needs to be added for new functionality, the web site needs to get a new lick of paint and so on.
+
+If you’re interested in helping out you should get in touch with developers, offering your help.
+
+Last but not least, donating to GIMP supports the development, especially as several developers are trying and make a living by developing GIMP full-time.
+
+Plug-In Development
+
+Is there a plug-in template available?
+
+Yes. An official GIMP plug-in template is available.
+
+Note however that this template is old and likely quite outdated, regarding modern recommendation. We are planning to improve documentation and help for plug-in developers soon.
+
+How about a Script-Fu template?
+
+Yes. Simon Budig has written a fill-in-the-blanks Script-Fu template which is available here.
+
+How do I get my plug-in included in GIMP?
+
+If you are certain that your plug-in will be useful to all GIMP users, then you can ask the GIMP developers to consider it for inclusion in future GIMP release by creating a merge request.
+
+However, we have been trying to limit the number of plug-ins included in the standard distribution to the most common usage only. Therefore do not expect this to to happen if your proposed plug-in caters to a specific usage.
+
+We used to have a registry for third-party developers to publish their plug-ins and other resources. This registry is now gone as it was using deprecated technology and was becoming a source of problems. Some work is in-progress to get a new platform for third-party resources.
+
+How do I debug a GIMP plug-in?
+
+Eeek! The plug-in you’re working on has a bug in it! And the fix isn’t completely obvious, so you want to use debugger to see what is going on. But hmm, how does one start a plug-in under a debugger if GIMP is the one who is starting the plug-in…
+
+To address this issue, libgimp has some hooks controlled by the GIMP_PLUGIN_DEBUG environment variable. The idea is that you can attach a debugger to the pid of the plug-in you want to debug. The process is described in the file “Debugging Plug-ins” document
+
+Will the plug-in I compiled against 2.0 work with GIMP 2.2 or 2.4?
+
+The short answer is yes. GIMP 2.2 and 2.4 are binary compatible with plug-ins compiled for GIMP 2.0. The API is also backwards source compatible, so your plug-in should also compile cleanly against GIMP 2.2 and 2.4.
+
+If the plug-in you compiled for 2.0 does not work with 2.2 or 2.4, there is one change which has been made which is not backwards compatible, since the old behaviour was considered incorrect. If you create a temporary drawable, using for example gimp_layer_new(), you are now required to add it to an image before calling any functions with the drawable as an argument.
+
+Will my 2.x plug-in work with GIMP 3.0?
+
+A major release is the occasion to fix wrong design choices, therefore the API compatibility was broken. It means some part of your plug-in will have to be rewritten.
+
+What you need to rewrite is mostly infrastructure code (how the plug-in is registered) and a few calls to glue internal logics and your plug-in logics. For instance, since GIMP 3.0 finally allows multiple selection of layers, various functions will now use or return a list of layers instead of a single layer. In the end, porting your code may be frightnening but it can be done very quickly.
+
+The 2.x series lasted nearly 20 years and we care a lot about API backward compatibility. So feel assured that such API breakage won’t happen all the time. Once again, GIMP 3.2 will be backward compatible with GIMP 3.0 and so on.
+
+git
+
+What should I put in the commit message when doing a git commit?
+
+Please put a short explanation of the change on the first line. Then, after an empty line, you can describe the change in more detail using as many lines as you need. Try not to exceed 72 colums.
+
+If the commit fixes a bug or part of a bug please use the bug number and description as the first line of the commit message. It’s most convenient to just copy the line from the Bugzilla bug page.
+
+GEGL
+
+What is GEGL?
+
+GEGL is the Generic Graphical Library. It is replaced the handling of various image processing tasks in GIMP, starting from 2.8. Its usage became more pervasive since GIMP 2.10.
+
+What is GEGL able to do?
+
+GEGL is be a general image processing library. It uses a directed acyclic graph, a DAG, to represent image processing operations. In the DAG, images are edges, and operations are nodes. It takes advantage of this DAG to minimize regions which are processed, provide efficient caching of operations, and efficient redrawing when a parameter of the graph changes.
+
+GEGL is also independent of the data type being processed and is able to handle high bit depth images, ICC profiles and parallel processing of image tiles.
+
+What does all that gibberish mean for GIMP?
+
+Many highly requested features of GIMP are easier to do using GEGL. Layer effects, layer groups, and adjustment layers are quite easily represented (and efficiently calculated) using the DAG organization of GEGL. CMYK and high bit depth support are easier because GEGL does not make the same assumptions about color spaces and data types that GIMP does.
+
+The reusability of image processing operations means that plug-ins will be able to be designed in a much more modular way. The brush system will be able to become more flexible, especially when filter plug-ins are able to be used as procedural brush plug-ins.
+
+Miscellaneous
+
+Where can I learn more about the GObject system used by GIMP?
+
+The GObject documentation has a nice tutorial that you might want to have a look at.
+
+Where can I learn more about color spaces etc?
+
+Charles Poynton has collected a set of Frequently Asked Questions about Color.
+
+Where can I learn more about image manipulation algorithms?
+
+A good source of information is the comp.graphics.algorithms list of Frequently Asked Questions.
+
+Our Algorithms page will also detail some of the algorithms used in GIMP, though it’s incomplete.
+
+Is there a GIMP user FAQ available?
+
+Please see the User FAQ on gimp.org.
+
+How can I contribute to this FAQ?
+
+If you would like to contribute to this FAQ, propose a merge request on the git repository.
+
+With your help this FAQ will grow and become more useful.

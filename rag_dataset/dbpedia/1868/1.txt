@@ -1,0 +1,103 @@
+Disculpa, pero esta entrada está disponible sólo en English.
+
+Third-party article by Oliver Ritter
+
+Weekly Exercise («Wochenaufgabe») for weeks 06 and 07 – Pharmacies
+
+What is the idea behind this ?
+
+Some of you may have heard about the «Wochenaufgabe» in the German OpenStreetMap community. If you haven’t, it means «weekly exercise» and usually lasts between one and two weeks. The idea behind this is to take a mapping topic that is relevant and interesting to all mappers and the goal is to let the community work together all over the country to achieve something that a single person would not be able to do on their own.
+
+Weeks 06/07: Pharmacies (Apotheken)
+
+This week three users (TheFive, Ziltoidium, Gehrke) worked out the idea to catch not only all missing pharmacies in Germany, but also those existing pharmacies that have incomplete tags. In total, that’s 20,600.
+
+However, how can you do this in a coordinated way with maybe 50, 100, 200 mappers working in parallel? How do you find out where pharmacies are, see the progress that is being made, and avoid duplicating work? How do you handle all the different tags, like addresses, contact data and opening hours, and record everything consistently? This is what this post is about!
+
+So let´s have a closer look at preparation
+
+Some statistics
+
+In Germany there is an association of the pharmacies. They offer some numbers, but unfortunately few details, but this at least gives us an idea of what should be on the map and what is potentially missing.
+
+Next thing we found was a detailed Excel file that lists all cities in Germany and, importantly, it contains the «Gemeindeschlüssel», or the unique ID/key for any municipality.
+
+So far we are now able to
+
+Estimate how many pharmacies should be in each federal state («Land»)
+
+Divide the OSM database into smaller parts (federal states and single municipalities)
+
+Work out which municipalities belong to which federal state, and what is the total number of pharmacies
+
+Visualisation of the database
+
+Users «Gehrke» and «TheFive» have organised a weekly exercise before (90,000 streets in two weeks were improved!) and have some experience of this sort of work with databases. Their idea was to make mapping progress easily visualised, so that anyone working on it could see the progress that was being made and be motivated to continue. Some real competition started to grow between cities.
+
+Last time this was done with some tables and diagrams, but this time it’s getting more «professional». TheFive developed a tool «osmcount» that shows on a daily basis the exact number of pharmacies per town. So when you know the unique ID/key of your town you can now check the exact status.
+
+Additionally, you have the option to click some links and go to the Overpass API. For example you could check Cologne (Köln) and the associated Overpass query and map by clicking the service link «R». Of course, there will be diagrams as well.
+
+That’s nice, but would you ever want to search and click for each individual city? With over 2800 cities, that would take a long time…
+
+Using uMap as an «always up to date map»
+
+So team-member «Ziltoidium» used the awesome uMap project and combined it with an overpass query to have an always up to date map. The benefit of this is that you don’t have to write a query for each place over and over again – you have one map that works everywhere. A nice secondary effect is that you also have some nice eye candy with pharmacy icons as well.
+
+Coordinated work
+
+To avoid chaos and duplication, we needed a tool to coordinate mapping. We decided to use a simple Google table that anybody could edit (with some parts locked).
+
+If the mappers are of the opinion that a city is «finished» and no pharmacy is missing, they can simply edit the entry to «finished» and move to the next city. That way, other mappers won’t start again on finished places.
+
+Some rules
+
+As the prospective parliamentary candidate for Thanet South would say, there have to be some rules! Most importantly – quality over quantity. There are lots of websites containing pharmacy addresses. But can you trust them? Are they up to date? Map only what you are sure about. If in doubt, go there on foot, check the official website, call the operator, ask friends – whatever… but data entered should be trustworthy.
+
+Avoid adding lots of OSM notes which only say «There should be a pharmacy, could anybody have a look?». Instead, discuss problems in the forum or leave it blank at the map. The weekly exercise is made to solve problems, not to create lots and lots of new notes.
+
+What to map?
+
+What is interesting for the end user? We thought of following tags:
+
+name of the pharmacy
+
+address
+
+contact data
+
+opening hours
+
+wheelchair access
+
+operator
+
+(maybe) dispensing or not
+
+Tags in detail – the quality question
+
+Imagine that we’ve got data on lots and lots of pharmacies – what about the quality of the tagging on each one? For example, we might have:
+
+an almost full address, but missing house number
+
+the «NAME OF THE PHARMACY» in capital letters
+
+The syntax of the phone numbers written incorrectly: 0123 45 67 89 vs 0123 – 45 67 89 vs +49123456789 vs 0049123456789
+
+In order to avoid manually checking all 20600, what we need is a «bird’s eye view», a big table that shows all relevant data to make it easy to compare items. To make it easy to visualise we decided to divide it into federal states.
+
+Once again we used overpass-turbo.eu to perform the query, but this time the output is not a map, but a CSV file. This can be easily converted to a readable wikitable by this wonderful tool (and a little bit of manual work).
+
+Stay tuned
+
+To get the news about the current Wochenaufgabe you can check the forum or our twitter feed (mostly in German, obviously).
+
+OSM forum
+
+Twitter @TheFive
+
+Twitter @osmdorsten
+
+If you also tweet, please use the hashtag #osmwa0607
+
+We hope you like our event and that maybe it inspired you towards similar exercises. Some things can only be done by the community working together, and results will be even better when individual contributors see progress as they go. We believe that with this challenge has succeeded in doing this and also made the mapping experience more fun!

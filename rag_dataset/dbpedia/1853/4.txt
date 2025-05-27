@@ -1,0 +1,453 @@
+by
+
+A.K.M. Azad Hossain
+
+1,* and
+
+Greg Easson
+
+2
+
+1
+
+Department of Geology and Geological Engineering, The University of Mississippi, 120A Carrier Hall, University, MS 38677, USA
+
+2
+
+Mississippi Mineral Resources Institute, The University of Mississippi, University, MS 38677, USA
+
+*
+
+Author to whom correspondence should be addressed.
+
+Geosciences 2016, 6(1), 1; https://doi.org/10.3390/geosciences6010001
+
+Submission received: 6 August 2015 / Revised: 15 November 2015 / Accepted: 19 November 2015 / Published: 6 January 2016
+
+(This article belongs to the Special Issue Geological Mapping and Modeling of Earth Architectures)
+
+Abstract
+
+:
+
+Soil moisture monitoring and characterization of the spatial and temporal variability of this hydrologic parameter at scales from small catchments to large river basins continues to receive much attention, reflecting its critical role in subsurface-land surface-atmospheric interactions and its importance to drought analysis, irrigation planning, crop yield forecasting, flood protection, and forest fire prevention. Synthetic Aperture Radar (SAR) data acquired at different spatial resolutions have been successfully used to estimate soil moisture in different semi-arid areas of the world for many years. This research investigated the potential of linear multiple regressions and Artificial Neural Networks (ANN) based models that incorporate different geophysical variables with Radarsat 1 SAR fine imagery and concurrently measured soil moisture measurements to estimate surface soil moisture in Nash Draw, NM. An artificial neural network based model with vegetation density, soil type, and elevation data as input in addition to radar backscatter values was found suitable to estimate surface soil moisture in this area with reasonable accuracy. This model was applied to a time series of SAR data acquired in 2006 to produce soil moisture data covering a normal wet season in the study site.
+
+Graphical Abstract
+
+1. Introduction
+
+Soil moisture, is an important hydrologic variable that controls the interactions (and feedbacks) between land surface and atmospheric processes [1]. It plays a very important role in the distribution of precipitation between runoff and infiltration. Soil moisture monitoring and characterization of the spatial and temporal variability of this hydrologic parameter at scales from small catchments to large river basins continues to receive much attention, reflecting its critical role in subsurface-land surface-atmospheric interactions and its importance to drought analysis, crop yield forecasting, irrigation planning, flood protection, and forest fire prevention [2,3,4].
+
+In semi-arid environments ground water recharge is one of the most difficult parameters to quantify, where a number of recharge mechanisms, including soil moisture change, on variable temporal and spatial scales. Several studies showed that temporal analysis of soil moisture can be used to understand ground water recharge [5,6]. Remote sensing technology has been used successfully to estimate soil moisture [3,7,8,9,10] and map its spatio-temporal distribution in semi-arid environments and could potentially contribute to ground water recharge studies.
+
+Synthetic Aperture Radar (SAR) data are particularly well suited for estimating soil moisture due to the relationship between the dielectric constant and soil moisture [11,12]. The microwave measurements are strongly dependent on the dielectric properties of the target. For a soil, dielectric properties are a function of the amount of water present. The real part of the complex dielectric constant of water in this spectral region (microwave) is approximately 80 comparing to the value for dry soil is about three. This large contrast provides a basis for estimating the moisture for dielectric values between these two extremes [13,14]. It is not always possible to take advantage of the dielectric constant and soil moisture relationship since microwave measurements are also influenced by surface roughness, which varies significantly from place to place due to diverse land use and land covers. That’s why no global SAR based operational algorithm exists for estimating soil moisture [15].
+
+Studies, particularly in the past two decades, have resulted in a multitude of methods, algorithms, and models relating satellite-based radar backscatter imagery to estimate surface soil moisture content [3,10,11,16,17,18,19,20]. The most commonly used algorithms are developed by a semi-empirical approach [21,22]. In a given bare soil condition, radar backscatter is linearly dependent on volumetric soil moisture content (θw) in the upper 2 to 5 cm of soil with a correlation (R2)~ 0.8 to 0.9 [21,22]. However, the presence of vegetation cover complicates soil moisture estimation due to the interaction of the microwaves with the vegetation and soil [12]. The radar backscatter from a surface with vegetation consists of three components: (1) product of the backscatter contribution of bare soil surface (σs°) and the two way attenuation of the vegetation layer (τ2), (2) the direct backscatter contribution of the vegetation layer (σ°dv), and (3) multiple scattering involving the vegetation elements and the ground surface (σ°int) [12].
+
+σ ∘ = τ 2 σ s ∘ + σ d v ∘ + σ int ∘
+
+(1)
+
+In soil moisture estimation for semi-arid environments using different SAR data the influence of sparse vegetation were found negligible by several studies [11,16,17,18,19,22]. That means, for a given soil with uniform surface roughness (R), θw can be estimated using the following simple linear regression expression since in this case σ° ≈ σ°s.
+
+θ w = a + b σ ∘
+
+(2)
+
+where a and b are regression coefficients, usually determined from field experiments encompassing the target-invariant, scene-invariant SAR wavelength, incidence angle, polarization, and calibration.
+
+Using high resolution SAR data, however, it is not always possible to obtain strong linear relationship between measured soil moisture and radar backscatter even in semi-arid environments. Depending on the amount of vegetation present, its dielectric properties, height and geometry, the sensitivity of microwave backscatter to variations in volumetric soil moisture may be significantly reduced [23]. As shown by [23], in a semi-arid environment of south-eastern New Mexico vegetation coverage can significantly reduce the accuracy of soil moisture estimation using numerical models based on simple linear (R2 = 0.05 to 0.24) and non-linear (R2 = 0.24) relationships between radar backscatter from high resolution SAR imagery and near real time in situ soil moisture measurements. In addition to the vegetation density, the SAR backscattering can also be influenced by the variation in soil types and soil salinity since they may affect the surface dielectric properties. Topographic variations can also influence the distribution of soil moisture in the field.
+
+This paper investigated the potential of multiple linear regressions and Artificial Neural Networks (ANN) based models to improve soil moisture estimation in south-eastern New Mexico using high resolution Radarsat 1 SAR imagery. The models used SAR backscatters and near real time soil moisture measurements along with vegetation density, soil type, elevation, and soil salinity measurements. A time series of SAR based soil moisture estimation data were generated for an entire wet season in the study site using the developed numerical models.
+
+2. Study Site
+
+A small area in south-eastern New Mexico called Nash Draw was selected as the study site for this study (Figure 1). It is located about 30 km east of Carlsbad, NM. It covers an area of about 400 km2 and the study site occupies 225 km2 of it. The extent of the site is limited between 103.78°W–103.92°W longitude and 32.23°N–32.36°N latitude. It is a part of the north-eastern Chihuahua desert, which is characterized by semi-arid environments and sparsely vegetated rangeland. The topographic relief in the region is not significant. The maximum relief across the area is approximately 200 m.
+
+Nash Draw is a karst valley that developed in response to subsurface dissolution of evaporites (including halite and sulfate rocks) and subsidence of the overlying strata [24]. It is a complex example of the localized effects of evaporite karst on surface topography, near-surface geology, and hydrology [25]. Different areas of Nash Draw display small karst features, including caves, sinkholes, dolines, and larger integrated forms such as valleys or elongated depressions [25].
+
+The hydrologic system within Nash Draw is poorly understood. Much of Nash Draw exhibits no significant integrated surface drainage [25], while much of the area is covered by a thick blanket of dune sand. That is why it is very difficult to identify the potential locations for ground water recharge in this area. Therefore, to assist in understanding the existing hydrologic processes modifying Nash Draw it is very important to determine the spatio-temporal distribution of surface soil moisture.
+
+Since the study site covers an area of 225 km2 high resolution SAR data would be very suitable to obtain remote sensing derived soil moisture estimation for this area. This is the reason Nash Draw was found suitable as a test site for the conducted study.
+
+Rainfall in Nash Draw is unreliable and erratic, with August as the wettest part of the year and the rainy season ending in October. Therefore, it was considered that imagery acquired from August to November should record the maximum variation of soil moisture in the study site.
+
+Figure 1. Location of study site.
+
+3. Data Acquisition and Processing
+
+3.1. Synthetic Aperture Radar (SAR)
+
+Due to its high spatial resolution, Radarsat 1 SAR Fine imagery was selected for estimating soil moisture in the study site. Five scenes of Radarsat 1 SAR Fine imagery, with 10 m spatial resolution and 50 km swath, covering the Nash Draw area were acquired from the Alaska Satellite Facility (ASF). The scenes were acquired in descending mode at a 37° incidence angle on 2 and 26 August, 19 September, 13 October, and 6 November of 2006. Figure 2 shows the Time series of the acquired SAR imagery.
+
+Figure 2. Time series of acquired SAR imagery.
+
+3.1.2. SAR Pre-Processing
+
+All acquired SAR imagery were received as Level 0 products and then converted to level 1 products. These Level 1 SAR data were terrain corrected, calibrated, and filtered in preparation for soil moisture estimation.
+
+Data Calibration
+
+Sigma-naught (σ°) describes the average reflectivity or scattering co-efficient of a radar scene. Beta-naught (β°) interprets the brightness estimates of mean reflectivity and separates the radiometric response and reflectivity dependent on the terrain properties, such as local slope. According to [26]:
+
+σ o = β o + 10 log 10 ( sin l )
+
+(3)
+
+β o = 10 log 10 ( D N 2 + A 3 / A 2 )
+
+(4)
+
+where, DN—Digital number, A3—fixed offset from the radiometric data record, A2—Look-Up Table (LUT) value, and l—local incidence angle.
+
+Calibrating the radar scene in sigma naught (σ°) requires normalization using the knowledge of local incidence angle as we can see in Equation (3). However, this normalization is not required for beta naught (β°) and for an area with low relief (that is, no significant influence with the variation of local incidence angle). Since the topographic relief is not significant in the study site the acquired SAR data were calibrated as beta naught for this research. An experiment was conducted using one radar scene to determine the suitability of σ° or β° for soil moisture estimation in the study site. It was found that backscatter values as β° show better correlation with soil moisture than backscatter values as σ° in the study site. It is believed that β° produces a better estimation of soil moisture due to the low relief in the study site [27,28].
+
+Removing Speckles
+
+In radar remote sensing, coherent imaging systems produce images with a granular appearance. Bright and dark spots caused by random constructive and destructive interference of the wavelets returning from the various scatterers within the resolution cell of the system [29]. The effect of this interference process is regarded as a multiplicative noise, called speckle. Removing speckles is an essential component of SAR image pre-processing techniques. Speckles should be reduced, preserving edges and image texture to extract information from SAR imagery [30].
+
+The best approach for removing speckles in SAR imagery is to use speckle removing filters. These speckle removing filters are developed on the basis of the multiplicative model with an exponential probability density function [31]. To remove the speckles in the acquired radar scenes different types of filtering techniques available in the Erdas Imagine image processing software were tested with different window sizes. The “Lee” filtering technique with 5 × 5 window size was found efficient in removing the speckles and was used to de-speckle the acquired radar scenes.
+
+Geometric Correction
+
+All SAR data were obtained as georectified using the Universal Transverse Mercator (UTM) projection system from the Alaska Satellite Facility (ASF). The GIS coverage of the sample locations and all other GIS data were georectified to the same projection system. A recent aerial photograph was used to aid the georectification process.
+
+3.2. Digital Elevation Model (DEM)
+
+The knowledge of the local incident angle is essential for the quantitative estimation of soil moisture and roughness from SAR data. In the absence of topographic relief the local incident angle equals the radar look angle. In areas with large topographic relief, the incident angle becomes a function of the radar look angle and the local terrain slope. This makes the straightforward surface parameter estimation difficult. It is then necessary to correct the SAR data for terrain to allow geometric overlays of remotely sensed data from different sensors and/or geometries. The elevation of the study site varies from 900 m to 1100 m. Despite the minimal topographic influence, a terrain correction was performed using USGS 30 m Digital Elevation Model (DEM) (Figure 3) to improve geometric accuracy of the data. Since topographic variations influence the distribution of soil moisture in the field the acquired DEM was also used in the SAR soil moisture estimation models.
+
+Figure 3. Digital Elevation Model (DEM) for the study site.
+
+3.3. In Situ Soil Moisture Measurements
+
+Near-real time soil moisture data is needed for quantitative estimation of soil moisture using SAR data. Soil samples were collected in the selected parts of Nash Draw and analyzed them to calculate volumetric soil moisture for calibrating the SAR imagery acquired on 2 August 2006 and 6 November 2006. Eighty soil samples were collected in the study site for each date.
+
+3.3.1. Sampling Technique
+
+A stratified soil sampling technique [32] was used to acquire the soil samples. The study site was divided into four equal parts and random sample points were selected in each part using 500 m grid spacing, with 20 samples collected in each part. Accessibility and variation in soil types was used to select sampling sites. Figure 4 shows the distribution of the soil sample locations in the study site.
+
+Figure 4. Distribution of soil samples collected for in situ soil moisture measurements.
+
+RADARSAT 1 acquires imagery in C-band with HH polarization at 5.7 cm wavelength and 5.3 GHz frequency. According to [33] the RADARSAT 1 beam should be able to penetrate ground up to top few cm in dry bare soil condition. Therefore, samples were collected at a depth of approximately 3 cm below the land surface.
+
+3.3.2. Volumetric Soil Moisture Measurement
+
+Gravimetric soil moisture values were calculated from the obtained soil samples using the ASTM standard test method [34]. It was then converted to volumetric soil moisture using sample volume (Equations (5) and (6)). Table 1 shows the statistics of the soil moisture measurements for both August and November data sets.
+
+V w = ( M w − M d ) ρ w ( cm 3 )
+
+(5)
+
+θ v = V w V s × 100 ( % )
+
+(6)
+
+where, Vw—the volume of water content in the obtained soil sample (cm3), Ms—the mass of moist soil (g), Md—the mass of dry soil (g), ρw—water density (g/cm3), θv—volumetric soil moisture (%), and the volume of the sample container Vs = 76.55 (cm3).
+
+Table 1. Statistics of in situ soil moisture measurements.
+
+Table 1. Statistics of in situ soil moisture measurements. Statistical ParametersMeasurements (in %)1–3 August 20064–6 November 2006Mean6.482.80Minimum2.550.26Maximum14.5310.16Standard Deviation2.562.13
+
+3.4. Vegetation Data
+
+Vegetation cover strongly influences soil moisture estimation due to the interaction of the microwaves with the vegetation and soil. The amount of vegetation, its dielectric properties, and distribution pattern can significantly affect the sensitivity of microwave backscatter to soil moisture. The SAR imagery time series data were used to produce vegetation distribution maps for the study site and a vegetation density map for each SAR image acquisition date.
+
+The ISODATA clustering algorithm was used to classify each SAR image to produce the vegetation density map for the study site. The image was classified into 25 classes and then recoded the data into four classes: thin or non-vegetated areas, sparsely vegetated areas, densely vegetated areas, and water. Field observations of vegetation were used to recode the data and produced vegetation density maps (Figure 5).
+
+Figure 5. Vegetation density map for each SAR image acquisition date.
+
+3.5. Soil Type and Soil Salinity
+
+The soil data were acquired from the U. S. Department of Agriculture Natural Resource Conservation Service (USDA-NRCS) and converted into a 10 m gridded soil type dataset. This dataset was incorporated into the soil moisture estimation model. Figure 6 shows the soil type map for the study site. The soil type data was used in both multiple linear regressions and artificial neural networks based soil moisture estimation models.
+
+Figure 6. Measurements of soil moisture, soil salinity, and radar backscatter values shown on different soil types in Nash Draw (August 2006 data set).
+
+The salinity of the 80 soil samples (collected for in situ soil moisture measurements in August 2006) were measured using USDA Soil Water Extract 1:5 methods [35]. The measurement is expressed by Electrical Conductivity (EC) in µS/cm. The soil salinity measurements were also used in both multiple linear regressions and artificial neural networks based soil moisture estimation models. Figure 6 shows the distribution of measured soil moisture, soil salinity, and radar backscatter values of different soil types in Nash Draw, NM.
+
+4. Methods
+
+In this study, multiple linear regressions and Artificial Neural Networks (ANN) based models were used to investigate the influence of vegetation, elevation, soil type, and salinity on soil moisture estimation using microwave imagery. Coefficient of determination (R2) values were used to evaluate the suitability of the different numerical models to estimate and map soil moisture distributions. Soil moisture maps were prepared for the five SAR imagery acquisition dates using the most suitable numerical model.
+
+4.1. Multiple Linear Regressions
+
+In semi-arid environments, the influence of sparse vegetation was found negligible in several soil moisture estimation studies using SAR data, e.g., [11,16,17,18,19]. However, as shown by [23] the vegetation distribution pattern in Nash Draw could significantly influence the soil moisture estimation using high resolution SAR data. The obtained vegetation density and distribution maps of Nash Draw (Figure 5) also support this observation.
+
+In estimating soil moisture from low frequency radar backscattering (L band radar), the di-electric constant was found to be weakly sensitive to soil types [12]. The sensitivity of higher frequency radar backscattering (C band radar) to soil types, however, has not been fully analyzed in the published literature. Several studies reported that soil moisture estimation using L-band radar should consider the impact of soil salinity in the model [36,37,38]. Since in this research the soil moisture estimation model used C band radar, the impact of both soil type and soil salinity on soil moisture estimation was investigated.
+
+Multiple linear regressions were conducted incorporating vegetation density information, elevation, soil type, and soil salinity in addition to radar backscattering (measured as βº) to estimate soil moisture in the study site. The regression was done in a step fashion where independent variables (vegetation density information, elevation, soil type, and soil salinity) were sequentially added to the regression analysis to evaluate the effects of each independent variable in soil moisture estimation.
+
+Equations (7)–(11) are the numerical models developed by multiple linear regressions with the observed in situ soil moisture measurements and different combination of independent variables to estimate soil moisture in Nash Draw, NM. The observed soil moisture data were acquired from the 2 August data set. Table 2 shows the coefficient of determination (R2) values of the corresponding models. From the results of the simple linear regressions it was found that both the 2 August and the 6 November data sets produced similar results. Therefore, it was decided to use only one data set to evaluate the model performance.
+
+θ w = 16.01 + 0.50 β o − 0.86 V
+
+(7)
+
+θ w = 13.90 + 0.42 β o − 0.79 V + 0.22 S
+
+(8)
+
+θ w = 26.85 + 0.40 β o − 0.81 V + 0.01 E
+
+(9)
+
+θ w = 18.17 + 0.38 β o − 0.77 V + 0.21 S − 0.01 E
+
+(10)
+
+θ w = 24.91 + 0.27 β o − 0.97 V + 0.14 S − 0.02 E − 0.01 S L
+
+(11)
+
+where, β°—Backscatter value, V—Vegetation, S—Soil type, E—Elevation, and SL—Soil salinity.
+
+Table 2. Coefficient of determination (R2) values of multiple linear regression based models.
+
+Table 2. Coefficient of determination (R2) values of multiple linear regression based models. Independent VariablesCoefficient of Determination (R2)Insignificant Variablesβ°, V0.50--β°, V, S0.60--β°, V, E0.51Eβ°, V, S, E0.61Eβ°, V, S, E and SL0.66E and SL
+
+4.2. Artificial Neural Networks (ANN)
+
+Most SAR based soil moisture estimation models are based on the assumption that soil moisture distribution is linearly related to the radar backscatter of the soil moisture surface, e.g., [11,12,21,39]. There are a few studies that explore the non-linear relationships between soil surface moisture and radar backscatters. In this study, Artificial Neural Networks (ANN) based numerical models were developed to estimate soil surface moisture from SAR data and to explore the non-linear relationship between soil moisture and SAR backscatters. The significance of vegetation coverage, elevation, soil type, and soil salinity in soil moisture estimation using SAR data and artificial neural networks based models was also investigated.
+
+Artificial neural networks, are a branch of artificial intelligence [40] in which the solution to a problem is learned from a set of examples [41]. A neural network can be regarded as a nonlinear mathematical function, which transforms a set of input variables into a set of output variables. The use of neural networks has been shown to be effective alternatives to more traditional statistical techniques [42]. Neural networks can be trained to approximate any smooth, measurable function [42], can model highly non-linear functions, and can be trained to be accurately generalized when presented with unseen data [26]. In a typical neural network model, a single neuron forms a weighted sum of the inputs x1,x2,…,xd given by a = Σiwixi, and then transforms this sum using a non-linear activation function g( ) to give a final output z = g(a) (Figure 7).
+
+A feed forward neural network can be regarded as a nonlinear mathematical function, which transforms a set of input variables into a set of output variables. The multilayer perceptron is the most widely used feed forward neural network. Figure 7 shows a single processing unit of neural networks. If we consider a set of m such units, all with common inputs, then we arrive at a neural network having a single layer of adaptive parameters (weights) as illustrated in Figure 8. The output variables are denoted by zj and are given by Equation (12).
+
+z j = g ( ∑ i = 0 d w j i x i )
+
+(12)
+
+where wji—the weight from input i to unit j, and g( )—an activation function as discussed previously.
+
+Figure 7. A single processing unit in neural networks.
+
+Artificial neural networks, based non-linear numerical models were developed for soil moisture estimation for the entire study site using the 2 August data set. Five different neural networks based models were developed, through addition of different variables, to estimate soil moisture in Nash Draw. The first model had only one input, the backscatter values. This model uses the non-linear relationship between radar backscatter and soil moisture content. The other four models used additional inputs (e.g., vegetation coverage, elevation, soil type, and soil salinity) in different combinations with radar backscatter values. JMP statistical software was used to perform the neural networks based analysis. The model coefficient of determination (R2) and cross validation coefficient of determination (CV R2) values were used to evaluate the model performance for soil moisture prediction. The impact of soil salinity was investigated and inclusion of this variable did not significantly improve model performance. Figure 9 shows the simplified schematic of the models that were developed. Table 3 shows the R2 and CV R2 values of the corresponding models.
+
+Figure 8. A multilayer perceptron with two hidden layers.
+
+Figure 9. Neural networks based numerical models for soil moisture estimation in Nash Draw, NM, USA. Note: β°—Backscatter value; V—Vegetation; S—Soil type; E—Elevation; SL—Soil salinity.
+
+Table 3. Coefficient of determination (R2) and cross validation coefficient of determination (CV R2) of the neural networks based numerical models for soil moisture estimation.
+
+Table 3. Coefficient of determination (R2) and cross validation coefficient of determination (CV R2) of the neural networks based numerical models for soil moisture estimation. Input VariablesHidden NodesCoefficient of Determination (R2)Cross Validation (CV) R2β°30.240.11β°, V50.740.49β°, V, E40.770.54β°, V, E50.810.44β°, V, E, S40.830.56β°, V, E, S50.820.47β°, V, E, S and SL30.760.45β°, V, E, S and SL40.820.54β°, V, E, S and SL50.900.58
+
+5. Results
+
+5.1. Soil Moisture Estimation
+
+Near-real time field observations, acquired at the beginning and end of the time series, in conjunction with SAR data were used to estimate soil moisture from the SAR imagery acquired on five different dates in 2006. Model coefficient of determination (R2) and model cross validation coefficient of determination (CV R2) (for non-linear models) values were compared and used to evaluate their suitability for soil moisture estimation in Nash Draw. The model with the highest R2 and CV R2 values was considered as the most appropriate model for soil moisture estimation. The accuracy of the selected models was evaluated by Kappa statistics. The selected soil moisture estimation numerical models were then used to convert ßº SAR data into soil moisture data. The soil moisture data was divided into several categories to aid in the interpretation of the spatial distribution of the soil moisture in the study site.
+
+The following observations were made after the evaluation of the R2 and CV R2 values of the models developed for soil moisture estimation in Nash Draw, NM.
+
+Simple linear regression between radar backscatter values and in situ soil moisture measurements can be used to develop SAR-based soil moisture estimation models with model R2 values of 0.51 to 0.61, but application of the model should be restricted to non-vegetated to thinly vegetated areas [23].
+
+Multiple linear regressions using radar backscatter values, vegetation density, soil type, and elevation as independent variables can be used to develop soil moisture estimation models for the entire study site, including areas with thicker vegetation.
+
+Neural networks based models, using radar backscatter values, vegetation density, soil type, and elevation can also be used to estimate soil moisture for the entire study site, including areas with thicker vegetation. Neural networks based models achieved higher R2 values and performed better than multiple linear regressions based models.
+
+A neural network based numerical model using radar backscatter values, vegetation density, soil type and elevation was used to estimate soil moisture in the study site. This model was developed for both the 2 August and the 6 November data sets. The R2 and CV R2 values for the August model were 0.83 and 0.56 respectively, and 0.81 and 0.55 for the November model, respectively.
+
+The model developed for the 2 August data set was also used to map soil moisture for the 26 August data set. The model developed for the 6 November data set was also used to map soil moisture for the 13 October data set. Since 19 September is approximately temporally equal from both 2 August and 6 November, we applied both the 2 August and the 6 November models to the 19 September data set and estimated soil moisture by taking the average of the two estimations.
+
+Two sets of 50 m resolution soil moisture data were produced for each of the five dates of SAR data for the study site. The first set includes the unclassified soil moisture data, where the value of each pixel of the dataset is the volumetric soil moisture estimation (Figure 10). In the second dataset each pixel is classified into six categories of soil moisture to map the spatial variations in soil moisture at 2.5% intervals (Figure 11).
+
+Figure 10. Unclassified soil moisture data generated for the study site.
+
+Figure 11. Classified soil moisture data generated for the study site.
+
+5.2. Accuracy Assessment
+
+Kappa statistics [43,44] were used to evaluate the accuracy of the soil moisture estimation data produced from the SAR imagery. Kappa statistics have been used successfully for accuracy assessment in different remote sensing based studies, e.g., [13,45,46,47]. It is a discrete multivariate technique of accuracy assessment [28]. Kappa coefficients express the proportionate reduction in error generated by a classification process compared with the error of a completely random classification. For example, a value of 0.82 implies that the classification process is avoiding 82% of the errors that a completely random classification generates [43]. Kappa can be thought of as the chance-corrected proportional agreement, and possible values range from +1 (perfect agreement) to −1 (complete disagreement). A value of 0 indicates no agreement above that expected by chance. The calculation of the Kappa coefficients is explained below using an example of a 2 × 2 matrix (Table 4).
+
+Table 4. Computation of Kappa coefficients.
+
+Table 4. Computation of Kappa coefficients. --SAR Soil MoistureTotalClass 1Class 2Reference Soil MoistureClass 1P11P12P11 + P12 = αClass 2P21P22P21 + P22 = βTotalP11 + P21 = γP12 + P22 = δP11 + P22 = χTotal number of data points: Q = α + β = γ + δ
+
+Observed agreement:
+
+P o = χ Q
+
+(13)
+
+Chance agreement:
+
+P e = α Q × γ Q + δ Q × β Q
+
+(14)
+
+Kappa coefficient:
+
+K = P o − P e 1 − P e
+
+(15)
+
+Kappa analysis requires continuous ground truth data so that a sufficient amount of random reference data can be obtained. Therefore, a continuous soil moisture surface was created from the in situ soil moisture data, using kriging [48]. Jackknife resampling techniques was used to correct for bias [49]. The measured in situ soil moisture data were randomly divided into a training set (90%) and testing set (10%) and were analyzed using the Arc GIS Geostatistical Analyst software. The training data set was used to create the krigged soil moisture surface and the testing data was used to evaluate the kriging results. Ten different krigged soil moisture data sets were generated using 10 different training data sets obtained from the same in situ soil moisture measurements. The RMS error, average standard error, standardized mean of error, and standardized RMS error (obtained from the evaluation of kriging results with the testing data) were used to select the appropriate kriging surface. Figure 12 shows the krigged surface generated for the 2 August and 6 November data sets.
+
+Both SAR derived soil moisture data and the krigged soil moisture prediction surfaces were categorized into three class intervals. For the 2 August data set, the classes were 0.0%–5.0%, 5.0%–10.0%, and >10.0%. Since the soil moisture values were much lower in the November data set, these ranges were 0.0%–2.5%, 2.5%–5.0%, and >5.0%. Three hundred randomly generated points were used to calculate the Kappa coefficients and perform an accuracy assessment. Erdas Imagine image processing software was used to perform this accuracy assessment and Kappa analysis. Kappa coefficients were calculated for both the individual classes and the whole data sets.
+
+Figure 12. Krigged soil moisture surface generation for 2 August and 6 November 2006 field data field data.
+
+The overall Kappa coefficients obtained for the 2 August and the 6 November data sets were 0.43 and 0.61, respectively. The overall accuracy was 75.67% and 77.67% for the 2 August and the 6 November data sets, respectively. Figure 13 and Figure 14 show the Kappa coefficients and classification accuracy for the individual classes. The evaluation of the individual classes indicate that the developed model performed well at low soil moisture regimes compared to the high soil moisture regimes in both 2 August and 6 November data sets.
+
+Figure 13. Kappa statistics for 2 August 2006 data set.
+
+Figure 14. Kappa statistics for 6 November 2006 data set.
+
+6. Discussions
+
+Research conducted by [23] has shown that in semi-arid environments even sparse vegetation can adversely influence the accuracy of soil moisture values estimated from radar backscatter (obtained from high resolution SAR data) using a linear relationship. This observation is supported by lower R2 values (0.24 and 0.05 for the August and the November datasets respectively) for the linear numerical models developed for the entire study site and higher R2 values (0.61 and 0.52 for the August and the November datasets respectively) for linear numerical models developed for portions of the study site with little or no vegetation. The lowest R2 values were from linear numerical models developed for the more densely vegetated portions of the study site (0.01 to 0.04).
+
+This research shows that soil moisture estimation using high resolution SAR data in a semi-arid environment can be improved by developing numerical models that use multiple linear regressions incorporating additional variables such as, vegetation density, soil type, and elevation in addition to radar backscatter values. Regression coefficients as high as 0.61 were obtained for a numerical model covering the entire study site using multiple linear regressions.
+
+The non-linear relationship between radar backscatter values and soil moisture was also investigated by [23] using artificial neural networks. It showed that a neural network developed using only radar backscatter values and soil moisture had an R2 value of 0.24, similar to the R2 value obtained from numerical models using simple linear regressions. This study obtained significant improvement in soil moisture estimation when additional variables such as, vegetation density, soil type, and elevation were added as inputs to the artificial neural networks based models. The use of these additional inputs results in coefficients of determination of 0.83 and 0.81 for the entire study site for the 2 August and the 6 November datasets, respectively. The cross validation coefficients of determination (CV R2) of the same models were 0.56 and 0.55, respectively.
+
+Soil moisture data were produced using artificial neural networks based non-linear models that incorporated inputs of vegetation density, soil type, elevation, and radar backscatter values. The accuracy of the modeled soil moisture data was also evaluated by the comparison of a soil moisture distribution surface from the models with a soil moisture surface obtained by kriging the in situ measurements. The comparison was done by Kappa statistics. The overall accuracy and the Kappa coefficient for the soil moisture data obtained for 2 August and 6 November were 75.67% and 77.67%, and 0.43 and 0.61, respectively. Although the obtained kappa coefficient values indicate overall good agreement between the measured and estimated soil moisture values, however, it is worth looking into the possibility of having the influence of autocorrelation between these two soil moisture data sets. As suggested by [50] since most thematic maps have some degrees of spatial autocorrelation, the calculated expected agreement (by Kappa statistics) could be usually higher than the true expected agreement.
+
+7. Conclusions and Future Work
+
+This research demonstrates the proof of concept of the application of Artificial Neural Networks (ANN) based models for estimating soil surface moisture in semi-arid environments of south-eastern New Mexico using high resolution SAR data (Radarsat 1 SAR Fine data). It is strongly believed that the methods developed in this research can be used to produce soil moisture data from high resolution SAR imagery in semi-arid environments, such as Nash Draw in New Mexico. The hydrology of Nash Draw in New Mexico is characterized by evaporite karst and is not well understood. The data produced in this research should be very useful to identify the pattern of soil moisture distribution in space and time and contribute to a better understanding of the groundwater recharge in the study area.
+
+In the future, to develop an operational soil moisture estimation tool (for this particular area) using high resolution SAR data, the proposed modeling effort can be further enhanced/improved by considering: (1) inclusion of surface roughness parameters in the artificial neural networks based models in addition to vegetation density, soil type, and elevation; (2) incorporation of near real-time high resolution optical satellite data for mapping vegetation density; and (3) involving other statistical tests such as Root Mean Squared Error (RMSE), Mean Absolute Percent Error (MAPE) etc. for model accuracy assessments. It is also recommended to use high resolution l-band SAR data with the capability of multi-polarization. L band data will provide the opportunity to obtain moisture estimation in greater depth.
+
+Acknowledgments
+
+Authors thankfully acknowledge the NASA Applied Sciences Program and the University of Mississippi Geoinformatics Center (UMGC) for funding this study through a Rapid Prototyping Capability (RPC) for Earth-Sun Systems Sciences project at The University of Mississippi. Thanks are also due to the Alaska Satellite Facility (ASF) for providing the SAR imagery; Robert Holt for proving technical support for regression and artificial neural networks analysis; Dennis Powers, Glen Garrett, and Dirk O’Daniel for their assistance in the field to acquire soil samples for soil moisture analysis; and Patrick Yamnik for assisting in image processing and GIS analysis. Authors are also grateful to Chung R. Song for his continuous support throughout the study.
+
+Author Contributions
+
+Azad Hossain is responsible for data acquisition, processing and analysis (soil moisture estimation and accuracy assessments. Greg Easson is responsible for digital image processing aspect. Both authors prepare this manuscript together.
+
+Conflicts of Interest
+
+The authors declare no conflict of interest.
+
+References
+
+Hossain, F.; Anagnostou, E.N. Numerical investigation of the impact of uncertainties in satellite rainfall and land surface parameters on simulation of soil moisture. Adv. Water Resour. 2005, 28, 1336–1350. [Google Scholar] [CrossRef]
+
+Georgakakos, K.P.; Baumer, O.W. Measurement and utilization of on-site soil moisture data. J. Hydrol. 1996, 184, 131–152. [Google Scholar] [CrossRef]
+
+Lakshmi, V. Remote sensing of soil moisture. ISRN Soil Sci. 2013, 2013, 1–33. [Google Scholar] [CrossRef]
+
+Robock, A.; Luo, L.; Wood, E.F.; Wen, F.; Mitchell, K.E. Evaluation of the North American Land Data Assimilation System over the southern Great Plains during the warm season. J. Geophys. Res. 2003, 108. [Google Scholar] [CrossRef]
+
+Zhang, L.; Dawes, W.R.; Hatton, T.J.; Reece, P.H.; Beale, G.T.H.; Packer, I. Estimation of soil moisture and groundwater recharge using the TOPOG_IRM model. Water Resour. Res. 1999, 35, 149–161. [Google Scholar] [CrossRef]
+
+Silva, C.S.D.; Rushton, K.R. Groundwater recharge estimation using improved soil moisture balance methodology for a tropical climate with distinct dry seasons. Hydrol. Sci. J. 2007, 52, 1051–1067. [Google Scholar] [CrossRef]
+
+Hossain, A.; Easson, G. Mapping spatial variation in surface moisture using reflective and thermal ASTER imagery for Southern Africa. In Proceedings of 2006 ASPRS Annual Conference, Reno, NV, USA, 1–5 May 2006.
+
+Narasimhan, B.; Srinivasan, R.; Arnold, J.G.; di Luzio, M. Estimation of long-term soil moisture using a distributed parameter hydrologic model and verification using remotely sensed data. Trans. ASAE 2005, 48, 1101–1113. [Google Scholar] [CrossRef]
+
+Albergel, C.; de Rosnay, P.; Gruhier, C.; Muñoz-Sabater, J.; Hasenauer, S.; Isaksen, L.; Kerr, Y.; Wagner, W. Evaluation of remotely sensed and modeled soil moisture products using global ground-based in-situ observations. Remote Sens. Environ. 2012, 118, 215–226. [Google Scholar]
+
+Klemas, V.; Finkl, C.W.; Kabbara, N. Remote sensing of soil moisture: An overview in relation to coastal soils. J. Coast. Res. 2014, 30, 685–696. [Google Scholar] [CrossRef]
+
+Dubois, P.C.; van Zyl, J.; Engman, E.T. Measuring soil moisture with imaging radars. IEEE Trans. Geosci. Remote Sens. 1995, 33, 915–926. [Google Scholar] [CrossRef]
+
+Ulaby, F.T.; Dubois, P.C.; van Zyl, J. Radar mapping of surface soil moisture. J. Hydrol. 1996, 184, 57–84. [Google Scholar] [CrossRef]
+
+Jackson, T.J. Measuring surface soil moisture using passive microwave remote sensing. Hydrol. Process. 1993, 7, 139–152. [Google Scholar] [CrossRef]
+
+Jackson, T.J.; Schmugge, J.; Engman, E.T. Remote sensing applications to hydrology: Soil moisture. Hydrol. Sci. J. 1996, 41, 517–530. [Google Scholar] [CrossRef]
+
+Borgeaud, M.; Saich, P. Status of the retrieval of bio- and geophysical parameters from SAR data for land applications. In Proceedings of the 1999 IEEE International Geoscience and Remote Sensing Symposium, Hamburg, Germany, 28 June–2 July 1999.
+
+Chanzy, A.; Kerr, Y.; Wigneron, J.P.; Calvet, J.C. Soil moisture estimation under sparse vegetation using microwave radiometry at C-band. In Proceedings of the 1997 International Geoscience and Remote Sensing Symposium, Singapore, 3–8 August 1997.
+
+Demircan, A.; Rombach, M.; Mauser, W. Extraction of soil moisture from multitemporal ERS-1 SLC data of the Freiburg test site. In Proceedings of the 1993 IEEE International Geoscience and Remote Sensing Symposium, Tokyo, Japan, 18–21 August 1993.
+
+Lin, D.S.; Wood, E.F. Behavior of AirSAR signals during MAC-Europe’91. In Proceedings of the 1993 IEEE International Geoscience and Remote Sensing Symposium, Tokyo, Japan, 18–21 August 1993.
+
+Thoma, D.P.; Moran, M.S.; Bryant, R.; Rahman, M.; Holifield-Collins, C.D.; Skirvin, S.; Sano, E.E.; Slocum, K. Comparison of four models to determine surface soil moisture from C-band radar imagery in a sparsely vegetated semiarid landscape. Water Resour. Res. 2006, 42, 1–12. [Google Scholar] [CrossRef]
+
+Mladenovaa, I.E.; Jacksona, T.J.; Njokub, E.; Bindlishc, R.; Chanb, S.; Cosha, M.H.; Holmesa, T.R.H.; de Jeud, R.A.M.; Jonese, L.; Kimballe, J.; et al. Remote monitoring of soil moisture using passive microwave-based techniques—Theoretical basis and overview of selected algorithms for AMSR-E. Remote Sens. Environ. 2014, 144, 197–213. [Google Scholar] [CrossRef]
+
+Moran, M.S.; Hymer, D.C.; Qi, J.; Sano, E.E. Soil moisture evaluation using multi-temporal Synthetic Aperture Radar (SAR) in semiarid rangeland. Agric. For. Meteorol. 2000, 105, 69–80. [Google Scholar] [CrossRef]
+
+Moran, M.S.; Peters-Lidard, C.D.; Watts, J.M.; McElroy, S. Estimating soil moisture at the watershed scale with satellite-based radar and land surface models. Can. J. Remote Sens. 2004, 30, 805–826. [Google Scholar] [CrossRef]
+
+Hossain, A.; Easson, G. Microwave remote sensing of soil moisture. In Geoscience and Remote Sensing; Ho, P.P., Ed.; IN-TECH Press: Vukovar, Croatia, 2009; pp. 529–554. [Google Scholar]
+
+Holt, R.M.; Beauheim, R.L.; Powers, D.W. Predicting fractured zones in the Culebra Dolomite. In Dynamics of Fluids and Transport in Fractured Rock: AGU Geophysical Monograph Series; Faybishenko, B., Witherspoon, P.A., Gale, J., Eds.; American Geophysical Union: Washington, DC, USA, 2005; pp. 103–116. [Google Scholar]
+
+Powers, D.W.; Beauheim, R.L.; Holt, R.M.; Hughes, D.L. Evaporite karst features and processes at Nash Draw, Eddy County, New Mexico. In Caves & Karst of Southeastern New Mexico, NM Geological Society Fifty-seventh Annual Field Conference Guidebook; Land, L., Lueth, V.W., Raatz, W., Boston, P., Love, D.L., Eds.; New Mexico Geological Society: Socorro, NM, USA, 2006; pp. 253–266. [Google Scholar]
+
+Glenn, N.F.; Carr, J.R. Establishing a relationship between soil moisture and RADARSAT-1 SAR data obtained over the Great Basin, Nevada, USA. Can. J. Remote Sens. 2004, 30, 176–181. [Google Scholar] [CrossRef]
+
+Hossain, A.; Easson, G.; Powers, D.W.; Holt, R.M. 2007 Impact of Variation in Reflectivity of Microwave Data for Soil Moisture Estimation in Semi-arid Environment; Sigma Xi Poster Presentation; The University of Mississippi: University, MS, USA, 2007. [Google Scholar]
+
+Hossain, A.; Easson, G.; Holt, R.M.; Powers, D.W. Developing methods for mapping soil moisture in Nash Draw, NM using Radarsat 1 SAR fine imagery. In Proceedings of the 2006 AGU Fall Meeting, San Francisco, CA, USA, 11–15 December 2006.
+
+Goodman, J.W. Statistical properties of laser speckle patterns. In Laser Speckle and related Phenomena; Springe: Berlin, Germany, 1975; pp. 9–75. [Google Scholar]
+
+D’Elia, C.; Ferraiuolo, G.; Pascazio, V.; Schirnzi, G. An MRF based technique for speckle reduction in SAR images. In Proceedings of the 2004 International Geoscience and Remote Sensing Symposium, Anchorage, AK, USA, 20–24 September 2004.
+
+Touzi, R. A review of speckle filtering in the context of estimation, theory. IEEE Trans. Geosci. Remote Sens. 2002, 40, 2392–2404. [Google Scholar] [CrossRef]
+
+Dane, J.H.; Topp, G.C. Methods of Soil Analysis, Part 4, Physical Methods; Soil Science Society of America: Madison, WI, USA, 2002. [Google Scholar]
+
+Boisvert, J.B.; Gwyn, Q.H.J.; Brisco, B.; Major, D.; Brown, R.J. Evaluation of soil moisture techniques and microwave penetration depth for radar applications. Can. J. Remote Sens. 1995, 21, 110–123. [Google Scholar] [CrossRef]
+
+ASTM D2216. Standard Test Method for Laboratory Determination of Water (Moisture) Content of Soil and Rock by Mass; American Society Testing and Materials: Philadelphia, PA, USA, 1999. [Google Scholar]
+
+Tanji, K.K. Agricultural Salinity Assessment and Management; ASCE Manuals and Reports on Engineering Practice No. 71; American Society of Civil Engineers: Reston, VA, USA, 1990. [Google Scholar]
+
+Shao, Y.; Guo, H.; Hu, Q.; Lu, Y.; Dong, Q.; Han, C. Effect of dielectric properties of moist salinized soils on backscattering coefficients extracted from RADARSAT image. IEEE Trans. Geosci. Remote Sens. 2003, 41, 1879–1888. [Google Scholar] [CrossRef]
+
+Sreenivas, K.; Venkataratnam, L.; Narasimha Rao, P.V. Dielectric properties of salt-affected soils. Int. J. Remote Sens. 1995, 16, 641–649. [Google Scholar] [CrossRef]
+
+Taylor, G.R.; Mah, A.H.; Kruse, F.A.; Kierein-Yong, K.S.; Hewson, R.D.; Bennette, B.A. Characterization of saline soils using airborne radar imagery. Remote Sens. Environ. 1996, 57, 127–142. [Google Scholar] [CrossRef]
+
+Dobson, M.C.; Pierce, L.; Arabandi, K.; Ulaby, F.T.; Sharik, T. Preliminary analysis of ERS-1 SAR for forest ecosystem studies. IEEE Trans. Geosci. Remote Sens. 1992, 30, 203–221. [Google Scholar] [CrossRef]
+
+Gardner, M.W.; Dorling, S.R. Artificial neural networks (The multilayer perceptron)—A review of applications in the atmospheric sciences. Atmos. Environ. 1998, 32, 2627–2636. [Google Scholar] [CrossRef]
+
+Bishop, C.M. Neural networks and their applications. Rev. Sci. Instrum. 1994, 65, 1803–1833. [Google Scholar] [CrossRef]
+
+Hornik, K.; Stinchcombe, M.; White, H. Multilayer feed forward networks are universal approximators. Neural Netw. 1989, 2, 259–366. [Google Scholar] [CrossRef]
+
+Cohen, J. A coefficient of agreement for nominal scales. Educ. Psychol. Meas. 1960, 20, 37–46. [Google Scholar] [CrossRef]
+
+Congalton, R. A review of assessing the accuracy of classifications of remotely sensed data. Remote Sens. Environ. 1991, 37, 35–46. [Google Scholar] [CrossRef]
+
+Congalton, R.G.; Green, K. Assessing the Accuracy of Remotely Sensed Data: Principles and Practices; Lewis Publisher: Boca Raton, FL, USA, 1999. [Google Scholar]
+
+Naesset, E. Use of the weighted Kappa coefficient in classification error assessment of thematic maps. Int. J. Geogr. Inf. Syst. 1996, 10, 591–603. [Google Scholar] [CrossRef]
+
+Monserud, R.A.; Leemans, R. Comparing global vegetation maps with the Kappa statistic. Ecol. Model. 1992, 62, 275–293. [Google Scholar] [CrossRef]
+
+Isaaks, E.H.; Srivastava, R.M. An Introduction to Applied Geostatistics; Oxford University Press: Oxford, UK, 1989. [Google Scholar]
+
+Efron, B.; Tibshirani, R. Bootstrap methods for standard errors, confidence intervals, and other measures of statistical accuracy. Stat. Sci. 1986, 62, 275–293. [Google Scholar] [CrossRef]
+
+Hagen-Zanker, A. An improved Fuzzy Kappa statistic that accounts for spatial Autocorrelation. Int. J. Geogr. Inf. Sci. 2009, 23, 61–73. [Google Scholar] [CrossRef]
+
+© 2016 by the authors; licensee MDPI, Basel, Switzerland. This article is an open access article distributed under the terms and conditions of the Creative Commons by Attribution (CC-BY) license (http://creativecommons.org/licenses/by/4.0/).
+
+Share and Cite
+
+MDPI and ACS Style
+
+Hossain, A.K.M.A.; Easson, G. Soil Moisture Estimation in South-Eastern New Mexico Using High Resolution Synthetic Aperture Radar (SAR) Data. Geosciences 2016, 6, 1. https://doi.org/10.3390/geosciences6010001
+
+AMA Style
+
+Hossain AKMA, Easson G. Soil Moisture Estimation in South-Eastern New Mexico Using High Resolution Synthetic Aperture Radar (SAR) Data. Geosciences. 2016; 6(1):1. https://doi.org/10.3390/geosciences6010001
+
+Chicago/Turabian Style
+
+Hossain, A.K.M. Azad, and Greg Easson. 2016. "Soil Moisture Estimation in South-Eastern New Mexico Using High Resolution Synthetic Aperture Radar (SAR) Data" Geosciences 6, no. 1: 1. https://doi.org/10.3390/geosciences6010001
+
+Note that from the first issue of 2016, this journal uses article numbers instead of page numbers. See further details here.
+
+Article Metrics
+
+No
+
+No
+
+Article Access Statistics
+
+For more information on the journal statistics, click here.
+
+Multiple requests from the same IP address are counted as one view.

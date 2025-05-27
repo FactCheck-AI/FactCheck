@@ -1,0 +1,55 @@
+Commands and Vectors in R
+
+R is a statistical analysis tool that is widely used in the finance industry. It is available as a free program and provides an integrated suite of functions for data analysis, graphing, and statistical programming. R is increasingly being used as a data analysis and statistical tool as it is an open-source language and additional features are constantly being added by the user community. The tool can be used on many different computing platforms and can be downloaded at the R Project website.
+
+Once you have installed and started R on your computer, at the bottom of the R console, you should see the symbol >, which indicates that R is ready to accept commands.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or 'help.start()' for an HTML browser interface to help. Type 'q()' to quit R. >
+
+R is a command-driven language, meaning that the user enters commands at the prompt, which R then executes one at a time. R can also execute a program containing multiple commands. There are ways to add a graphic user interface (GUI) to R. An example of a GUI tool for R is RStudio.
+
+The R command line can be used to perform any numeric calculation, similar to a handheld calculator. For example, to evaluate the expression 10+3Â·7,10+3Â·7, enter the following expression at the command line prompt and hit return:
+
+> 10+3*7 [1] 31
+
+Most calculations in R are handled via functions. For statistical analysis, there are many preestablished functions in R to calculate mean, median, standard deviation, quartiles, and so on. Variables can be named and assigned values using the assignment operator <-. For example, the following R commands assign the value of 20 to the variable named x and assign the value of 30 to the variable named y:
+
+> x <- 20 > y <- 30
+
+These variable names can be used in any calculation, such as multiplying x by y to produce the result 600:
+
+> x*y [1] 600
+
+The typical method for using functions in statistical applications is to first create a vector of data values. There are several ways to create vectors in R. For example, the c function is often used to combine values into a vector. The following R command will generate a vector called salaries that contains the data values 40,000, 50,000, 75,000, and 92,000:
+
+> salaries <- c(40000, 50000, 75000, 92000)
+
+This vector salaries can then be used in statistical functions such as mean, median, min, max, and so on, as shown:
+
+> mean(salaries) [1] 64250 > median(salaries) [1] 62500 > min(salaries) [1] 40000 > max(salaries) [1] 92000
+
+Another option for generating a vector in R is to use the seq function, which will automatically generate a sequence of numbers. For example, we can generate a sequence of numbers from 1 to 5, incremented by 0.5, and call this vector example1, as follows:
+
+> example1 <- seq(1, 5, by=0.5)
+
+If we then type the name of the vector and hit enter, R will provide a listing of numeric values for that vector name.
+
+> salaries [1] 40000 50000 75000 92000 > example1 [1] 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0
+
+Often, we are interested in generating a quick statistical summary of a data set in the form of its mean, median, quartiles, min, and max. The R command called summary provides these results.
+
+> summary(salaries) Min. 1st Qu. Median Mean 3rd Qu. Max. 40000 47500 62500 64250 79250 92000
+
+For measures of spread, R includes a command for standard deviation, called sd, and a command for variance, called var. The standard deviation and variance are calculated with the assumption that the data set was collected from a sample.
+
+> sd(salaries) [1] 23641.42 > var(salaries) [1] 558916667
+
+To calculate a weighted mean in R, create two vectors, one of which contains the data values and the other of which contains the associated weights. Then enter the R command weighted.mean(values, weights).
+
+The following is an example of a weighted mean calculation in R:
+
+Assume your portfolio contains 1,000 shares of XYZ Corporation, purchased on three different dates, as shown in Table 13.14. Calculate the weighted mean of the purchase price, where the weights are based on the number of shares in the portfolio.
+
+Here is how you would create two vectors in R: the price vector will contain the purchase price, and the shares vector will contain the number of shares. Then execute the R command weighted.mean(price, shares), as follows:
+
+> price <- c(78, 122, 131) > shares <- c(200, 300, 500) > weighted.mean(price, shares) [1] 117.7

@@ -1,0 +1,29 @@
+Cybersecurity advisories from the FBI and the US Cybersecurity and Infrastructure Security Agency (CISA) are usually a good indication that a particular threat merits priority attention from organizations in the crosshairs.
+
+That would appear to be the case with "Snatch," a ransomware-as-a-service (RaaS) operation that has been active since at least 2018 and is the subject of an alert this week from the two agencies.
+
+Targeting Critical Infrastructure Sectors
+
+The alert warned of the threat actor targeting a wide range of critical infrastructure sectors — including the IT sector, the US defense industrial base, and the food and agriculture vertical — with the most recent attacks happening in June.
+
+"Since mid-2021, Snatch threat actors have consistently evolved their tactics to take advantage of current trends in the cybercriminal space and leveraged successes of other ransomware variants' operations," the advisory noted. "Snatch threat actors have been observed purchasing previously stolen data from other ransomware variants in an attempt to further exploit victims into paying a ransom to avoid having their data released on Snatch's extortion blog."
+
+The advisory did not offer any explanation for the timing this week, especially considering the fact that the threat actor has been around for nearly five years. But Michael Mumcuoglu, CEO and co-founder of CardinalOps, thinks it might be connected to Snatch operation's ramped-up efforts over the past year.
+
+"There has been increased activity by the Snatch ransomware group over the last 12 to 18 months," Mumcuoglu says. "They have claimed responsibility for several recent high-profile attacks, including ones involving South Africa's Department of Defense, the California city of Modesto, Canada's Saskatchewan airport, London-based organization Briars Group and others," he notes.
+
+Forcing Computers to Reboot Into Safe Mode
+
+Snatch is malware that is noteworthy for how it forces Windows systems to reboot into Safe Mode midway through the attack chain so it can encrypt files without being detected by antivirus tools (which often don't run in Safe Mode). It's a feature that security researchers at Sophos — one of the first security vendors to track the ransomware — believe the threat actor added sometime toward the end of 2019.
+
+Sophos at the time had warned how the severity of the risk posed by ransomware running in Safe Mode could not be overstated. "We needed to publish this information as a warning to the rest of the security industry, as well as to end users," Sophos noted. The joint FBI and CISA advisory also highlighted Snatch's Safe Mode feature as a noteworthy capability that allows the malware to circumvent endpoint security controls and encrypt files when few Windows services are running. "A unique tactic used by the Snatch ransomware group leverages 'stealthy malware' that takes advantage of the fact that many Windows computers do not often run endpoint protection mechanisms in Safe Mode," Mumcuoglu says.
+
+Like many ransomware variants, Snatch features a data encryption capability as well as a component for stealing data from compromised systems before encryption. The threat actors behind Snatch have routinely used the capability to exfiltrate sensitive data from victim organizations and threatened to publicly leak or sell the data to others if their ransom demand is unpaid. In addition, Snatch actors have on occasion purchased data that other ransomware groups have stolen from their victims and used that as leverage to try and extract money from those organizations, the FBI and CISA said.
+
+In many attacks, Snatch operators have targeted weaknesses in the Remote Desktop Protocol (RDP) to gain administrator-level access to a target network. In other instances, they have used stolen or purchased credentials to gain an initial foothold. Once on a network, the threat actor can sometimes spend up to three months moving around the network searching for files and folders to target. The FBI and CISA advisory described Snatch operators as using a combination of legitimate and malicious tools on compromised networks. These include post-compromise tools such as Metasploit open source penetration testing tool, Cobalt Strike for later movement, and utilities such as sc.exe to create, query, add, and delete services and perform other tasks.
+
+North American Organizations Are Primary Targets
+
+John Shier, field CTO at Sophos, says his company has seen some limited signs of renewed activity from Snatch after a prolonged absence. "The most interesting aspect, however, is the close alignment of observed indicators of compromise (IoCs) with those contained in the advisory," he says. For example, the latest attack Sophos investigated started by exploiting a system with RDP exposed to the Internet, executed both sc.exe and safe.exe, and deployed batch files that deleted volume shadow copies and created scheduled tasks. "However, it's important to note that some of these IoCs aren't unique to Snatch, and observing them in your network should instigate an immediate response," he says.
+
+Nick Hyatt, cyber practice leader at Optiv, says CISA likely released the Snatch advisory as part of its ongoing effort to be more active in the community. He says that while Optiv has not observed any change in Snatch TTPs over the years, they are currently the most active in North America. "Between July 2022 and June 2023, we tracked 70 attacks by Snatch across all verticals," Hyatt says. "Overwhelmingly, those attacks were focused on North America."

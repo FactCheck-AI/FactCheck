@@ -1,0 +1,527 @@
+JCP Procedures
+
+JCP 2.7: Process Document
+
+The formal procedures for using the Java Specification development process
+
+Version 2.7 (May 15, 2009)
+
+Comments to: pmo@jcp.org
+
+Copyright (c) 1996 - 2009 Sun Microsystems, Inc.
+
+CONTENTS
+
+EXECUTIVE SUMMARY
+
+FUNDAMENTAL DEFINITIONS
+
+1. INITIATE A NEW OR REVISED SPECIFICATION
+
+2. CREATE THE EARLY DRAFT
+
+3. COMPLETE THE SPECIFICATION
+
+4. MAINTENANCE
+
+A. EXECUTIVE COMMITTEE POLICIES AND PROCEDURES
+
+B. REVISING THE JCP, JSPA, AND IEPA
+
+EXECUTIVE SUMMARY
+
+The international Java community develops and evolves Java? technology specifications using the Java Community Process (JCP). The JCP produces high-quality specifications in "Internet time" using an inclusive, consensus building approach that produces a specification, a reference implementation (to prove the specification can be implemented), and a technology compatibility kit (a suite of tests, tools, and documentation that is used to test implementations for compliance with the specification).
+
+Experience has shown that the best way to produce a technology specification is to gather a group of industry experts who have a deep understanding of the technology in question and then have a strong technical lead work with that group to create a first draft. Consensus around the form and content of the draft is then built using an iterative review process that allows an ever-widening audience to review and comment on the document.
+
+This version of the JCP was developed through the JCP by means of JSR 215, led by Sun and the combined Executive Committees as the expert group.
+
+An Executive Committee (EC) representing a cross-section of both major stakeholders and other members of the Java community is responsible for approving the passage of specifications through key points of the JCP and for reconciling discrepancies between specifications and their associated test suites. There are two ECs: one to oversee the Java technologies for the desktop/server space (with responsibility for the J2SE? and J2EE? specifications) and the other to oversee the Java technologies for the consumer/embedded space (with responsibility for the J2ME? specification).
+
+There are four major steps in this version of the JCP:
+
+INITIATION: A specification targeted at the desktop/server or consumer/embedded space is initiated by community member(s) and approved for development by the responsible EC.
+
+EARLY DRAFT: A group of experts is formed to develop a preliminary draft of the specification that both the community and the public will then review. Anyone with an Internet connection can read and comment on the draft. The expert group uses feedback from the review to revise and refine the draft.
+
+PUBLIC DRAFT: The draft goes out again for review by the public. The expert group uses the feedback to further revise the document. At the end of this review, the EC decides if the draft should proceed. If approved by the EC, the leader of the expert group sees that the reference implementation and its associated technology compatibility kit are completed before sending the specification to the responsible EC for final approval.
+
+MAINTENANCE: The completed specification, reference implementation, and technology compatibility kit are updated in response to ongoing requests for clarification, interpretation, enhancements, and revisions. The responsible EC can review all proposed changes to the specification and indicate which ones can be carried out immediately and which will require the specification to be revised by an expert group. Challenges to one or more tests in a specification's technology compatibility kit are ultimately decided by the responsible EC if they cannot be otherwise resolved.
+
+FUNDAMENTAL DEFINITIONS
+
+Java Community Process (JCP): The formal process described in this document for developing or revising Java technology specifications.
+
+Java Community Process Member (Member): A company, organization, or individual that has signed the JSPA and is abiding by its terms.
+
+Java Specification Participation Agreement (JSPA): A one-year renewable agreement between Sun Microsystems and a company, organization or individual that allows the latter entities to participate in the Java Community Process.
+
+Individual Expert Participation Agreement (IEPA): An agreement between Sun Microsystems and an individual that allows that individual to serve on an Expert Group at the invitation of the Specification Lead. There is no fee associated with the IEPA and it is valid until the Expert Group disbands. The IEPA allows individual technical experts who do not represent companies or organizations to participate on Expert Groups.
+
+Executive Committee (EC): The Members who guide the evolution of the Java technologies. The EC represents a cross-section of both major stakeholders and other Members of the Java Community. Members must have signed the EC acceptance letter in order to serve on the EC. The EC Policies and Procedures are in Appendix A.
+
+Program Management Office (PMO): The group within Sun Microsystems that is responsible for administering the JCP and chairing the EC.
+
+Java Specification (Specification): A written specification for some aspect of the Java technology. This includes the language, virtual machine, Platform Editions, Profiles, and application programming interfaces.
+
+Platform Edition Specification (Platform Edition): A Specification that defines a baseline API set that provides a foundation upon which applications, other APIs, and Profiles can be built. There are currently three Platform Edition Specifications: J2SE, J2EE, and J2ME.
+
+Profile Specification (Profile): A Specification that references one of the Platform Edition Specifications and zero or more other JCP Specifications (that are not already a part of a Platform Edition Specification). APIs from the referenced Platform Edition must be included according to the referencing rules set out in that Platform Edition Specification. Other referenced specifications must be referenced in their entirety.
+
+Reference Implementation (RI): The prototype or "proof of concept" implementation of a Specification.
+
+Technology Compatibility Kit (TCK): The suite of tests, tools, and documentation that allows an organization to determine if its implementation is compliant with the Specification.
+
+JCP Web Site: The web site where anyone with an Internet connection can stay informed about JCP activities, download draft and final Specifications, and follow the progress of Specifications through the JCP.
+
+JCP Specification Page (Spec Page): Each Specification approved for development or revision will have a dedicated public web page established on the JCP Web Site to contain a history of the passage of the Specification through the JCP, including a record of the decisions, actions, and votes taken by the EC with respect to the draft Specification.
+
+THE JAVA COMMUNITY PROCESS SM PROGRAM
+
+1. INITIATE A NEW OR REVISED SPECIFICATION
+
+1.1 INITIATE A JAVA SPECIFICATION REQUEST
+
+definition - Java Specification Request (JSR): The document submitted to the PMO by one or more Members to propose the development of a new Specification or significant revision to an existing Specification.
+
+definition - Umbrella Java Specification Request (UJSR): A JSR that defines or revises a Platform Edition or Profile Specification. A UJSR proceeds through the JCP like any other JSR.
+
+definition - Expert: A Member representative (or an individual who has signed the IEPA) who has expert knowledge and is an active practitioner in the technology covered by the JSR.
+
+definition - Expert Group: The group of Experts who develop or make significant revisions to a Specification.
+
+definition - Specification Lead (Spec Lead): The Expert responsible for leading the effort to develop or make significant revisions to a Specification and for completing the associated Reference Implementation and Technology Compatibility Kit. A Spec Lead (or the Spec Lead's host company or organization) must be a Java Community Process Member.
+
+One or more Members can initiate a request to develop a new Specification, or carry out a significant revision to an existing one, by sending a JSR to the PMO. The JSR must use the template available at the JCP Web Site. Any JSR under consideration can be withdrawn by its submitter(s) without explanation at any time prior to the completion of the JSR approval vote (see section 1.3) upon request by the submitter(s) to the PMO.
+
+The following is some of the information required to be included with each JSR:
+
+the Members making the request (the submitters), a Specification Lead, and the initial members of the Expert Group.
+
+a description of the proposed specification.
+
+the reason(s) for developing or revising it.
+
+the primary Platform Edition, as well as any consideration given to other Platform Editions.
+
+an estimated development schedule.
+
+any preexisting documents, technology descriptions, or implementations that might be used as a starting point.
+
+a transparency plan, which outlines the tools and techniques that the Spec Lead will use, during the creation and development of the specification, and for communicating the progress within the Expert Group to Community Members, EC Members and the public. The EC will expect the Spec Lead to operate the JSR in accordance with this plan.
+
+1.1.1 REVISE EXISTING SPECIFICATIONS
+
+Existing Specifications, along with their associated RIs and TCKs, are maintained by a designated Maintenance Lead using the processes described in section 4 of this document. Maintenance Leads (and their host companies or organizations) are expected to assume long term ownership of their Specifications, RIs, and TCKs with due respect of the will of the Java Community Members with regard to evolution. This means that Maintenance Leads will automatically be the Spec Leads for all significant revisions to their Specifications going forward but they will not have the exclusive right to decide when a significant revision will take place. That will be decided by the EC in response to a revision JSR that can be initiated by any Java Community Member (or Members). The only provision is that the submitter(s) should make a reasonable effort to get some of the members of the previous Expert Group to join the revision effort.
+
+1.1.2 PROTECT THE INSTALLED BASE AND GUARD AGAINST FRAGMENTATION
+
+Changes to the Java programming language, the Java virtual machine (JVM), the Java Native Interface (JNI), packages in the "java.*" space, or other packages delivered as part of J2SE, have the potential to seriously disrupt the installed base if carried out inconsistently across the Platform Editions. In order to protect the installed base, any such changes can only be accepted and carried out within a UJSR for J2SE.
+
+In order to guard against fragmentation, new Platform Edition Specifications will not substantially duplicate existing Platform Editions or Profiles.
+
+1.1.3 PROFILES AND API SPECIFICATIONS TARGET CURRENT PLATFORM EDITIONS
+
+All new or revised Specifications must be compatible with the most recent versions of the targeted Platform Edition Specifications. In order to achieve this, all UJSRs to define new Profile Specifications or revise existing Profile Specifications must reference the latest version of the Platform Edition Specification they are based upon.
+
+1.1.4 J2ME PROFILES AND J2ME BUILDING BLOCKS
+
+definition - J2ME Building Block (Building Block): A subset of one or more APIs defined in the J2SE or J2EE Platform Edition Specifications. The J2ME Platform Edition Specification is a collection of Building Blocks. J2ME Profile Specifications can build up desired functionality by combining new API sets with existing Building Blocks.
+
+J2ME Profiles will normally be based upon the existing Java virtual machine and language Specifications. When such Profiles also need to include subsets of J2SE and/or J2EE functionality, they will reference J2ME Building Blocks.
+
+Building Blocks are created and revised within the UJSR for the J2ME Platform Specification. It is likely that different J2ME Profiles will require different J2SE/J2EE subsets. For example, different categories of devices may need different subsets of the "java.net" package. In order to accommodate this, no fundamental restrictions are placed upon the number of times or ways in which J2SE/J2EE functionality can be packaged into J2ME Building Blocks.
+
+Building Blocks can be proposed in a UJSR for the J2ME Specification. However, it is recognized that the consumer and device marketplaces can change very rapidly in comparison to the desktop and server marketplaces. The definition of new Building Blocks (as well as the revision of existing blocks) may need to be carried out very quickly in order for some J2ME Profiles to keep up with changing market needs. In the interest of speed, J2ME Building Blocks may also be defined and revised within the JCP Maintenance Cycle (see section 4.2) for the J2ME Specification.
+
+Expert Groups that need to quickly create or update a J2ME Building Block should approach the Maintenance Lead for the J2ME Platform Edition Specification with their requests. The J2ME Maintenance Lead, after consultation with both the J2ME Expert Group and the Maintenance Lead(s) of the Platform Edition(s) the block is to be derived from, may propose the new Building Block as part of a maintenance update to the J2ME specification. Note that the EC can require any Building Block proposed as part of the Maintenance Cycle to be defined in a major revision to the J2ME Specification (see section 4.2.2).
+
+If the Maintenance Lead declines a Building Block request, the requesting Expert Group has the options of initiating a UJSR for J2ME (which may be time consuming) or creating the needed APIs in any namespace not reserved for use by existing Platform Edition Specifications.
+
+In exceptional circumstances, the J2ME Specification may define J2ME Building Blocks for use with special classes of devices that can only implement subsets of the Java virtual machine or language Specifications. Such Building Blocks can be defined and approved only within a UJSR for J2ME. They cannot be defined using the Maintenance Cycle because proposals for Building Blocks for these special classes of devices must be subject to the widest possible review.
+
+1.1.5 CONTINUED AVAILABILITY
+
+The technology that a JSR defines can be delivered as part of a Profile or Platform Edition, it can be delivered stand-alone or both. Future versions of the technology may be integrated into a Profile or a Platform Edition while previous versions were not. The submitter of a JSR will be required, via the JSR submission form, to indicate if it is the submitter's goal to deliver the JSR's RI and TCK as part of a Profile or Platform Edition, stand-alone or both. When delivering the JSR's RI and TCK integrated into a Profile or Platform Edition and not delivering these separately and where the RI and TCK of previous versions were available separately, the submitter must state the rationale. Also in this case the JSR Review (see section 1.2) will be 4 weeks instead of 14 days.
+
+A JSR for a new version of an API that proposes to become part of a Profile or Platform Edition and is considering discontinuing stand-alone availability where the previous JSR for this API did not indicate this plan, must make that proposal to discontinue stand-alone availability one version ahead.
+
+1.1.6 PLATFORM INCLUSION
+
+JSRs that want to be considered to be included in the definition of a Platform Edition or a Profile should describe this intent in the JSR's submission. The final decision whether a specific JSR is included in a Profile or a Platform Edition is made by the Spec Lead and Expert Group of that Platform Edition JSR or Profile JSR, and confirmed by the EC ballots on those JSRs. If the Platform Edition or Profile JSR turns down the request for inclusion, then the JSR for the API will be required to deliver a stand-alone RI and TCK.
+
+1.2 JSR REVIEW
+
+definition - JSR Review: A 2 or 4 week period when anyone with an Internet connection can review and comment on a new JSR.
+
+definition - JSR Page: Each initiated JSR will be published on a public area of the JCP Web Site.
+
+When a JSR is received, the PMO will give it a tracking number, assign the JSR to the appropriate EC (or both ECs if so requested by the submitter), create its JSR Page, announce the proposed JSR to the public, and begin JSR Review. Comments on the JSR should be sent to the e-mail address listed on the JSR Page. All comments received will be made available from the JSR Page (similar comments may be consolidated) and forwarded to the EC for its consideration. Members who are interested in joining the Expert Group (should the JSR be approved) should identify themselves by submitting a nomination form to the PMO. As described by section 1.1.5 the review period will be either 2 or 4 weeks.
+
+1.2.1 EARLY WARNING AND FEEDBACK ON LICENSING TERMS FOR THE RI AND TCK
+
+The Spec Lead's company or organization is responsible for the Reference Implementation (RI) and Technology Compatibility Kit (TCK) and its licensing under terms compatible with the licensing guidelines established for use within the JCP. The Spec Lead will provide the EC with the terms under which the RI and TCK will be licensed no later than the start of JSR Review. The Spec Lead must provide complete copies of the licenses that they intend to use, not simply a summary of some of the terms. The licenses will be published for public access with links on the public JSR page. If the Spec Lead subsequently determines that circumstances require a change to one or more of the licenses it provided, the Spec Lead shall provide both the revised licenses and the reasons for the changes to the EC. EC members will provide feedback on the terms as an indication of how the community might react as a whole to the terms.
+
+If Expert Group members are required to enter into an agreement (other than the JSPA) for access to Expert Group infrastructure (such as Expert Group mail lists, document or code repositories, etc.), the Spec Lead must include references to the licenses for use of these services in the Java Specification Request. Since hosting services may impose licensing requirements on Expert Group members, this information may be considered by the EC during the JSR Approval Ballot. If the Expert Group switches to a different hosting service after the JSR Approval Ballot, the Spec Lead must obtain EC approval and update the public Spec Page on the JCP Web site.
+
+1.3 JSR APPROVAL BALLOT
+
+definition - JSR Approval Ballot: The EC ballot during the last 14 days of the JSR Review to determine if the JSR should be approved.
+
+During JSR Review, EC members should review the JSR (with its proposed Spec Lead and initial Expert Group), any comments and nominations received, and cast their ballot to decide if the JSR should be approved.
+
+definition - JSR Reconsideration Ballot: The EC ballot to determine if a revised JSR should be approved.
+
+If the JSR Approval Ballot fails, the PMO will send all EC comments to the JSR submitter(s) who will have the option of revising the JSR and resubmitting it to the PMO within 14 days. If a revised JSR is not received in that time, the original EC decision will stand and the JSR will be closed. If a revised JSR is received, the PMO will post it to the JSR Page, announce the revised JSR to the public, and send it to all EC members for a JSR Reconsideration Ballot. If that ballot fails, the JSR will be closed.
+
+2. CREATE THE EARLY DRAFT
+
+2.1 FORM THE EXPERT GROUP
+
+When a JSR is approved, the PMO will notify the identified Spec Lead to form the Expert Group. If the Member contributing the Spec Lead withdraws from the Community before the JSR is approved, the PMO will request the initial Expert Group to choose a replacement from among themselves who is willing to take on the duties defined in this document (including taking responsibility for the RI and TCK, working towards the estimated schedule given in the JSR, and assuming the position of Maintenance Lead as described in section 4).
+
+There is no size limit on the Expert Group. The Spec Lead may add additional Experts at any time provided the existing Expert Group is consulted first. New members may be added, for example, to increase diversity of opinion. A Spec Lead recruits new Experts by approaching other Members directly and working with them to identify an expert and bring him or her into the Expert Group. Individual experts can be brought into the Expert Group if they sign an IEPA.
+
+2.1.1 FREEDOM OF WORKING STYLE
+
+Each Expert Group is free to define and follow whatever working style it finds most productive and appropriate as long as it is compatible with the JCP. Use of the Internet is encouraged. E-mail exchanges on mailing lists established for the use by the Expert Group, along with conference calls and group meetings, have been used by past Expert Groups to discuss and resolve issues raised as the draft evolves. In-person group meetings are useful but they tend to slow down work considerably due to the need to coordinate schedules.
+
+Spec Leads are encouraged to choose a style that provides maximal transparency to the Expert Group, community, the EC members and the public. The PMO provides Spec Leads with tools and techniques for making the actions of their Expert Groups transparent, and the EC members expect Spec Leads to carefully choose which tools are best for their Expert Groups and commit to using them. Transparency is valuable to everyone in the community, especially the Expert Group, because it offers broader feedback to the group and helps build broader support for the final spec. The public JSR page must contain information on what transparency techniques are being used by the Expert Group and this information must be current before any JSR Ballot.
+
+The use of JSPA Confidential materials (as defined in the JSPA) by Expert Groups limits transparency and is strongly discouraged. If the Spec Lead intends to permit the use of JSPA Confidential materials (such as emails, drafts or submissions marked as Confidential), this must be specified in the initial Java Specification Request before the JSR Approval Ballot. Expert Groups may also choose to keep information private by means other than marking it as Confidential (e.g. by not publishing it on a publicly available site).
+
+2.1.2 WITHDRAWAL OF AN EXPERT FROM THE EXPERT GROUP
+
+An Expert may withdraw from the Expert Group at any time. When this happens, the Spec Lead may approach the Member who originally contributed the Expert and work with that organization to find a replacement. If no replacement is offered, the Spec Lead may recruit a replacement from another Member if desired. If the departing Expert is the Spec Lead, the Expert Group should choose one of its members as the new Spec Lead provided he or she is willing to take on all of the responsibilities defined in this document.
+
+2.1.3 UNCOOPERATIVE OR UNRESPONSIVE EXPERT GROUP MEMBERS
+
+There may be rare instances when members of the Expert Group feel that one of their fellow Experts is not acting in ways that advance the work of the Expert Group. These concerns should be brought to the attention of the Spec Lead and/or the EC as quickly as possible so they may be proactively addressed and resolved. The Expert Group members are expected to make a reasonable effort to resolve any such issues among themselves. If a 2/3 majority of the members of the Expert Group find that a Spec Lead is being unresponsive, or if a 2/3 majority of the EC determines that the Expert Group is no longer capable of carrying out a vote, and the Spec Lead does not work to resolve the situation in a timely manner, the EC may direct the PMO to ask the Member who provided the Spec Lead to provide a replacement or may direct the PMO to ask a different Member to provide a replacement.
+
+2.2 WRITE THE FIRST DRAFT OF THE SPECIFICATION
+
+The Expert Group should begin work by considering the requirements set forth in the JSR, any contributed documents or technology descriptions, comments received during JSR Review and, if this is a revision of an existing Specification, the Change Log kept by the Maintenance Lead (see section 4). Additional input can be obtained from discussions with other Members, industry groups, software developers, end-users, and academics. The goal is to define requirements and then write a draft specification suitable for review by the Community and the public.
+
+When the Expert Group decides that the first draft is ready for review, the Specification Lead will send the draft, along with any additional files required for review, to the PMO. The Specification Lead should also suggest the length of the Early Draft Review period if the Expert Group feels it should go beyond the minimum 30 days.
+
+2.2.1 CONFIRMATION OF LICENSING TERMS FOR RI AND TCK
+
+The Spec Lead's company or organization is responsible for the Reference Implementation (RI) and Technology Compatibility Kit (TCK) and its licensing under terms compatible with the licensing guidelines established for use within the JCP. The Spec Lead will provide the EC with confirmation of the terms under which the RI and TCK will be licensed at each review period. EC members will provide feedback on the terms as an indication of how the community might react as a whole to the terms. The Spec Lead must provide complete copies of the licenses that they intend to use, not simply a summary of some of the terms. The licenses will be published for public access with links on the public JSR page. If the Spec Lead subsequently determines that circumstances require a change to one or more of the licenses it provided, the Spec Lead shall provide both the revised licenses and the reasons for the changes to the EC.
+
+2.3 EARLY DRAFT REVIEW
+
+definition - Community Review: A 30 to 90 day period when Members review and comment on the draft Specification.
+
+definition ? Early Draft Review: A 30 to 90 day period, coexistent with Community Review, when the public review and comment on the draft Specification.
+
+Refinement of the draft Specification begins when the PMO posts it to the JCP Web Site and announces the start of Early Draft Review to all of the Members and the public. Anyone with access to the Internet can download and comment on the draft. The goal of Early Draft Review is to get the draft Specification into a form suitable for Public Review as quickly as possible by uncovering and correcting major problems with the draft. Early Draft Review is an early access review, designed to ideally take place when the specification still has some unresolved issues. The public's participation in Early Draft Review is an important part of the JCP. In the past, comments from the public have raised fundamental architectural and technological issues that have considerably improved some Specifications.
+
+All comments from Members and the public should be sent to the e-mail feedback address listed in the draft. The Spec Lead is responsible for ensuring that all comments are read and considered. Members have a right to receive a response to their comments. For simplicity, similar comments may be combined and responded to as one. All comments received must be made available from the JSR Page (similar comments may be consolidated). Before the Public Review, a brief Expert Group response to each of the Early Draft Review comments must be made available from the JSR page.
+
+2.3.1 UPDATING THE DRAFT DURING EARLY DRAFT REVIEW
+
+If the Expert Group makes major revisions to the draft during Early Draft Review, the Spec Lead should send the revised draft, along with a synopsis of the changes, to the PMO. The PMO will notify Members of any updated drafts and change synopses received and make them available for download by Members and the public.
+
+During Early Draft Review, EC members are strongly encouraged to have one or more technical members of their organizations carry out a review of the draft in order to uncover possible duplication of features or services between the draft and other Specifications. EC members should inform the Expert Group of any such discoveries using the Member e-mail feedback address listed in the draft so they can be considered and responded to like all Member comments. EC member feedback is important to the Expert Group, and EC members are encouraged not to wait until ballot periods to voice concerns and issues.
+
+After the Early Draft Review period has ended, the Expert Group can make any additional changes to the draft it deems necessary in response to comments before submitting the draft to the PMO for Public Review.
+
+3. COMPLETE THE SPECIFICATION
+
+3.1 PUBLIC REVIEW
+
+definition - Public Review: A 30 to 90 day period when the public can review and comment on the draft Specification.
+
+Public Review begins when the PMO posts a new draft Specification on the JCP Web Site and announces it to both Members and the public. Anyone with access to the Internet can download and comment on the draft.
+
+All comments from Members and the public should be sent to the e-mail feedback address listed in the draft. The Spec Lead is responsible for ensuring that all public comments are read and considered. If those comments result in revisions to the draft, and those revisions result in major changes (in the opinion of the Expert Group), then the Specification Lead will send an updated draft (with synopsis of the changes) to the PMO at any time up until the last 7 days of the review period (the draft is frozen during the last 7 days of Public Review in order for the EC to complete their Public Draft Specification Approval Ballot). The PMO will post both the new draft and the change synopsis to the JCP Web Site and notify both Members and the public. All comments received must be made available from the JSR Page before the end of the Review so that they can be considered by the EC during the ballot (similar comments may be consolidated). Before the Proposed Final Draft, a brief Expert Group response to each of the Public Review comments must be made available from the JSR page.
+
+EC members are strongly encouraged to have one or more technical members of their organizations carry out a review of the draft early on in Public Review, in order to uncover possible negative changes since Early Draft Review. EC members should inform the Expert Group of any such discoveries using the Member e-mail feedback address listed in the draft so they can be considered and responded to during the review period, like all Member comments. EC member feedback is important to the Expert Group, and EC members are encouraged not to wait until ballot periods to voice concerns and issues.
+
+3.2 PUBLIC DRAFT SPECIFICATION APPROVAL BALLOT
+
+definition - Public Draft Specification Approval Ballot : The EC ballot to determine if a draft should proceed after Public Review.
+
+The Public Draft Specification Approval Ballot is carried out during the last 7 days of the Public Review. At the close of balloting, all comments submitted by EC members with their ballots will be circulated to the Expert Group by the PMO.
+
+definition - Public Draft Specification Reconsideration Ballot : The EC ballot to determine if a revised draft should proceed after Public Review.
+
+If the Public Draft Specification Ballot fails, the Expert Group will have 30 days to update the draft in response to the concerns raised by the EC and submit a revised version to the PMO. If a revised draft is not received by the end of the 30 days, the original decision by the EC will stand and the JSR will be closed. If a revision is received, the PMO will forward it to the EC and initiate a Public Draft Specification Reconsideration Ballot. At the close of balloting, all comments submitted by EC members with their ballots will be circulated to the Expert Group by the PMO. If this ballot fails, the JSR will be closed and the Expert Group will disband. If the JSR was a revision to an existing Specification, the Spec Lead will resume the role of Maintenance Lead of the current Specification (see section 4).
+
+3.3 PROPOSED FINAL DRAFT
+
+definition - Proposed Final Draft: The version of the draft Specification that will be used as the basis for the RI and TCK.
+
+If the Public Draft Specification Approval Ballot (or reconsideration ballot) is successful, the Expert Group will prepare the Proposed Final Draft of the Specification by completing any revisions it deems necessary in response to comments received. The Spec Lead will then send the Proposed Final Draft to the PMO who will announce it to both Members and the public and post it on the JCP Web Site for public download.
+
+3.3.1 COMPLETE THE RI AND TCK
+
+The Spec Lead is responsible for the completion of both the Reference Implementation (RI) and Technology Compatibility Kit (TCK). JSRs which are assigned to both ECs are required to deliver an RI and TCK that are applicable to the J2ME environment and to the J2SE or J2EE environment. This may require a separate RI and TCK for each environment. If the RI and TCK uncover areas of the Specification that were under-defined, incomplete, or ambiguous, the Spec Lead will work with the Expert Group to correct those deficiencies and then send a revised Specification (with synopsis of the changes) to the PMO. All such revisions and change synopses received will be posted to the JCP Web Site and announced to both Members and the public. The Expert Group will continue to consider any further comments received during this time.
+
+3.3.2 ESTABLISH A FIRST-LEVEL TCK APPEALS PROCESS
+
+definition - First-Level TCK Appeals Process : The process defined by the Spec Lead that allows implementers of the Specification to appeal one or more tests defined by the Specification's TCK.
+
+The Spec Lead is also responsible for establishing a clearly defined First Level TCK Appeals Process to address challenges to the tests contained in the TCK. This process must be described in the documentation included in the TCK (see Section 4.3 for information on the full TCK Appeals Process). Examples of First Level TCK Appeals Process applicable to situations ranging from simple API Specifications all the way up to Platform Edition Specifications can be found in the TCK section of the JCP Web Site.
+
+3.4 FINAL APPROVAL BALLOT
+
+definition - Final Draft: The final draft of the Specification that will be put forward for EC approval.
+
+definition - Final Approval Ballot: The 14-day EC ballot to approve the Final Draft along with its associated RI and TCK.
+
+When the Expert Group is satisfied that the TCK provides adequate test coverage, the RI adequately implements the Specification, and the RI passes the TCK, the Spec Lead will send the Final Draft of the Specification to the PMO along with instructions on how EC members can obtain the RI and TCK for evaluation. The PMO will circulate the materials to the EC and initiate the Final Approval Ballot. At the close of balloting, all EC comments will be sent to the Expert Group by the PMO.
+
+Each TCK submitted as part of the Final Draft must meet the following requirements:
+
+Include all TCK documentation covering configuration and execution of the TCK, definition and explanation of the First-level TCK Appeals Process, and any other information needed to use the TCK (e.g. Tools documentation).
+
+Be accompanied by a test harness, scripts or other means to automate the test execution and recording of results.
+
+Include a TCK Coverage Document for the EC members to use in evaluating the sufficiency of the TCK. This executive summary of the TCK should include an overview of the documentation included in the TCK, description of means used to validate the quality of the TCK, criteria used to measure TCK test coverage of the Specification, test coverage numbers achieved, and justification for the adequacy of TCK quality and its test coverage.
+
+Provide 100% signature test coverage. These tests must ensure that all of the required API signatures of the spec are completely implemented.
+
+definition - Final Approval Reconsideration Ballot: The 14-day EC ballot to reconsider an initial rejection of a Final Draft, RI, and TCK.
+
+If the Final Approval Ballot fails, the Spec Lead will have 30 days to revise the RI and/or TCK in response to any EC concerns. At the same time, the Expert Group will have 30 days to revise the Final Draft in response to any EC concerns and send it to the PMO.
+
+If no responses are received by the end of the 30 days, the original decision of the EC will stand, the PMO will close the JSR, and the Expert Group will disband. If the JSR was a revision to an existing Specification, the Spec Lead will resume the role of Maintenance Lead of the current Specification (see section 4).
+
+If a response is received, the PMO will circulate it to all EC members for a Final Approval Reconsideration Ballot. At the close of balloting, all ballot comments submitted by EC members will be circulated to the Expert Group by the PMO. If the reconsideration ballot fails, the JSR will be closed and the Expert Group will disband. If the JSR was a revision to an existing Specification, the Spec Lead will resume the role of Maintenance Lead of the current Specification.
+
+All materials needed to publish a Final Release must be provided to the PMO before the start of the Final Approval Ballot. Within 14 days of a successful Final Approval Ballot, the PMO will publish the Specification and links to information on how to obtain the RI and TCK.
+
+3.5 FINAL RELEASE
+
+Specifications that are approved by the EC during the Final Approval Ballot (or the reconsideration ballot) will be posted by the PMO on the JCP Web Site and an announcement made to both Members and the public. Upon Final Release, the Expert Group will have completed its work and disbands. The Spec Lead will typically be the Maintenance Lead and may call upon Expert Group members and others for aid in that role.
+
+4. MAINTENANCE
+
+4.1 KEEP THE SPECIFICATION UP TO DATE
+
+definition - Maintenance Lead (ML) : The Expert responsible for maintaining the Specification.
+
+The Maintenance Lead is responsible for carrying out maintenance on the Specification and dealing with errata by fielding requests for clarification, interpretation, and enhancements to the Specification from both Members and the public via an e-mail address listed in the Specification. The ML will consider all requests and will decide how and if the Specification should be updated in response. The ML will typically be the Spec Lead from the Expert Group that developed the Specification. The ML is not required to do all these tasks alone. The ML may find it very helpful to recruit members of the Expert Group that helped to develop the Specification to assist with the Maintenance duties.
+
+4.1.1 THE MAINTENANCE LEAD MAKES A LONG TERM COMMITMENT
+
+The Maintenance Lead (and his or her host company or organization) is expected to assume long term ownership of the Specification, RI, and TCK with due respect of the will of the Java Community Members with regard to evolution. This means that a Maintenance Lead will automatically be the Spec Lead for all significant revisions to their Specification going forward but he or she will not have the exclusive right to decide when a significant revision will take place (see section 1.1.1).
+
+4.1.2 RELINQUISHING OWNERSHIP
+
+definition - Dormant Specification (Dormant) : A Specification that does not have an identified Maintenance Lead. All Specifications become Dormant at the end of their life cycles.
+
+definition - Transfer Ballot: The EC ballot to approve transfer of ownership of a Specification, RI, and TCK from one Member to another Member.
+
+If the ML decides to discontinue his or her work for whatever reason (including discontinuing maintenance activities or declining to take on the role of Spec Lead during a significant revision initiated by a JSR) the ML should make a reasonable effort to locate another Member who is willing to take on the task. If the ML fails to find a replacement, the PMO will declare the Specification to be Dormant. No further maintenance will be carried out on it until a new ML is identified and ownership of the Specification, RI, and TCK is transferred to the new ML's organization (subject to a successful Transfer ballot by the EC).
+
+4.2 THE MAINTENANCE CYCLE
+
+The PMO will provide a publicly archived Maintenance feedback email address for requests for Specification clarifications, corrections or changes from the public. The ML will review all comments, identify common themes, and arrange with the PMO to make a list of frequently raised issues available from the document's Spec Page. The ML is free to consult with the former members of the Expert Group, or any other sources, for advice on how to revise the Specification. All change items proposed by the ML will make their way into the Specification by either the Minor Revision process (described in section 4.2.1) or by a JSR.
+
+4.2.1 MINOR REVISION PROCESS
+
+definition - Minor Revision: Minor changes made to a Specification by the ML.
+
+definition - Change Log: An area accessible from the Spec Page that lists all changes made to the Specification after Final Release. There are three sections: PROPOSED (changes not yet made to the Specification), ACCEPTED (changes made), and DEFERRED (change items to be considered in a new JSR).
+
+definition - Maintenance Review : A period of at least 30 days prior to finalization of a Minor Revision when Members and the public consider and comment on the change items listed in the PROPOSED section of the Change Log.
+
+The ML will arrange to have all change items placed into the PROPOSED section of the Change Log and then send a request to the PMO to initiate a Maintenance Review. Before the Maintenance Review begins, the ML must summarize comments received at the Maintenance feedback email address (similar comments may be consolidated) and indicate the disposition for each comment (e.g. deferred with a brief explanation, rejected with a brief explanation, included in Change Log proposal). This will be posted along with the Change Log on the Spec Page. The PMO will make a public announcement and begin the review.
+
+The ML may choose to modify one or more of the proposed changes based on comments received during review. All comments will be available from the Spec Page. At the end of Maintenance Review, the ML will update the Specification, document all revisions in the ACCEPTED section of the Change Log, and delete the corresponding entries in the PROPOSED section. All changes not incorporated into the Specification may be either left in the PROPOSED section or moved to the DEFERRED section.
+
+4.2.2 THE EC MAY DEFER MINOR REVISION ITEMS
+
+definition - Item Exception Ballot : The EC ballot to determine whether or not to include specific change items in a Minor Revision.
+
+During Maintenance Review an EC member may request that specific proposed change items be deferred to the next JSR. Any such request must be made to the PMO no later than the close of Maintenance Review. If requests are received, the PMO will circulate the requests to all EC members and initiate a 7 day Item Exception Ballot within 2 weeks after the close of the Maintenance Review. At the close of the Item Exception Ballot, the PMO will post the ballot results to the Change Log. The ML will place all proposed changes that were disapproved into the DEFERRED section. The ML will need to initiate a JSR to carry out any of those changes. The ML must post an updated version of the Specification within one month of the completion of the Review and any Item Exception Ballot.
+
+4.2.3 KEEPING THE RI AND TCK SYNCHRONIZED WITH THE SPECIFICATION
+
+Whenever the Specification is updated, the ML is responsible for reviewing the current RI and TCK to determine what revisions (if any) are needed to keep the RI and TCK synchronized with the Specification. The maintenance changes will be considered final when the RI and TCK are synchronized with the Specification.
+
+4.3 THE TCK APPEALS PROCESS
+
+As noted in section 3.2.2, the TCK documentation must identify and specify a First-Level TCK Appeals Process by which challenges to the TCK will be addressed. An implementer of a Specification can challenge a TCK test using the First-Level TCK Appeals Process. Implementers who are not satisfied with a first level decision can appeal it to the EC.
+
+4.3.1 APPEALING A FIRST-LEVEL DECISION TO THE EC
+
+definition - Appeal Ballot : The EC ballot to override a first-level decision on a TCK test challenge.
+
+Implementers appeal a first-level decision to the EC by filing a written request with the PMO using the online form available at the TCK section of the JCP Web Site. The PMO will circulate the request to the EC, along with any information received from the ML concerning the rationale for the first-level decision, and initiate an Appeal Ballot.
+
+4.3.2 UPDATE THE RI TO MATCH THE TCK AND THE SPECIFICATION
+
+If the Appeal Ballot is successful, the ML will update the TCK and/or the Specification in accordance with the EC decision and update the RI if necessary.
+
+APPENDIX A: EXECUTIVE COMMITTEE POLICIES AND PROCEDURES
+
+A.1 SCOPE
+
+The Executive Committee (EC) oversees the development and evolution of the Java technologies within the JCP.
+
+A.2 MEMBERSHIP
+
+The Executive Committee is composed of 16 Java Community Process Members plus a non-voting Chair. The Chair of the EC will be a member of the Process Management Office. The 16 voting members will be selected from Java Community Process Members. Sun Microsystems, Inc. will have a permanent voting seat on the EC. That Sun representative will not be a member of the PMO.
+
+No Member may hold more than one voting seat on the EC at any given time. For example, if a Member has majority-ownership of one or more other Members, then that group of Members can have only one seat on the EC at any given time.
+
+A.3 DUTIES AND RESPONSIBILITIES
+
+Select JSRs for development within the JCP.
+
+Approve draft Specifications for Public Review.
+
+Give final approval to completed Specifications and their associated RIs and TCKs.
+
+Decide appeals of first-level TCK test challenges.
+
+Review maintenance revisions and possibly require some to be carried out in a new JSR.
+
+Approve transfer of maintenance duties between Members.
+
+Provide guidance to the PMO and JCP Community to promote the efficient operations of the organization and to guide the evolution of Java platforms and technologies. Such guidance may be provided by mechanisms such as publishing white papers, reports, or comments as the EC deems appropriate to express the opinions of one or both Executive Committees.
+
+Members of the Executive Committees shall be dedicated to the principles of full and open competition, in full compliance with all applicable laws, including all antitrust laws of the United States and other nations and governmental bodies. Without limiting the foregoing, such members shall at all times adhere to the following policies in connection with their JCP activities:
+
+(a) The Executive Committees shall review JSRs in a manner that provides all persons affected by a proposed Specification to have an opportunity to participate in the process.
+
+(b) Executive Committee members should cast their JSR ballots with the goal of promoting the efficient evolution of the Java platform.
+
+(c) Any communications among Executive Committee members in the course of their JCP activities should avoid discussion of competitively sensitive topics, such as prices or pricing policies, costs, markets, individual competitors or customers, product plans, particular terms and conditions of sales, relating to a Member's products that are not germane to the RI or TCK.
+
+A.4 EC SELECTION PROCESS AND LENGTH OF TERM
+
+definition - Ratified Seat : An EC seat filled by the ratification process described in section A.4.2.
+
+definition - Elected Seat : An EC seat filled by the election process described in section A.4.3.
+
+Voting Members on the EC serve 3-year terms. There are 10 Ratified Seats, 5 Elected Seats, and the permanent seat held by Sun Microsystems, Inc. The 3-year terms are staggered so that 5 of the 15 seats are normally up for ratification/election each year as follows:
+
+Ratified Seats Replaced
+
+Elected Seats Replaced
+
+Year 1
+
+3
+
+2
+
+Year 2
+
+3
+
+2
+
+Year 3
+
+4
+
+1
+
+The cycle repeats every 3 years. Ratified or Elected Seats that are vacated prior to completion of the term will be filled as described sections A.4.2 and A.4.3.
+
+A.4.1 RESIGNATION OF EC SEATS
+
+Voting Members on the EC may resign their seats at any time during their term.
+
+Should one voting Member on the EC acquire a majority ownership of another voting EC member, one of those members must resign his or her seat by the effective date of the acquisition.
+
+EC members who fail to remain Java Community Members forfeit their EC seat.
+
+A.4.2 SELECTION PROCESS FOR RATIFIED SEATS
+
+Members are selected for the 10 Ratified Seats using a ratification ballot. The table given at the end of section A.4 determines the number of Ratified Seats up for ratification each year of the 3-year cycle.
+
+A Ratified Seat that was vacated by resignation will be filled for the remainder of its term by a ratification ballot that will be held no later than two months after the resignation (unless the resignation is less than six months before the next scheduled ratification ballot).
+
+The ratification ballot is carried out as follows:
+
+The PMO nominates Members to fill the vacant Ratified Seats with due regard for balanced community and regional representation.
+
+Voting begins starting in the third week of October each year.
+
+Eligible Members will vote to ratify each nominee over a 14-day voting period.
+
+A nominee is ratified by a simple majority of those who cast a vote.
+
+If one or more of the nominees are not ratified by the vote, the PMO will nominate additional Members as needed and hold additional ratification ballots until the vacant seats are filled.
+
+All Members are eligible to vote in a ratification ballot subject to the provision that if a Member has majority-ownership of one or more other Members, then that group of Members will collectively have 1 vote.
+
+A.4.3 SELECTION PROCESS FOR ELECTED SEATS
+
+Members are selected for the 5 Elected Seats using an open election process. The table given at the end of section A.4 determines the number of Elected Seats up for election each year of the 3-year cycle.
+
+An Elected Seat that was vacated by resignation will be filled for the remainder of its term by an election ballot that will be held no later than two months after the resignation (unless the resignation is less than six months before the next yearly election).
+
+The election ballot is carried out as follows:
+
+Four weeks before the voting period, the PMO will post on the public JCP site a complete description of all materials that will be provided to voters from the JCP election pages and ballot (e.g. any candidate statements, position papers, candidate forums, etc. that will be posted during the election).
+
+Starting two weeks before the voting period, the PMO will accept nominations from the Community for a period of 14 days. Any Member may be nominated.
+
+Voting begins starting in the third week of October each year.
+
+Eligible Members may vote for as many nominees as there are vacant Elected Seats over a 14-day voting period.
+
+The nominees who receive the most votes will fill the vacant Elected Seats.
+
+Ties will be decided by drawing lots.
+
+All Members are eligible to vote in an election ballot subject to the provision that if a Member has majority-ownership of one or more other Members, then that group of Members will collectively have 1 vote.
+
+A.5 EC VOTING RULES
+
+The voting rules in this version of the JCP are as follows:
+
+All EC votes will be conducted electronically and the results made public.
+
+EC balloting periods last 7 days except where noted in this document.
+
+EC Members may cast two types of votes: "yes" and "no". Alternatively, a Member may explicitly abstain or, in the extreme and undesirable case, not vote at all.
+
+Only "yes" and "no" votes count in determining the result of an EC ballot.
+
+Except where noted otherwise in this document, EC ballots are approved if (a) a majority of the votes cast are "yes" votes, and (b) a minimum of 5 "yes" votes are cast. Ballots are otherwise rejected.
+
+"No" votes must be accompanied by an explanation along with changes (if any) that are necessary to change the vote to "yes".
+
+It is highly recommended that abstentions be accompanied by comments.
+
+When a failed EC ballot results in the closing of a JSR, at least 1 month must pass before the JSR can be reinitiated.
+
+EC ballots to approve UJSRs for new Platform Edition Specifications or JSRs that propose changes to the Java language, are approved if (a) at least a two-thirds majority of the votes cast are "yes" votes, (b) a minimum of 5 "yes" votes are cast, and (c) Sun casts one of the "yes" votes. Ballots are otherwise rejected.
+
+EC ballots to override a first-level decision on a TCK challenge are approved if (a) at least a two-thirds majority of the votes cast are "yes" votes, and (b) a minimum of 5 "yes" votes are cast.
+
+An item listed in an Item Exception Ballot will be deferred to the next JSR if at least one-third of the EC Members cast "no" votes for that item.
+
+When more than one EC is voting on any ballot, the ballot will be approved only by passing each and all EC ballots separately.
+
+A.6 MEETINGS
+
+Attendance at meetings is mandatory.
+
+In-person meetings must be scheduled at least 21 days in advance.
+
+Teleconference-only meetings must be scheduled at least 7 days in advance.
+
+The Chair will publish the agenda at least 7 days in advance.
+
+Minutes will be recorded and distributed within 14 days after the meeting.
+
+A.7 FORMATION OF THE INTERIM EXECUTIVE COMMITTEE
+
+Sun Microsystems will appoint interim ECs in June 2000.
+
+The first ECs with Ratified/Elected Seats will be formed by December 2000.
+
+Random lottery will determine which of the seats come up for ratification/election in Years 1, 2, and 3.
+
+APPENDIX B: REVISING THE JCP, JSPA, AND IEPA
+
+Revisions to the Java Community Process (this document), the Java Specification Participation Agreement, and the Individual Expert Participation Agreement will be carried out using the Java Community Process with the following changes:

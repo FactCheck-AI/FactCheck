@@ -1,0 +1,57 @@
+Challenge & Context
+
+There can be few more enticing places in Europe than Spain when it comes to star gazing. Astro tourism is flourishing in a big way and Spain gives astronomers a better chance of a clearer sky than many parts of Northern Europe due to larger rural areas far from light pollution. And, because of Spain’s latitude, the equatorial constellations are higher in the sky than in Northern Europe.
+
+Algeciras is a municipality in the province of Cadiz (Spain) with a population of 123,078 inhabitants and located 104 km from the capital. In recent years, Algeciras has undertaken a series of actions with the aim of improving the social, economic and environmental sustainability of the municipality.
+
+In order to preserve and improve the quality of the night sky with regards to astro tourism, Algeciras set itself the challenge of using technology to reduce the environmental impact produced by the municipality’s public lighting systems. Light pollution in Algeciras has been on the increase in recent years following the successive expansions of the maritime port lands, and the consequent increase of its activities that run 24 hours a day, 7 days a week, as well as a continuous growth of industrial activity and the petrochemical pole that extends throughout the Bay of Algeciras. The direct effect of light pollution is the loss of quality of the night sky, which has far-reaching economic, social, cultural and environmental consequences.
+
+The challenge proposed by the City Council of Algeciras aimed to solve light pollution using a FIWARE technology solution with which real-time monitoring of the quality of the night sky of the city could again be carried out. The objectives pursued were: to understand the situation and evolution of the quality of the sky in the municipality; to gain the necessary data in order to design an intelligent and sustainable public lighting system; to communicate the data of the quality of the sky, and to boost the local economy by promoting astro tourism.
+
+The network of night sky quality measurements is performed with an innovative device developed by Green Globe called Night Eye. This device has been developed after years of research, technology development and market analysiss. It is a device developed, designed and manufactured by Green Globe, which gives complete control and modification of the parameters of the device without having to rely on a third party for possible future modifications or extensions.
+
+Night Eye is composed of 4 photometers equipped with lenses and filters that make up the optical module of the device. It also has a cloud detection and data validation module, as well as a communications module.
+
+The device enhances existing sky quality measurement systems with the following features:
+
+Measurements in 4 bands. Night Eye has 4 sensors (Photometers) and with the installation of different filters, it enables measurements in 4 different bands. The device measures the quality of the night sky (sky background brightness) in magnitudes of square arcseconds (mag/arcsec2). The magnitudes indicate the brightness of a celestial object as seen by an observer from the ground and arcseconds squared is a unit of area. This unit is the worldwide standard for measuring the night sky.
+
+All units of measurement in lighting technology are defined by considering the spectral sensitivity curve of the human eye under photopic (daytime) conditions as the effective “filter”. The emission of celestial bodies at all wavelengths of the spectrum, both visible and inconspicuous or even invisible, is of interest. Therefore, when it comes to the study of the night sky, light pollution must be considered not only in the visible range, but also beyond. Hence, luminotechnical units are inadequate for the measurement and diagnosis of the diffuse glow of the night sky. Thanks to the 4 photometers with different filters it is possible to keep track of how the sky glow background measurements change depending on the color of the luminaires installed. This makes it possible to identify the bluish white light component and thus detect the use of blue LEDs as well as their variation. This feature is very important because it allows the differentiation of the type of luminaire that emits more radiation based on the measurements in the different spectral bands delimited by the filter, enabling a better understanding of the data provided, and to accurately plan relevant subsequent actions based on the different readings of the sensors with different filters.
+
+Cloud detection. By means of an infrared sensor and a thermometer, the Night Eye validates the night sky quality measurements by detecting whether the sky is cloudy. This feature is of great relevance because sky quality measurements are only valid in clear skies. Cloudy skies cause light reflection and alter the sky background brightness measurements.
+
+In addition to real-time monitoring of the night sky, a number of other actions are performed:
+
+Itinerary sky quality measurements. With the double objective of covering the whole territory with sky quality measurements and to have light pollution measurements prior to the installation of the Night Eye sensors, night sky quality measurements are carried out on itinerary. The system of measurements in the itinerary is carried out using a car that circulates through the unlit roads of the outskirts of the town of Algeciras as well as through different roads of the municipality. Sky quality measurement probes are attached to the roof of the vehicle. These probes are oriented towards the zenith and work connected to a hardware specifically developed for automated measurement. In addition to the sky quality data in mag/arcsec2, it records the position where it is taken and the temperature. This data is then processed and treated in the office to eliminate the influence of the vehicle’s own headlights. This data gives the initial approximation of the quality of the sky in the municipality of Algeciras and helps decide the placement of the Night Eye.
+
+How it works
+
+The data is communicated to the system via MQTT, and with the IoT Agent, the data is written into the system. For the historical data, a Time Series Database (TSDB) is used, which is ideal for this type of task. The Generic Enabler used for this solution, therefore, is FIWARE’S Quantum Leap enabler, but there is the possibility of also deploying FIWARE’S Cygnus.
+
+Likewise, being an architecture based on the Context Broker, it is possible to configure subscriptions to synchronize data with other “Powered by FIWARE” platforms.
+
+In addition, a number of specific components have been developed for the challenge:
+
+A web portal for the promotion of astro tourism
+
+A web-based command portal for report generation
+
+A series of tools (scraper) for the inclusion of third party data, such as weather or forecast data.
+
+Next Steps
+
+The City Council of Algeciras has launched investments in public lighting renovation projects, with the co-financing of 80% of the European ERDF fund. These are two major actions:
+
+The first one is part of the Integrated Sustainable Urban Development Strategy in the Barrio de la Caridad, which consists of the renovation of 682 luminaires with 618 points of light throughout the area of action, which means a 50% reduction in energy consumption in some areas and up to 65% in others, and therefore the same reduction in greenhouse gas emissions (GHGs). The total amount of the investment will be €1,500,000.
+
+The second major step includes the implementation of a major project at city level, which will replace 5,522 light points and 78 ornamental lighting points, representing a reduction of approximately 53% of energy consumption, and therefore a reduction of GHGs. The investment amounts to a total of €5,000,000.
+
+Other steps:
+
+Web promotion and social networks. The project’s web portal will host regular news and information related to astro tourism in the municipality;
+
+Creation of a working group. A working group coordinated by Green Globe and the City Council of Algeciras will be created, inviting companies from the tourism, environmental and scientific sectors. The main objective is to boost collaboration and promote joint tourism actions in relation to the potential of astro tourism in the municipality.
+
+Outreach activities on sky quality and astro tourism. Outreach activities will be carried out for all citizens regarding the quality of the sky and astro tourism. We will work with the Malaga Astronomy Society to carry out astronomical observations in places in Algeciras and contact other astronomical associations in the Campo de Gibraltar area.
+
+Integration with the FIWARE platform that will allow interoperating with other verticals of the municipality such as the lighting system and with collaborating agents (Port of the Bay of Algeciras).

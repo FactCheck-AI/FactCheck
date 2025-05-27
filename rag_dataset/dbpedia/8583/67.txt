@@ -1,0 +1,39 @@
+Installation instructions vary across programs although there are well-established tools like autotools (includes automake and autoconf) and cmake.
+
+Since programs can come in different programming languages, its hard to give generic commands that suit all packages. For example, Python often have setup.py scripts where C programs often use autotools or at least a Makefile.
+
+I always start with finding the INSTALL, README or similar files. If you need to compile a program from source, you likely need the build-essential package which depends on compilers and other generic development packages.
+
+Depending on the program you're trying to compile, you might need to install other dependencies. Check the README for that or the output of the ./configure script (an executable file located in the root of the extracted source). For example, if it says that you need "x11 development headers", try finding "x11-dev" or "libx11-dev" in the repositories (in this case, it's libx11-dev what you're looking for).
+
+Source distributions that were built with autoconf/automake can be extracted and configured with:
+
+tar xf foo-1.0.tar.gz cd foo-1.0 ./configure make sudo make install
+
+Use ./configure --help for available options. By default, the files are often installed to /usr/local which is perfectly fine. Unless you're going to package the file into a .deb file, do not change this prefix to /usr as it may conflict with the package management system (dpkg).
+
+make is supposed to start compiling everything where make install installs the files to the designated locations (sudo is necessary for writing to privileged locations like /usr/local). To uninstall it later, run from the source directory sudo make uninstall (providing that the package is properly build with autoconf/automake, which is a responsibility of the developer, not you, the user!
+
+If you're just interested in compiling a package from the software center on your computer, proceed with (replace package and the version accordingly):
+
+sudo apt-get build-dep package apt-get source package cd package-1.0 dpkg-buildpackage -b -uc -us
+
+See the respecxtive manual pages for more details on the commands. (e.g. run man dpkg-buildpackage in a terminal). After performing these commands, you'll have a .deb file in the parent directory. It's recommended to use the packages from Ubuntu repositories where possible. The above steps are shown for educational reasons, but generally you want to make a modification to some files before building the package.
+
+FreeCAD is available in the Ubuntu Software Center, so it was not necessary to build and install it from source code.
+
+The Ubuntu Software Center always the first place where you should look. Installing is just a matter of clicking a button.
+
+There's an icon for the Ubuntu Software Center in the bar on the left side of the screen.
+
+If you really want to build and install a program from source, then look for a README file or other instructions that come with the program.
+
+Many software packages use GNU autotools as the build system and can be built and installed with the following commands:
+
+./configure make sudo make install
+
+Before building a program you'll need to check what the required libraries and other dependencies are (that should also be mentioned in the documentation for the program). On packages.ubuntu.com you can find the Ubuntu packages that contain the required libraries.
+
+Suppose the program needs a library called blah, then you'll probably need to install the package libblah-dev (lookup the exact name on the Ubuntu Packages page I mentioned above).
+
+sudo apt-get install libblah-dev

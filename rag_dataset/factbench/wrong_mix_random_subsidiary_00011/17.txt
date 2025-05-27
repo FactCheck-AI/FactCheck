@@ -1,0 +1,321 @@
+First Look: CLM 2011 RTC + RRC + RQM 3.0.1 review and screenshots
+
+What is it?
+
+CLM 2011 is a suite of tools making up IBM Rational Team Concert, Rational Requirements Composer and Rational Quality Manager properly integrated for what is arguably the first time. In my opinion this release is the closest to my interpretation of the original Jazz vision that IBM have delivered yet. It’s not perfect but I like the direction it’s heading in.
+
+It’s taken me a while to write this, mainly because I’ve been very busy but also because it seemed to take some deep magic to get all of this stuff installed and running properly. But I’ve done it a couple of times now so I thought I’d post some screenshots and comments. Of course if you look back on my posts of the original RTC review you’ll see that life is harder these days already. With RTC 1 and 2 you could just download a zip, extract, run a script and you were off and away. Installation isn’t too bad… it’s not great and simple but this is a big complex suite of tools so I don’t really expect it to be trivial.
+
+Lifecycle Project Administration
+
+To start with, the management of projects across these separate tools has been significantly improved by the introduction of Lifecycle Project Administration which allows you to create an integrated cross tool project in one step and simply manage members and roles across them. This is a big step forward although there are still some problems in that it’s not easy to do these kind of things at scale. For example if I want to add 3 people with a set of roles to 40 projects I’m going to be doing a lot of manual clicking. In fact generally it’s not so easy to deal with project areas at scale in the Jazz toolset and that hasn’t significantly improved yet although Lifecycle Project Administraton is an important step in that direction.
+
+I’m not a big fan of the navigation between project areas (linked or unlinked) as the user needs to understand the architectural relationship between personal dashboards, Change and Configuration Management (which has the RTC bits like plans, work items, source control, builds etc.), Quality Management (which has the RQM bits like test plans, cases, scripts etc.) and Requirements Management (which has the RRC bits like diagrams, UI sketches, docs, requirements etc.) to navigate the stuff in their single project. I think it’s a mistake to build the UI navigation around the architecture, I would prefer to see a unified project interface and navigation structure with the extra products adding to the project mass like aspects on a foundation. As before this becomes even more of an issue when you scale up to hundreds of projects. Incidentally, aspect orientation is how we apply practices to process kernels while still providing a seamless user experience of composed practices.
+
+So although the three products are closer together than ever before, sharing a UI and a common architecture they still are separate products and that’s clear in terms of navigation, UI differences and linking items between them. This is a shame for many reasons but one of the most important is that it’s still providing niche tools for separate roles, building walls between people in development teams and making cross-functional teams harder to create as individuals have to learn specific skills. These differences are not a strength, they make the whole game of software development harder.
+
+To be fair though I’m yearning for an ideal perfect solution, CLM 2011 isn’t that idealised perfect solution but it’s a lot closer to it than anything else I’ve used!
+
+Let’s start with IBM Rational Requirements Composer
+
+RRC 3.0.1 is a totally different beast than RRC 1 (see my original 2008 review here) and shouldn’t be thought of in the same light as RRC1. The old version was eclipse only, badly integrated, dependent on IE and full of bugs – this version is entirely web based, deeply integrated into the Jazz platform and not dependent on IE! As for bugs, I don’t know yet but it’s actually usable which v1 wasn’t!
+
+What it does:
+
+Tracks requirements of different types with different attributes and links
+
+Web based diagram editing (via browser plugin for FireFox or MSIE ), although someone used Microsoft CAB technology inside the FireFox xpi so don’t expect to do any diagram editing from linux or a mac 😦
+
+Ability to produce use case diagrams, UI prototypes, UI storyboards
+
+For me this is the first time RRC has lived up to some of my early hopes for it. I see this as a replacement for ReqPro, and indeed a replacement for DOORS in time.
+
+Unfortunately I only use linux at home so I couldn’t take screenshots of the RRC web editor, even in a virtual machine running windows on an explicitly supported browser I can’t get the plugin to work. When I’ve used it my office environment I’ve really quite liked it though, although it’s got quite a lot of basic usability problems. I’m looking forward to when it’s more mature.
+
+There is also a dependency/traceability tree viewer but that’s a separate download at the moment.
+
+Next Implement something in IBM Rational Team Concert
+
+RTC hasn’t changed that much from a user perspective, it’s still a great tool for tracking work items, making atomic multi-file change sets in parallel with continuous integration and build management. I’ve been using RTC in anger for 3 years now and still like it and think it can help drive agile benefits in development teams. Granted it’s got some issues like any tool, enterprise scalability issues and annoyances the biggest of which is the lack of cross-project queries which is practically unforgivable from my perspective. See this work item on jazz.net and demand cross-project queries from IBM!
+
+With that said, working in Eclipse from workitems, fully using Jazz SCM and continuous build is awesome.
+
+Then Test via IBM Rational Quality Manager
+
+I’ll admit it, I’m not a cross-functional ideal. I’m a typical developer, I’m not a tester, nor am I a test manager so I’ll leave the finer points of testing theory to others. However I do have some things to say about RQM from a cohesive logical process perspective.
+
+In this example I’ve created a Test Case based on the pizza requirement I entered in RRC (in exactly the same way that I created the implementation story). At this point frankly I’m a little disappointed because my Test Case has been created and is linked to the requirement (good) but it has no knowledge of the implementation story that I also created from RRC.
+
+The Missing Link
+
+For me this is the missing link. I realise it’s not as a simple as their always being a related triangle of 1-1 associations between these different types of artifacts, but the link between the test and the development items should at least be suggested as the odds are fairly strong that if a requirement is developed by an bit of code the test for the requirement is likely to need to test the aforementioned bit of code. Obviously I can manually create this link but that’s not the point.
+
+In fact this is symptomatic of the fact that these CLM tools are still separate and then integrated. There is a separation between requirements in RRC, development plan items and tasks in RTC and test plan items and tests in RQM. I have to create work items /artifacts in each tool to represent these different things and link them all together. Which is not really what I want to do.
+
+I don’t want to spend a lot of my time creating at least 2 items for every requirement in my product (1 dev story+tasks and 1 test case+scripts).
+
+What I want to do is elaborate a set of requirements in a simplistic user friendly UI with nice diagrams (RRC can do this) then view that candidate backlog immediately in my planning tool and further refine it – not copy it (even in bulk) to RTC but to actually manipulate the same work items, albeit a different aspect of them, in RTC. I want testing to be an inherent part of development with quality management and assurance being just another aspect of the system. Every requirement should have quality dimensions and be a test case although I might want to add more of course.
+
+I want to have requirements with dev tasks and tests hanging off them.
+
+Basically I want to define something that needs to be done, plan it, do it and test it all as one high level thing. I might drop off loads of tasks, different types of tests, supporting sketches etc. but I want a holistic understanding of a development item with the ability to project different views to different types of stakeholders (customer requirements views, test professional views, management views, development views).
+
+Some conclusions
+
+CLM2011 is a serious step in the right direction from IBM. In my opinion Jazz always has been but it’s been suffering from too many silly little problems and a lack of meaningful deep integration (ironic considering the original mission). If I had a magic wand I would do the following feats of greatness to the Jazz platform which I believe are all necessary to turn what is a good suite of tools into a true killer software development environment.
+
+all jazz tools to apply new aspects to projects rather than creating seperate project areas which then need linking and administration via LPA
+
+all artifacts and workitems to be viewable as native items in any tool interface
+
+all artifacts and workitems created by all three tools (and other future ones) be instantiated and linked with truly consistent UI, all taggable and commentable
+
+all artifacts, scm/build elements and work items queryable via a single query engine (across linked and un-linked project areas)
+
+the ability to self serve projects (without granting massive impractical rights), finer grained security and permissions control
+
+parent-child change sets
+
+smoother flow of work items between tool aspects rather than creating new ones with links between them
+
+make RRC diagram editing work on linux – things that only work on Windows are not enterprise deployable, and if they’re browser based and only work on windows someone needs shouting at. Even a much maligned school boy shouldn’t be making this error
+
+a decent reporting solution and technology
+
+Finally , being able to capture and elaborate requirements, plan iteratively, develop code, continuously integrate with unit tests, system test and manage test plans (amongst other things!) in what feels close to a single tool is extremely powerful. If only navigation wasn’t architecturally focused this strength would be much stronger and be a killer feature for IBM and Jazz.
+
+If they sort out cross-project querying.
+
+July 22, 2011 | Categories: Uncategorized | Tags: architecture, build, calm, clm, clm2011, design, development, IBM, Jazz, kernel, practice, process, requirements, RQM, RTC, scm, software, testing, ui | 5 Comments
+
+RSC 2009 – What to expect
+
+I’m not attending the IBM Rational Software Conference (what used to be RSDC, RUC etc. etc.) this year however since it started today for partners and tomorrow for delegates so I thought I’d cast my opinion on what to expect this year. Of course I could be wrong since it’s just assumption but I suspect the main themes will be:
+
+A vision of one notion of process for all Rational tools, made explicit in the relevant tools, surfaced through process rules and defined in practice libraries allowing easily composable and customisable processes based on the Jazz Process architectural elements.
+
+So to tie it all together the Process Library (which of course is practice based probably driven by Rational Asset Manager) feeds definition of processes in RMC, which is measured by MCIF and delivered by the Rational Software Development Platform. So what does that really mean:
+
+Rational Team Concert 2 beta – because it’s a lot better than RTC 1 which was pretty good to begin with!
+
+Rational Tara – a Jazz based PPM (Project Portfolio Management) tool. Think MS Project by IBM on Jazz with better Resource Management stuff. It’s part of the replacement suite for Rational Portfolio Manager (RPM). Should be interesting to see how it ties into the other products (inc. some of the Telelogic ones). I expect this one to be big news – it should be. Gantts, bubble charts, resource utilisation views, agile dashboards etc. will abound. (Now known as Focal Point for Project Management)
+
+Rational Insight – used to be codenamed Vega and is a data warehousing and RTL solution on top of Jazz. Cross project reporting goodness. Of course I’m sure there will also be integration through to the “classic” rational tools. Interestingly I read a bit of blurb recently from somwhere that referred to their old tools as the “classic rational toolset” I wonder if they borrowed that from me 🙂
+
+MCIF – Measured Capability Improvement Framework – It’s been around for a while but with more emphasis from IBM now on practice based process the story between a more practice orientated Rational Method Composer, Health Assessment tools and Self Check tools is a bit tighter.
+
+Telelogic – I expect there to be some announcements about the integration of the Rational and Telelogic brands. Especially around FocalPoint.
+
+I’d also expect some stuff on other Jazz based tools like Requirements Composer, Quality Manager, Ensemble, Governor and stuff like that.
+
+As I said due to other commitments I’m not there myself, but if you are there then please stop by the Ivar Jacobson International stand in the Exhibit Hall downstairs when they let you in. Grab a free beer and talk to my colleagues about how to achieve tangible process improvement with the use of effective practices in a proven framework. Also talk to them about achieving “Agile for Grown Ups” (TM of the MacDaddy) in your organisation. Ivar, Ian Spence, Kurt Bittner are all speaking at the conference and a bunch of other IJIers will be there so go along and say hi.
+
+And ask for a free bag, they’re great for carrying around your exhibit hall swag 🙂
+
+June 1, 2009 | Categories: Uncategorized | Tags: essup, esswork, focalpoint, IBM, insight, Jazz, MCIF, process, Rational, RPM, RQM, RRC, rsc, rsc2009, rsdc2009, RTC, tara, vega | Leave a comment
+
+Rational, Telelogic and Jazz roadmap
+
+There’s a lot of interest in the IBM Rational space about the future roadmap of Telelogic products like DOORS and Rational Requisite Pro and some murmurings of new shiny future things like Tara, Vega, MCIF, FocalPoint, Rational Change Management etc. etc.
+
+I’m sure as the year continues we’ll learn a lot more about these things (or at least be able to talk about what we already know under NDA as IBM Rational and Telelogic are bound to make some statements and showcase the future at RSDC09. This year the RSDC is combined with the Telelogic User Conference (Innovation) which is a public sign of how integrated IBM want the Rational and Telelogic brands to become in the future.
+
+All of this is very important for existing Telelogic and Rational customers, as well as people interested in Jazz or using Jazz. So I noticed a presentation from RSDC in Italy that covers some high level information on the joint product roadmap:
+
+January 15, 2009 | Categories: Uncategorized | Tags: IBM, Jazz, MCIF, Rational, RPM, RQM, rsdc2009, RTC, tara, telelogic, vega | Leave a comment
+
+First Look: IBM Rational Quality Manager
+
+Note this is from 2008, for a review of RQM in 2011 see CLM 2011 review
+
+Yet again hats off the Jazz folks for making something consumable. With no effort involved I was able to download and install a Beta 2 of Rational Quality Manager (RQM) and login and get a default empty dashboard with no configuration at all 8)
+
+RQM is a web based tool “for test planning, workflow control, tracking and metrics reporting capable of quantifying how project decisions and deliverables impact and align with business objectives.” It’s also Jazz based. A couple of weeks ago I did a First Look analysis of Rational Requirements Composer (here) so I thought I’d have a look at RQM today. I should caveat this by saying I’m not a QA/Test expert! 🙂
+
+This being a Beta there are some bugs hanging around like the horizontal tabs having a higher z-order than the pop-up menus from the left navigation bar so you’ve got to be precise with the mouse to open the “My Test Plans” tab at the moment and it’s a little hard to create a new test plan :S If only the left menu bar auto scrolled down like the “related sites” links on the far right! Eventually I worked around this by constructing the URI to create a new test plan – https://localhost:9443/jazz/web/console/QM#action= com.ibm.rqm.planning.home.actionDispatcher&subAction=newTestPlan and just typing it into the browser address bar. I had this problem in FF and IE, anyway I’ve got a work around so off I go.
+
+Here’s the blank empty GUI:
+
+Once I got into the Test Plan editor I was able to start creating a structured Test Plan. I like this idea, as instead of a huge Word document with no structure here there are discreet sections with potentially seperate ownership. Obviously in my demo repository there are no requirements to hook into a test plan so I clicked the button to create one, this led me into the Rational Team Concert web interface 8)
+
+Unfortunately I got quite a few errors in trying to save sections of my test plan, and also none of the editors for the various sections would let me type in them no matter how many times I hit the “Edit” link. The idea of structured test assets continues in the Test Case editor, although I had the same problems as with Test Plans here in terms of editing some of the content. I was however able to generate work items (which naturally I did twice) based on my test case and configured environments using the excellent lab management interface 😀
+
+Upon executing my generated work item the problem I found was that my test failed. There were no doughnuts to be had! 😦
+
+This being based on the Jazz platform there is of course a lot of reporting available (I shifted over to the sample Java PetStore test plan since there wasn’t enough data in my dummy project).
+
+Conclusions
+
+RQM gives you a fully web based quality management portal. The structured nature to managing test assets is a major improvement, and since this is Jazz based I’m sure it’s all deeply configurable for different ways of working and approaches to quality management and testing.
+
+The integration of information from Team members, Test Plans, Test Cases, Test Scripts, Execution, Reports and Defects is seamless and intuitive, with requirements and defects being managed through the Rational Team Concert interface and of course the data is easily reported on.
+
+I’d like to dig more into the integration with other tools such as Rational Team Concert, possibilities with Rational Requirements Composer and the relationship between process templates in these various tools. Not to mention migration paths from other QM/Test tools like the “classic” Rational tools and those from other vendors.
+
+All in all it looks like an impressive, intuitive and powerful product but it’s an early access Beta and has quite a few bugs that can make playing with it a bit frustrating at the moment.
+
+More info
+
+See my first look at IBM Rational Requirements Composer here
+
+See more stuff about Jazz in general here: What’s all that Jazz?
+
+July 11, 2008 | Categories: Uncategorized | Tags: beta, defect, IBM, Jazz, quality assurance, quality management, Rational, rational quality manager, rational requirements composer, RQM, RRC, RTC, team concert, test, test case, test plan, test script | 10 Comments
+
+Screenshots of new IBM Rational Jazz products
+
+[EDIT: This post is from 2008 if you want a preview of the new 2011 product suite see here]
+
+I recently put together a presentation for IJI on IBM Rational Jazz and the new, and future, Jazz -based products. Rather than present bullet points about products I like to show demos where possible and screenshots otherwise as like many people I find that I need to see a tool to gain an understanding of it. This presented me with a bit of a problem because most of these tools aren’t released yet, and some are only ideas from Rational Labs rather than actual listed products. But I managed to get screenshots or at least spy shots for the presentation so I thought I’d share.
+
+You can download the whole presentation here, it’s in PDF form though so you don’t get the animation or Rational Team Concert demo vids (if you’re an IJIer just drop me an email if you want the full demo videos) Download
+
+Here’s some screenshots and spy shots of some of the new tools:
+
+Rational Team Concert
+
+Rational Team Concert (RTC) is a collaborative project execution environment providing source control, work item tracking, build management and reporting capabilities as well as supporting agile planning. RTC is the first Jazz based product and at the moment the best known. The demo includes some early integration between Esswork and RTC.
+
+Early access packages of RTC are available now from jazz.net
+
+Rational Quality Manager
+
+Rational Quality Manager (RQM) is a business-driven software quality portal for people seeking a collaborative and customizable solution for test planning, workflow control, tracking and metrics reporting capable of quantifying how project decisions and deliverables impact and align with business objectives.
+
+RQM should be available around the 7th of July
+
+Rational Requirements Composer
+
+Rational Requirements Composer (RRC) is a requirements definition solution that enables organizations to enhance their requirements processes with easy-to-use elicitation and definition capabilities and provides various visualisation, documentation and collaboration capabilities.
+
+Open Beta pre-registration (Available in July hopefully)
+
+The following are currently Rational Labs projects and may not make future products in their current form
+
+Rational Tempo
+
+Improve estimation through:
+
+Tracking probabilities
+
+Schedule extrapolation
+
+Risk management
+
+Rational Ensemble
+
+Improve team collaboration
+
+Awareness of similar work
+
+Tracks historic assignments
+
+Links team members
+
+There is also business partner collective called IBM Rational Ensemble which is not the same thing as this Rational Labs project!
+
+Rational Governor
+
+Improve Governance
+
+Specify Governance Solutions
+
+Manage Roles and Decisions
+
+Automate processes
+
+Rational Financier
+
+Improve Financial Management
+
+Specify Governance Solutions
+
+Manage Roles and Decisions
+
+Automate processes
+
+June 24, 2008 | Categories: Uncategorized | Tags: beta, essup, esswork, IBM, Jazz, preview, quality manager, quality_manager, Rational, rational_ensemble, rational_financier, rational_governor, rational_tempo, requirements composer, requirements_composter, RQM, RRC, RTC, spyshot, tara, team_concert, testing, vega | 4 Comments
+
+RSDC 2008 Day 1: Jazz, Sushi, Wallflowers
+
+Today was day 1 of the RSDC 2008. I’ve already been busy for a couple of days but today was the proper first day. Unfortunately I spent the beginning a little hung over. I turned up to the keynote presentation at 8am local time with a bit of a headache – after watching the acrobatics and suffering the loud noise I had an even worse headache – oops 🙂 With only myself to blame I soldiered on to experience many cool things today:
+
+Lots of Jazz stuff
+
+Today IBM Rational officially announced both Rational Requirements Composer and Rational Quality Manager. Also Rational Team Concert has got a lot of press. I blogged a while ago about RRC and RQM (here) so it was good to finally see these products.
+
+Rational Composer is especially interesting to me as it a new Jazz based tool that allows you to manage requirements, create process flow diagrams, GUI mock-ups, manage glossary terms, create traceability and even create Use Case Docs in a single environment. Of course there is integration with Requisite Pro but it seems clear to me that in the long-ish term the products will converge until ReqPro is no longer necessary. I’m looking forward to the GA release of Requirements Composer, and especially the future release that is fully Jazz enabled, making use of Jazz SCM for requirements management and integrating deeply into the other Jazz products. I said previously on my blog that Reqiurements Composer was due for open beta today, but the word is that it will be next week! I’m impressed by this product and I think it will really help people that want to elicit requirements – all the way from organisational business analysts to project business analysts and system analysts. It’s a cool product.
+
+I also saw today the Microsoft Visual Studio client for Rational Team Concert. As a .Net developer myself and someone that works with clients that have heterogeneous environments this is particularly important to me. So far there are some VS native windows for Jazz views such as Team Artifacts and Work Items but I’ve not really seen what the relationship to TFS/VSTS is. Also at the moment some of the views (particularly of work item details) are through the web interface in a html pane inside Visual Studio rather than in a native VS plugin interface – although I’m assured this is to come soon. It’s good to see IBM Rational focussing on integrating with other platform and vendors. As most users would probably say though – I want it now!
+
+Other interesting elements included the news about Rational Project Management and Rational Enterprise Reporting, not to mention the new governance tools from IBM Research including
+
+IBM Rational Financier – gives project and program managers insight into the financial value of one ore more projects to help identify and manage risks
+
+IBM Rational Governor – helps IT organisations manage project roles and associates decision rights including managing the polices that constrain decisions and promote compliance with processes
+
+IBM Rational Tempo – lets project managers understand and mange the variability of schedule overruns, a key source of risk in software development projects
+
+IBM Rational Ensemble – reduces risks incurred by communication failures by promoting communication between developers doing related work
+
+All of the above are native Jazz tools and indicate the bright shiny new Jazz future. It seems obvious to me that these tools and will be the future path in the long term for Rational Portfolio Manager
+
+Rational Team Concert will be the first generally available product and will be released towards the end of this month – here’s a screenshot of IJI EssWork in Team Concert just because I’ve been playing with it:
+
+(cliccy piccy)
+
+Many other things caught my eye today – including an excellent presentation on RPM by Scott Craig that happened to include some ideas that I think will seed solutions for some of the problems faced by my own RPM implementation at the moment at my favourite client.
+
+I also liked the look of IBM Rational Self Check as it’s a good tool for supporting what I and my team have been doing manually for years. In fact the Self Check screenshots look remarkably like the measurements slides in my RUP implementation case study! If only this tool had been available 4 years ago! Rational Self Check is part of the focus on measuring practice adoption and the IBM Rational Measured Capability Improvement Framework (MCIF) – of course practice adoption and measurement is something that we know rather a lot about at IJI 😉
+
+The hat
+
+image shamefully nicked from kelly
+
+Met Kelly and Ferdy
+
+It was cool to meet up with some folks who I’ve previously only interacted with online. I think we need to setup a group photo of us all 🙂
+
+The Wallflowers gig
+
+More gratuitous photo stealing from kelly:
+
+Ian (Spence) had to point out to me that the lead singer (Jakob Dylan) was the son of Bob Dylan – which once he’d told me it was actually pretty obvious. Clearly I need to be more in touch! There were sparkly cups at the wallflowers gig too, obviously I grabbed a couple to take home for my boys (clicky piccy):
+
+Sushi with the Wallflowers
+
+After the exhibition centre and after the wallflowers gig we went over to Kimonos in the Swan for some Sushi and cocktails, the Wallflowers took the table next to us and it wasn’t long before our group and there’s were intermingled. They were kind enough, after getting hassled by Bryon Baker, to sign some autographs for Garth’s kids 8)
+
+Bryon (and others) at karaoke
+
+Speaking of Bryon, he did a funnygreat rendition of Coca Cabana with Gina, I got the vid on my phone so I’ll upload it and post it tomorrow 😀
+
+The ribbons
+
+And here’s an updated pic of the copious number of ribbons I have this year. They’re a good conversation starter though 😀
+
+June 3, 2008 | Categories: junk, rants and opinions | Tags: beta, esswork, governance, IBM, Jazz, karaoke, MCIF, practices, Rational, rational ensemble, rational enterprise reporting, rational financier, rational governor, rational project management, rational quality manager, rational requirements composer, RPM, RQM, RRC, rsdc2008, screenshot, team_concert, visual_studio, wallflowers | Leave a comment
+
+Rational Quality Manager on YouTube
+
+IBM is continuing to leak some info on some of the new Jazz products ahead of the RSDC2008 in a few days time, this time it’s Rational Quality Manager (RQM) which is the new product that will replace Test Manager and compete with HP’s Quality Center.
+
+Rational Quality Manager has been described as “a collaborative web-based quality management solution which offers comprehensive test planning and test asset management for the software lifecycle”.
+
+Edit: The URL for this vid changed overnight – sneaky people! If the vid is down leave a comment and I’ll relink it 😉
+
+May 30, 2008 | Categories: Uncategorized | Tags: IBM, Jazz, quality_manager, Rational, RQM, rsdc2008, youtube | Leave a comment
+
+New: Rational Quality Manager and Rational Requirements Composer
+
+A while ago I blogged about the upcoming announcement of a new Rational Quality Manager tool that was going to be announced at the RSDC2008 in June. Well now IBM are leaking the existence of this tool on a new blog http://qualitymanager.wordpress.com and they plan to launch an open beta on the first day of the conference (June 1st).
+
+Rational Quality Manager, or RQM as it will undoubtedly be called, is the next generation Test Management tool from IBM Rational which will replace the old Rational Test Manager and ClearQuest Test Manager to provide a substantial competitor to Mercury’s HP’s Quality Center. RQM is Jazz based making RQM part of Rational’s 2nd generation software development platform including Rational Team Concert, the new Rational Requirements Composer and others.
+
+Rational Quality Manager has been described as “a collaborative web-based quality management solution which offers comprehensive test planning and test asset management for the software lifecycle”.
+
+Rational Requirements Composer has been described as a tool to help “elicit and define requirements for business driven-development”. The IBM Rational Requirements Definition and Management Open Beta website isn’t up yet, but it will be next week on this URL.
+
+You can expect open betas for Rational Quality Manager and Rational Requirements Composer to be made available at the beginning of next week. Watch this space for more info as it comes along…
+
+May 27, 2008 | Categories: Uncategorized | Tags: beta, IBM, Jazz, quality_manager, Rational, rational ensemble, rational enterprise reporting, rational financier, rational governor, rational project management, rational quality manager, rational requirements composer, RQM, RRC, rsdc2008, RTC, team_concert | 1 Comment

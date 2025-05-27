@@ -1,0 +1,27 @@
+I have a block of text where I want to search for IMDb link, if found I want to extract the IMDdID.
+
+Here is an example string:
+
+http://www.imdb.com/Title/tt2618986 http://www.google.com/tt2618986 https://www.imdb.com/Title/tt2618986 http://www.imdb.com/title/tt1979376/?ref_=nv_sr_1?ref_=nv_sr_1
+
+I want to only extract 2618986 from lines 1, 3 and 4.
+
+Here is the regex line I am currently using but am not having luck:
+
+(?:http|https)://(?:.*\.|.*)imdb.com/(?:t|T)itle(?:\?|/)(..\d+)(.+)?
+
+https://regex101.com/r/ERtoRz/1
+
+If you are interested in only extracting the ID, so 2618986, none of the comments quite nail it, since they match tt2618986. Building on top of @The fourth bird answer, you will need to separate tt2618986 into two parts - tt and 2618986. So instead of a single ([a-zA-Z0-9]+), have [a-zA-Z]+([0-9]+).
+
+^https?://www\.imdb\.com/[Tt]itle[?/][a-zA-Z]+([0-9]+)
+
+Regex Demo
+
+You can then extract the 2618986 part by calling group 1.
+
+answered Aug 17, 2019 at 15:30
+
+vs97vs97
+
+5,79933 gold badges3131 silver badges4242 bronze badges

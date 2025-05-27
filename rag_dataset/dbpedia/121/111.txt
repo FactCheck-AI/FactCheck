@@ -1,0 +1,121 @@
+Quantamental Investing: Labeling Techniques for ML in Finance
+
+When we use ML for tradable assets forecasting, one of the first and most important steps is to create a good labeling scheme to train the model towards a predefined objective outcome.
+
+Labeling data is telling the model what the expected outcome is. For example labeling a picture of a Cat is telling the model: “The image you are analyzing is an image of Cat”. Further more, if the model considers the image not to be of a “Cat” it needs to adjust to get closer to the desired outcome; hence classify it as a “Cat”.
+
+Similarly, with stocks, labeling the outcome of a stock forecasting is telling the model whether the state of the data should point to a “Buy” or “Sell” classification. The idea is to classify the projected label (buy or sell) of new unseen data based on what the machine learned by analyzing a lot of samples of data and corresponding labels over time in history.
+
+Questions about our Quantamental Investing approach?
+
+Watch CEO Erez Katz discuss how we validate Alt Data
+
+to forecast stock prices and KPIs.
+
+The naive way to label stock data is to use fixed time horizon based labeling. This is the most common method used in financial literature. In this method, we label based on the returns after a static predefined interval of time.
+
+Let’s say we choose 5 days as our fixed horizon. If we get positive returns after 5 days, we label a day as 1 or positive, and on negative returns we label it is as -1 or negative class. As you may guess this is not enough.
+
+Suppose returns are positive but they are too low for you to consider a long position. You also need to think about transactional costs and slippage. So we decide to add a threshold; we want to take a long position-only when the returns are greater than a particular threshold, and take a short position if returns are lower than a negative threshold. Now we have 3 classes for:
+
+Table 1: Fixed time horizon labeling
+
+The approach looks fine but how do we decide this fixed threshold? If we are trying to create a ML strategy for a universe of stocks, this problem grows even bigger.
+
+If we keep the threshold lower, stocks with higher volatility would easily hit the threshold. On the flip side, if we keep the threshold higher, stocks with lower volatility would never hit the threshold.
+
+Volatility Based Threshold
+
+Our solution is to use a volatility based threshold, which is more dynamic. Based on the volatility of some n-period look back window, we define two horizontal barriers:
+
+Upper barrier: Current price + previous n time periods volatility
+
+Lower barrier: Current price – previous n time periods volatility
+
+Table 2: Labels Based on Volatility
+
+Figure 1: Three Barriers in Triple Barrier Method
+
+This is a better labeling scheme, but may be unrealistic for those willing to hold the position as long as it takes to hit a barrier. To solve this, we create a third vertical barrier to limit our future look forward.
+
+In this scheme we label 0 if it touches the third vertical barrier before any other barrier. We can also label based on the sign of the return (price at the look-forward window/ vertical barrier – current price). This method is also known as the Triple Barrier Method.
+
+Table 3: Labels Based on Triple Barrier Method
+
+In the Triple Barrier Method n_factor and p_factor are really just the hyperparameters to decide how conservative you want to be while making a trading decision.
+
+This is a simple example to illustrate the concept, but we usually choose more complicated approaches such as Average True Range* (originally developed as volatility indicator for commodities) depending upon the type of problem.
+
+We now have labels for the direction of the price movement, but we would also like to estimate how confident we are while placing our bets. If we check the predicted probabilities of the model, we often find these probabilities are too low. This means our models are not confident at all.
+
+Figure 2: Dynamic labels based on recent volatility (ATR)
+
+Meta-Labeling for model creation
+
+A technique invented by Marcos Lopez De Pradod as referenced in “Advances in Machine Learning” known as “Meta Labeling” comes to our rescue. The idea is to build a primary model with high recall which is usually a simpler model (logistic regression) with relaxed conditions for positive and negative classes.
+
+We then use the predictions (direction) from this model combined with the new features not used in the original model as input for a more complex model (LSTMs or Convolution Neural nets/MLP). Stricter conditions of stop loss and gains are applied, aiming for high precision.
+
+The secondary model is now more confident in predicting labels. This also improves the F1 score. Achieving a high F1 score using a single complex model is usually a difficult task. This is because when models try to achieve high true positive rate (Recall), false positives also increases.
+
+Inversely, when the model tries to lower false positives (to improve precision), false negatives tend to increase.
+
+Figure 3: Confusion Matrix
+
+Recall can be defined as True Positive Rate for: TP/ (TP +FN)
+
+Precision or Positive Predictive Value: TP/ (TP +FP)
+
+F1 score or Sørensen–Dice coefficient : It is the harmonic mean of precision and recall.
+
+Erez discussed a confusion matrix more in depth when explaining how to qualify the best machine learning model.
+
+Allocations:
+
+Since our secondary model is now more confident, we can use the predicted probabilities for bet sizing:
+
+Table 4: Allocations Based on Probability
+
+Sounds good on paper, now let’s see if it actually works.
+
+Experiment – Backtest using meta-labeling:
+
+We chose Natural Gas (NG1 future contracts) as the underlying commodity. All prices are inter-day open. We have a set of 32 features which includes fundamental as well as technical features.
+
+First we used all 32 features and ran multilayer perceptron in walk-forward fashion. Below are the results of the out of sample performance of neural networks on all features using Lucena’s investment research platform QuantDesk.
+
+Figure 4: Out-of-sample performance of neural network on all features. Backtest simulation – past performance is not indicative of future returns.
+
+Next we ran Logistic regression on 13 uncorrelated features from the input. The predictions from the Logistic regression model and the remaining features were fed into a multi-layer perceptron with two layers and five hidden units each.
+
+Please note we did not tune the hyperparameters to just see the crude performance of the meta-labeling technique. Results will improve if we tune the model.
+
+Below are the results of the out-of-sample backtest after meta-labeling using the walk-forward method.
+
+Results after applying meta-labeling:
+
+– We see the sharpe ratio increased from 0.30 to 0.80
+
+– Absolute Returns improved from 12.93 % to 65.30%
+
+– Relative Returns improved from 57.66 % to 110.03 %
+
+– Drawdown improved from -33.41 % to -29.37%
+
+Why Quantamental Investing?
+
+Even though the investment industry is beginning to add AI based trading strategies, traditional hedge funds are still skeptical to trust AI based strategies. Complex models also make it more difficult to explain the trading decisions.
+
+This complexity led to the birth of quantamental investing. Trading decisions are based on simple factors and when combined with AI they can easily be explained and understood. Hence the word “Quanamental: which is a portmanteau of “Quantitative” and “Fundamental”.
+
+How can we use meta-labeling as a Quantamental approach?
+
+Suppose an Asset Manager hires our quant team to use Machine Learning for allocations. If the AM wishes to not disclose the underlying strategy, they can share the side predictions. In turn, our team can use the secondary model with alternative features to provide allocations based on confidence of predicted probabilities.
+
+Advantages of a meta-labeling approach:
+
+– We know the rationale behind the base trades as simple models are used unlike difficult to comprehend Deep Learning models.
+
+– Secondary models use new sets of features like Alternative data to give a second expert opinion.
+
+– Can be outsourced to a third party organization without sharing the intellectual property.

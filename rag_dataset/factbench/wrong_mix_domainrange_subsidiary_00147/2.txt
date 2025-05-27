@@ -1,0 +1,943 @@
+Citrix Cloud: Smart Tools Reloaded!
+
+Hello and thank you for reading my latest article on Citrix Smart Tools, formerly Lifecycle Management.
+
+If you’re not aware, on 22nd December 2016, we renamed Lifecycle Management to Smart Tools and the features within. To bring you up to speed, here are the old and new names:
+
+Design & Deploy is now Smart Build. This service includes all the current blueprint design and deployment features in Lifecycle Management.
+
+Update is now Smart Check. This service includes the current Update feature and pairs it with diagnostic health checks to help you keep your XenApp and XenDesktop Sites running smoothly.
+
+Migrate is now Smart Migrate. This service includes all the current functions for easing
+
+Smart Scale is now… Smart Scale 🙂
+
+Ok, so we have some new names and a few new features but for anyone who has looked at my previous posts on the Smart Tools features and functionality, let’s have a look at the updated service:
+
+Citrix Cloud
+
+When logging into Citrix Cloud, you now have an updated landing page.
+
+Clicking on Smart Tools brings us here:
+
+Smart Build (formerly Design & Deploy)
+
+Clicking on Smart Build, we see the familiar Library page and access to the Blueprint Catalog. As you can see, the XenApp & XenDesktop PoC Blueprint has an update available (updated to version 7.12)
+
+If we click on the Blueprint Catalog tab, we see the familiar blueprints available to us and the option to update the XA/XD PoC BP. Click on Update.
+
+The blueprint will now update to the latest version.
+
+For more information on deploying blueprints, see my previous blog – Citrix Cloud: Part 1 – Using Blueprints to deploy a XenApp/XenDesktop 7.x Site
+
+Smart Migrate (formally Update)
+
+Clicking on the Smart Migrate tab and we have a redesigned landing page for us to start the migration of settings and configuration from a XenApp 6.5 farm to a new XenApp/XenDesktop 7.x Site.
+
+Clicking on Add a Migration Project allows you to choose a migration type and get the ball rolling.
+
+You have the same options to choose between a Fully Automated or Partially Automated migration.
+
+Although I haven’t been through the process since the update, I believe it is the same as before and therefore will not document this any further.
+
+If you wish to see my run through on how the Smart Migrate tool works and how I migrated a XenApp 6.5 Farm built in Azure to my newly deployed XenApp 7.x Site, then please read the following:
+
+Citrix Cloud: Part 2 – Using Citrix Lifecycle Management to migrate from XenApp 6.5 to XenApp 7.x
+
+Citrix Cloud: Part 3 – Using Citrix Lifecycle Management to “complete” our migration from XenApp 6.5 to XenApp 7.x
+
+Smart Scale
+
+Smart Scale appears to be largely unchanged, so for now, please see my previous article on how to setup and configure Smart Scale to control your VDA workloads.
+
+Citrix Cloud: Part 4 – Using Citrix Lifecycle Management Smart Scale to intelligently control your cloud-hosted workloads!
+
+This is a great tool and can greatly help control your infrastructure costs when running VDAs in a public cloud such as Microsoft Azure or AWS.
+
+Smart Check
+
+Currently, Smart Check is in Preview as the newly renamed Lifecycle Management Update feature now includes additional features such as:
+
+Scheduling health checks to run on your XenApp/XenDesktop Site
+
+Finding any potential health issues affecting your site, such as repeated errors or warnings in the Event Logs
+
+Find recommended fixes and product updates for the Delivery Controllers and Machine Catalogs in your XenApp and XenDesktop Site.
+
+View comprehensive reports about your Site’s health (akin to CIS today)
+
+Just to be clear, at present, Smart Check only offers these services for XenApp & XenDesktop. The plan is to eventually have all of our health check services available through Smart Check, not just XenApp & XenDesktop but for NetScalers, PVS and XenServer as well.
+
+Smart Check is supported for the following items:
+
+Deployments running XenApp and XenDesktop 7.6 LTSR and 7.11.
+
+XenApp and XenDesktop deployments running on the following cloud providers and hypervisors:
+
+Amazon Web Services (AWS)
+
+Microsoft Azure Resource Manager
+
+Citrix XenServer 6.2, 6.5, and 7.0
+
+VMware vSphere 5.1, 5.5, and 6.0
+
+Machine catalogs that use Machine Creation Services (MCS).
+
+Also, at this stage, Smart Check is not supported for deployments using the XenApp and XenDesktop Service in Citrix Cloud.
+
+I hope this has proven useful into the updates made to the newly named Smart Tools service via Citrix Cloud and I’ll be sure to keep you updated on any big news in the Citrix Cloud/Smart Tools front.
+
+Also, keep an eye out for planned Citrix Cloud: XenApp & XenDesktop Service series which I hope will include video walk-throughs.
+
+Citrix Cloud: Part 4 – Using Citrix Lifecycle Management Smart Scale to intelligently control your cloud-hosted workloads!
+
+Hello and welcome to Part 4 of a blog series about Citrix Cloud and the many features and benefits of utilising Citrix Cloud to design, implement, support and maintain your XenApp/XenDesktop environment.
+
+To give you a bit of background, since joining Citrix as a Senior Systems Engineer for UK Enterprise customers, I decided to put a few articles together to help show the real power and use cases for Citrix Cloud (formally Citrix Workspace Cloud).These articles are meant as an introduction to Citrix Cloud and a bit of a “How To” in deploying the basic functionally.
+
+These articles are by no means the “be all and end all” of Citrix Cloud nor do they represent any official training or documentation from Citrix.In the series I hope to demonstrate some common use cases and how under the single solution of Citrix Cloud, these use cases can be met.
+
+It will go something like this:
+
+Part 1 – using Blueprints to deploy a new Citrix XenApp/XenDesktop 7.x Site into Azure.
+
+Part 2 – using Citrix Lifecycle Management to automatically migrate your XenApp 6.5 Farm to your newly deployed XenApp 7.x Site.
+
+Part 3 – using a customised Blueprint to install the XenApp 7.x VDA onto an existing XenApp 6.5 server.
+
+Part 4 – using Citrix Lifecycle Management Smart Scale to intelligently control your cloud-hosted workloads so that you only have the amount of resources up and running in the cloud that you are using.
+
+Part 5 – using Citrix Lifecycle Management to Upgrade your XenApp 7.x Site to the latest version.
+
+Part 6 – Using the Citrix Cloud Apps & Desktop service to manage your VDA workloads, wherever they are; be it on-premises, cloud-hosted or a hybrid for a fully cloud-managed solution. This solution removes the requirement to deploy the Control Layer, which Citrix will maintain for you. You access an HTML5 version of Studio for management. The only “deployable” components are the VDAs.
+
+Recap…
+
+In Parts 1, 2 and 3, we used Lifecycle Management to migrate our XenApp 6.5 to a newly deployed XenApp 7.x environment, complete with configuration, policies and applications. In my case, the new XenApp 7.x environment was in Azure.
+
+In this part, we will look at how you can control the biggest cost factor when utilising a public cloud, such as Azure or AWS, to deploy your XenApp/XenDesktop workload.
+
+Background
+
+As I mentioned above, the biggest cost involved when using Public Clouds is compute costs. The more CPU, memory and disk you want, the more you pay. It’s also the beauty of it. So, let’s take the following example:
+
+After looking at this whitepaper on XenApp 7.11 scalability in Azure, we’ve decided to deploy the D2v2 instances to be our VDAs.
+
+These have a cost of £0.1491 per hour or approximately £110.90 per month, per instance when deployed into the Northern Europe Azure datacentre.
+
+According to LoginVSI, we’re looking at around 15 users per D2v2 instance before performance drops off.
+
+If we wanted to supply published resources for 1000 users, we would then require approx. 67 D2v2 instances, which would have a monthly cost of £7430.30 which sounds like a lot! You could also say that this is £7.43 per user per month which doesn’t sound so bad. However, there are other related costs such as storage and outbound bandwidth used + the licensing to factor in.
+
+But, would you really need 67 instances? And if you did need to cater for all 1000 users at any point, would all of your 1000 users work 24/7? The answer is probably not. Even if you had peaks during the day (or night) where all 1000 users required their published resources, this would probably not be maintained 24/7.
+
+If a user required their resources for 12 hours a day, which still would probably be an over-estimate, then, if you could turn off resources which aren’t needed, you’ve potentially cut your costs from £7430.30 per month to £3715.15 per month or £3.72 per user per month. Wunderbar!
+
+Now, of course these are hypothetical calculations but you can see how you could easily save a lot in Cloud running costs if you can control when your instances are running.
+
+Welcome Smart Scale!
+
+So, with Smart Scale which is a component of Lifecycle Management you can! Using the same Lifecycle Management Agent on your endpoints (VDAs in this instance), you can set up policies to control when you VDAs are powered up and powered down based on either:
+
+a schedule; say 9am – 5pm
+
+workload; when either x amount of users are logged on per server or when the load evaluator reaches 10000
+
+or a mixture of both
+
+How does it work?
+
+For schedule-based policies, by talking to your XenApp/XenDesktop Controller, the VDA will be placed into maintenance mode at the allotted time to stop any further connections. Once all connections are off, the server will be shut down. Likewise, when it is time, the server will start up and be made available for user connections.
+
+For workload based policies, if you reach either reach the designated number of users per server, or a reading of 10000 on your load evaluator, another server will be powered on to increase your capacity. Likewise, as users log off and servers become empty, these servers can be shutdown.
+
+In order to make sure you have VDAs available, you’re able to set a minimum number of VDAs to leave on. So, you may wish to have 10 VDAs available at anyone time knowing that you can instantly server ~150 users (based on our example above).
+
+Show me the Smart Scale!
+
+Ok, enough talking, let’s see it in action! In my example below, I have configured Smart Scale to use both a schedule and server load.
+
+Considerations
+
+There are some considerations when using Smart Scale that I found during my testing:
+
+If users are active on a server, they will not be logged off and the server will not be shut down. In order to control this, I would recommend putting in some type of timeout for idle and disconnected sessions.
+
+If using the Load Evaluator index as your metric, you need to set a policy for this within either Studio Policies or Citrix Policies GPO, otherwise it uses the default of 250 users for a full load. I configured mine for 85% CPU and memory to show the server as Full Load.
+
+It takes a few minutes to pick up changes in workload/user count so take this into your calculations when setting policies – don’t make them too tight otherwise you may not spin up resources fast enough.
+
+Let’s Go!
+
+From your Citrix Cloud login, select Smart Scale (new tab on the RHS)
+
+You will now see the XenApp and XenDesktops Sites that have been registered with Citrix Cloud. This is automatically done for you when you use the Blueprints to deploy a XenApp/XenDesktop environment, whether that be on-prem or in the Cloud. The Site I created during Part 1 is CtxInAzure. Click View Site.
+
+You will now see the Delivery Groups within your XenApp/XenDesktop Site and the state of Smart Scale. In my case, I have an Azure – North Europe DG with Smart Scale disabled.
+
+If you scroll down on the Monitoring page you will get stats such as Estimated Savings (none so far), current sessions and the Load Index. You can also filter these by 2, 4 or 24 hours and the past 7 days.As you can see here, I’ve loaded my 2 VDAs with 4 users. Due to the DEFAULT load evaluator of 250 users per server, the load index is very low and only 80 (max = 10000). As general guidance I would recommend setting your own load evaluator policy based on your environment requirements, which I will be doing shortly.
+
+At the top of the Smart Scale screen, I’ve clicked on Configure. You’ll now see your options. By default Load-based and schedule-based scaling is selected. I will be using this option.
+
+You’ll see at the bottom, there is an option to set (in US $) the amount per hour of your VMs in the cloud will cost. I’ve amended it from the default $0.06 to $0.113 as I will be running Azure A2 instances for my VDAs. You can find a price list of Windows VMs in Azure here.
+
+I then changed the Scale Metric to Load Index (defaults to Session Count).
+
+To configure my own schedule, from the Schedules section I’ve clicked Create New. This will allow me to set when my machines will power on/off and how many machines I want on as a minimum.
+
+I’ve given my schedule a name of Office Hours with a Min # of Machines On as 1. Just to reiterate, this is the minimum amount of VMs that WILL ALWAYS be powered on. In a Public Cloud scenario this will have a cost implication so plan accordingly!I then set my hours as 8am – 6pm all workdays (Mon – Fri). I’ve then clicked Create.
+
+I now have my own defined capacity and power management policy, based on my environment and pricing so hopefully it should give me the best value as well as the best user experience! Livin’ the dream, eh?
+
+You’ll see that by default, Smart Scale is disabled.
+
+Click the button to enable Smart Scale!
+
+Now click Return to Site Details to see the magic! 🙂
+
+You’ll now see that we will start gathering data on $$$ saved. Over time this data will build and you’ll be able to sit back in your own glory on how you’ve made cloud workloads cost effective!
+
+By hey? What’s happened here? I have a machine in maintenance mode! This is because we’re outside of Office Hours so its placed a VDA in maintenance mode. Now, what I came across was as I had users logged in, then the server stayed up. However, as soon as I logged the users off of the VDA in maintenance mode Smart Scale kicked in the next part… So another recommendation here is to set a policy for Session Idle and Disconnect timeouts.
+
+If you click on the Events tab (next to the Monitoring tab), you’ll see that there’s an event to power off 1 server.
+
+Clicking on the Machine Activity, you’ll see that CTX-XA-01 was powered off and the start/end time of the action.
+
+If I look in Studio, I will see that indeed my VDA is off.
+
+So that I actually believe I’m not being billed for this VM any more, I’ve gone into my Azure subscription and voila! The VM is Stopped (deallocated) which means I am no longer getting billed for compute costs (the higher costs of running VMs in public clouds). However, please be aware there is still a storage cost involved with having this VM provisioned, it’s just a lot smaller than the compute costs.
+
+The next piece of the puzzle was how to get this machine to come back on when it is required – i.e. when the existing powered on servers have reached (or better still are reaching) capacity? Learnt through T&E (trial & error), I found that Smart Scale just uses the load evaluator settings from the Site, which seems logical but I just wanted to make you aware that it doesn’t use anything in Smart Scale per se, you still need to configure a policy based on your needs.I’ve created a simple policy called “Load Management Policy” setting max load when CPU and/or memory reaches 85%. I’ve applied this to my Azure – North Europe Delivery Group. You will need to reboot the VDAs to pick up the setting.
+
+Now, I’ve logged onto my published Azure Desktop as a test user and generated CPU load by using CPU Stress tool and a memory leak by using Testlimit from SysInternals. Task Manager shows us what’s happening.
+
+If we switch back to Smart Scale Monitor screen, we see that we have 4 users logged in (you can see the dip where I rebooted the server :-p) and after a few minutes, the load showing as 9845, so very nearly maxed out.Something I forgot to mention was that there is a buffer (default to 10%) of the thresholds set. So, in my case, once the load index reaches 10000 – 10% = 9000, it will trigger the magic!
+
+If the top of the Smart Scale window, if we click on the Events tab, we see that there is an event triggered to power on a server.
+
+Clicking on the Machine Activity tab, we can see that CTX-XA-01 is powering on!
+
+If we flip over to my Azure Subscription, we can see that the VM that was off, is now on! Hazaar!
+
+Back over in Smart Scale, we now see that there are 2 machines on.
+
+Looking further down, we see that we still have 4 sessions but the load index has dropped as we have double the resource available.
+
+What I did next was to stop CPU Stress and TestLimit to drop the overall load. I also haven’t logged in any additional users to the newly powered on VDA. After a few minutes, you see the load drop down.
+
+If I click on Machine Activity, you’ll see that the CTX-XA-01 which had powered on to be ready for additional capacity is now powering off.
+
+And after a few minutes you’ll see that the VM has been Stopped (deallocated) meaning I’m no longer getting billed for the compute for this VM.
+
+Again, in the Monitor tab of Smart Scale you can see that we now only have 1 machine running and our load index has decreased further.
+
+Conclusion
+
+So, I hope you’ve seen the power of Smart Scale and how, through this configuration, you can really help drive value for your cloud-based workloads by configuring the policy to your environment needs. This could be the difference between moving workloads to the cloud or not, so I think it has massive potential.
+
+Here we used just 2 servers, but imagine our example from above of 67 servers and the cost savings per month you could achieve here.
+
+Smart Scale is just one part of the Citrix Cloud offering and a tool of Lifecycle Management. Though these series of blog articles I’m trying to showcase these so that everyone can see the power of the Cloud and how Citrix is at the forefront of Cloud technologies and we take this very seriously and want to provide our customers with the tools to make their move to the cloud, however small or large, a success to help drive better value for their business.
+
+Stay tuned for further Citrix Cloud articles and thank you for reading!
+
+Citrix Cloud: Part 3 – Using Citrix Lifecycle Management to “complete” our migration from XenApp 6.5 to XenApp 7.x
+
+Hello and welcome to Part 3 of a blog series about Citrix Cloud and the many features and benefits of utilising Citrix Cloud to design, implement, support and maintain your XenApp/XenDesktop environment.
+
+To give you a bit of background, since joining Citrix as a Senior Systems Engineer for UK Enterprise customers, I decided to put a few articles together to help show the real power and use cases for Citrix Cloud (formally Citrix Workspace Cloud).These articles are meant as an introduction to Citrix Cloud and a bit of a “How To” in deploying the basic functionally.
+
+These articles are by no means the “be all and end all” of Citrix Cloud nor do they represent any official training or documentation from Citrix.In the series I hope to demonstrate some common use cases and how under the single solution of Citrix Cloud, these use cases can be met.
+
+It will go something like this:
+
+Part 1 – using Blueprints to deploy a new Citrix XenApp/XenDesktop 7.x Site into Azure.
+
+Part 2 – using Citrix Lifecycle Management to automatically migrate your XenApp 6.5 Farm to your newly deployed XenApp 7.x Site.
+
+Part 3 – using a customised Blueprint to install the XenApp 7.x VDA onto an existing XenApp 6.5 server.
+
+Part 4 – using Citrix Lifecycle Management Smart Scale to intelligently control your cloud-hosted workloads so that you only have the amount of resources up and running in the cloud that you are using.
+
+Part 5 – using Citrix Lifecycle Management to Upgrade your XenApp 7.x Site to the latest version.
+
+Part 6 – Using the Citrix Cloud Apps & Desktop service to manage your VDA workloads, wherever they are; be it on-premises, cloud-hosted or a hybrid for a fully cloud-managed solution. This solution removes the requirement to deploy the Control Layer, which Citrix will maintain for you. You access an HTML5 version of Studio for management. The only “deployable” components are the VDAs.
+
+Recap…
+
+In Part 1, we looked at using Citrix Cloud Blueprints to deploy a small scale (POC) XenApp environment into Microsoft Azure. With Part 2 we used the Migrate service of Citrix Lifecycle Management to migrate all of our applications and policy configuration from our XenApp 6.5 Farm to our newly deployed XenApp 7.x Site.
+
+In this part, we will look at a customised Blueprint to install the VDA onto our XenApp 6.5 Worker Server that will then automatically remove XenApp 6.5 and configure access to the new XenApp 7.x Site. The reason for doing this is to “finalise” our migration so that we now have a XenApp 7.x VDA with our existing applications installed.
+
+Why?
+
+Why would we want to install a VDA onto our existing XenApp 6.5 Worker Server you ask? Why not build fresh you say? Well, although this isn’t an exhaustive list, here are a few reasons why you may wish to use an existing XenApp 6.5 Worker (APP) Server…
+
+This gives you a quick way to get your existing applications into your XenApp 7.x environment and into UAT (User Acceptance Testing) without any repacking/redeployment (my use case)
+
+You may have complex applications that you do not wish to spend time redeploying and/or no longer have the skills/knowledge/instructions in house any more (i’ve come across this too many times!)
+
+Applications may be farmed out to a 3rd party and they will charge to redeploy these to a new image
+
+You may not have the time to redeploy these and/or you do not have the applications packaged or a centralised deployment tool such as Microsoft System Centre Configuration Manager
+
+You need to deploy existing applications very quickly to your new XenApp 7.x Site due to business pressures such as a new acquisition.
+
+As you can see, there are plenty of reasons why you may wish to do this and I bet you can come up with a few of your own!
+
+Using this method would also mean minimal change for the users. Your users will now be going to StoreFront instead of Web Interface but their applications and desktops will be there waiting for them, giving them comfort within the familiar (never underestimate this factor!)
+
+My vision of “The Future”
+
+I also see this as part of the “larger” migration strategy using Citrix Lifecycle Management which will hopefully come to fruition once Azure ARM support is added (P.S. it’s on the way, currently in test 😉 Privileges of being on the inside!)
+
+In the very near future, I would like to see a “complete” automated migration process that would look something like this:
+
+Similar to Step 1, we deploy a XenApp 7.x Site in the cloud of our choice which is production ready, i.e. 2x StoreFront, 2x Delivery Controllers, license server(s) etc.
+
+Using Citrix Lifecycle Management Migrate feature, we take all of our settings from our XenApp 6.5 Farm and migrate them into our XenApp 7.x Site
+
+We deploy our VDA (configured to connect to our new Delivery Controllers) to a number of Workers from the old farm – this could be an instance of each silo type if using silos or just a single worker if you have a common image
+
+Using the Hosting Connectors within Studio, we now use this/these as our template server(s) and deploy our Machine Catalogs and Delivery Groups using Machine Creation Services (MCS Azure ARM support was released with XenApp/XenDesktop 7.11) or if supported, Provisioning Services
+
+With absolutely minimum effort and probably the fastest time to value, UAT can begin!
+
+The possibilities here are endless with potential interaction with Citrix AppDNA for automated image and application validation and even application packaging with App-V! These could be done with scripts and I see no reason why not in future releases! Please note that as far as I’m aware, these are not upcoming features but my dreams. However, I’ll mention it to the Citrix Cloud team and let you know what they say 😉
+
+So… what’s the value of Cloud you ask? Stop thinking “VM’s in someone else’s datacentre and think of automated, wizard driven services enabling quicker time to faster, faster ROI, lower TCO that are tried, tested, consistent and repeatable! No more hours of manual hardship, guessing and fingers in the air but predictive results based on your data and use cases! THIS IS THE POWER OF THE CLOUD MY FRIEND!
+
+The Business!
+
+So, sometime, long ago, I mentioned something about using a customised Blueprint to deploy a VDA and get our legacy XenApp 6.5 application Worker Server into our new and shiny XenApp 7.x Site, right? ;-p
+
+To skip forward a few steps, I created my own Blueprint but using an existing blueprint, copying it and removing all of the processes except that used for installing the XenApp/XenDesktop 7.x VDA.
+
+As I knew I was installing onto an existing Citrix Worker Server, I also removed installing .NET as this would have already been done and removed installing Remote Desktop Services and all the ancillary features such as Desktop Experience etc.
+
+This did take a bit of trial and error and perhaps a blog post for another day! We will see the steps of deploying the VDA in more detail shortly so hopefully you’ll see what I did to get there.
+
+I also had to change a few of the blueprint parameters to show the Delivery Controllers and Domain options.
+
+So, using my customised Blueprint “Install VDA” I selected it and chose Deploy.
+
+As you can see, I’ve given my blueprint a description. Click Start deployment setup.
+
+You get a default value for the Deployment Name. I’ve left this and clicked Next.
+
+Select a resource location. As usual, I’ve selected my Azure Subscription but this could be any one of the supported Resource Locations. Click Next.
+
+There is nothing to configure on the Scale tab, so I clicked Next.
+
+I now need to pick a server to deploy the blueprint to. Following the same steps (18 – 20) from the previous blog, I installed the Lifecycle Management Agent onto my Worker Server so that it was available to deploy to this server. I selected CTX-XA-01 and then clicked Next.
+
+You now have the Pre-deployment check list. You can export a parameters .csv to import later but as we only have a few variables, I’ve skipped this. Click Continue.
+
+Now I need to fill in my required parameters. In this instance, that is Domain Name, Administrator Account, Password and importantly Controller(s). You will notice I’ve put in the name of the Delivery Controller deployed via the POC blueprint in Part 1. Then click Next.
+
+You can now save the configuration as a Profile, in case you wish to use it again. By doing this, if your blueprint fails or you wish to deploy it to another server, you can select you Profile at the start and save the time of entering the various parameters. Click Save.
+
+You will now see a summary. If this is ok, click Deploy.
+
+The blueprint now deploys. First, Autoadminlogon is set. This is needed to pass the admin credentials you entered in earlier.
+
+Then 7-Zip is installed (downloaded via the Blueprint). This is required to unpack the XenDesktop/XenApp ISO.
+
+The XenApp/XenDesktop 7.9 ISO is then downloaded.
+
+And now expanded via 7-Zip.
+
+Via a PowerShell script with the various parameters we entered in Step 9 earlier, the VDA is now installed. As part of this installation, XenApp 6.5 will be uninstalled and the server removed from the xenApp 6.5 farm gracefully.
+
+After that, assuming all goes through, autoadmins are disabled and the VM is rebooted.
+
+With the blueprint completed successfully, everything is Green! You can also revisit and wallow in your marvellousness by clicking on Get Deployment Report.
+
+Now, to confirm that the VDA installed successfully, firstly I logged into my XenApp 6.5 Zone Data Collector and checked the server list. No sign of my worker, CTX-XA-01. So far, so good!
+
+Next, I logged onto CTX-XA-01 and looked in Programs and Features. There’s still a few bits left over but XenApp 6.5 but most of the components have been removed and low and behold there is a VDA 7.9!
+
+Next I logged into my Delivery Controller and created a new Machine Catalog.
+
+At the Introduction window I’ve clicked Next.
+
+I’ve selected Server OS and clicked Next.
+
+For the Machine Management, as I hadn’t configured any Connectors for Azure, I’ve select “Machines that are not power managed” and “Another service or technology”. Click Next.
+
+I’ve now browsed Active Directory and added CTX-XA-01 and then click Next.
+
+And there we have it, a Machine Catalog with my newly migrated VDA!
+
+Next, using the already deployed Delivery Group created during the Migration process (XenApp65), I’ve selected Add Machines.
+
+I’ve now added our new VDA from the XenApp 65 Catalog and clicked Next.
+
+And then Finish.
+
+As we saw in Post 2, if we log into StoreFront we will see our newly migrated applications from the XenApp 6.5 farm. However, if we click to launch an application we should now have a resource in the background to provide the application…
+
+And voila! Our published application, previously available in our XenApp 6.5 Farm is now fully migrated to our XenApp 7.x Site! And all using Citrix Lifecycle Management!
+
+Summary
+
+So, to summarise, using Citrix Lifecycle Management thus far (and no other tools), we have:
+
+Created a new XenApp 7.x deployment in Azure
+
+Migrated our XenApp 6.5 Farm settings to our Azure XenApp 7.x Site
+
+Used a customised blueprint to install the XenApp 7.x VDA and remove XenApp 6.5
+
+Added the new VDA into a Machine Catalog and Delivery Group via Citrix Studio
+
+Launched our published application from our new XenApp 7.x.
+
+So, I hope I’ve shown you the power of Citrix Lifecycle Management and how with a bit of knowledge and not much trouble, you can migrate from XenApp 6.5 to XenApp 7.x with minimal fuss. Now I appreciate this was a POC with only a few applications but you can see the process and that there is no reason why it wouldn’t work for a full scale production based on an on-premises XenServer or AWS deployment as well.
+
+I’m also aware that the steps of adding the VDA into a Machine Catalog and Delivery Group could be fully automated via a customised PowerShell script for full end-to-end automation, so if you wish to do this, then please be my guest.
+
+I will be adding more to my Citrix Cloud series in the coming weeks as we are far from over but I really wanted to show you that Citrix truly sees Cloud as their future and isn’t just saying this, but is delivering on it.
+
+Going back to a few of my earlier points I wanted to highlight a few things:
+
+Citrix Lifecycle Management at present does not support Azure ARM and currently only Classic mode which means you cannot integrate this process with the newly released MCS Azure ARM support – yet. The good news is that support for Azure ARM deployments is coming!
+
+I understand that I didn’t show you the process of making the VDA blueprint, however, I am hoping that Citrix will officially release one as I’m talking to the Citrix Lifecycle Management team about the possibility – for the reasons listed above. Fingers crossed!
+
+You do require knowledge of XenApp/XenDesktop and a familiarity with Citrix Cloud and Lifecycle Management. For those who may be reading this article, like what they see and wish to use these methods but are worried that they do not have the skills, then I recommend that you either speak to your Citrix Partner who will be able to assist you in trialling/testing/deploying using Citrix Cloud or if you deal direct, speak to your friendly SE (if you deal direct you will have one!) who can help you on your first steps to Citrix Cloud!
+
+Thank you again for reading and please look out for future Citrix Cloud posts from me!
+
+Citrix Cloud: Part 2 – Using Citrix Lifecycle Management to migrate from XenApp 6.5 to XenApp 7.x
+
+Hello and welcome to Part 2 of a blog series about Citrix Cloud and the many features and benefits of utilising Citrix Cloud to design, implement, support and maintain your XenApp/XenDesktop environment.
+
+To give you a bit of background, since joining Citrix as a Senior Systems Engineer for UK Enterprise customers, I decided to put a few articles together to help show the real power and use cases for Citrix Cloud (formally Citrix Workspace Cloud).
+
+These articles are meant as an introduction to Citrix Cloud and a bit of a “How To” in deploying the basic functionally. These articles are by no means the “be all and end all” of Citrix Cloud nor do they represent any official training or documentation from Citrix.
+
+In the series I hope to demonstrate some common use cases and how under the single solution of Citrix Cloud, these use cases can be met. It will go something like this:
+
+Part 1 – using Blueprints to deploy a new Citrix XenApp/XenDesktop 7.x Site into Azure
+
+Part 2 – using Citrix Lifecycle Management to automatically migrate your XenApp 6.5 Farm to your newly deployed XenApp 7.x Site.
+
+Part 3 – using a customised Blueprint to install the XenApp 7.x VDA onto an existing XenApp 6.5 server
+
+Part 4 – using Citrix Lifecycle Management Smart Scale to intelligently control your cloud-hosted workloads so that you only have the amount of resources up and running in the cloud that you are using.
+
+Part 5 – using Citrix Lifecycle Management to Upgrade your XenApp 7.x Site to the latest version.
+
+Part 6 – Using the Citrix Cloud Apps & Desktop service to manage your VDA workloads, wherever they are; be it on-premises, cloud-hosted or a hybrid for a fully cloud-managed solution. This solution removes the requirement to deploy the Control Layer, which Citrix will maintain for you. You access an HTML5 version of Studio for management. The only “deployable” components are the VDAs.
+
+In Part 1, we looked at using Citrix Cloud Blueprints to deploy a small scale (POC) XenApp environment into Microsoft Azure. This blog post does follow on from that so it may be advisable to read up on how we created our XenApp 7.x Site first.
+
+In Part 2, we will look at migrating our legacy XenApp 6.5 Farm to our newly created XenApp 7.x Site. We shall accomplish this using Citrix Lifecycle Management and the Upgrade feature. This will allow us to automate the whole process using PowerShell scripts and workflow to take away a lot of the manual steps and increase time to value of your XenApp migration.
+
+Quick Background
+
+So, for those who aren’t 100% familiar, when we launched XenApp and XenDesktop 7.x, this was a big shift for XenApp as the architecture changed completely from IMA (Independent Management Architecture) to FMA (Flexcast Management Architecture). One of the reasons was to simplify the delivery of apps and desktops through a single, common architecture – makes a lot of sense right? With this meant that if you wanted to “upgrade” your XenApp 6.x environment to 7.x, you would have to do a migration as there is no in place migration option which was and still is no simple task.
+
+What I intend to show in this blog article is how we can use Citrix Lifecycle Management to do the “heavy lifting” and migrate all the settings across to the XenApp 7.x Site we created in the previous blog. By automating this task, you save a lot of manual work and reduce a lot of risk of a migration. Also, as it is a side-by-side migration, you would not effect the existing XenApp 6.5 production environment.
+
+Here’s one I made earlier…
+
+So, in order to show how the migration works, I’ve created a very simply XenApp 6.5 environment, pretty much akin to our XenApp 7.x environment. I have a single Windows 2008 R2 server for my Zone Data Collector and Web Interface.
+
+I then have another Windows 2008 R2 server as my Session-Host (Worker) server with a few applications installed.
+
+I also configured some very basic Citrix Policies, both Computer…
+
+and User based…
+
+As you can see with the User-based policies, I’ve deployed 3 from the built-in templates and one I’ve created manually. I’ve also applied a FILTER to the Remote User Policy based on the AD group SEC_CTX_REMOTE_USERS.
+
+You can see if I log into my Web Interface, I can see the published applications.
+
+Migration
+
+Log into your Citrix Cloud portal and navigate to Citrix Lifecycle Management.
+
+From the Lifecycle Management menu, click on Update.
+
+Click on Migrations.
+
+Click Add Project.
+
+Name your project and in the case of a 6.5 to 7.x migration, select “XenApp 6.5 to XenApp 7.6” migration type. Please note that although it says XenApp 7.6, it works with any newer versions, such as XenApp 7.9. Click Add.
+
+Select Fully Automated as the migration type. I mean, why wouldn’t you! 😉
+
+You know get a nice visual of the migration process. Have a read and click Next.
+
+Now, I must admit I’m not entirely sure why but when I selected the option “Choose an existing deployment created with Lifecycle Management“, it didn’t find my deployment, even though I deployed via CLM. It is registered correctly… I’m still looking into this. Anyway, I then selected “Connect an existing deployment created outside of Lifecycle Management” and all was well. Didn’t seem to make any difference.
+
+From the dropdown, select your Resource Location. In my case it was my Azure Subscription.
+
+Click Select XenApp Controller.
+
+From the list I selected the Controller created by the Blueprint in my previous blog article; XDC.
+
+You are now prompted for credentials. Enter an administrative username and password. Click Save.
+
+CLM will now query the XenApp deployment and fetch the configuration.
+
+You’ll now see that the XenApp 7.x section is complete.
+
+Now it’s time to configure the XenApp 6.5 environment. From the dropdown, select your Resource Location. Again, in my case it is my Azure Subscription but this could be AWS, or an on-prem XenServer, Hyper-V or ESX location.
+
+As you can see, as we have a deployment created outside of Lifecycle Management, we cannot see our XenApp 6.5 Zone Data Collector (ZDC). The easiest way is to log into Citrix Cloud on our ZDC and run through this wizard. Select Cannot see controller server?
+
+You’ll now have the option to download the Lifecycle Management Connector. Click Download Connector.
+
+Save the CitrixLifecycleManagementAgent.exe.
+
+Now run the agent.
+
+Accept the EULA and click Install.
+
+Once, completed (takes a mere jot!), click Finish.
+
+If you open up the Services console, you’ll see two new services added; Citrix Lifecycle Management Agent Service and Citrix Lifecycle Management Monitor Service.
+
+Navigate back to Citrix Lifecycle Management GUI. Select your Resource Location. In my case, yet again (I promise I’ll do an on-prem XenServer deployment soon!) I’m using my Azure Subscription. Click Select XenApp Controller.
+
+You’ll now see the newly added ZDC! I was very original and called my CTX-ZDC-01. K.I.S.S. 😉 Select your ZDC.
+
+You’ll be prompted for adminy creds.
+
+Now you’ve connected to your Destination (XenApp 7.x) and your Source (XenApp 6.5), click Analyze XenApp Farm.
+
+You’ll get a progress bar that updates as it goes along.
+
+Once completed, you’ll see that it’s found your applications and policies. Click Next.
+
+You’ll first be presented with your applications. As you can see, it’s found 100% of all 4 of them!
+
+Select all the applications you wish to migrate.
+
+Now click on Analyzed Policies. Again we see all of the User Policies from our XenApp 6.5 farm.
+
+Select them all.
+
+You’ll also see all of your Computer Policies.
+
+Again, select them all.
+
+Once you’ve selected all of your required applications and policies, click Process to Migration (sum of apps + pols).
+
+You’ll now be prompted for a Delivery Group. You can select an existing group or in my case, select Create new delivery group (probably a preferred option). As you can see, it’s found the CLM-DemoDeliveryGroup created from our blueprint in the previous blog.
+
+Enter the name of the Delivery Group. I’ve kept the default of XenApp65. Click Migrate.
+
+Your farm settings will now be migrated and you’ll get a status bar to show you how it’s going. Coffee time! But be warned, this doesn’t take as long as you’d think 😉
+
+Once completed, you’ll see the log. As you can see from mine, the migration was completed with some warnings. When you expand the warnings, they can be ignored as they are for policies that have filters on them advising us to check that these have applied successfully (think of a scenario when you’re migrating within different domains) and for policies that contain settings that are not applicable. My Default Computer Policy contained XML settings – not applicable in XenApp 7.x and Licensing settings. Again, not applicable as a policy in XenApp 7.x Land.
+
+If we now go to Citrix Studio on our XenApp 7.x Controller (XDC), we can see the newly created Delivery Group by CLM with our migrated settings (see apps and user assignment).
+
+If we click on the Applications node, we’ll see the previously configured applications AND the newly migrated ones! Whooppie!!!
+
+Going down to the Policies node, you can see that all the User Policies (the applicable policies) have been migrated AND the filters have also been applied! Never doubted it 😀 !
+
+Just to double check, I confirmed that the “Default User Policy – Secure” had all the correct settings as this was the biggest policy to be migrated.
+
+Now, just to show that all of this has worked from a configuration side, I can sign into the StoreFront site created in my previous blog when we deployed a XenApp 7.x POC using the blueprint in CLM.
+
+As you can see, the applications with correct icons are listed. However, at present there is no VDA to log into that host the applications.
+
+And there you have it! A migrated XenApp 6.5 to XenApp 7.x environment… Or is it!?! Well, we have all the settings but no Worker/VDA to log on to and run our applications from!
+
+Well, tune it for Part 3 where I will customise an existing Blueprint to install and configure the XenApp Virtual Desktop Agent (VDA) onto an existing XenApp 6.5 Worker server to show how you can fully migrate from XenApp 6.5 to XenApp 7.x with Citrix Lifecycle Management.
+
+As always, thank you ever so much for reading this article.
+
+Citrix Cloud: Part 1 – Using Blueprints to deploy a XenApp/XenDesktop 7.x Site
+
+Hello and welcome to Part 1 of a blog series about Citrix Cloud and the many features and benefits of utilising Citrix Cloud to design, implement, support and maintain your XenApp/XenDesktop environment.
+
+To give you a bit of background, since joining Citrix as a Senior Systems Engineer for UK Enterprise customers, I decided to put a few articles together to help show the real power and use cases for Citrix Cloud (formally Citrix Workspace Cloud).
+
+These articles are meant as an introduction to Citrix Cloud and a bit of a “How To” in deploying the basic functionally. These articles are by no means the “be all and end all” of Citrix Cloud nor do they represent any official training or documentation from Citrix.
+
+In the series I hope to demonstrate some common use cases and how under the single solution of Citrix Cloud, these use cases can be met. It will go something like this:
+
+Part 1 – using Blueprints to deploy a new Citrix XenApp/XenDesktop 7.x Site into Azure
+
+Part 2 – using Citrix Lifecycle Management to automatically migrate your XenApp 6.5 Farm to your newly deployed XenApp 7.x Site.
+
+Part 3 – using Citrix Lifecycle Management Smart Scale to intelligently control your cloud-hosted workloads so that you only have the amount of resources up and running in the cloud that you are using.
+
+Part 4 – using Citrix Lifecycle Management to Upgrade your XenApp 7.x Site to the latest version.
+
+Part 5 – Using the Citrix Cloud Apps & Desktop service to manage your VDA workloads, wherever they are; be it on-premises, cloud-hosted or a hybrid for a fully cloud-managed solution. This solution removes the requirement to deploy the Control Layer, which Citrix will maintain for you. You access an HTML5 version of Studio for management. The only “deployable” components are the VDAs.
+
+In Part 1, we will look at using Citrix Cloud Blueprints to deploy a small scale (POC) XenApp environment into Microsoft Azure. I am using Microsoft Azure as this is my lab environment but it could be AWS or another public cloud or any on-premises, co-hosted or any datacentre that is running Citrix XenServer, Microsoft Hyper-V or VMware ESXi. It really doesn’t matter. At Citrix we believe in giving you as much choice as possible and allowing you to work with what you have.
+
+Blueprints allow you to deploy a best practice XenApp/XenDesktop environment onto your chosen platform with the minimum of setup. Using scripts and workflows, the relevent servers and services are deployed automatically. Citrix have published a few best practice and small-scale deployments along with some community and partner blueprints. Blueprints are found in the Blueprint Catalog.
+
+The blueprint we are using in this example is the Simple XenApp and XenDesktop Proof of Concept blueprint that will deploy a standalone Domain Controller, XenApp Controller, VDA and NetScaler VPX. All Windows Servers are based on Windows Server 2012 R2. Let’s see how we do it!
+
+Log into your Citrix Cloud account at citrix.cloud.com. If you don’t have an account, you can sign up for a free trial and request Lifecycle Management. If you do need to sign up for a free trial, it shouldn’t take too long to provision for the Lifecycle Management side. However, I understand that for other sections, trials are very sort after and space is limited so trials for the XenApp & XenDesktop Service may take a long time to come through. For this and the next few “exercises”, you will only need Citrix Lifecycle Management.
+
+Navigate to Lifecycle Management and click Manage.
+
+Select Blueprint Catalog.
+
+In this example, I selected “Simple XenApp and XenDesktop Proof of Concept”. Feel free to look at the other available blueprints, such as the production ready “XenApp and XenDesktop with SQL” blueprint.
+
+Click Add to Library.
+
+Now you will need to add a Resource, which is essentially your datacentre where you’ll be deploying stuff. Click on Resources and Settings.
+
+Click Add Resource Location. Select the appropriate location type. In my example, I selected Microsoft Azure.
+
+You will now need to provide your Azure details to finalise the connection. Once connected, you will see your location listed.
+
+Now that you have a Resource Location, click on Design and Deploy. From the drop down menu on the blueprint, select Deploy. This will start the deployment wizard.
+
+Select the name of your deployment. I have gone with the default. Click Next.
+
+Select your Resource Location, in this instance my Azure Subscription I added in a previous step. Click Next.
+
+You’ll now get the pre-reqs list which you should read through. There’s also the option of exporting a parameter list csv file that you can amend and upload later but for the sake of this example, I am carrying out the steps manually. Click Continue once ready.
+
+You’ll now see the list of components that will be deployed as part of this blueprint. There are; Domain Controller, XenDesktop Delivery Controller, Server VDA and NetScaler VPX. Click Next.
+
+You now create the virtual machines configuration. Select Create new VMs and for the Domain Controller, from the dropdown menu, select your Resource Location.
+
+For the Azure deployment, you now select which OS you want to use, in my case Windows Server 2012 R2 Datacenter and which variant of this. I choose the most recent build of August 2016. Click Select on your image.
+
+Also, I had previously configured some of the backend Azure requirements such as the Virtual Network, Subnet, Cloud Service and Storage Account.
+
+As of time of writing, only the Azure Classic infrastructure is supported so make sure you bear this in mind and provision accordingly. I have decided that the provisioning of these is outside of the scope of this article. Also, it may be that Azure isn’t relevant to you. I will try to cover an on-premises deployment via Citrix XenServer at a later data.As I only had a single Classic VNET, a single Subnet, a single Cloud Service and Storage Account, they were automatically selected. If you don’t already have any of the Classic Azure components, you can create them through the wizard though. I found it to be simple and self explanatory (providing you are familiar with these Azure concepts). Once done, click Next.
+
+You now need to create an account and password. I’m not sure if this is a pure Azure only option due to the way machines are configured, so mileage may vary! Enter in the required details and click Next.
+
+You are now on the Summary page. This also gives you the awesome option to configure your other virtual machines with the same configuration which is a great time saver. If you wish to do this, make sure “Copy this configuration to other VM tiers”, “XenDesktop Delivery Controller” and “Server VDA” options are ticked. Click Finish.
+
+Review that all the information is correct and click Next.
+
+You now have to enter the name for your domain and the SafeMode Password, XenDesktop Site Name as well as some other information. All passwords are encrypted. Something else which is a bit of a PITA for a demo/trial is the NetScaler license. Since a recent change, you can no longer move on without it so you will need to get hold a NetScaler license.However, I was confused on this as getting a NetScaler trial license is easy, however it is tied to the MAC address of the appliance, which you don’t know as you haven’t deployed it so it’s a bit chicken and egg. I managed to get hold of a platform license and hope that this is enough. I will update once I have more information.Once you are happy, click Deploy.
+
+You will now see the Deploying “wheel of destiny!” In all likelihood, this will take a few hours to run through.
+
+You’ll be taken to the progress page which shows all the steps.
+
+Now, my deployment didn’t quite complete, and I’m currently investigating this as it failed at the NetScaler configuration but all components were created including the VPX and configured without issue. Here’s a view from within Azure.
+
+We can now log into the Delivery Controller and see what’s what within Citrix Studio. I did this by connecting to xd-poc-xdc. As we have installed a POC and the Controller and StoreFront roles are together, you can see the StoreFront management nodes at the bottom.
+
+As you can see, a machine catalog has been created and the VM “VDA” added.
+
+Also a Delivery Group was created and published desktop. As part of the POC blueprint, a published desktop is automatically created.
+
+To spice it up, I’ve published some critical LOB applications 🙂 These were added in exactly the same way you would do in any other deployment of XenApp with Studio.
+
+Going down to the StoreFront node, you can see that the Store and StoreWeb sites have been created.
+
+Now, from the Domain Controller that was created, I opened IE and navigated to http://xdc.cloud.lab and low and behold I was presented with StoreFront and it asking me to install Citrix Receiver!
+
+Once I installed Receiver, I was able to continue and log in. By default, the Domain Users group of the domain created as part of the blueprint has access to the pre-created Delivery Group so nothing more than your original administrator or a test user in Active Directory would be required.
+
+Navigating to the Apps tab shows all of the applications that I published!
+
+Moving to the Desktops tab shows the “Sample Desktop” published as part of the POC blueprint.
+
+To prove it works, I launched NotePad successfully! A throwback from my consulting days. If I can launch NotePad, I can launch anything :-p Project completed!!!
+
+Curiosity got the better of me so I launched the published desktop as well!
+
+So, there you have it. Using Citrix Lifecycle Management and the built-in blueprints, we’ve been able to deploy a XenApp 7.9 POC environment in Azure. Please bear in mind that there should also be a NetScaler Gateway in the mix here and I will report back and update the blog once I have this fixed so you would also have external access.
+
+It is also worth noting that this deployment could have been on Amazon Web Services (AWS), Citrix XenServer, Microsoft Hyper-V or VMware ESX. We could have also deployed a full scale production-ready XenApp environment consisting of 2x Delivery Controllers, 2x StoreFront servers, 2x Provisioning Servers, 1x License Server and a mirrored SQL environment (3x VMs) to house the databases. There are also blueprints to deploy NetScaler VPXs in their own right so you have the possibility to use CLM to deploy an end-to-end XenApp environment.
+
+I’ll wrap up this article here but please stay tuned for further articles on Citrix Cloud and Lifecycle Management. In Part 2 I hope to show how to automate the migration from a legacy XenApp 6.5 Farm to this newly deployed XenApp 7.9 Site.
+
+Thanks for reading!
+
+Citrix Partner Accelerator, 2016
+
+Welcome to Part 1 of my blog “mini-series” on the Citrix Partner Accelerator 2016. I decided to write a couple of blogs on this as there was a lot of content squished into a single day. Well done Citrix! This article will focus on the Keynotes.
+
+This year’s CPA took place on 25th February at Wembley Stadium in London, a very grand venue for Citrix to announce their grand plan. This was my first official Citrix event so I was prepared for the self-gratifying, backslapping and whooping that one hears about from such type of events. However, this is Britain and we have decorum. It was a civilised affair!
+
+Mark Beaumont, Head of Channels for North Europe kicked it all off to give us all the facts and figures with Jason Tooley popping on to cover off a few points. There was also a live demo of the new Virtual WAN features in NetScaler SD WAN (formerly WANScaler, formally Branch Repeater, formally CloudBridge but not officially changing name until Q2 apparently) which included hi-vizzes, hard hats and bolt croppers! Citrix may think this is novel but many a customer facing consultant would be used to this equipment! This was by John Spencer. He seemed nice.
+
+The main points from the Keynotes have been distilled into bullet point below, however there is a lot of content!
+
+Citrix have decided to spin off GoToMeeting & GoToTraining – these are not strategically aligned to their other core products.
+
+Q4 2015 profits beat expectations (good for you Citrix)
+
+New CEO with Forrester naming Citrix as EMM leader
+
+Citrix UK&I business growth of 8% with significant growth in NetScaler and Workspace Suite
+
+Citrix will be moving from tactical to strategic solutions (welcome to 2016!) with more focus on vertical markets (that’s the tall ones not the fat ones apparently).
+
+In order to try and convince the part of the world that doesn’t know about the core benefits of Citrix’ main product set, there was a big drive on the seemingly obvious, which was good in a way as it’s now been said with pretty pictures and lots of % signs meaning people can nod sagely and regurgitate the information to their customers. I would also like to add for transparency that this was based on an “independent” report that Citrix themselves commissioned.
+
+By 2019, organisations will deliver twice as many apps remotely than 2015 – good news for Citrix and their partners
+
+The “Flexible working tipping point” will be 2017 (not good news for the impatient types). This is where 50% of UK organisations will adopt some form of remote working, with this number rising to 70% by 2020.
+
+There was also the usual reasons on why remote working is cool
+
+Citrix will being focusing on the “workspace” (it’s all about the workspace nowadays) with their tried and trusted “any, any, any” mantra. This time slightly changed to:
+
+any device
+
+any cloud
+
+any app
+
+Citrix also wanted to reiterate the fact that Networking using Netscaler is core to Citrix’s workspace vision which was seem in the technical stream with 50% of breakouts being NetScaler orientated. There is a lot of love for NetScaler at the moment!
+
+The 2016 sales priorities were announced as; new customers, Expand footprint and Partner for success. These were expanded upon in the Sales track of the breakouts but that’s for Salesy types.
+
+Then the event that we were all looking forward to except the one who had the spoiler from Neil because he’d seen the demo already this week at Chalfont…
+
+John Spencer, Citrix Northern Europe CTO, came up and told us about the latest techno shiz and direction.
+
+Browser App Service. You can now launch an IE 11 or Chrome browser session seamlessly within any other browser! This is an alternative approach to just publishing the link in IE via XenApp but to try and give the user a more native experience. For more on Browser App Service, see here.
+
+Citrix are more aligned with Microsoft than ever. Collaboration with the a massively used platform with huge cloud services and the leader of “any app, any device, anywhere” can only be good. Just a bit odd that all the Citrix big boys are now ex-Microsoft…
+
+Skype for Business (S4B), Azure, Windows 10, Office 365 and Windows Server 2016 are the main tech focus of this year, which I found very pleasing and reassuring as these things feature in my own personal focus and I believe any self-respecting Citrix partner’s focus.
+
+CloudBridge is now called NetScaler SD WAN (although Simon Cooper gave a conflicting account and said the name change wasn’t until middle of 2016)
+
+NetScaler SD WAN Overview
+
+With NetScaler SD WAN, you can put your Corporate MPLS line, internet-based ADSL backup and even 4G backup-backup line through the NetScaler SD WAN and it will seamlessly switch over if one of these goes down. As discovered in a later breakout, there is even more coolness here but that’s for another blog J This was where John Spencer risked life and reputation but getting his assistance to chop through the links one by one, MPLS, then ADSL whilst holding a S4B video call live on stage.
+
+Mark Beaumont returned to wrap up the keynotes with some more £ signs to get the bosses and Sales guys to sit up again after the chop chop demo.
+
+$500m opportunity for Citrix license sales in the corporate and mid-market businesses. That sounds good! Plenty to go round you’d think!
+
+The vertical focus that were discussed before will centre on finance, healthcare and local government. Again, good move as these are sectors that can all easily benefit from Citrix’s core products, even if you just gave them XenApp!
+
+Never under estimate the importance of services! This is why we’re called Service Providers right? There were some of those modern day pie charts, more like ring charts (?) with the facts. In 1995, 20% was services, rest was product revenue. In 2015, this rose to 35% with 2020 predicted to be 60% services compared with product revenue. No wonder Citrix are looking to change! A valuable insight to us all here!
+
+Mid market use cases and success kits available on SalesIQ
+
+New incentives for new opportunities in the mid-market (free pens and USB sticks probably)
+
+CARs now available on all customer segments (I was a little bit mystified at this one) but they seem to be making it easier for people to register and claim CARs
+
+Citrix are committed to partner success and want to help everyone more this year by having better partner engagements (they want to be in front of your customers), help growth, increase profitability with more predictable engagements. Again, this is good news and this is the type of thing we’re all trying to achieve right? So, Citrix are our friends and will help us to be bigger, better and more vertical (something some people think I could benefit from)
+
+Thanks for reading. Man, that was slog! Keep an eye out for Part 2 where I’ll “summarise” the four technical breakout sessions with good stuff from NetScaler, NS SD WAN, XenApp/XenDesktop and the very sexy Citrix Workspace Cloud!
+
+BriForum London 2014 – My takeaway points
+
+One thing is clear. Brian and his cronies at BriForum really know how to put on a geek-fest! Two days of the highest calibre of speakers with a great range of sessions with perhaps a slight taste of GPU? I personally attended three sessions around GPU and I must say that Benny and Shawn’s was a standout for me!
+
+For BriForum’s tenth year, there were thirty five sessions over two days. It was great but I was surprised that outside of the speakers and vendors, I didn’t see too many familiar faces. However, it was extremely good and I’d say to anyone who is thinking of going – definitely go next year! Also, if you’re not planning on going, go! It’s a great event with plenty of chances to network, speak to like-minded people, met vendors and hear the crème-de-le-crème of experts in our field talk about subjects they know intimately and feel passionate about.
+
+One word of warning however. Shawn Bass speaks very, very quickly and gets quicker as the presentation goes on! Put him with Andy Morgan and POW! It’s like someone’s holding the fast-forward button down!
+
+Anyway, the intention of this blog was just a quick update as I haven’t written anything in ages and to put across my top take away points from BriForum that have either made me think about the way I’m doing things, made me think “wow, I didn’t realise THAT!” or just something new I’ve learned. It’s pretty guaranteed that if you attend a BriForum, you will come out with more than one thing in all three of these categories!
+
+Please bear in mind that these are my crazy notes and in order to keep the post size down, there isn’t always an explanation. If you do see a point and aren’t sure, just have a search around to find out more.
+
+At the bottom of the post, I’ve included some useful resources/people to follow on Twitter who presented at BriForum and often put up good posts.
+
+GPU
+
+OpenCL and CUDA do not work with vGPU.
+
+Lakeside SysTrack will apparently soon release an update to SysTrack 7 around GPU sizing and analytics for helping to size a vGPU deployment
+
+There is no intelligence between the frames per second on the GPU and the HDX frames per second. HDX is adaptive and will change the FPS in lower bandwidth scenarios. This means there is a lot of wasted FPS and GPU processing when going over the wire as the GPU card is not aware of the display delivery mechanism. NVIDIA say that the vGPU is limited to 60 FPS in order not to “waste” GPU processor.
+
+Apps such as MS Office 2013, Spotify, Skype and web browsers such GPU
+
+If you’re doing pass-through, you do not need to use the NVIDIA GRID cards unless you’re using vGPU. You could put 4 Quattro cards into a chassis and pass-through to 4 XenApp VMs and get great user density that way. Just bear in mind that Quattro are workstation cards and it would be depend on the chassis support but it is possible… (according to Shawn Bass)
+
+Thin Clients
+
+Aim for a 3-5 year lifecycle, not the vendor’s 7 year estimation.
+
+Big 3 vendors (CTX, MSFT, VMW) often release features for WinTel months/years before Linux x86/ARM receive it. When going Linux, watch out for the software update interval.
+
+ICA file support and PNAgent going away (i.e. Web Interface) is hurting Thin Client vendors. Make sure your TC has full support for StoreFront
+
+MSFT VDA licensing needed for all thin client devices (Windows, Linux etc.) $100 per device per year for the VDA
+
+Embedded browser support is a must (flexibility)
+
+Windows TC – pay attention to disk space. Go for the 16GB flash if you can afford it.
+
+Spend time evaluating your options
+
+Don’t assume it’s easy
+
+Comparison of RemoteApp vs Citrix Published App
+
+Microsoft acquired company rather than develop their own RDP clients for non-Windows devices. Now support most devices via RDP
+
+Setting up a basic RDSH environment is simple, expanding it is hard.
+
+RemoteApps integrate into the local desktop so you see the thumbnails in the taskbar and will also integrate with the system tray if applicable.
+
+Will integrate with the Windows 8 start page so you’ll see icons for the RemoteApps.
+
+You need certificates – if you don’t have certificates, it WILL NOT populate the Start screen. You will have to access from the web portal.
+
+If you’re using a VDI environment and want to publish the apps, you manually configure registry keys per application (See screenshot). There are community tools to help you create the reg keys and config file. There is nothing in the mgmt. console that MSFT provide.
+
+App-V 5
+
+Regardless of App-V version, optimise .NET 4 in hosted desktop environments
+
+Strongly recommend to use Shared Content Store to reduce disk IO and network throughput in SH environment
+
+Applications with integrations points (like COM) are CPU heavy to publish; for performance reasons disable these and maybe install these locally (integration points, not the app)
+
+In streaming scenarios, SMB is faster than HTTP
+
+Use App-V 5.0 SP2 HF4 in streaming scenarios. Much faster publishing time
+
+Office 2007 vs 2010 vs 2013
+
+CPU resources are more in 2013. On memory, it uses 3 – 4x more memory than Office 2010.
+
+You will need 20% more servers when using Office 2013.
+
+It’s a 3D application, built on DirectX so uses GPU!
+
+Atlantis ILIO
+
+Altantis ILIO USX allows you to have ILIO for your server-based workloads such as SQL, Exchange etc.
+
+Using Citrix PVS “cache in RAM with disk overflow” mode has benefits. Most of the XenApp writes go to the page file. In this mode, the page file is put in the disk overflow. So… ILIO will help as it puts everything on disk in RAM J
+
+Folder Redirection
+
+For the fastest login experience, manually manipulate the User Shell Folders rather than use GPO and client-side extensions
+
+Using User Shell Folders, there are 20 folders you can redirect, with GPO there are 13
+
+When you redirect AppData (WTF?!?), you also redirect; Cookies, Network neighbourhood, Recent, SendTo, Start Menu, Templates
+
+SMB 2.x Redirector Caching is important and will scale with network latency, meaning it reduces LAN/WAN traffic for file calls
+
+Apps that have hard coded paths may ignore the SHGetKnwonFolderPath() and break folder redirection
+
+Make sure your file servers (where profiles are) are tuned for availability and performance
+
+Consider a profile management solution
+
+If your profile management solution supports profile streaming, enable it and don’t use folder redirection
+
+Who to follow:
+
+Helge Klein – Citrix CTP, Profile Management, Folder Redirection, Splunk,
+
+@HelgeKlein
+
+http://helgeklein.com/
+
+Shawn Bass – Citrix CTP, Server-based computing, VDI, GPU/vGPU
+
+@shawnbass
+
+http://www.shawnbass.com/
+
+Benny Tritsch – CTP/MVP, Server-based computing, Microsoft RDS, GPU/vGPU
+
+@drtritsch
+
+http://blog.drtritsch.com/
+
+Thomas Poppelgaard – CTP, Citrix virtualisation, GPU
+
+@_POPPELGAARD
+
+Home
+
+Andrew Morgan – CTP, Thin Clients
+
+@andyjmorgan
+
+http://andrewmorgan.ie/
+
+Pierre Marmignon – CTP, creator of VUEM, logon optimisation
+
+@pmarmignon
+
+http://www.norskale.com/
+
+Andrew Wood – CTP and mad, Atlantis ILIO
+
+@gilwood_cs
+
+http://www.gilwood-cs.co.uk/
+
+http://www.atlantiscomputing.com/products/
+
+Jim Moyle – CTP, IOPS Junkie, Atlantis ILIO
+
+@JimMoyle
+
+http://www.jimmoyle.com/
+
+http://www.atlantiscomputing.com/products/
+
+Scale Up or Scale Out?
+
+Well?
+
+You know the answer to this one. It depends. 🙂 Of course it depends as every environment is different. However, today I was looking into the scalability of a XenApp 6.5 farm for a customer to see if we wanted to scale up or out.
+
+Tradition says to scale out but tradition is for ceremonies, Christmas and getting tourists to part with their money 🙂 Tradition doesn’t have a place in today’s modern virtualised world of IT. So, in order to work out if we need to scale up and out, I needed data! “It is a capital mistake to theorize before one has data. Insensibly one begins to twist facts to suit theories, instead of theories to suit facts”.
+
+That data came in two formats – knowledge of what governs why we would scale up or out in the form this article by Citrix Architect Nick Rintalan – very useful. Also, in order to understand the current hardware used and see what the CPU and NUMA configuration was I found this article and this article on the Xen Wiki very useful indeed!
+
+The second part of the data came from EdgeSight. Real life actual statistical data from the client’s XenApp farm. Treasure!
+
+To give a little bit of background, the customer is running XenApp 6.5 HRP2 on XenServer 6.0.2 to publish a single, business critical application, which turns out is a bit more CPU hungry than originally envisaged. The XenApp servers are provisioned via a Provisioning Services 6.1 vDisk. All basic stuff.
+
+The underlying hardware uses 4 Intel Xeon E7540 2GHz CPUs with 6 cores each which gives us a grand total of 48 logical cores (4 x 6 x 2 ;-p). Plenty to be getting on with! The current XenApp VM configuration is 6 vCPU and 32GB RAM.
+
+EdgeSight was showing that the servers were getting their CPU maxed out with around 52 users, each running the same published application. Rough maths shows that this means each instance of the process was using about 11% of a CPU. In comparison, we were seeing peak memory usage of 28GB so about 87-88% meaning we did have some memory to spare.
+
+So, do we add more vCPU, say to take it to 8 or add more XenApp servers? The decision is going to be based on if the XenApp servers will scale linearly or not, i.e if we add an additional 33.3% of CPU, will we get an additional 33.3% of users? In this case would we max out at 70 users? If we maxed out at less than 70 users then we’re not scaling linearly so it would be better to scale out – savvy?
+
+In order to try and work this out prior to any testing, I wanted to understand the NUMA topology of the Intel E7540’s to see what the multiples would be (again, reference here for more details).
+
+On the XenServer host, using the command xl info –n, you will see the following:
+
+This confirms that we’re running 48 cpus and have 4 nodes. These are the NUMA nodes. As we have 4 sockets, that means 1 node per socket. Scrolling down, we see the following to confirm that and also show we’re getting 12 CPUs per NUMA node.
+
+So, to summarise, based on Mr Rintalan’s insight, we want to be running CPU multiples of the NUMA configuration, in this instance 12. We don’t want to use less CPUs than we currently have (4), which means the next one up is 12 . This is not practical as to have 12 vCPU we’ll need 64GB RAM which isn’t an option at present so with all this in mind we ARE running the OPTIMAL configuration at present so the answer is…
+
+Scale out 🙂
+
+Thanks for reading and I hope you find my experiences and the links useful.
+
+I’m now a Citrix Certified Integration Architect!
+
+Well, there’s not much more to say except that I’m pretty chuffed and proud to have passed 1Y0-A16 and join the CCIA club. I actually passed on 18th December but just had my certificate come through the post to make it officially official.
+
+I look forward to upping my game in 2014, blogging more and trying to add to virtualisation community further as we’re all in it together.
+
+Thanks for all who read my blogs and I hope they’re useful.
+
+Things I hope to work on in 2014:
+
+My take on desktop virtualisation – who cares about the desktop
+
+Trying to be agnostic by comparing Citrix XenDesktop 7.1, VMware Horizon View 5.2 and Microsoft VDI 2012 R2.
+
+Looking out for the next best thing in the virtualisation workspace
+
+Try to make it to a virtualisation conference to meet and mix with others and learn some good stuff (maybe BriForum in May…?)
+
+Thanks again,
+
+Stephen

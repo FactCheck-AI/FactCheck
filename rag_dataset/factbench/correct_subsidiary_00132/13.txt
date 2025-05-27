@@ -1,0 +1,1295 @@
+Citation preview
+
+BPEL PM and OSB Operational Management with Oracle Enterprise Manager 10g Grid Control Copyright © 2010 Packt Publishing
+
+All rights reserved. No part of this book may be reproduced, stored in a retrieval system, or transmitted in any form or by any means, without the prior written permission of the publisher, except in the case of brief quotations embedded in critical articles or reviews. Every effort has been made in the preparation of this book to ensure the accuracy of the information presented. However, the information contained in this book is sold without warranty, either express or implied. Neither the author, Packt Publishing, nor its dealers or distributors will be held liable for any damages caused or alleged to be caused directly or indirectly by this book. Packt Publishing has endeavored to provide trademark information about all the companies and products mentioned in this book by the appropriate use of capitals. However, Packt Publishing cannot guarantee the accuracy of this information.
+
+First published: August 2010
+
+Production Reference: 2160810
+
+Published by Packt Publishing Ltd. 32 Lincoln Road Olton Birmingham, B27 6PA, UK. ISBN 978-1-847197-74-0 www.packtpub.com
+
+Cover Image by Sandeep Babu ([email protected])
+
+About the Author Narayan Bharadwaj (aka Nadu) has dabbled in several different areas of the
+
+business software market. He has more than a decade of experience working in disparate technologies such as service-oriented architecture, systems management, and everything in between. Other technology areas include cloud computing, database, middleware, and IT management software. While dabbling in these technologies, Narayan wore several hats—from software consultant, database administrator, application developer, to product manager. Prior to these gigs, he went to school at the University of Maryland, and the Indian Institute of Technology, Kharagpur, to pursue various technical degrees. Thinking this was not good enough, he added an MBA from the Haas School of Business at the University of California, Berkeley. Narayan spent close to a decade at Oracle USA Inc at Redwood Shores, CA, where he was the group product manager for management of middleware and service-oriented architecture products. During his stint at the Application and Systems Management Products division, Narayan led the charge into new markets such as real-user monitoring, Java application diagnostics, middleware management, and service-oriented architecture management. This included key acquisitions such as Moniforce, ClearApp, and AmberPoint. More recently, Narayan has moved to the clouds in San Francisco, leading Salesforce.com's platform strategy and execution with respect to cloud management and cloud data analytics. He lives in San Mateo, CA, with his wife and two-year-old son. When he is not commuting to work, pursuing degrees, or wearing different hats, Narayan loves to wield a racket on a badminton or tennis court, spike a volley ball, or run the half marathon once in a long while. I am constantly inspired by the two women in my life—my mother and my wife. Thank you for being there for me.
+
+About the Reviewers Hans Forbrich is a well-known member of the Oracle Community. He started
+
+with Oracle products in 1984 and has kept abreast of nearly all of Oracle's Core Technologies. As ACE Director, Hans has been invited to present at Oracle Open World and various Oracle User Group meetings around the world. His company, Forbrich Computer Consulting Ltd., is well established in western Canada. Hans specializes in delivering Oracle University training through Oracle University and partners such as Exit Certified. Although his special interests include Oracle Spatial, OracleVM, and Oracle Enterprise Linux, Hans has been particularly excited about the advances in Oracle SOA, Oracle WebLogic, and Oracle Grid Control. Hans has been a technical reviewer for a number of Packt Publishing books, including "Mastering Oracle Scheduler in Oracle 11g Databases," "Oracle 10g/11g Data and Database Management Utilities," and "Oracle VM Manager 2.1.2." I wish to thank my wife Susanne, and the Edmonton Opera, for their patience while I work on these reviews as well as on my own book.
+
+Hector R. Madrid is the author of the "Oracle 10g/11g Data and Database Management Utilities" book. He is currently working as a freelance consultant; he collaborates with Oracle University as a certified instructor for the DBA, Java, and Application Server course tracks. He is a highly respected Oracle professional with 20 years of experience as a full-time DBA. He works with a wide range of DBA requirements starting with the daily DBA duties to the tasks related to missioncritical and high-availability systems. He was the first Oracle Certified Master in Latin America. He obtained a Master's Degree in Computer Sciences from the Metropolitan Autonomous University (UAM) and he has presented different technical papers at several Oracle conferences. I want to thank my family for their patience and the time I borrowed from them during the revision of this book.
+
+Arvind Maheshwari, a senior Software Development Manager for the Oracle
+
+Enterprise Manager development team, is focused on building management solutions for middleware. He has more than 15 years of experience in the IT industry and has played the role of developer, consultant, architect, and technical manager in the financial, manufacturing, and telecom industries, developing enterprise solutions that are deployed in high-availability architectures.
+
+Matt Wright is a director at Rubicon Red, an independent consulting firm helping
+
+customers enable enterprise agility and operational excellence through the adoption of emerging technologies such as Service-Oriented Architecture (SOA), Business Process Management (BPM), and Cloud Computing. With over 20 years of experience in building enterprise-scale distributed systems, Matt first became involved with SOA shortly after the initial submission of SOAP 1.1 to the W3C in 2000, and has worked with some of the early adopters of BPEL since its initial release in 2002. Since then, he has been engaged in some of the earliest SOA-based implementations across EMEA and APAC. Prior to Rubicon Red, Matt held various senior roles within Oracle, most recently as Director of Product Management for Oracle Fusion Middleware in APAC, where he was responsible for working with organizations to educate and enable them in realizing the full business benefits of SOA in solving complex business problems. As a recognized authority on SOA, Matt is a regular speaker and instructor at private and public events. He also enjoys writing and publishes his own blog (http://blog.rubiconred.com). Matt holds a B.Sc. (Eng) in Computer Science from Imperial College, University of London.
+
+Table of Contents Preface Chapter 1: Grid Control, BPEL, and OSB Overview Grid Control Architecture and deployment Installing Grid Control Home page Oracle BPEL Process Manager overview Oracle SOA Suite overview Oracle Service Bus overview Summary
+
+1 9
+
+10 11 13 13 14 15 16 16
+
+Chapter 2: Discovering BPEL PM
+
+17
+
+Chapter 3: BPEL Process Monitoring
+
+27
+
+Support for managing BPEL PM BPEL PM target discovery Navigating to application servers Discovering a BPEL PM target Navigating to the BPEL PM target home page Configuring a BPEL PM target Summary Challenges Solution Step-by-step exercises Navigating to the BPEL PM target home page Navigating to the BPEL process home page Creating a SOAP test to monitor a partner link Creating a SOAP test to monitor a BPEL process Testing the SOAP tests Summary
+
+18 18 19 19 22 23 24 28 28 28 28 29 31 35 38 39
+
+Table of Contents
+
+Chapter 4: BPEL Infrastructure Management
+
+41
+
+Chapter 5: BPEL Service-Level Management
+
+55
+
+Chapter 6: BPEL Services Dashboard
+
+73
+
+Challenges Solution Step-by-step exercises Creating the BPEL infrastructure service Viewing the BPEL infrastructure service Viewing system alerts and policies Viewing configuration changes Viewing key system metrics Viewing administration tasks Viewing system components Viewing the system dashboard Summary
+
+Challenges Solution Step-by-step exercises Viewing the BPEL process availability service Adding service performance metrics Setting service-level expectation (availability) Viewing the service availability definition Viewing the BPEL infrastructure service Adding infrastructure performance metrics Adding infrastructure usage metrics Setting service-level expectation (infrastructure) Viewing the infrastructure availability definition Viewing the BPEL process aggregate service Viewing the aggregate service availability definition Adding aggregate service performance and usage metrics Setting service-level expectation (aggregate service) Summary Challenges Solution Step-by-step exercises Navigating to the Reports tab Creating an SOA services dashboard Viewing the SOA services dashboard Summary
+
+[ ii ]
+
+42 43 43 43 45 45 48 49 49 50 51 53 56 57 57 58 59 61 62 63 63 65 66 67 68 68 69 70 72 74 74 74 74 75 77 79
+
+Table of Contents
+
+Chapter 7: BPEL Deployment Automation
+
+81
+
+Chapter 8: BPEL Configuration Management
+
+95
+
+Challenges Solution Step-by-step exercises Viewing the Software Library Uploading BPEL suitcases to the Software Library Viewing the BPEL process provisioning deployment procedure Scheduling BPEL suitcase deployment Viewing the status of the scheduled deployment Viewing the deployed processes Summary Challenges Solution Step-by-step exercises Navigating to BPEL target configuration management Viewing the last collected configuration Saving a configuration snapshot to the repository
+
+Navigating to Oracle Application Server configuration management Viewing last collected configuration Saving a configuration snapshot to the repository
+
+Making changes to the BPEL environment Making changes to the Oracle Application Server environment Comparing the current BPEL configuration with a saved baseline Comparing BPEL process versions for the same process Comparing the current Oracle Application Server configuration with a saved baseline Viewing application server target comparison results with a saved baseline Summary
+
+Chapter 9: SOA Suite Cloning
+
+Challenges Solution Step-by-step exercises Adding an Oracle Application Server Cluster to Grid Control Stopping application server processes Creating a component in the Grid Control Software Library Cloning Oracle Application Server and SOA applications Validating a newly created cluster Summary [ iii ]
+
+82 82 82 83 84 86 87 92 93 94 96 96 97 97
+
+98 100
+
+101
+
+102 105
+
+106 108 112 117 119
+
+120 124
+
+125 126 126 126 126 130 131 141 153 157
+
+Table of Contents
+
+Chapter 10: Web Application Monitoring
+
+159
+
+Chapter 11: Discovery of WebLogic and OSB targets
+
+183
+
+Chapter 12: OSB Deployment Automation
+
+189
+
+Chapter 13: OSB Proxy and Business Service Monitoring
+
+203
+
+Challenges Solution Step-by-step exercises Creating a web application Recording a web transaction as a Service Test Adding Beacons to run the Service Test Adding performance and usage metrics Viewing web transaction playback Summary Challenges Solution Step-by-step exercises Adding a WebLogic domain target Navigating to the OSB target home page Summary
+
+Challenges Solution Step-by-step exercise Viewing the Software Library Uploading projects to the Software Library Viewing the project deployment procedure Scheduling project deployment Summary
+
+Challenges Solution Step-by-step exercises Creating an OSB Infrastructure Service Navigating to the OSB proxy service home page Creating the OSB proxy aggregate service Creating a SOAP test to monitor an OSB proxy service endpoint Creating a SOAP test to monitor an OSB business service endpoint Testing the SOAP tests Summary
+
+[ iv ]
+
+160 160 160 160 164 170 172 178 181 184 184 184 184 187 188 190 190 190 190 191 194 196 201 204 204 204 204 205 206 207 210 212 214
+
+Table of Contents
+
+Chapter 14: WebLogic and OSB Configuration Management Challenges Solution Step-by-step exercises Viewing a WebLogic managed server configuration Saving a managed server configuration snapshot Viewing and saving an OSB configuration Comparing the current OSB configuration with a saved baseline Comparing the current managed server configuration with a saved baseline Summary
+
+Index
+
+[v]
+
+215 216 216 216 216 218 219 220 222 224
+
+225
+
+Preface Oracle Enterprise Manager has been around for more than a decade, and many database administrators around the world have used one or more Enterprise Manager products for running their databases more efficiently. Over the past few years, Enterprise Managers have made a big push to manage middleware and applications as well. This has helped change the original market perception that Enterprise Manager was simply a DBA’s best friend. With its flagship Grid Control product release 10.2.0.5 (released on Linux platforms in February 2009), Enterprise Manager has strengthened its previous offerings in the middleware area. Enterprise Manager’s strategic direction is consistent with the one charted out by Oracle after completing the BEA acquisition on April 29, 2008. The greatest improvements have been made in managing WebLogic Server, and the Oracle SOA platform that includes Oracle BPEL Process Manager, and Oracle Service Bus (formerly AquaLogic Service Bus). Enterprise Manager has made several acquisitions in the past two years to complement existing capabilities and provide a complete management solution to users. Auptyma was the first of these acquisitions, which provided deep Java diagnostic capabilities without instrumentation or overhead in production environments. The product was renamed to Application Diagnostics for Java (AD4J). Separately, Moniforce was acquired to manage an end user’s experience while interacting with an application and service providers, and the product was renamed to Real User Experience Insight (RUEI). Another key acquisition was ClearApp—a company that provided technology to model and monitor composite applications. The product was renamed to Composite Application Modeler and Monitor (CAMM).
+
+Preface
+
+Several integration challenges lie ahead, and many still think of Enterprise Manager as a database management solution. The product has grown considerably faster in the past two years, especially in the middleware, SOA, and application space. Enterprise Manager is one of the top product lines at Oracle, but is still the best kept secret in the Oracle portfolio. With a vast array of product lines, it is important for an Oracle customer’s IT to manage these product lines centrally, and with a low cost of ownership. The big four management vendors (CA, IBM, HP, BMC) have broad product offerings that are not optimized for Oracle products. Further, the pure play vendors are focused on niche areas, and do not provide an enterprise management solution. Oracle Enterprise Manager plays an important role for enterprises that have one or more Oracle products in their data center, as well as non-Oracle products.
+
+Who this book is for
+
+If you are involved with Oracle BPEL Process Manager, Oracle SOA Suite, or Oracle Service Bus, then you are the right candidate for this book. You are an even better candidate if you support the operational infrastructure for any of these products. For a long time, application and SOA administrators have longed for visibility into the distributed service-based environment. If you or your team supports any of these products in a production environment, you will know the pain of dealing with day-to-day operational issues. This book will go a long way to alleviate some of those problems using Enterprise Manager capabilities. If you are an SOA architect or associated with SOA governance in any way (for example, an SOA Center of Excellence), this book will serve as an eye opener to the many features available to gain production assurance in complex SOA environments. This will help you govern the SOA environment in conjunction with other tools such as Oracle Enterprise Repository (OER), Oracle Service Registry (OSR), and Oracle Web Services Manager (OWSM). However, this book shall focus on runtime SOA management with Enterprise Manager Grid Control. If you like a functional approach to solving your operational problems, this is the right book for you. You will find that the book avoids lecturing on concepts, and takes a direct approach to solving real operational problems. A general awareness of service-oriented architecture is expected, as well as an awareness of the Oracle SOA products such as BPEL Process Manager and Oracle Service Bus. No specific management or operational expertise is required. This book will help set up the framework for managing the Oracle SOA products using a step-by-step functional-based approach.
+
+[2]
+
+Preface
+
+What you should find in the book
+
+This book contains details on how to set up and automate various operational tasks essential for the smooth running of Oracle SOA products in production. It will walkthrough step-by-step exercises to assist the administrator in managing these products from a single web-based console. It will relieve the administrator from performing mundane time-consuming repetitive tasks.
+
+What you won’t find
+
+The book avoids going through explanations on SOA, BPEL, or Service Bus. This is not the right book if you want to develop BPEL and OSB services from tools such as JDeveloper. Also, it avoids talking about basic Grid Control product issues such as download and installation, other than the first chapter.
+
+What this book covers
+
+The introductory chapter contains basic information that is a prerequisite for the other chapters. You can dive into the other chapters on a need basis, based on what you would like to accomplish. All chapters have a problem statement defined, along with a summary of the solution provided. The solution itself is a step-by-step walkthrough on how to accomplish certain tasks to solve the problem. The book is divided into three sections. The first section covers the management of BPEL Process Manager with Grid Control. The second section focuses on management of SOA Suite in general. The third section covers management of Oracle Service Bus. Chapter 1, Grid Control, BPEL, and OSB Overview, gives a basic introduction to Grid Control that includes download, installation, and basic configuration. This is the foundation technology that provides the infrastructure for managing various targets from a single console.
+
+I: BPEL Management
+
+Chapter 2, Discovering BPEL PM, talks about the discovery and configuration of the BPEL Process Manager target. Discovery of BPEL PM as a Grid Control-managed target is the first step before performing other management tasks. Chapter 3, BPEL Process Monitoring, talks about viewing deployed BPEL processes and their constituent partner links. It goes on to talk about monitoring of BPEL processes and partner links using a combination of metrics and synthetic tests. [3]
+
+Preface
+
+Chapter 4, BPEL Infrastructure Management, describes how to manage the underlying infrastructure components such as BPEL Process Manager server, dehydration database, Application Server, host, and so on. Administrators can manage several disparate systems in groups, reducing the time to detect the root cause of system-related problems. Chapter 5, BPEL Service-Level Management, describes how to set service-level expectations for BPEL Processes, partner links, and tracking those levels through various metrics. This enables the service providers to monitor agreed-upon contractual guarantees with service consumers. Chapter 6, BPEL Services Dashboard, illustrates that dashboards are important to visualize service-level performance and metrics for key services. This chapter also walks through how to construct a simple dashboard to show all critical services, and their top metrics, including service levels. Operations typically use this to keep a ready eye on services and act on any deviations from expected SLAs. Chapter 7, BPEL Deployment Automation, shows deployment of BPEL artifacts is a repetitive and time-consuming task. This chapter describes how to deploy BPEL artifacts to multiple servers in an automated fashion. This ensures deployments are conducted in an error-free manner, and reduces overall scheduled downtime. Chapter 8, BPEL Configuration Management, describes how to manage the configuration settings of the BPEL infrastructure, including setting baselines, and comparisons. This helps to diagnose problems due to configuration changes as well as standardize configurations across the enterprise.
+
+II: SOA Suite Management
+
+Chapter 9, SOA Suite Cloning, discusses cloning as a complex administrative task that needs deep product expertise. This chapter walks through a simple scenario to clone an existing SOA Suite from one instance to another. Administrators can use this to perform critical time-consuming tasks in a standardized, error-free manner. Chapter 10, Web Application Monitoring, describes how to set and monitor Web services using Grid Control service models, SLA rules, and synthetic tests. Web applications can also be monitored—including the recording and playback of HTTP(s) transactions to troubleshoot problems. Application administrators can proactively monitor applications from an end-user perspective.
+
+[4]
+
+Preface
+
+III: WebLogic and Oracle Service Bus Management
+
+Chapter 11, Discovery of WebLogic and OSB targets, talks about managing multiple WebLogic domains and OSB instances from a single console, as it is a frequent problem for the middleware administrator. Middleware administrators can use a single console to manage all their installations, perform complex management tasks, and dive into their respective WebLogic or OSB console to perform administrative activities. All of this enables the administrator to standardize management tasks, and hence the behavior of WebLogic and OSB servers, leading to increased uptime. Chapter 12, OSB Deployment Automation, discusses that deployment of OSB projects and resources to multiple domains can be cumbersome and time consuming. This chapter walks through typical deployment scenarios and how they can be automated using the deployment procedure framework. This enables infrastructure teams to standardize deployments, as well as to track and manage artifacts centrally. Chapter 13, OSB Proxy and Business Service Monitoring, walks the reader through Oracle Service Bus services that provide a versatile frontend plumbing layer to standardize messages from various sources and differing formats. Any performance bottleneck directly relates to a slowdown in critical backend business processes. This chapter also covers the monitoring capabilities for OSB proxy and business services. These provide the administrator with visibility into the runtime behavior, and take proactive steps to maintain a high-performing environment. Chapter 14, WebLogic and OSB Configuration Management, describes that configuration changes are a major cause of downtimes in production environments. This chapter also covers WebLogic and OSB configuration tracking, viewing changes, and comparing and saving configurations. This enables administrators to resolve problems quickly and standardize a set of configurations across the enterprise.
+
+What you need for this book
+
+The target product versions used throughout this book are installed on Oracle Enterprise Linux platform and share an Oracle database 10.2.0.2 as the common repository. For the first two sections, Oracle SOA Suite is used as the target. SOA Suite 10.1.3.x is installed in a single node environment on Oracle Application Server 10.1.3.x. The popular SOA Order Booking application is used throughout the book to illustrate various features. Oracle Service Bus 10gR3 installed on WebLogic Server 10gR3 is used as the target for the third section. The Mortgage Broker application is used to illustrate various features.
+
+[5]
+
+Preface
+
+Customer support
+
+Now that you are the proud owner of a Packt book, we have a number of things to help you to get the most from your purchase.
+
+Errata
+
+Although we have taken every care to ensure the accuracy of our contents, mistakes do happen. If you find a mistake in one of our books—maybe a mistake in text or code—we would be grateful if you would report this to us. By doing so, you can save other readers from frustration, and help us to improve subsequent versions of this book. If you find any errata, please report them by visiting http://www.packtpub. com/support, selecting your book, clicking on the errata submission form link, and entering the details of your errata. Once your errata are verified, your submission will be accepted and the errata added to any list of existing errata. Any existing errata can be viewed by selecting your title from http://www.packtpub.com/support.
+
+Piracy
+
+Piracy of copyright material on the Internet is an ongoing problem across all media. At Packt, we take the protection of our copyright and licenses very seriously. If you come across any illegal copies of our works in any form on the Internet, please provide us with the location address or website name immediately so that we can pursue a remedy. Please contact us at [email protected] with a link to the suspected pirated material. We appreciate your help in protecting our authors, and our ability to bring you valuable content.
+
+Questions
+
+You can contact us at [email protected] if you are having a problem with any aspect of the book, and we will do our best to address it.
+
+[7]
+
+Grid Control, BPEL, and OSB Overview Management of hardware, software, and application components is important. In bad economic times, it is critical to get the maximum return from software and hardware investments, and for that an enterprise needs a sound management strategy. A management solution not only helps increase returns on existing investments, but also controls the cost of owning these investments. Enterprises today cannot be successful without such a solution. In the SOA world, management is even more critical, as it governs distributed services and service infrastructures. The value from SOA investments cannot be realized without a sound management strategy. Operational management is becoming the centerpiece of the SOA Governance framework in most enterprises. Unless there is visibility and control on production environments, SOA project costs will exceed the accrued benefits. Management cannot be a bolt on after the implementation; it has to be a strategic part of the overall solution. It is beneficial to start thinking about the management strategy upfront, and implement it in conjunction with the SOA integrations. Further, all aspects of management need to be analyzed, and the right ones need to be implemented for the SOA integrations in the enterprise. Some of the key management areas are infrastructure monitoring, synthetic monitoring, configuration management, deployment automation, and business process execution monitoring. All of these need to be considered for the success of SOA projects.
+
+Grid Control, BPEL, and OSB Overview
+
+In this chapter, we will provide a brief overview of the following products that will be covered throughout this book: •
+
+Grid Control °°
+
+Overview
+
+°°
+
+Architecture and deployment
+
+°°
+
+Download and install
+
+°°
+
+Home page
+
+•
+
+Oracle BPEL Process Manager overview
+
+•
+
+Oracle SOA Suite overview
+
+•
+
+Oracle Service Bus overview
+
+Grid Control
+
+Enterprise Manager Grid Control provides a single interface for managing thousands of disparate targets such as operating systems, databases, application servers, and packaged applications. It determines overall target health, tracks target inventory, automates target deployments, and manages service levels. All the historic monitoring information is stored in a database, and aggregated over time. This is complemented with a reporting and dashboard framework, which provides a summary to administrators as well as IT managers. Grid Control supports monitoring and management of a wide variety of hardware, software, and applications, and is really the tool of choice for Oracle products. It has capabilities for monitoring third-party products as well, either natively, or through plugins and connectors. The Grid Control framework can be extended using either plugins or connectors. This is made possible by a software development kit that comes out of the box with Grid Control. A good example of a plugin is if you want to monitor a specific hardware component that is not supported by Grid Control, you can extend the framework and add logic to monitor your specific hardware component. A connector, on the other hand, can be used to integrate Grid Control with other systems such as incident management systems (for example, Remedy Helpdesk or Oracle Business Activity Monitoring (Oracle BAM)).
+
+[ 10 ]
+
+Chapter 1
+
+Most chapters in this book cut across multiple versions of Grid Control. Concepts such as service-level management, infrastructure management, service-level dashboards, web application management, and configuration management are uniform across multiple Grid Control versions. That being said, this book will focus on Grid Control version 10.2.0.5, also referred to as 10gR5. This version was released on Linux platforms in February 2009, ported to other platforms during the rest of the year. Most of the chapters are valid for the prior version of Grid Control 10.2.0.4 (or 10gR4) as well. The notable exception is the third section that deals with managing the Oracle Service Bus. Enterprise Manager functionality for managing BPEL Process Manager is part of Grid Control 10.2.0.3 and above. The Oracle Service Bus management functionality was introduced with Grid Control 10.2.0.5.
+
+Architecture and deployment
+
+Grid Control has a three-tier architecture. The main components are the Oracle Management Server (OMS), the Management Agents (Agent), and the Oracle Management Repository (OMR). The central web-based console is available through popular browsers. The components are detailed as follows: •
+
+Oracle Management Server (OMS): This is the central engine, which accumulates information from all the distributed Management Agents. It provides the data for the web-based console, and persists the data in the Management Repository. Further, the OMS also executes the alerting rule logic, and the notification logic, as well as sending instructions to the agent for management tasks such as deployment.
+
+•
+
+Management Agent: The agent is a lightweight C-program running on a server or host. This program typically collects all the monitoring and configuration information for the host, and the other targets on that host such as database, application server, SOA suite, and so on. The agent is also suitable for running operations at the host level through scripts. This capability is useful for taking corrective action (when a threshold is violated), or performing complex patching, or other deployment tasks. There is also the option of having remote agents, the only drawback being that the host metrics will not be collected.
+
+•
+
+Oracle Management Repository (OMR): The repository is a preconfigured Oracle database that comes packaged with Grid Control. No separate license is needed for the OMR. The OMS contains current and historical monitoring and configuration information from various agents. It comes with prebuilt schemas and PL/SQL procedures and functions to aggregate the data over different time periods.
+
+[ 11 ]
+
+Grid Control, BPEL, and OSB Overview
+
+•
+
+Central web console: The web console provides a window to all the rich information in the OMR. Each target type (for example, application server) has a home page with monitoring, alerting, configuration, and other specific information. The home page displays summary information across multiple targets. Reports and dashboards can be used to create custom views.
+
+This book avoids going into deep discussions on deployments that are already addressed by product documentation or white papers. A basic knowledge of installing and configuring the Grid Control components are assumed. More information on architecture and deployment best practices is available on the Enterprise Manager pages on the Oracle Technology Network (OTN) at:
+
+http://www.oracle.com/technology/products/oem/ent_mgr/arch_dep.html
+
+The following simple architecture diagram shows the main Grid Control components and their relationships:
+
+[ 12 ]
+
+Chapter 1
+
+Installing Grid Control
+
+The latest version of Grid Control can be downloaded from OTN at:
+
+http://www.oracle.com/technology/software/products/oem/index.html
+
+Grid Control documentation including installation, configuration, deployment modes, and so on can be found at: http://download.oracle.com/docs/cd/
+
+B16240_01/doc/nav/portal_booklist.htm
+
+Once Grid Control is installed and configured, the SOA-related targets can be added. The prerequisite is to install a Management Agent (Agent) to the server that hosts the SOA Suite. More details on getting started with Grid Control SOA Management is available at the Oracle Technology Network (OTN) website: http://download.
+
+oracle.com/docs/cd/B16240_01/doc/em.102/e12650/toc.htm
+
+Home page
+
+After downloading and installing Grid Control, the first task is to view the home page of Grid Control. To view Grid Control home page on your local browser: 1. Navigate to http://:/emememem. 2. Login as sysman.sysman. Use the password you set during the installation. Following is the Enterprise Manager 10g Grid Control entry point or home page. The home page rolls up all the important information (starting in the upper-left corner):
+
+[ 13 ]
+
+Grid Control, BPEL, and OSB Overview
+
+•
+
+All Targets Status: This section shows the total number of monitored Oracle targets. The pie chart shows their overall SLA availability and corresponding open alerts. This summary page can be rolled up for any target type. Click on the View dropdown and observe the different target types in this enterprise. This is a subset of the target types supported by Grid Control.
+
+•
+
+All Target Alerts: Violations of thresholds for all metrics for the monitored targets, separated into Critical and Warning categories. Errors are Agent-related problems (Agent unreachable, cannot upload, metric collection error, and so on).
+
+•
+
+All Targets Policy Violations: Over 300 Oracle best practices (for example, open port on Application Server) are coded in as policies in Grid Control. The Agent checks these policies daily and flag the violations.
+
+•
+
+Target Search: Quickly access any target by simply typing in part of the target name.
+
+•
+
+Critical Patch Advisories for Oracle Homes: Push any security alerts that are vital to your systems. Set up a connection to meta link and automatically download patch information for monitored Oracle homes.
+
+•
+
+Deployments Summary: Enterprise Manager collects information on your entire configuration including software, patches (OS and Oracle software level), hardware, and so on. This is a rollup of all of the hosts, software, and OS(s) in your enterprise.
+
+Oracle BPEL Process Manager overview Business Process Execution Language (BPEL), short for Web Services Business Process Execution Language (WS-BPEL) is an executable language for specifying interactions with Web Services. Processes in Business Process Execution Language export and import information by using Web Service interfaces exclusively. Source: http://en.wikipedia.org/wiki/Business_ Process_Execution_Language
+
+[ 14 ]
+
+Chapter 1
+
+Major vendors such as Oracle, Microsoft, and IBM are onboard with the BPEL standard, which has become the orchestration standard of choice. Oracle acquired a small company called Collaxa in 2005, which had an implementation of the BPEL standard, then renamed the product to BPEL Process Manager and made it the foundation of the SOA Suite. This also became the strategic technology product under the Fusion Middleware umbrella, as well as the Fusion Applications umbrella. Oracle Applications Unlimited (E-Business Suite, PeopleSoft, Siebel, Retek, and so on) use several different workflow technologies such as Oracle Workflow, but the roadmap for all these workflow technologies is to converge into the common BPEL standard, based on the Oracle BPEL Process Manager product. In short, this technology has huge implications not only for the overall middleware market, but also for the packaged applications market. Oracle, with its huge installed base in both the markets, especially after the acquisition of BEA in 2008, is focused on expanding the already large adoption of BPEL within its customer base. BPEL Process Manager 10.1.2 was the first release after the Collaxa acquisition. Currently, the product is available as part of the Oracle SOA Suite 10.1.3.x. This is a fairly mature release of product, and has enjoyed widespread adoption among customers interested in implementing an SOA strategy. This is also the foundation of the next generation Oracle Fusion Applications.
+
+Oracle SOA Suite overview
+
+Oracle SOA Suite 10.1.3.x consists of three components—Oracle BPEL Process Manager, Oracle Enterprise Service Bus (OESB), and Oracle Web Services Manager (OWSM). Additionally, it also includes Oracle Service Bus (OSB), Oracle Business Activity Monitoring (BAM), and the Rules Engine. Oracle built an Enterprise Service Bus (OESB) as the plumbing layer to frontend the BPEL-based business processes. The Service Bus is used as the mediator layer to transform messages in different formats to common canonical formats, and route to the backend BPEL processes, or other services. It is a step up from the point-to-point Enterprise Application Integration (EAI) methodology that involves frequent changes at both ends of the integration. Oracle SOA Suite 10.1.3.x is a single installable, and is extremely easy to install and configure with Oracle JDeveloper. As the common IDE to develop BPEL-based business processes, and OESB-based services it provides a great platform for developers and architects to implement SOA projects.
+
+[ 15 ]
+
+Grid Control, BPEL, and OSB Overview
+
+Oracle Service Bus overview Oracle Service Bus is a proven, lightweight and scalable SOA integration platform that delivers low-cost, standards-based integration for high-volume, mission critical SOA environments. It is designed to connect, mediate, and manage interactions between heterogeneous services, legacy applications, packaged applications and multiple enterprise service bus (ESB) instances across an enterprise-wide service network. Oracle Service Bus is a core component in the Oracle SOA Suite as a backbone for SOA messaging. Source: http://www.oracle.com/ technologies/soa/service-bus.html
+
+With the acquisition of BEA, the AquaLogic Service Bus (ALSB) joined the Oracle family as well. ALSB was renamed to Oracle Service Bus (OSB) post acquisition. On July 1, 2008, Thomas Kurian, the Senior Vice President of Fusion Middleware, announced the strategic roadmap for Oracle middleware and BEA products. He announced that OSB would be the strategic service bus going forward, with its wide customer adoption, and advanced product capabilities.
+
+Summary
+
+With a single management solution to manage SOA services and infrastructure, and products, Grid Control reduces the complexity of an SOA environment. Grid Control is an enterprise-wide solution, so care must be taken to make it into a strategic product. The installation and deployment is not a trivial task. However, it is imperative to set up the management framework to meet the needs of the enterprise. Grid Control has traditionally been viewed as a database management solution, but this book will highlight the necessity of using this solution for SOA environments. In this chapter, we looked at some fundamental concepts of the target products, as well as the management solution. In particular, we discussed Enterprise Manager Grid Control as an important management solution. Briefly, we discussed the installation, documentation, and architecture of Grid Control. Then we discussed the SOA products BPEL PM and OSB. We introduced the basic concepts for both products, and a brief background for each. This was simply an overview of these products. A good administrator should have basic working knowledge of Oracle BPEL PM, SOA Suite, and Service Bus. This book will focus on the next step, which is to manage these products from Grid Control. The next few chapters will walkthrough hands-on exercises to set up and perform management tasks.
+
+[ 16 ]
+
+Discovering BPEL PM A management solution needs to locate and identify whatever it needs to manage. This process is called discovery, where the management solution locates and identifies all the targets. This is typically done using management agents that are deployed on servers that contain the targets that need to be managed. Discovery of targets enables administrators to have a picture of the environment along with the various components that need to be managed. For any small, medium, or large enterprise, the challenge is to manage several disparate targets from a single console. The traditional hardware and software components such as servers, storage devices, operating systems, databases, middleware, and applications have been managed by system management solutions. However, a new breed of BPEL-based applications and infrastructure poses new problems. First, they need to be managed along with existing hardware and software. Second, as the BPEL projects proliferate across the enterprise, the infrastructure team is faced with increasing problems to manage these projects. Third, for the administrators who are new to BPEL, supporting these environments in production poses unknown challenges. Finally, the IT managers want to avoid hiring new administrators with increasing BPEL projects. Grid Control provides a way to discover the BPEL components, whether it's on production or otherwise. For the infrastructure team, this is a convenient way to manage several installations from one console. Once the agent is installed on each of the servers hosting BPEL PM, the discovery process can be initiated from the console.
+
+Discovering BPEL PM
+
+In this chapter, we will discuss how to discover and configure a BPEL Process Manager target. Discovery of BPEL PM targets is the first step before performing other management tasks. Further, creating the infrastructure service is mandatory to manage BPEL processes and related infrastructure. The following areas are covered in this chapter: •
+
+Support for managing BPEL PM
+
+•
+
+BPEL PM target discovery °°
+
+Navigating to application servers
+
+°°
+
+Discovering a BPEL PM target
+
+°°
+
+Navigating to the BPEL PM target home page
+
+°°
+
+Configuring a BPEL PM target
+
+Support for managing BPEL PM
+
+The BPEL PM product ships with a console that is useful for administration activities such as turning a process on or off, deleting instances, checking the flow of an instance, and so on. However, it cannot provide management capabilities such as monitoring the availability and health of the servers, processes, configuration management, and bulk deployment. Grid Control introduced BPEL management functionality with the 10.2.0.3 (or 10gR3) version, released in January 2007. The first release provided most of the functionality for monitoring the BPEL infrastructure including the BPEL PM server. Additionally, it had process-level monitoring, error-instance management, and service-level management. The 10.2.0.4 (10gR4) version, released on Linux platforms in November 2007, brought additional new features for managing BPEL PM. Configuration management, deployment automation, and adapter monitoring were the main features of the release. The 10.2.0.5 (10gR5) version, released on Linux platforms in February 2009, added reporting capabilities for tracking troublesome BPEL instances.
+
+BPEL PM target discovery
+
+This set of step-by-step exercises will walkthrough the discovery of a BPEL PM target and setting up monitoring configuration for the target.
+
+[ 18 ]
+
+Discovering BPEL PM
+
+1. As shown in the following screenshot, from the drop-down list on the right, add an Oracle Application Server target. Click on Go.
+
+2. On the Add Application Server page: °°
+
+Click on the flashlight icon to pick a host.
+
+°°
+
+In the pop-up window, select the radio button for the host and click on Select, as shown in the following screenshot:
+
+[ 20 ]
+
+Chapter 2
+
+3. On the Add Application Server page, click on Continue on the right. 4. On the Discover Application Server: Results page, click on OK. 5. In a very short time, you should get a confirmation page. Click on OK. 6. On the Application Servers page, click on Expand All and view your application server.
+
+[ 21 ]
+
+Chapter 2
+
+Configuring a BPEL PM target
+
+Once the BPEL PM target is discovered, the administrator needs to provide the target with basic configuration information. This enables the BPEL target in Grid Control to talk to the BPEL PM server. This communication is needed because the BPEL target collects out-of-box monitoring metric data by polling the BPEL PM server through APIs. 1. Under the Related Links section at the bottom, click on Monitoring Configuration. 2. Enter the administrator username for BPEL Process Manager as oc4jadmin. 3. Enter the password for the administrator as welcome1. 4. Enter the Initial Context Factory as com.evermind.server.rmi. RMIInitialContextFactory. 5. Enter the Context Provider URL as
+
+opmn:ormi://:6003:oc4j_soa/orabpel.
+
+[ 23 ]
+
+Discovering BPEL PM
+
+6. Leave the other fields blank and click on OK, as shown in the following screenshot:
+
+This concludes the discovery and configuration of the BPEL PM target deployed on Oracle Application Server.
+
+Summary
+
+Discovery is the first step to manage a target in the enterprise. Discovering and managing multiple targets from a single console is a powerful way to ramp up on new projects while maintaining a standardized management platform. This avoids hiring new administrators for new projects that increase the number of managed targets. In this chapter, we looked at how to discover and configure the BPEL PM target.
+
+[ 24 ]
+
+Chapter 2
+
+These are mandatory steps to enable subsequent management tasks. We discovered the BPEL PM target indirectly by discovering the application server (in this case Oracle Application Server). Note that the discovery process is similar for discovering BPEL PM targets installed on WebLogic and WebSphere application servers. Detailed discovery information (including 10.2.0.4 patches) for WebLogic and WebSphere application server-based BPEL PM is listed in the following document on Oracle Technology Network: http://download.oracle.com/docs/cd/B16240_01/doc/em.102/e12650/toc. htm.
+
+The next few chapters will walkthrough hands-on exercises to set up and perform additional management tasks for the discovered BPEL PM target.
+
+[ 25 ]
+
+BPEL Process Monitoring It is important to understand the complexity of a BPEL process that creates the additional need for active operational monitoring. BPEL processes are the new generation of workflow. They are SOA enabled, which means they orchestrate interactions between different systems using a common Web Service Invocation Framework (WSIF). WSIF enables BPEL to build a façade to interact with any system that is Web service enabled. The Web service interactions are called "partner links" in the BPEL framework. This is quite powerful for orchestrating complex business processes that involve new and legacy systems. It provides IT with an automated framework for enterprise-wide business processes. Monitoring BPEL processes is important for business analysts and administrators to maintain business visibility and resolve problems quickly. This chapter talks about viewing deployed BPEL processes and their constituent partner links. Further, monitoring of BPEL processes and partner links using a combination of metrics and synthetic tests is covered. Grid Control provides means to monitor critical BPEL processes, partner links, and Web services through service tests to determine availability and response time. Grid Control also provides a means of measuring critical metrics for actual requests initiated against each of the Web services deployed on the container. With a combined end-user and request perspective, Grid Control can determine the service availability of all monitored services. • • •
+
+Challenges Solution Step-by-step exercises: °° °° °° °° °°
+
+Navigating to the BPEL PM target home page Navigating to the BPEL process home page Creating the BPEL process aggregate service Creating a SOAP test to monitor a partner link Creating a SOAP test to monitor a BPEL process
+
+°°
+
+Testing the SOAP tests
+
+BPEL Process Monitoring
+
+Challenges
+
+Once BPEL processes are deployed into a staging, preproduction, or a production environment, administrators find it difficult to track the health of these key processes. There is a paucity of tools and operational skills in the BPEL area, so it becomes difficult to understand where to look, and what to look for, when faced with a problem. These processes frequently are the automated representation of critical business functions, and they are required to work as expected. Each process could spawn hundreds or thousands of instances daily. If any process is not performing as expected, in terms of availability or performance, the administrators need to step in and resolve the problem. Administrators are required to fix problems as soon as possible, and typically spend most time triaging the problem to understand potential root causes. Further, in most cases, end users report these problems, whether they are consumers via the Internet or key business partners. If that is the case, the enterprise has already lost revenue or credibility, or both.
+
+Solution
+
+Grid Control provides means to monitor critical BPEL processes, partner links, and Web services, through service tests to determine availability and response time. Grid Control also provides a means of measuring critical metrics for actual requests initiated against each of the Web services deployed on the container. Grid Control can determine the service availability of all monitored services by utilizing its active end-user monitoring capabilities.
+
+Step-by-step exercises
+
+This set of step-by-step exercises will walkthrough the discovery of a BPEL process home page, and setting up monitoring for the process and partner links.
+
+Navigating to the BPEL PM target home page
+
+Grid Control can monitor several types of targets. The first task is to get to the BPEL PM target home page. All the BPEL-specific monitoring views can be viewed from the target home page. 1. 2. 3. 4. 5.
+
+Navigate to the Grid Control home page. In the Target Search region on the right, click on the Search dropdown. Scroll down to locate and click on the BPEL Process Manager target type. Click on the Go button. A list of discovered BPEL Process Manager targets is displayed. Click on the one target name of choice. This takes you to the BPEL PM target home page. [ 28 ]
+
+Chapter 3
+
+Creating a SOAP test to monitor a partner link A synthetic transaction is a proactive way to emulate end user (or client) behavior and catch problems before the end user (or client). A BPEL process typically invokes one or more web services through a partner link framework, usually via SOAP. A synthetic check for testing the BPEL partner link availability and performance is a great way to uncover problems before the service consumers do. 1. Scroll down and select a partner link name from the radio button list, for instance, SelectService.
+
+[ 31 ]
+
+BPEL Process Monitoring
+
+2. Click on the Add SOAP Test button to create a SOAP test for that partner link.
+
+3. Enter the SOAP Test Name as SelectService_test. 4. Enter the test interval for the Collection Frequency (minutes) as 15. 5. Select Web service port from the Port Types drop-down list as SelectServiceCallbackPort. 6. Enter input parameters in the HTML input fields, for example, SupplierPrice {String} as 12345 and SupplierName {String} as 2. 7. Leave the Basic Authentication Credentials section empty. 8. Click on OK to continue after the fields on the Create SOAP Test page are filled as shown in the following screenshot:
+
+[ 32 ]
+
+Chapter 3
+
+9. Add a beacon. Click on the Add button. 10. From the pop-up window, check and select the available beacon(s), shown in the next screenshot:
+
+[ 33 ]
+
+Chapter 3
+
+Creating a SOAP test to monitor a BPEL process
+
+Similar to monitoring partner links through synthetic checks, the overall BPEL process can also be monitored in the same manner. A BPEL process is typically invoked by a SOAP client. This can be tested at a desired frequency to ensure that the BPEL process can be instantiated at all times by clients: 1. Go to the BPEL process home page. 2. Scroll down and locate the radio button for client in the Partner Links section.
+
+[ 35 ]
+
+BPEL Process Monitoring
+
+3. Click on Add SOAP Test to create a SOAP test for the client, as shown in the following screenshot:
+
+4. Select the desired port type as SOAOrderBookingPort. 5. Select the radio button for the input parameters as XML Source. 6. Enter the SOAP envelope, including any headers. You can copy this SOAP envelope from existing BPEL instances (from the BPEL Control). Copy and paste the SOAP payload provided in the input XML source.
+
+[ 36 ]
+
+Chapter 3
+
+7. Click on OK to complete the creation of the client test. 8. Observe the confirmation message. 9. Expand the availability service to view the SOAP tests.
+
+[ 37 ]
+
+Chapter 3
+
+This concludes the step-by-step exercises to set up and view monitoring of BPEL processes from Grid Control.
+
+Summary
+
+Monitoring is key to guaranteeing the health of key business processes in the enterprise. In this chapter, we looked at how to monitor partner links and BPEL processes using synthetic tests. In particular, we looked at challenges related to monitoring BPEL processes, and the solutions provided by Grid Control. We looked at the basic BPEL process monitoring provided out of the box. Further, we were able to set up specific proactive checks to test the availability and performance of BPEL processes. These synthetic checks had the ability to notify the administrator based on preset thresholds. Further the administrator had the capability to run these synthetic checks on-demand and view the results.
+
+[ 39 ]
+
+BPEL Process Monitoring
+
+Proactive monitoring can avoid loss of credibility with end users who interact with these business processes. Sometimes everything might be working fine within the firewall, but end users are still unable to access these processes. In this scenario, it is imperative to have an agent sitting outside the firewall to ensure that user behavior can be replicated frequently, and administrators can be notified. In most cases, these agents notify the administrators before end users. The next chapter will walkthrough hands-on exercises to set up and perform additional management tasks for the BPEL infrastructure, such as the BPEL Process Manager Server, application server, database, and host.
+
+[ 40 ]
+
+BPEL Infrastructure Management BPEL installations involve several pieces of software. For a basic single node installation, there are four components. The first one is the dehydration database that persists the BPEL metadata and the BPEL instance information, including instances that are currently being executed ("in-flight" instances). The second component is the application server that provides the platform for BPEL. BPEL is supported on Oracle WebLogic Server, Oracle Application Server, IBM WebSphere, and JBoss. The application server consists of various components such as a Java Virtual Machine (JVM) and a web server. The latest certification of application server platform listing can be found here: http://www.oracle.com/technology/software/products/ias/files/oracle_ soa_certification_101310.html.
+
+The third component is the BPEL PM server itself, which is fundamentally a Java application. This application is packaged with the Oracle Application Server as part of the SOA Suite installation. The last component is the hardware server and the operating system that hosts the application server and database. Being an integration product, BPEL orchestrates services that reside on other infrastructure (different from its own infrastructure). This creates a nightmare for the administrators who are tasked with supporting BPEL orchestrations and failures associated with them.
+
+BPEL Infrastructure Management
+
+Monitoring the BPEL and the extended infrastructure is important for IT to maintain visibility, get notified, and resolve problems quickly. This chapter talks about managing the BPEL infrastructure by monitoring, viewing configuration changes, and best practice policy violations. Specifically, this chapter talks about: •
+
+Challenges
+
+•
+
+Solution
+
+•
+
+Step-by-step exercises: °°
+
+Creating the BPEL infrastructure service
+
+°°
+
+Viewing the BPEL infrastructure service
+
+°°
+
+Viewing system alerts and policies
+
+°°
+
+Viewing configuration changes
+
+°°
+
+Viewing key system metrics
+
+°°
+
+Viewing administration tasks
+
+°°
+
+Viewing system components
+
+°°
+
+Viewing the system dashboard
+
+Challenges
+
+Critical business processes can often go down due to a failure in a dependent infrastructure. Administrators find it hard to manage BPEL infrastructure along with other existing infrastructure systems. As a BPEL process dehydrates by storing state constantly in its database, any outages or performance problems in the database affect BPEL dehydration and rehydration. There are other infrastructure components such as web server, application server, and host that need to be functioning well for BPEL processes to run smoothly. An administrator who does not have BPEL knowledge or training may not understand what the critical infrastructure pieces are or how to manage them. Further best practices associated with the infrastructure components may not be known or difficult to implement. SOX and COBIT standards have become vital for IT administrators to not only be aware of, but also implement and monitor.
+
+[ 42 ]
+
+Chapter 4
+
+Solution
+
+Grid Control monitors the availability of the BPEL infrastructure components. Both current and historic availability of targets (such as BPEL PM server) are recorded for troubleshooting and root cause analysis. The BPEL infrastructure system and service availability is also recorded. Administrators can be notified when any of the components go down, or troubleshoot after the fact via topology maps to understand which component was responsible for the service failure. By allowing administrators to "manage many-as-one", management of large numbers of components is significantly simplified. By combining BPEL-related targets in systems, administrators can benefit from a wealth of system management features, such as ability to proactively monitor availability through the System Monitoring Dashboard. Administrators can view operational best practice policy violations that help with SOX and COBIT compliance.
+
+Step-by-step exercises
+
+This set of step-by-step exercises will walkthrough the discovery of a BPEL process home page, and setting up monitoring for the process and partner links.
+
+Creating the BPEL infrastructure service
+
+Creating a logical representation of the infrastructure components is the first step to set up effective monitoring. Grid Control helps the administrator to understand the relationships between the infrastructure components.
+
+[ 43 ]
+
+BPEL Infrastructure Management
+
+1. From the BPEL target page, click on the Create BPEL Infrastructure Service button.
+
+2. On the Create Service page, enter a Service Name and click on OK, as shown in the following screenshot:
+
+[ 44 ]
+
+Chapter 4
+
+9. Click on a Policy Rule to get further information on the "best practice". 10. Use the browser Back button twice to navigate to the System home page. 11. Under the Policy Violations section, click on Policy Trend Overview. 12. Notice the trend overview data for the three policy categories.
+
+[ 47 ]
+
+Chapter 4
+
+Viewing the system dashboard
+
+The system dashboard is a useful tool for the network operation center analysts to see the current status of the system components and their key metrics. 1. Click on Launch Dashboard on the top right.
+
+[ 51 ]
+
+Chapter 4
+
+Summary
+
+Monitoring the BPEL infrastructure effectively is essential to the success of SOA projects. Enterprise Manager provides a way to monitor BPEL infrastructure components effectively with existing infrastructure components. We looked at the basic challenges, solution, and step-by-step exercises to address different areas. In particular, we created a BPEL infrastructure service and viewed the service, its underlying system and components, as well as alerts, metrics, and configuration changes. Finally, we viewed the systems components in a system dashboard. Understanding the key components and creating a system to represent them is the first key step to enabling system management. This allows IT departments to monitor, manage changes, and implement best practice policies to comply with SOX and COBIT standards. The next few chapters will walkthrough hands-on exercises to set up and perform additional service-level management tasks for the BPEL processes and BPEL infrastructure.
+
+[ 53 ]
+
+BPEL Service-Level Management Service providers are faced with increasingly demanding consumers who want services that are faster, more available, and perform better. An increasing number of key business services such as e-mail, storage, servers, and databases are used as services, so that consumers do not have to worry about owning and maintaining the software and hardware. Consumers expect high availability and performance regardless of intranet or Internet services. A service downtime could prove detrimental through loss in revenues for the service provider and consumer, and a loss in credibility for both. Further, several service providers have to comply with IT frameworks such as Information Technology Infrastructure Library (ITIL), Control Objectives for Information and Related Technology (COBIT), and Statement on Auditing Standards 70 (SAS 70). These frameworks demand that IT measure service availability and performance for auditing, contractual obligations, and customer satisfaction. In an environment where services not only abound, but also interact with each other, it becomes a nightmare to govern service availability and quality. A BPEL environment involves several services that are being orchestrated. All the participating services need to be governed within the contractual terms of use. This is extremely important in business to business (or partner) contracts as well as business to consumer contracts. Most service providers have money-back guarantees in contracts that can be invoked by consumers if the quality of service falls beneath mutually agreed availability and performance expectations.
+
+BPEL Service-Level Management
+
+Monitoring BPEL processes and partner links with a common set of service-level expectations is important for IT to monitor service expectations, and resolve problems to ensure service-level agreements are met. This chapter talks about managing the BPEL process and partner link expectations by setting and monitoring service levels. Specifically, this chapter talks about: •
+
+Challenges
+
+•
+
+Solution
+
+•
+
+Step-by-step exercises: °°
+
+Viewing the BPEL process availability service
+
+°°
+
+Adding service performance metrics
+
+°°
+
+Setting service-level expectation (availability)
+
+°°
+
+Viewing the service availability definition
+
+°°
+
+Viewing the BPEL infrastructure service
+
+°°
+
+Adding infrastructure performance metrics
+
+°°
+
+Adding infrastructure usage metrics
+
+°°
+
+Setting service-level expectation (infrastructure)
+
+°°
+
+Viewing the infrastructure availability definition
+
+°°
+
+Viewing the BPEL process aggregate service
+
+°°
+
+Viewing the aggregate service availability definition
+
+°°
+
+Adding aggregate service performance and usage metrics
+
+°°
+
+Setting service-level expectation (aggregate service)
+
+Challenges
+
+In an increasingly service-oriented environment, service and system availability and response times have a direct and tangible impact on the provider's and consumer's bottom line. BPEL business processes, online banking, online store, and online stock trading are all examples of business applications that need to be monitored and available to partners and end-users. Typically, when any of these services are being used, some common problems faced by the administrators are: •
+
+Guaranteeing availability of a service
+
+•
+
+Performance of the service and whether it meets the expectations of the end users
+
+Poor application and infrastructure performance can result in costs to your business, which may include the loss of customer loyalty and sales opportunities. [ 56 ]
+
+Chapter 5
+
+Solution
+
+Grid Control solves these issues by automatically defining one or more service models that represent the business processes that run in an enterprise. Automated service models overlying business processes are created when one or more service tests (SOAP tests) for partner links are created. Using these service tests (that simulate end-user functionality), administrators can measure the performance and availability of critical partner links or external Web services, receive alerts when there is a problem, identify common issues, and diagnose causes of failures. Monitoring a service helps you ensure that the operational goals and service-level agreements are met.
+
+Step-by-step exercises
+
+This set of step-by-step exercises will walkthrough setting service levels for the BPEL process, and setting up availability and performance metrics to monitor the service levels for the BPEL process and associated availability, infrastructure, and aggregate services. Some key service definitions are listed: •
+
+Generic Service: This is a Grid Control representation of any service that is provided to a consumer. There are special services for web applications. For Web services and BPEL processes, the Generic Service is used as a wrapper in order to inherit the Grid Control service capabilities.
+
+•
+
+Availability Service: This is the representation of a BPEL process in Grid Control to measure the operational availability and response time of the process. Further service level goals can be set and measured at the service level.
+
+•
+
+System: This is a group of related infrastructure components such as database, application server, JVM, BPEL PM, and so on.
+
+•
+
+Infrastructure Service: This models the system into a service representation so that service level goals can be set and measured for the overall system.
+
+•
+
+Aggregate Service: This is a higher-level service that consists of one or more Generic Services.
+
+•
+
+Service-Level Agreement (SLA): This is the contractual agreement between a provider and a consumer. Typically, it consists of an availability (for example, 99.99% service uptime per quarter) and performance (for example, Login page should return under three seconds) metrics. Frequently, there are money-back guarantees in the SLA contracts, which can be invoked by the consumer when faced with poor service availability and performance.
+
+[ 57 ]
+
+BPEL Service-Level Management
+
+4. For each Service Test in the first dropdown, pick the Response Time (ms) as metric from the second dropdown, as shown in the following screenshot:
+
+5. Click on Continue. 6. Edit the metric name from Service_Test Response Time (ms) to Credit Validating Response Time (ms). 7. Enter a Warning Threshold and Critical threshold time in ms, that is, 3000 and 5000 respectively. Click on OK, as shown in the following screenshot:
+
+[ 60 ]
+
+Chapter 5
+
+8. Redo steps 3-7 to add performance metrics for the other service tests' response times if needed.
+
+Setting service-level expectation (availability) For service providers, Grid Control provides a way to set service-level expectations and measure against those expectations. A service-level expectation can be defined in terms of availability and performance yardsticks over a range of time. 1. From the Related Links section at the bottom, click on Edit Service Level Rule. 2. Change the Expected Service Level from the default value to the value that is required for this service, that is, 99.0. 3. Observe the default values in the Actual Service Level section. 4. Within the Business Hours section, change Start Time and End Time to the required business window that has been discussed with, or is expected by, consumers; for example, Start Time 08:00 and End Time 18:00. 5. Change the default Availability Criteria to conform to the business standard. Think about scheduled downtimes (blackout) and whether they are considered as up time for calculations.
+
+[ 61 ]
+
+Chapter 5
+
+Viewing the BPEL infrastructure service
+
+The BPEL infrastructure service encapsulates the infrastructure components that are required for BPEL processes to run. 1. Click on the Target Services tab. 2. Locate the infrastructure service (generic service) created in a previous chapter. 3. Click on the infrastructure service to go to the service home page.
+
+Adding infrastructure performance metrics
+
+Not only are service test metrics important, but infrastructure metrics can also be used to represent service disruptions. 1. Click on the Monitoring Configuration tab. 2. Click on the Performance Metrics link.
+
+[ 63 ]
+
+BPEL Service-Level Management
+
+3. As shown in the next screenshot, for the default performance metrics already listed, enter Warning Threshold and Critical Threshold for some of these metrics as follows : °°
+
+OC4J Instance – Request Processing Time (seconds): 3 and 5
+
+°°
+
+Number of Transactions (per second): 20 and 50
+
+°°
+
+Highest number of active threads [default]: 5 and 10
+
+°°
+
+CPU Utilization (%): 80 and 95
+
+°°
+
+Average Synchronous Process Latency (msecs) [default]: 3000 and 5000
+
+°°
+
+Average Asynchronous Process Latency (msecs) [default]: 3000 and 5000
+
+4. Change the chart on home page dropdown to show CPU utilization. 5. Click on OK and click on Yes on the confirmation screen.
+
+[ 64 ]
+
+Chapter 5
+
+Adding infrastructure usage metrics
+
+Usage metrics are not counted toward availability, but are useful to evaluate the growth of a service. Performance and usage are usually indicators that are viewed side by side. 1. Click on the Usage Metrics link. 2. For the default Usage Metrics already listed, enter Warning Threshold and Critical Threshold for some of these metrics as follows: °°
+
+Opened Instances Since Last Collection [default]: 20 and 50
+
+°°
+
+OC4J Instance – Active Sessions: 5 and 10
+
+°°
+
+OC4J Instance – Active Requests: 20 and 50
+
+°°
+
+Closed Instances Since Last Collection [default]: 20 and 50
+
+3. Change the chart on home page dropdown to show OC4J Instance – Active Requests, as shown in the following screenshot:
+
+4. Click on OK and click on Yes on the confirmation screen.
+
+[ 65 ]
+
+BPEL Service-Level Management
+
+Setting service-level expectation (infrastructure)
+
+Similar to how expectations for a service can be set and measured, an expectation and measurement can also be done for a collection of logical infrastructure components. 1. From the Related Links section at the bottom, click on Edit Service Level Rule. 2. Change the Expected Service Level from the default value to the value that is required for this service, that is, 99.0. 3. Observe the default values in the Actual Service Level section. 4. Within the Business Hours section, change the start and end time to the required business window that has been discussed with, or is expected by consumers; for instance, Start Time as 08:00 and End Time as 18:00. 5. Change the default Availability Criteria to conform to the business standard. Think about scheduled downtimes (blackout) and whether they are considered as up time for calculations. 6. Under Performance Criteria, select one or more metrics from Available Performance Metrics. 7. Refer to the following screenshot for the preceding steps and click on OK.
+
+[ 66 ]
+
+Chapter 5
+
+Adding aggregate service performance and usage metrics
+
+The underlying service metrics can be promoted to the Aggregate Service level to ensure that the key metrics are visible for network operations control administrators, as well as executives. 1. Click on the Performance tab within Edit Service mode. 2. Click on the Add button to promote subservice metrics. 3. Select the Based on statistical aggregate from multiple services option. 4. Set the Function dropdown to Maximum. 5. Add rows for the Subservice, that is, SOAOrderBooking(v.1.0)_availability (Generic Service). 6. Select Metric Name for the selected Subservice metrics as shown in the following screenshot; for example, Client Response Time (ms), Select Service Response Time (ms), and Credit Validating Response Time (ms).
+
+7. Click on Continue. 8. Edit the Metric Name to an appropriate name, that is, Avg BPEL Response Time (ms). [ 69 ]
+
+BPEL Service-Level Management
+
+9. Enter appropriate warning and critical thresholds; for example, 3000 and 5000. 10. Add another performance metric. Click on the Add button. 11. Select the infrastructure service from the Subservice dropdown. 12. Pick a relevant infrastructure metric, that is, CPU Utilization (%). 13. Click on Continue, as shown in the following screenshot:
+
+14. Notice that the warning and critical thresholds have been inherited from the subservice. Leave it at the same levels or modify as appropriate. 15. Click on OK.
+
+Setting service-level expectation (aggregate service)
+
+This is similar to the expectation that was set for the other services. 1. From the Related Links section at the bottom, click on Edit Service Level Rule. 2. Change the Expected Service Level from the default value to the value that is required for this service, for instance, 99.0. [ 70 ]
+
+BPEL Service-Level Management
+
+Summary
+
+Monitoring BPEL services effectively is essential in monitoring consumer expectations and maintaining credibility. Grid Control provides a way to monitor BPEL services effectively with infrastructure services, and their associations. In this chapter, we discussed how Grid Control sets up the service model around a BPEL process and the BPEL infrastructure. The inbuilt service-level expectation and measurement using availability and performance metrics makes it easy to monitor these services. Further, the metrics can be based on service tests or on infrastructure metrics. Associating the key service components with infrastructure components, and monitoring them from one integrated view is critical for administrators to set and control consumer expectations. The next few chapters will walkthrough hands-on exercises to set up service dashboards to monitor the services that have been configured for the enterprise.
+
+[ 72 ]
+
+BPEL Services Dashboard Most IT departments have a service desk or help desk that acts as the single point of contact for customers. The service desk team is responsible for being the first line of communication to log customer-reported incidents. The service desk analyst is responsible for logging customer incidents, verifying service health and availability, and notifying respective IT departments about new issues. BPEL processes frequently are responsible for key business functions such as billing, expense reports, and order fulfillment. For company-wide services, the service desk needs to keep track of these critical processes. When users call the service desk to complain about these processes, the analyst needs to look at a common dashboard to verify the status of each process. The analyst needs to understand how long the process has been unavailable or non-performant, and whether the preset Service Level Agreements (SLAs) have been violated. They need to take swift action to ensure new incidents are logged and rectified quickly by the IT administrator. This chapter talks about creating a dashboard to monitor critical BPEL processes and monitoring key metrics and SLAs for each process. Specifically, this chapter talks about: •
+
+Challenges
+
+•
+
+Solution
+
+•
+
+Step-by-step exercises: °°
+
+Navigating to the Reports tab
+
+°°
+
+Creating an SOA services dashboard
+
+°°
+
+Viewing the SOA services dashboard
+
+Chapter 6
+
+Creating an SOA services dashboard
+
+A dashboard is one of many types of reports. Like other Grid Control reports, there are many configurable aspects, such as the source or target(s), what is to be displayed, and the time period for which the display is to be presented. Dashboards can be displayed in different time zones, have an auto-refresh capability, and the ability to display one or more interesting time windows, such as last day, last week, and last month. 1. Select the radio button next to Services Monitoring Dashboard. 2. Click on Create Like, as shown in the following screenshot:
+
+3. Enter Title as SOA Services Dashboard. 4. Leave the other fields at the defaults.
+
+[ 75 ]
+
+BPEL Services Dashboard
+
+5. As shown in the following screenshot, under the Targets section, select the Use the specified target radio button. 6. Click on the Elements tab.
+
+7. Click on Set Parameters. 8. Edit the header to be SOA Services Dashboard. 9. Change the time zone relevant to your geographic location. For example, (UTC-08:00) US Pacific Time (PST). 10. In the Services section, pick all the SOA-related services (except EM service).
+
+[ 76 ]
+
+Chapter 6
+
+11. Move the default_SOAOrderBooking(v.1.0) aggregate service to the top of the selected list, as shown in the following screenshot:
+
+12. Click on Continue. 13. Click on OK to save the dashboard settings.
+
+Viewing the SOA services dashboard
+
+Once the dashboard has been created, you can view it and look at the status and health of key services. There are red, yellow, and green indicators for each service, which gives a good bird's eye view of all the services. 1. Navigate to the Reports tab. 2. Search for the title SOA and click on Go.
+
+[ 77 ]
+
+Chapter 6
+
+5. Click on Back, to go back to the SOA services dashboard. Click on the arrow for the infrastructure service. Notice all the components, and rolled-up statistics for the components.
+
+Summary
+
+Service dashboards are essential to any organization that provides services to internal or external consumers. Grid Control lets service desk analysts, IT administrators, and IT executives visualize key service aspects via service dashboards. In this chapter, we discussed the value of reports as a visualization tool for configuring and monitoring data. We created a new dashboard with the key SOA services, and then viewed the dashboard to look at the status and health of the services. Note that these service dashboards can be made public for all employees to view a common source for the health and availability of services. This is common for large enterprises for viewing the state of e-mail services, ERP and CRM services, and critical BPEL processes. This is akin to a procedural justice method where the providers and consumers are aware of the common SLA goals, and the level of compliance with those goals. The next few chapters will walkthrough hands-on exercises to deploy BPEL processes and manage configurations for the BPEL environment. [ 79 ]
+
+BPEL Deployment Automation In most medium to large enterprises, application developers write code, and throw it "over the wall" to the operations group. The operations group is now responsible for deploying and maintaining this code in stage and production environments. The development and operations teams typically roll up to separate management chains, and there is little coordination between the two teams. BPEL process development and deployment follow the same methodology. Administrators have to deal with multiple BPEL process "suitcases", which might be dependent on each other. Typically, the BPEL process deployment should follow the existing methodology in the enterprise. The operational team should centrally maintain the deployment artifacts, and this should be in a different location than the one used by the development team. The deployment itself should be a well-defined procedure with a series of repeatable steps. Further, the set of enterprise best practices should be invoked at deployment time. This chapter talks about deploying multiple BPEL process suitcases to multiple BPEL environments in a standardized manner. Specifically, this chapter talks about: • • •
+
+Challenges Solution Step-by-step exercises: °° °° °° °° °° °°
+
+Viewing the Software Library Uploading BPEL suitcases to the Software Library Viewing the BPEL process provisioning deployment procedure Scheduling BPEL suitcase deployment Viewing the status of the scheduled deployment Viewing the deployed processes
+
+BPEL Deployment Automation
+
+Challenges
+
+Deploying applications in production environments is a challenge. Administrators have to deploy multiple application files to multiple targets, in a fixed time window. This consumes time and requires expertise on these applications. In a BPEL environment, this is even more challenging when administrators have to deal with ant scripts to deploy BPEL suitcases in production environments manually. Ant is a great utility for developers when they deal with deployment on developer machines, but administrators do not really have the expertise to customize or build utilities for production-level deployment. Controlling the suitcases centrally is the first challenge, where administrators have to track the suitcases to comply with change and release management guidelines. Next, the deployment itself is a challenge, considering the administrator needs to deploy the processes in a specified order, invoke any custom scripts that might be required, and honor the scheduled maintenance window.
+
+Solution
+
+With Grid Control, administrators can deploy multiple BPEL process suitcases to multiple BPEL PM domains using the Software Library and deployment procedure framework. The administrators' task of gathering deployment information is made simple by Grid Control, which has already discovered the target and knows most of the key properties for the target, such as hostname, application server name, port, and so on. The first step is to upload the BPEL process suitcases into the Software Library for central tracking and deployment. The Software Library also lets the operational team track the maturity and usage of the suitcases, along with other software components, such as operations system images, database, and application server homes. Then, a five-step interview process lets the user pick the source suitcase files, pick the target BPEL PM and domain, set the credentials, and schedule a future deployment using the job system.
+
+Step-by-step exercises
+
+This set of step-by-step exercises will walkthrough uploading and deploying BPEL process suitcases.
+
+[ 82 ]
+
+BPEL Deployment Automation
+
+5. View the sample BPEL suitcase that is part of the Software Library.
+
+Uploading BPEL suitcases to the Software Library
+
+BPEL process projects are packaged into a "BPEL suitcase", which is a self-contained deployment artifact. This artifact can be used by the administrator to deploy to various environments. 1. Select the radio button for BPEL Process Suitcase. 2. Click on the Create Component button. 3. Enter the following values in the Describe step: °°
+
+Select Type as Generic Component.
+
+°°
+
+Name as ParallelFlow.
+
+°°
+
+Description as Parallel Flow Sample.
+
+°°
+
+Leave the other fields blank.
+
+4. Click on Next, as shown in the following screenshot:
+
+5. In the Customize step, leave the defaults and click on Next. [ 84 ]
+
+Chapter 7
+
+6. In the Upload File step: °°
+
+Select Upload from Local Machine.
+
+°°
+
+Click on the Browse... button.
+
+°°
+
+Locate the BPEL suitcase jar file folder.
+
+°°
+
+Select bpel_parallel_flow.jar for the current example.
+
+7. Click on Next. 8. In the Set Directives step, select Stage and click on Next. 9. In the Review step, note the details, and click on Finish. 10. Note the confirmation message, and the new BPEL suitcase added.
+
+[ 85 ]
+
+Chapter 7
+
+°°
+
+Select default from the BPEL Domain dropdown for each BPEL target.
+
+°°
+
+Click on Next to proceed, as shown in the following screenshot:
+
+4. In the Credentials step, follow these steps as shown in the next screenshot: °°
+
+Provide the credentials for the host under Application Server Credentials; that is, Username as oracle and Password as welcome1.
+
+°°
+
+Click on Next to proceed.
+
+°°
+
+Under BPEL Process Manager Credentials, provide domain level access; that is, Username as oc4jadmin and Password as welcome1.
+
+[ 89 ]
+
+BPEL Deployment Automation
+
+°°
+
+Click on Finish when you're ready, as shown in the following screenshot:
+
+Viewing the status of the scheduled deployment
+
+Grid Control provides means to observe the overall deployment status and individual step status from its jobs page. 1. Continuing from the previous step, find the BPEL Process Provisioning job from the Procedure Completion Status tab. 2. Click on the BPEL Process Provisioning job to view the details, as shown in the following screenshot:
+
+[ 92 ]
+
+BPEL Deployment Automation
+
+Summary
+
+Deployment is a critical task for operational administrators. With the Grid Control Software Library and deployment procedure capabilities, administrators can manage BPEL suitcases, and schedule and automate deployment. In this chapter, we discussed how to utilize the out-of-the-box deployment functionality with Grid Control. The administrator can view the deployment procedures, pick the right one, schedule the deploy, and observe the deploy taking place. This is a powerful automation framework that can be utilized for deploying repeatedly and on multiple environments at the same time. There are other variations of these deployments that might be useful, such as running a custom script after the end of the deployment. With Grid Control release 10gR5, the deployment plan (introduced with BPEL 10.1.3.4) methodology is also supported. In other words, a deployment plan file with details of partner links for test, stage, and production environments can be uploaded to the Software Library. This file can be used while scheduling deployment and the partner link changes will automatically be done. It is also common for customers to create a copy of the out-of-box deployment procedure, and add a few custom steps with home-grown scripts that need to be executed before or after deployment. The next few chapters will walkthrough hands-on exercises to manage configurations for the BPEL environment.
+
+[ 94 ]
+
+BPEL Configuration Management Managing the configurations of software and hardware assets in an enterprise is important for several reasons. "Knowing what you have" enables IT managers to make decisions about future investments and retiring old assets, standardize existing assets, manage change across the enterprise, and troubleshoot performance problems related to configurations. Most configuration management solutions today are compliant with the best practices laid out by the IT Information Library (ITIL) framework. All the assets are stored in a central repository called the Configuration Management Database (CMDB). Configuration parameters such as init.ora parameters for a database, or startup parameters for a WebLogic application server, or port numbers for an HTTP server are stored in the CMDB. Any changes to these parameters are also tracked. It then becomes easy to audit the changes for a specific asset, compare assets to each other (for example database1 and database2), compare different versions of the same asset, save a reference configuration to the CMDB, and use that to standardize across the enterprise. This chapter talks about managing configurations for a BPEL environment. Specifically this chapter talks about: •
+
+Challenges
+
+•
+
+Solution
+
+•
+
+Step-by-step exercises: °°
+
+Navigating to BPEL target configuration management: •
+
+Viewing the last collected configuration
+
+•
+
+Saving a configuration snapshot to the repository
+
+BPEL Configuration Management
+
+°°
+
+Navigating to Oracle Application Server configuration management: •
+
+Viewing the last collected configuration
+
+•
+
+Saving a configuration snapshot to the repository
+
+°°
+
+Making changes to the BPEL environment
+
+°°
+
+Making changes to the Oracle Application Server environment
+
+°°
+
+Comparing the current BPEL configuration with a saved baseline
+
+°°
+
+Comparing BPEL process versions for the same process
+
+°°
+
+Comparing the current Oracle Application Server configuration with a saved baseline
+
+°°
+
+Viewing application server target comparison results with a saved baseline
+
+Challenges
+
+It is difficult to track the configurations of all IT systems. Frequently, IT departments resort to Excel spreadsheets to store critical IT system information. This makes an IT department slow in making changes, measuring impact, and identifying performance problems due to incorrect configuration, and increases the costs of managing a data center. With a BPEL environment, it is difficult to baseline a working configuration and compare it with non-working ones. There is no good way to compare successive BPEL Process versions before rolling them out into production.
+
+Solution
+
+With Grid Control, key configuration metrics for BPEL PM server and processes are collected and stored in the Grid Control configuration management database. This is the same database repository that houses the monitoring information. Administrators can view the historic configuration changes across the BPEL environment. They can also baseline a working configuration by saving it in the repository. A BPEL PM server and domain's configuration parameters can be compared with other server and domains. Finally, BPEL Process versions can also be compared to observe the changes across successive deployments.
+
+[ 96 ]
+
+BPEL Configuration Management
+
+Viewing the last collected configuration
+
+The Grid Control agent collects configuration metrics at a regular interval (default once in 24 hours) and uploads to the configuration management repository. This enables Grid Control to track the configuration history of the managed target. There are several ways to look at the configuration history, one of them being the last collected configuration. 1. Click on Last Collected Configuration to view configuration parameters. 2. View the configuration settings on the Last Collected Configuration page. 3. The Process Manager tab shows generic information about the server including URLs, dehydration store, and cluster parameters.
+
+4. Click on the Domains sub-tab. The Domains tab lists the BPEL domains and important configuration parameters for each domain.
+
+[ 98 ]
+
+Chapter 8
+
+5. Click on Processes sub-tab. The Processes tab shows a list of deployed processes with version information, underlying files, and last modified time.
+
+[ 99 ]
+
+BPEL Configuration Management
+
+6. Click on Configuration Files. Key configuration files from the BPEL server are now stored in the Grid Control repository and displayed on this tab. You can click on the file to view the contents in read-only mode.
+
+Saving a configuration snapshot to the repository
+
+In a large enterprise it is important to standardize configuration across a target type. This helps in ease of maintenance and is also important for compliance reasons. To standardize configurations, Grid Control provides a way to create a "gold" configuration based on an existing target configuration, and then use that to standardize against other targets: 1. Click on the Save button on the top right. 2. Select the option Save to EM Repository.
+
+[ 100 ]
+
+Chapter 8
+
+3. Enter a description such as GCSOA__BPEL_Baseline, as shown in the following screenshot:
+
+4. Click on OK to save the current configuration to the Grid Control repository. 5. Note the confirmation message and the saved configuration with timestamp, name, description, saved date, and owner.
+
+Navigating to Oracle Application Server configuration management
+
+It is useful to look at an Oracle application server configuration as well because BPEL is hosted by the application server: 1. From the Grid Control home page, click on the Targets tab. 2. Select the Application Servers sub-tab. 3. Click on the name of the application server such as soa.gcsoa.us.oracle.com.
+
+[ 101 ]
+
+Chapter 8
+
+2. The current configuration of the application server is displayed. The General tab displays key components of the application server and also some key configuration parameters, as shown in the following screenshot:
+
+[ 103 ]
+
+BPEL Configuration Management
+
+3. Click on the J2EE Applications tab to view all the J2EE applications deployed on this application server.
+
+4. Click on the Configuration Files tab to view the key configuration files. You can click on the files to view a read-only version of the files.
+
+[ 104 ]
+
+Chapter 8
+
+Saving a configuration snapshot to the repository
+
+Similar to the BPEL configuration snapshot, the application server configuration can also be saved to the Grid Control repository in order to standardize across the enterprise: 1. Click on the Save button to save the current configuration. 2. Select the option Save to the EM Repository. 3. Provide a description such as GCSOA__AS_Baseline. 4. Select the checkbox for saving all the configuration of the application server components, as shown in the following screenshot:
+
+5. Click on OK to save the current configuration to the Grid Control repository.
+
+[ 105 ]
+
+BPEL Configuration Management
+
+6. Note the confirmation message, and the saved configuration with target name, type, and timestamp.
+
+Making changes to the BPEL environment
+
+The Grid Control console is the management interface for one or more BPEL PMs, as well as other target types. For administrative functions such as start/stop, changing configuration properties, and so on, the administrator needs to utilize the product console, in this case BPEL console. 1. Navigate to the BPEL target home page. 2. Under Related Links, click on Adminster (BPEL Console). 3. Log in using the Username as oc4jadmin and Password as welcome1. 4. Click on the Manage BPEL Domain link. 5. This takes you to the admin page for BPEL where you can set domain-level parameters. Select the Configuration tab.
+
+[ 106 ]
+
+Chapter 8
+
+6. Change the following properties: °°
+
+AuditDetailThreshold to 60k
+
+°°
+
+dspMaxThreads to 6
+
+°°
+
+dspMinThreads to 2
+
+°°
+
+LargeDocumentThreshhold to 60k
+
+7. Click on the Apply button to save the changes.
+
+[ 107 ]
+
+BPEL Configuration Management
+
+8. Select the Logging tab and select the dropdown to change the logging level for all to Warn. The debug level of warn indicates warning messages that are logged to some log, but the application is able to carry on without a problem.
+
+9. Click on Apply to save the changes. 10. Select Logout to exit the BPEL Control.
+
+Making changes to the Oracle Application Server environment Similar to the BPEL Console, the application server also comes with its own administrative console to make configuration changes. 1. From the Grid Control home page, click on the Targets tab. 2. Select the Application Servers sub-tab. [ 108 ]
+
+Chapter 8
+
+3. Click on the name of the application server—soademo.gcsoa.us.oracle.com. 4. This takes you to the home page for the application server. 5. Click on the Administer link at the bottom, under the Related Links section. 6. Log in to the AS Control console by using the username as oc4jadmin and password as welcome1. 7. Click on the oc4j_soa link to go to the home page for this oc4j instance, as shown in the following screenshot:
+
+[ 109 ]
+
+BPEL Configuration Management
+
+8. The oc4j_soa home page displays key availability and performance metrics for this oc4j instance.
+
+9. Click on the Administration tab. 10. Click on the Go to Task button next to the Server Properties task name, as shown in the following screenshot:
+
+[ 110 ]
+
+Chapter 8
+
+11. Change the MaxPermSize value from 126M to 256M.
+
+12. Click on Apply to save the changes. Note the confirmation message. 13. Click on the Cluster Topology breadcrumb. 14. Check the box next to the oc4j_soa 15. Click on the Restart button to restart this oc4j container to make the changes permanent.
+
+[ 111 ]
+
+BPEL Configuration Management
+
+16. Click on Yes to restart oc4j_soa. Note the confirmation message. 17. Log out of the EM Application Server control after the restart completes. You have now successfully made some changes to the application server properties.
+
+Comparing the current BPEL configuration with a saved baseline
+
+Comparisons are a useful way to detect configuration differences between two or more targets. It is useful to observe the similarities in configuration and, more importantly, the differences in case of a performance problem, or for standardization purposes. 1. 2. 3. 4.
+
+Navigate to the BPEL target home page. Click on the Administration tab. Click on Last Collected Configuration. Click on the Refresh button to get the latest configurations updated and wait for sometime. 5. Click on the Compare button to start a comparison between the current configuration of the BPEL target and a saved (Production Baseline) configuration.
+
+6. Click on the Saved Configuration link. [ 112 ]
+
+Chapter 8
+
+7. Select the GCSOA__BPEL_Baseline for comparison. 8. Click on Compare to generate the comparison results.
+
+9. View the BPEL target comparison results with a saved baseline. 10. The comparison results between the BPEL targets are presented in four categories. The Summary tab lists the status of the four categories.
+
+[ 113 ]
+
+BPEL Configuration Management
+
+11. Click on the Process Manager tab. The Process Manager tab lists the differences or similarities in the general parameters for the targets, including dehydration store and cluster parameters.
+
+12. Click on the Domains tab. The Domains tab lists the various domains in the two targets.
+
+[ 114 ]
+
+Chapter 8
+
+13. Click on the inequality sign in the Result column to view the differences.
+
+14. Click on the Compare BPEL Process Manager breadcrumb. 15. Click on the Processes tab. The Processes tab compares all the deployed processes. The underlying files within a process are compared. 16. Click on the Configuration Files tab, which lists the results of the file comparison.
+
+[ 115 ]
+
+BPEL Configuration Management
+
+17. Click on the inequality sign in the Result column to view the differences in file size and modified time.
+
+18. Click on the Back button of the browser. 19. Click on Compare File Contents. 20. View the differences between files on the compare file contents page.
+
+[ 116 ]
+
+BPEL Configuration Management
+
+6. From the Version drop-down list, pick two different versions for the same process. 7. Click on Compare File Contents, as shown in the following screenshot:
+
+8. Note the differences in the files underlying these processes.
+
+[ 118 ]
+
+Chapter 8
+
+9. By scrolling down, you can see that an additional section has been added to the version 1.2 of the process.
+
+Comparing the current Oracle Application Server configuration with a saved baseline
+
+The same approach can be used for the Oracle application server target as well: 1. Navigate to the home page for the Oracle Application Server target. 2. Select the Targets tab and then select the Application Server sub-tab. 3. Click on the link for the application server name, such as soademo.gcsoa. us.oracle.com, to take you to the application server home page. 4. Click on the Administration tab. 5. Click on the Last collected Configuration. 6. Click on the Refresh button to get the latest configurations updated. 7. Click on the Compare button to start a comparison between the current configuration of the application server target and a saved (Production Baseline) configuration.
+
+8. Click on the Saved Configurations link. 9. Select the GCSOA__AS_Base

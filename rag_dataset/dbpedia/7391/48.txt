@@ -1,0 +1,45 @@
+1. Diffie-Hellman-Merkle Key Exchange Kevin O’Brien Washtenaw Linux Users Group
+
+2. The Cast of Characters Whitfield Diffie Martin Hellman Ralph Merkle
+
+3. Martin Hellman ● Stanford professor through 1996 ● His doctoral students included Ralph Merkle, Whitfield Diffie, and Taher Elgamal ● Worked with Horst Feistel (DES) while at IBM in late 196os ● Co-winner with Whitfield Diffie of ACM Turing Award in 2015
+
+4. Whitfield Diffie ● Research programmer at Stanford Artificial Intelligence Laboratory (SAIL) ● Hired by Martin Hellman as a Research Assistant, and a doctoral student ● Never finished his PhD ● Became a Sun Fellow ● Co-winner with Martin Hellman of the ACM Turing Award in 2015
+
+5. Ralph Merkle ● Doctoral student under Martin Hellman ● Inventor of Cryptographic Hashing ● Research Scientist at PARC ● Led the Georgia Tech Information Security Center ● Winner of ACM Award in 1996 ● Appears as a character in Neal Stephenson’s The Diamond Age.
+
+6. Why Ralph Merkle? The system…has since become known as Diffie–Hellman key exchange. While that system was first described in a paper by Diffie and me, it is a public key distribution system, a concept developed by Merkle, and hence should be called ‘Diffie– Hellman–Merkle key exchange’ if names are to be associated with it. I hope this small pulpit might help in that endeavor to recognize Merkle’s equal contribution to the invention of public key cryptography. - Martin Hellman
+
+7. Merkle’s Contribution ● He pioneered the whole field of key exchange when communications were observable ● Came up with idea of Merkle Puzzles ●
+
+8. Merkle Puzzles ● Bob creates a large number of encrypted messages, each with a different identifier and encryption key ● It is not feasible to brute force all of these messages ● He sends them all to Alice, who picks one to brute force solve ● She sends back the Identifier, and uses the key to encrypt further communications
+
+9. How this is secure ● The Identifier was in one of the original encrypted messages from Bob ● Bob knows which identifier goes with each key ● But Eve (the eavesdropper) cannot know, and as a already stated it is not feasible to brute force all of the messages Bob sent to Alice ● So this is secure even through Eve can read all of the traffic.
+
+11. Modular Arithmetic ● Key concept of this approach ● One way to think about it is dividing by some number and only keeping the remainder ● Or think of it as counting in a circle. – Example: clocks – If it is now 11, and you need to meet someone in 2 hours, when is the meeting? 1 – Think of that as 11+2, divided by 12, and only keep the remainder
+
+12. Diffie-Hellman-Merkle ● Again, all communication is assumed open to anyone to watch ● So Eve is reading all of the traffic ● 2 numbers are publicly exchanged – The prime base number g – The prime modulus p ● Modulus is the number you are dividing by to get a remainder, or the size of the circle of numbers ● Again, both numbers are public
+
+13. Secret numbers ● Now Alice and Bob each choose a secret number which only they know. Bob does not know Alice’s number, and Alice does not know Bob’s number ● These numbers are used in calculations by each of the parties, but never publicly disclosed. This is where the security comes from.
+
+14. Calculating secret numbers ● Alice computes A=g^a mod p, which is the known base g raised to the power of a (Alice’s secret), which is then divided by p, which is the known modulus, and a remainder is calculated. Alice sends this to Bob, and it is still a secret because only Alice knows a ● Bob then similarly computes B=g^b mod p, and sends B to Alice ● We assume A and B are both seen by Eve, but she cannot brute force them
+
+15. Shared Secret ● Alice then computes S = B^a mod p ● Bob computes S=A^b mod p ● And they both have the same shared secret number! ● And that is the shared encryption key (keys are merely numbers, after all)
+
+16. Example 1 ● This is just a simple example of how the math works ● The known base g = 4 ● The known modulus p = 11 ● The base can be small, that does not matter much, but in reality the modulus should be a large prime number. That gets you to computationally infeasible
+
+17. Example 2 ● Alice’s secret number a = 6 ● Bob’s secret number b = 8 ● Alice computes A = 4^6 mod 11 ● 4^6 = 4096 ● 4096 mod 11 = 4 ● Alice send Bob the number 4, and it is assumed that the message is open and read by Eve.
+
+18. Example 3 ● Bob computes B = 4^8 mod 11 ● 4^8 = 65,536 ● 65,536 mod 11 = 9 ● Bob sends Alice the number 9, and again we assume Eve is watching this
+
+19. Example 4 ● Alice computes S = 9^6 mod 11 ● 9^6 = 531,441 ● 531,441 mod 11 = 9 ● Bob computes S = 4^8 mod 11 ● 4^8 = 65,536 ● 65,536 mod 11 = 9 ● They match! This is the secret encryption key!
+
+20. In the real world... ● As stated, the base g can be small without causing problems, but the modulus p and secret numbers a and b should all be large. Our example used small number just ot make it easier to follow ● This is an example of what is known as a discrete logarithm problem. You are essentially looking for an integer solution to g^(ab) mod p, where g and p are known, but a and b are secret. ● There is no known general solution to this problem that is feasible
+
+21. Adding people ● You don’t need to restrict the discussion to two people ● Add Carol ● Now it becomes g^(abc) mod p ● In general, this approach is considered safe against eavesdropping
+
+22. Weaknesses ● Diffie-Hellman-Merkle is safe against eavesdropping for now ● But there is no authentication! ● This approach is vulnerable to man-in-the-middle attacks ● If Mallory can convince Bob that she is Alice, and convince Alice that she is Bob, she could do two key exchanges, sit in the middle, and read all of the traffic unencrypted
+
+23. Public Key ● Public key, such as RSA, solves the authentication problem ● It let’s you initiate communication with security ● That is why most encrypted connections start with public key before creating a shared secret for further communication ● Also, public key has a larger overhead for computation than a shared secret has
+
+24. Cracking This ● While there is no general solution as yet, there are specific cases where discrete logarithm problems are now crackable ● As in all cryptography, this is an arms race. As encryption gets better, decryption soon gets better too. ● So you need to kepe improving your methods

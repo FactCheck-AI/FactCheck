@@ -1,0 +1,41 @@
+SMS maximum retention rules can be applied to data sets. If parameters SMS and SR are both specified to YES in the TMOOPTxx member of
+
+hlq
+
+.CTAPOPTN, and a valid SMS Management Class is assigned to the data set, the expiration date is checked with the SMS Management Class definition.
+
+As tapes are scratched, data sets written on the volume can be uncataloged from the MVS catalog, depending on the UNCATA parameter in member TMOOPTxx in hlq.CTAPOPTN. If the UNCATA parameter is set to YES, all data sets processed for scratch are uncataloged from the MVS catalog. If the UNCATA parameter is set to G, GDG data sets and data sets that are expired from Catalog Control or Cycle Control are excluded. If the UNCATA parameter is set to NO, no uncatalog processing takes place at all.
+
+The result of the uncatalog request is included in the report file. This report file can be used to produce an additional report of all files successfully uncataloged. In addition, the report file can be used as input to the TMSUNCAT utility that uncatalogs files on other systems. TMSCLEAN can execute in an environment without shared catalogs and helps maintain the integrity of the system catalogs.
+
+For tapes created on a non-
+
+CA 1
+
+system and used as input under
+
+CA 1
+
+, the
+
+Key Tape Procedure
+
+allows control with minimal manual effort. To implement this procedure, determine the number of tapes which are needed during a certain period. When the TMSCLEAN program is executed, indicate the number of tapes that should be logged out-of-area to the individual locations. (Tapes can be selected based on density or label type.) As the tapes go scratch, they are automatically logged out-of-area.
+
+The scratch tapes can then be placed in an area close to the non-
+
+CA 1
+
+system. After the tapes are written on by the non-
+
+CA 1
+
+system, they are filed in the tape library. Protection is maintained because
+
+CA 1
+
+does not allow these scratch tapes to be used for output as long as they are marked out-of-area. When the tape is later used as input under
+
+CA 1
+
+, the TMC is automatically updated to contain the new data set name and expiration date. If EXPDT or RETPD is specified in the JCL, it is used. If is is not used, the system default KEYTAP parameter is used.

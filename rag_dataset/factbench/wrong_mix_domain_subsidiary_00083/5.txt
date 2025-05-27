@@ -1,0 +1,17 @@
+VSS notwithstanding, I strongly suggest you do not attempt to use MozyPro to back up a running SQL Anywhere database... that comes perilously close to creating a "single point of failure" with both the MozyPro process and the database server depending on the same file... and MozyPro is running across TCP/IP, right? Nothing can go wrong with that go wrong with that go wrong with that... :)
+
+Instead, use SQL Anywhere itself to create a full backup on the same hard drive, or another local hard drive (10G is not a lot of data), and then let MozyPro back up the resulting files: the backup copy of the *.db and the backup copy of the *.log. Those files will be closed, nice and stable, with up-to-date timestamps.
+
+You can do the same with incremental backups of the log file: do a local backup, and then let MozyPro have its way with the resulting files. FWIW I use Carbonite, same idea, works fine.
+
+Divide and conquer: the server updates the database files, the backup process creates the backup files, MozyPro handles offsite, and if necessary the server handles recovery.
+
+Short answer: it is not possible to do this easily with a 100% guarantee.
+
+In order for the database file to get a new modification-time timestamp the server must update the meta data for the file. This is an expensive operation and therefore all attempts are made to keep this operation to a minimum.
+
+The only time that I know of that the server will update the file timestamp is when it needs to grow the size of the file, and this is not done very often due to the way that the server will reuse space (when available).
+
+Note however that the timestamp on the database will be updated when the database is stopped.
+
+To answer your underlying question: "how do I do backups of my very large database?", the answer is you should (a) take an initial backup of the database and transaction log file and then (b) periodically take incremental backups of the transaction log file. Please read the section in the documentation on Backup and Data Recovery if you have not already done so. This section talks about how to create a backup and recovery plan. Make sure you TEST your plan!

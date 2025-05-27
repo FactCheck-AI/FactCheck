@@ -1,0 +1,133 @@
+Qt is a powerful software which it allows developers to develop application in one codebase framework for any platform.
+
+Qt consists 2 parts; Qt Designer and coding part. Qt Designer is where you build the user interface (UI) for application and code part is where the logic function of the UI is implemented.
+
+Full project repo? Skip to Coding : Building ToDo App with Qt and C++ for Absolute Beginner (Part 2)
+
+Motivation
+
+I believe Todo app is the way to start understanding the main mechanics of Qt such as Signals and Slots, and I try my best to include as many useful Qt components that might help you to develop a complex application and progress in the future.
+
+Introduction
+
+I try to make this tutorial as simple and direct as possible. Not wasting time. Let’s go.
+
+**If the loaded image is pixelated/blur, try reload page.**
+
+Setting Up Project
+
+I am using Visual Studio 2019 and Qt 5.14.2 for Windows.
+
+You still not setup your Qt for Vs 2019 yet? Don’t worry I got you covered : How to install Qt and setup for Visual Studio 2019.
+
+Step 1 : Create Qt Project
+
+Open Visual Studio 2019 and create a new project. Search for Qt Widgets Application and name your project as ToDoApps.
+
+A Qt wizard will pop-up and click next.
+
+Then, select the Debug version of Qt for your platform. The important part is the Qt Modules, make sure there are Core, GUI and Widgets. These modules will be pre-included in your project but you can always add or remove the modules in the project setting anytime. Check the box in the debug column and click next.
+
+Next, change the BaseClass from QMainWindow into QWidget. The different between them are that QMainWindow has a pre-defined UI; menu bar, a status bar, a toolbar, and other widgets, and QWidget does not. BaseClass differences. Click finish.
+
+Your project file will be like so, and run the project as it is to make sure the library or modules included successfully.
+
+Qt Designer
+
+This crucial part here is naming the UI/object because the UI/object name will be used in code implementation for their interactions.
+
+Step 2 : Create Title Bar
+
+Open the ToDoApps.ui file and it will automatically open the file in Qt Designer. Your file will be like so,
+
+Drag in Frame from Containers group in the Widget Box tab into the UI widget. This frame will be our container for the title bar.
+
+Then, drag in Label inside the frame. The label will be the title text.
+
+In order to center the label inside the frame, drag in two Horizontal Spacer at both sides of the Label so that the Label is in between these spacer.
+
+So far your apps will be like this,
+
+To make sure all align correctly like an actual title bar, Right-Click on the frame (QFrame) in the Object Inspector and go to Lay out and select Lay out Horizontally.
+
+Now, Right-Click on the ToDoAppsClass (QWidget) and select Lay out Vertically.
+
+Now rename the frame (QFrame) as TitleBarFrame and rename the label (QLabel) as TitleText for easy reference.
+
+To change the text in TitleText, Double-Click on the TitleText UI and type your title as “To Do Lists” or something like that.
+
+Step 3 : Create Add New ToDo Lists
+
+There are 4 main parts here, main frame for the whole container, the add new todo frame, left frame for the todo task details and right frame for the add button. So if you familiar with HTML, it would be like this;
+
+<div>main frame
+
+<div>new todo frame
+
+<div>left frame<div/> <div>right frame<div/>
+
+<div/>
+
+<div/>
+
+First, we have to set the ToDoAppsClass (QWidget) layout to Break Layout. Right-Click on it and select Break Layout
+
+3.1) The 4 Frames
+
+(main frame) Drag in new Frame from Containers group in Widget Box below the title bar frame and rename it as ContentFrame.
+
+(new todo frame) Drag in another Frame inside the ContentFrame and rename it as AddToDoList.
+
+(left frame) Drag in another Frame inside the AddToDoList on the left side and rename it as AddLeft.
+
+(right frame) Drag in another Frame inside the AddToDoList on the right side and rename it as AddRight.
+
+Now it looks trash and we need to align it correctly.
+
+Set Lay out ToDoAppsClass (QWidget) to Lay out Vertically.
+
+Set Lay out ContentFrame (QFrame) to Lay out Vertically.
+
+Set Lay out AddToDoList (QFrame) to Lay out Horizontally.
+
+We are not going to set the layout for the left and right frame yet because they still empty.
+
+3.2) Left Frame
+
+Drag in Label inside AddLeft frame, rename it as NewTaskText and Double-Click on it to change the text to “Add New Task”.
+
+Drag in Line Edit inside AddLeft frame and rename it as “NewTaskLineEdit”.
+
+Drag in Label inside AddLeft frame and rename it as “NewDateText” and Double-Click on it to change the text to “Date Created”.
+
+Now, Set the AddLeft frame layout to Layout Vertically.
+
+3.3) Right Frame
+
+Drag in Push Button inside AddRight frame, rename it as AddNewBtn and change the text to “Add”.
+
+Set the AddRight frame layout to Lay out Vertically.
+
+If you want to add a placeholder for the Line Edit, just Double-Click on it and enter your placeholder text.
+
+Step 4 : Create ScrollArea for All New Tasks Added
+
+This scroll area box will be the stack container for all the new tasks added.
+
+Drag in Scroll Area from Containers group and place it below AddToDoList (QFrame) and rename them as AllNewTasks (QScrollArea) and AllNewTasksContents (QWidget) for the child.
+
+Drag in Vertical Spacer inside AllNewTasksContents to make it span vertically.
+
+Set AllNewTasks lay out to Layout Vertically.
+
+And your final UI design will be like this :
+
+For the newly added task UI/object will be created in runtime. Thus, the next part will be the C++ coding part where you can copy paste the code.
+
+I will explain how the Signals and Slots be used and how to implement interaction from UI in the code.
+
+Continue Part 2 : Building ToDo App with Qt and C++ for Absolute Beginner (Part 2)
+
+Conclusion
+
+This article just too long. That is why I made separate part for coding. However, I hope this part of tutorial guide help you to design the user interface part of your application and help you get better understanding on how to use Qt Designer.

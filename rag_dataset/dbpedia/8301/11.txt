@@ -1,0 +1,23 @@
+2. 1. What is it? 2. Features 3. What is the need? 4. Why is it beyond Hadoop? 5. Architecture 6. Who uses it?
+
+3.  A cluster Manager  A distributed systems Kernel  Provides resource isolation/sharing  Cluster Monitoring via Web UI  Tasks isolated via Linux Containers  Written is C++  Master/Slave Based System
+
+4. 1. High Availability: Fault-tolerant replicated master and agents using Zookeeper. 2. Linear Scalability : Industry proven to easily scale to 10,000s of nodes. 3. Multi Resource Scheduling: Abstracts CPU, memory, storage, and other compute resources. 4. Web UIs : Built-in Web UI for viewing cluster state and navigating container sandboxes. 5. Pluggable Isolation : First class isolation support for CPU, memory, disk, ports, GPU, and modules for custom resource isolation. 6. APIs : HTTP APIs for developing new distributed applications, for operating the cluster, and for monitoring.
+
+5. Static Partitioning No Sharing
+
+6. Required Resources for different frameworks is different Under Utilization
+
+7. Required Resources for different frameworks is different Under Utilization
+
+10.  Dynamic Sharing and Management of Resources  Utilization and Scalibility
+
+11. What requirements are there beyond Hadoop?  Cluster Sharing and Multi Tenancy  Higher Resource Utilization  Faster Response Times  More out of box functionality  Graphical Cluster Monitoring  Graphical Drag and Drop Cluster Manipulation
+
+13. 1. Zookeepers: Apache ZooKeeper is a centralised configuration manager, used by distributed applications such as Mesos to coordinate activity across a cluster. Mesos uses ZooKeeper to elect a leading master and for slaves to join the cluster. 2. Mesos Master: A Mesos master is a Mesos instance in control of the cluster. A cluster will typically have multiple Mesos masters to provide fault-tolerance, with one instance elected the leading master.
+
+14. 3. Mesos Slaves: A Mesos slave is a Mesos instance which offers resources to the cluster. They are the ‘worker’ instances - tasks are allocated to the slaves by the Mesos master. 4. Frameworks: Frameworks bridge the gap between the Mesos layer and your applications. They are higher level abstractions which simplify the process of launching tasks on the cluster.
+
+21.  DC/OS is a distributed operating system based on the Apache Mesos distributed systems kernel. It enables the management of multiple machines as if they were a single computer. It automates resource management, schedules process placement, facilitates inter-process communication, and simplifies the installation and management of distributed services. Its included web interface and available command- line interface (CLI) facilitate remote management and monitoring of the cluster and its services.
+
+23.  Marathon is a framework for Mesos that is designed to launch long-running applications, and, in Mesosphere, serves as a replacement for a traditional init system. It has many features that simplify running applications in a clustered environment, such as high-availability, node constraints, application health checks, an API for scriptability and service discovery, and an easy to use web user interface. It adds its scaling and self-healing capabilities to the Mesosphere feature set.

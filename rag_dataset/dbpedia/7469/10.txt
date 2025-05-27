@@ -1,0 +1,143 @@
+Pose-based Sign Language Recognition using GCN and BERT
+
+Anirudh Tunga*
+
+Purdue University
+
+atunga@purdue
+
+Sai Vidyaranya Nuthalapati*
+
+vidyaranya@gmail
+
+Juan Wachs
+
+Purdue University
+
+jpwachs@purdue
+
+Abstract
+
+Sign language recognition (SLR) plays a crucial role in bridging the communication gap between the hearing and vocally impaired community and the rest of the soci- ety. Word-level sign language recognition (WSLR) is the first important step towards understanding and interpreting sign language. However, recognizing signs from videos is a challenging task as the meaning of a word depends on a combination of subtle body motions, hand configurations and other movements. Recent pose-based architectures for WSLR either model both the spatial and temporal depen- dencies among the poses in different frames simultaneously or only model the temporal information without fully utiliz- ing the spatial information. We tackle the problem of WSLR using a novel pose-based approach, which captures spatial and temporal informa- tion separately and performs late fusion. Our proposed ar- chitecture explicitly captures the spatial interactions in the video using a Graph Convolutional Network (GCN). The temporal dependencies between the frames are captured using Bidirectional Encoder Representations from Trans- formers (BERT). Experimental results on WLASL, a stan- dard word-level sign language recognition dataset show that our model significantly outperforms the state-of-the-art on pose-based methods by achieving an improvement in the prediction accuracy by up to 5%.
+
+1. Introduction
+
+Hearing and vocally impaired people use sign language instead of spoken language for communication. Just like any other language, sign language has an underlying struc- ture, inter alia, grammar and intricacies to allow users (sign- ers or interpreters) to fully express themselves. To com- prehend sign language, one must consider and understand multiple aspects such as hand movements, shape and ori- entation of the hand, shoulder orientation, head movements and facial expressions. The study of accurately recognizing
+
+*equal contribution
+
+Figure 1. We train a model based on GCN and BERT to predict the glosses from the poses extracted from video frames.
+
+and understanding sign language technique falls under the ambit of sign language recognition. According to [22], there are approximately 500, users of American Sign Language in the US itself. While on one hand, hearing and vocally impaired communities are completely dependent on sign language for communication, on the other hand, the rest of the world does not understand sign language, creating a communication barrier between the two groups. It is also unlikely that people without such impairments will learn an additional language which is not seen as a necessity for them. This gap between the rest of the world and the hearing and vocally impaired community can be reduced by developing Automatic Sign Language Recognition (ASLR). Sign language recognition can be broadly classified into two parts: word-level sign language recognition (WSLR) and sentence-level sign language recognition. WSLR is the fundamental building block for interpreting sign lan- guage sentences. As shown in Figure 1, signalling a sign language word requires very subtle body movements that makes WSLR a particularly challenging problem. In this paper, we focus on WSLR by exploiting the information from human skeletal motion. In WSLR, given a sign lan- guage video, the goal is to predict the word that is being signalled in the video. ‘Gloss’ is another term for repre- senting the word that is being shown. Recently, deep learn- ing techniques have shown a huge promise in the field of WSLR [38, 18, 26, 23]. The techniques that are employed for ASLR can be divided into two categories: 1. Meth- ods based on 2D pose estimation, and 2. Architectures uti- lizing the holistic image features. We believe that human skeletal motion plays a significant role in conveying what word the person is signalling. Hence, this work focuses on
+
+a pose-based model to tackle the problem of WSLR. The existing pose-based methods either model both the spatial and temporal dependencies between the poses in different frames simultaneously or only model the temporal infor- mation without fully utilizing the spatial information [26]. Inspired by [20], where the authors have used late temporal fusion to achieve a performance boost in action recognition, we propose a novel pose-based architecture, GCN-BERT, which first captures the spatial interactions in every frame comprehensively before explicitly utilizing the temporal de- pendencies between various frames in the video. We val- idate our architecture on the recently released large-scale WLASL dataset [26] and experimental results show that the proposed model significantly outperforms the state-of-the- art pose-based models by achieving an accuracy improve- ment of up to 5%.
+
+2. Related Work
+
+Sign language recognition mainly involves three phases
+
+feature extraction phase, temporal modelling phase, and prediction phase. Historically, spatial representation was generated using hand crafted features like HOG-based fea- tures [4, 12], SIFT-based features [52, 45], and frequency domain features [1, 3]. Temporal modelling was done us- ing Hidden Markov Models (HMM) [42, 16, 57], and hid- den conditional random fields [50]. Some works utilized Dynamic Time Wrapping [40, 29] to handle varying frame rates. The prediction phase was treated as a classification problem, and models like Support Vector Machine (SVM) [34] were used to predict the words from the signs. The vast majority of traditional sign language recognition models are evaluated on small scale datasets, which had less than one hundred words [56, 30, 25]. With the advent of deep neural networks, there was a significant boost in the performance for many video-based tasks like action recognition [15, 17], and gesture recogni- tion [5]. Both, action recognition and sign language recog- nition share a similar problem structure. Inspired from the network architectures for action recognition, new architec- tures for sign language recognition were proposed. For ex- ample, a CNN-based architecture was used for sign lan- guage recognition in [37], and a frame-based CNN-HMM model for sign language recognition was proposed in [24]. These two papers are representative of a more general trend of deep neural-based architectures for sign language recog- nition. It was learnt that these works can be partitioned into two categories: image appearance based methods, and pose- based methods, which are presented in more detail below.
+
+2. Image appearance based methods
+
+Word level sign language recognition focuses mainly on intricate hand and arm movements, while the background is not very useful in recognition. In this section, we discuss
+
+some relevant image based methods for action recognition and sign language recognition. Utilizing the feature extraction capability of deep neural networks, Simonyan et al., [41], uses a 2D CNN to create a holistic representation of each input frame of the video and then uses those representations for recognition. Temporal dynamics of a video can be modelled by sequence mod- elling using recurrent neural networks. The works [55, 15], use Long Short-Term Memory (LSTMs) to model the tem- poral dynamics of the features extracted through CNNs. In [13], a 2D CNN-LSTM architecture, where, in parallel with the LSTMs, it also uses a weakly supervised gloss-detection regularization network, consisting of stacked temporal 1D convolutions. A simpler variant of LSTMs, Gated-recurrent Units (GRU) [11], which consist of only two gates (update and reset gates), and have the internal state (output state) fully exposed, have also been used for temporal modelling [54]. While the above works used RNNs to model the ges- ture temporal behaviour, a few works have used CNNs to achieve this. For instance, 3D CNNs [44] can not only learn the holistic representation of each input frame, but also the spatio-temporal features. The C3D [48] model was the first model to use 3D CNNs for action recognition. In [19], the I3D [8] architecture has been trained and adopted for sign language recognition. In [58], the authors extended the I3D architecture by adding a RNN. Recent work [20], has used the Bidirectional Encoder Representations from Transform- ers (BERT) [14] at the end of a 3D CNN.
+
+2. Pose-based methods
+
+2.2 Pose estimation
+
+Human pose estimation involves localizing keypoints of hu- man joints from a single image or a video. Historically, pictorial structures [39] and probabilistic graphical mod- els [53] were used to estimate the human pose. Recent advances in deep learning have greatly boosted the perfor- mance of human pose estimation. Two main methods exist in localizing the keypoints: directly regressing the x, y co- ordinates of joints, and estimating keypoint heatmaps fol- lowed by a non-maximal suppression technique. In [47], Toshev et al. introduced ‘Deep Pose’, where they directly regress the keypoints from the frame. In [46], Tompson et al. used a ConvNet and a graphical model to estimate the keypoint heatmaps. Recent works [35, 6] have improved the performance of human pose estimation significantly us- ing heatmap estimation. Though pose estimation succeeds at estimating positions of human joints, it does not explore the spatial dependencies among these estimated keypoints or joints.
+
+Figure 2. Illustration of the proposed GCN-BERT architecture. The poses extracted from the video are fed to the GCN to model spatial dependencies in the frames. This is followed by BERT to model the temporal dependencies between various frames in the video.
+
+Similar to [26], we stack multiple GCN networks on top of each other and provide residual connections between the stacked GCNs. We represent the input to a single GCN net- work as I and the output as O ̃. With residual connections, the actual output of a single GCN network is given as fol- lows:
+
+O = ̃O + I (3)
+
+This allows the network to learn to bypass a GCN net- work if required. We stack B such networks to get the fi- nal output representations of keypoints. In Figure 2, we show the case where B equals 2. While the process dis- cussed above is for a single frame in the video, the same process can be repeated for all the frames in the video. In the end, we have the encoded spatial information for all the frames in the video denoted by S ∈ RT ×K×F where S = [H 1 , H 2 ,... , HT ]. We also calculate the mean of all the spatial encodings along the temporal direction, denoted by Sˆ ∈ RK×F . This is followed by a fully connected layer and a non-linear activation to project into a G-dimensional space, where G, is the number of output classes. Let us de-
+
+note the resultant encoding by Uˆ. This will later be used to provide a skip connection from the output of GCN to the output of BERT.
+
+3.2 Temporal modelling using BERT
+
+Recently, architectures based solely on multi-head self- attention have achieved state-of-the-art results on sequence modelling tasks [49, 31, 32]. One such architecture - Bidirectional Encoder Representations from Transformers (BERT) [14] - has shown a dramatic success in many down- stream Natural Language Processing tasks. It has been de- signed to learn bidirectional representations by considering both the left and right contexts in all its layers. While it was initially introduced for NLP tasks, it is recently being used to model other sequential tasks such as action classi- fication and video captioning [43]. Inspired by the success of BERT in problems related to activity recognition [20], we use BERT to learn bidirectional representations over se- quence of encoded spatial information S generated from GCN. This enables the model to learn contextual informa-
+
+Table 1. Top-1, top-5, top-10 accuracy (%) achieved by pose-based models on WLASL dataset. WLASL100 WLASL Methods Top-1 Top-5 Top-10 Top-1 Top-5 Top- Pose-GRU [26] 46 76 85 33 64 76. Pose-TGCN [26] 55 78 87 38 67 79. GCN-BERT(ours) 60 83 88 42 71 80.
+
+tion from both left and right directions. Similar to [14], the input S is concatenated with learned position embeddings (denoted by Pi for i-th input position.) to capture the posi- tional information. Then, we add a classification token scls to the start of the input. The corresponding output from the last layer in BERT, ycls is passed through a fully connected layer and is eventually used for predicting the gloss. Single head self-attention in a BERT layer computes the output as follows [14, 20]:
+
+M (si) =
+
+
+
+ 1
+
+N (s)
+
+∑
+
+∀j
+
+V (sj )f (si, sj )
+
+
+
+ (4)
+
+where si ∈ S represents the spatial information correspond- ing to i-th pose extracted from GCN. N (s) is the normaliza- tion factor and is used to produce a softer attention distribu- tion and to avoid extremely small gradients [49]. f (si, sj ) is used to measure the similarity between si, sj and is defined as sof tmaxj (Q(si)T K(sj )), where the functions Q and K are learned linear projections. Combined with V, which is also a learned linear projection, the functions Q and K project the inputs to a common space before applying the similarity measure. The single head self-attention sub-layer computation above predominantly consists of linear projects. To add non-linearity to the model, we use Position-wise Feed- Forward Network (PFFN) to the outputs of the self-attention sub-layer identically and separately at each position.
+
+P F F N (x) = W 2 GELU(W 1 x + b 1 ) + b 2 GELU (x) = xφ(x)
+
+(5)
+
+where φ(x) represents the cumulative distribution function of the standard Gaussian distribution and W 1 , W 2 , b 1 , b 2 are learnable parameters. Combining Equations 4 and 5, we calculate yi as follows:
+
+yi = P F F N (M (xi)). (6)
+
+While the Equations 4, 5, 6 show attention calculation for single head, we can calculate attention using multiple heads and average the outputs. This constitutes a transformer layer. Using the equations above we calculate ycls, the output from the transformer layer corresponding to xcls, which is
+
+passed through a fully connected layer projecting it into a G-dimensional space followed by tanh activation. Let us denote the resulting spatial-temporal encoding by Vˆ. We provide a skip connection from the output of GCN to the output of BERT as follows:
+
+y ˆ = ˆU + ˆV , (7)
+
+which is followed by a softmax layer to predict the output label. We use the standard cross-entropy loss to train the neural network.
+
+4. Experiments and Analysis
+
+In this section we describe the experimental setup, and provide quantitative and qualitative results.
+
+4. Dataset
+
+Table 2. Dataset statistics Classes Train Validation Test WLASL100 100 1442 338 258 WLASL300 300 3548 901 668
+
+The dataset used to validate the results in the paper is the Word Level American Sign Language (WLASL) dataset [26]. This dataset has been recently introduced and supports large scale WSLR. The videos contain native American Sign Language (ASL) signers or interpreters, showing signs of a specific English word in ASL. We show the dataset split of WLASL in Table 2 [27].The number of classes represents the number of different glosses in the dataset. For our ex- periments, we use the public dataset split released by the dataset authors.
+
+4. Implementation details
+
+The proposed GCN-BERT model has been implemented using PyTorch [36]. In sign language, different meanings have very similar sign gestures and the difference can only be made out using the contextual information. Hence, fol- lowing [26], we use top-K accuracy to evaluate the per- formance of the model. We provide an evaluation of the proposed method using three different values of K, specif- ically 1, 5, 10. We train the model for 100 epochs using using Adam optimizer with an initial learning rate of 10 − 3 ,
+
+Figure 4. Videos and corresponding ground truth, showing similarities to the predicted glosses in Fig. 3.
+
+trend for other videos corresponding to ‘back’, ‘here’ and ‘dark’. For the word ‘back’, we can observe that there is a very subtle difference with the top prediction - ‘candy’. Given that the signer is also slightly rotated in the frame leads to very similar poses for the words ‘black’ and ‘candy’ making it hard to differentiate. Also, in-plane and out-of- plane movements are not being differentiated by the model due to the fact that we are only utilizing the 2D spatial in- formation. Figure 3 shows a few more signs for which the topmost prediction is not the ground truth. Figure 4 con- tains the videos for the predicted words for comparison of the videos. In Table 1, we see the effect of increasing the vocabulary size (number of classes) on the performance of the model. Increasing the vocabulary size contributes to a fall in the accuracy. This happens because the dataset consists of am- biguous signs and their meaning depends on the context. Increasing the number of classes, also increases the number of such ambiguous signs, leading to a fall in the accuracy. Based on the observations, we can say that the performance on a smaller dataset does not scale well with a larger dataset.
+
+4. Conclusion and Future Work
+
+This work addresses the fundamental problem of sign language recognition in order to bridge the communication barriers between hearing and vocally impaired people, and the rest of the society. Previous works concerned with this problem either jointly considered both spatial and temporal information or relied mainly on the temporal information. To tackle this issue, this paper proposes a novel pose-based
+
+architecture for word-level sign language recognition which aims to predict the meaning of the sign language videos. Further, we showed that modelling spatial and temporal in- formation separately with GCN and BERT provides drastic performance gains over the existing state-of-the-art pose- based models. We validated our model on one of the largest publicly available sign language datasets to show the effi- cacy of our model. As a part of the future work, we plan to include image-based features into our model to jointly con- sider both the pose and image related information in order to comprehend the sign language videos.
+
+Acknowledgement
+
+We would like to thank our colleagues, Naveen Madapana, Eleonora Giunchiglia, and Aishwarya Chan- drasekaran for their constructive feedback.
+
+References
+
+[1] M Al-Rousan, Khaled Assaleh, and A Tala’a. Video-based signer-independent arabic sign language recognition using hidden markov models. Applied Soft Computing, 9(3):990– 999, 2009. [2] Ahmet Alp Kindiroglu, Ogulcan Ozdemir, and Lale Akarun. Temporal accumulative features for sign language recogni- tion. In Proceedings of the IEEE International Conference on Computer Vision Workshops, pages 0–0, 2019. [3] Purva C Badhe and Vaishali Kulkarni. Indian sign language translator using gesture recognition algorithm. In 2015 IEEE International Conference on Computer Graphics, Vision and Information Security (CGVIS), pages 195–200. IEEE, 2015.
+
+[4] Patrick Buehler, Andrew Zisserman, and Mark Evering- ham. Learning sign language by watching tv (using weakly aligned subtitles). In 2009 IEEE Conference on Computer Vision and Pattern Recognition, pages 2961–2968. IEEE, 2009. [5] Necati Cihan Camgoz, Simon Hadfield, Oscar Koller, and Richard Bowden. Using convolutional 3d neural networks for user-independent continuous gesture recognition. In 2016 23rd International Conference on Pattern Recognition (ICPR), pages 49–54. IEEE, 2016. [6] Zhe Cao, Gines Hidalgo, Tomas Simon, Shih-En Wei, and Yaser Sheikh. Openpose: realtime multi-person 2d pose estimation using part affinity fields. arXiv preprint arXiv:1812, 2018. [7] Zhe Cao, Gines Hidalgo, Tomas Simon, Shih-En Wei, and Yaser Sheikh. Openpose: realtime multi-person 2d pose estimation using part affinity fields. arXiv preprint arXiv:1812, 2018. [8] Joao Carreira and Andrew Zisserman. Quo vadis, action recognition? a new model and the kinetics dataset. In pro- ceedings of the IEEE Conference on Computer Vision and Pattern Recognition, pages 6299–6308, 2017. [9] Guilhem Cheron, Ivan Laptev, and Cordelia Schmid. P-cnn: Pose-based cnn features for action recognition. In Proceed- ings of the IEEE International Conference on Computer Vi- sion (ICCV), December 2015. [10] Hsu-kuang Chiu, Ehsan Adeli, Borui Wang, De-An Huang, and Juan Carlos Niebles. Action-agnostic human pose fore- casting. In 2019 IEEE Winter Conference on Applications of Computer Vision (WACV), pages 1423–1432. IEEE, 2019. [11] Kyunghyun Cho, Bart Van Merri ̈enboer, Dzmitry Bahdanau, and Yoshua Bengio. On the properties of neural machine translation: Encoder-decoder approaches. arXiv preprint arXiv:1409, 2014. [12] Helen Cooper, Eng-Jon Ong, Nicolas Pugeault, and Richard Bowden. Sign language recognition using sub-units. The Journal of Machine Learning Research, 13(1):2205–2231, 2012. [13] Runpeng Cui, Hu Liu, and Changshui Zhang. Recurrent convolutional neural networks for continuous sign language recognition by staged optimization. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recogni- tion, pages 7361–7369, 2017. [14] Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. Bert: Pre-training of deep bidirectional transformers for language understanding. arXiv preprint arXiv:1810, 2018. [15] Jeffrey Donahue, Lisa Anne Hendricks, Sergio Guadarrama, Marcus Rohrbach, Subhashini Venugopalan, Kate Saenko, and Trevor Darrell. Long-term recurrent convolutional net- works for visual recognition and description. In Proceed- ings of the IEEE conference on computer vision and pattern recognition, pages 2625–2634, 2015. [16] Georgios D Evangelidis, Gurkirt Singh, and Radu Horaud. Continuous gesture recognition from articulated poses. In European Conference on Computer Vision, pages 595–607. Springer, 2014.
+
+[17] Christoph Feichtenhofer, Axel Pinz, and Andrew Zisserman. Convolutional two-stream network fusion for video action recognition. In Proceedings of the IEEE conference on computer vision and pattern recognition, pages 1933–1941, 2016. [18] Hamid Reza Vaezi Joze and Oscar Koller. Ms-asl: A large- scale data set and benchmark for understanding american sign language. arXiv preprint arXiv:1812, 2018. [19] Hamid Reza Vaezi Joze and Oscar Koller. Ms-asl: A large- scale data set and benchmark for understanding american sign language. arXiv preprint arXiv:1812, 2018. [20] M Kalfaoglu, Sinan Kalkan, and A Aydin Alatan. Late tem- poral modeling in 3d cnn architectures with bert for action recognition. arXiv preprint arXiv:2008, 2020. [21] Thomas N Kipf and Max Welling. Semi-supervised classi- fication with graph convolutional networks. arXiv preprint arXiv:1609, 2016. [22] PVV Kishore, G Anantha Rao, E Kiran Kumar, M Teja Kiran Kumar, and D Anil Kumar. How many people use asl in the united states? why estimates need updating. Sign Lang. Stud., 16(3):306–335, 2006. [23] PVV Kishore, G Anantha Rao, E Kiran Kumar, M Teja Kiran Kumar, and D Anil Kumar. Selfie sign language recognition with convolutional neural networks. volume 10, page 63. Modern Education and Computer Science Press, 2018. [24] Oscar Koller, Hermann Ney, and Richard Bowden. Deep hand: How to train a cnn on 1 million hand images when your data is continuous and weakly labelled. In Proceed- ings of the IEEE conference on computer vision and pattern recognition, pages 3793–3802, 2016. [25] Vaishali S Kulkarni and SD Lokhande. Appearance based recognition of american sign language using gesture segmen- tation. International Journal on Computer Science and En- gineering, 2(03):560–565, 2010. [26] Dongxu Li, Cristian Rodriguez, Xin Yu, and Hongdong Li. Word-level deep sign language recognition from video: A new large-scale dataset and methods comparison. In The IEEE Winter Conference on Applications of Computer Vi- sion, pages 1459–1469, 2020. [27] Dongxu Li, Xin Yu, Chenchen Xu, Lars Petersson, and Hongdong Li. Transferring cross-domain knowledge for video sign language recognition. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 6205–6214, 2020. [28] Maosen Li, Siheng Chen, Xu Chen, Ya Zhang, Yanfeng Wang, and Qi Tian. Actional-structural graph convolutional networks for skeleton-based action recognition. In Proceed- ings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), June 2019. [29] Jeroen F Lichtenauer, Emile A Hendriks, and Marcel JT Reinders. Sign language recognition by combining statis- tical dtw and independent classification. IEEE transactions on pattern analysis and machine intelligence, 30(11):2040– 2046, 2008. [30] Kian Ming Lim, Alan WC Tan, and Shing Chiang Tan. Block-based histogram of optical flow for isolated sign lan- guage recognition. Journal of Visual Communication and Image Representation, 40:538–545, 2016.
+
+[57] Jihai Zhang, Wengang Zhou, Chao Xie, Junfu Pu, and Houqiang Li. Chinese sign language recognition with adap- tive hmm. In 2016 IEEE International Conference on Multi- media and Expo (ICME), pages 1–6. IEEE, 2016. [58] Hao Zhou, Wengang Zhou, and Houqiang Li. Dynamic pseudo label decoding for continuous sign language recogni- tion. In 2019 IEEE International Conference on Multimedia and Expo (ICME), pages 1282–1287. IEEE, 2019.

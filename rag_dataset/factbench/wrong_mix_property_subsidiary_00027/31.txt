@@ -1,0 +1,37 @@
+Closing the abstraction gap in 100M-gate designs
+
+By Chi-Ping Hsu, Chief Operating Officer, Get2Chip, Inc., San Jose, Calif., EE Times
+
+December 19, 2002 (11:00 a.m. EST)
+
+URL: http://www.eetimes.com/story/OEG20021219S0031
+
+One-hundred-million gates. One-billion transistors. Once the province of speculation and dreaming, chip designs of enormous complexity are now in the planning stages and, in a few cases, in the design stage. Ninety-nanometer process technology enables the creation of chips with 175-million gates aboard a single die. At the time that register-transfer-level (RTL) design was commercially deployed on a broad scale in the late 1980s, the average ASIC size was a mere 10,000-gates. While the gate counts possible have grown by 1,000 times, designers have clung to the same tools and same level of abstraction, even though abstraction has been long known to be a superior source of complexity reduction.
+
+To efficiently scale to 100-million gate design, fundamental changes in tool technology and design methodology must be made. A new generation of front-end design must be deployed in the industry. This "New Front-end" will be a combination of further abstraction and next generation tool technology. It will give design teams the boost required to reach the dizzying heights of 100-million gate design.
+
+Designers need to be conscious of downstream bottlenecks that can kill gains made at the front-end of the design process. Capacity, runtime and quality of results limitations of first-generation synthesis tools have shown to be severe issues in the design of large, high-performance chips. A new generation of RTL synthesis has recently emerged, which uses global optimization methods that achieve a balanced gate architecture that increases chip performance and decreases congestion problems. It also offers an order of magnitude higher capacity and runtimes with increased quality of results. Netlists generated with this new global synthesis technology often close timing with 1/10 of the effort.
+
+The hype surrounding "physical synthesis" has distracted attention from the debilitating limitations of existing front-end tools. Fundamentally, "physical synthesis" is detailed cell placement with local, incremental gate optimizations  for example, sizing and buffering. The idea of pushing responsibility for performance optimization to the back-end designers was  and is  popular with front-end designers. However, every pragmatic engineer realizes that design is a chain of processes that is only as strong as the weakest link. If a weak/watered down form of front-end synthesis is used to create a global logic structure, no amount of back-end, physically-driven incremental synthesis will fix the problem, no matter how long it runs. Placement is just one link on the chain of tools for a successful SoC design.
+
+SoC strategies incorporate processors, memory and other pre-designed/pre-defined intellectual property (IP) blocks in order to better exploit the full potential of the target process technology. To make this integration effective, the design of these IP blocks also needs to be tailored for its specific usage. When the IP is delivered as RTL code, synthesis tools can optimize the implementation within the confines of the specified micro-architecture. The added capacity and global optimization technology of next-generation synthesis technology enables chip-level optimization where the global view of the design can be used to create a global logic structure that best fits the criteria of a particular project.
+
+Abstraction solutions
+
+As IP blocks get larger and more complicated, it is harder for IP developers to anticipate and make tradeoffs to get the best return on their investment. Abstraction may be the answer to some of these tough trade-off questions faced by IP architects.
+
+For the SoC designer, IP reuse strategies have alleviated some of the complexity pressure, but to create the highest value, significant portions of chip function must be original to better differentiate products. While P reuse strategies may have bought some more time for design teams, the mounting complexity tsunami is surging forward.
+
+Architectural synthesis offers several advantages over RTL synthesis. Using architectural synthesis with Poca code in Verilog, SystemVerilog, VHDL or SystemC, an IP designer can create a single source that can generate multiple microarchitectures. Architectures are optimized for the target application, design constraints and process technology. IP designers will be able to provide solutions that fit into a broader variety of applications and contexts with less effort.
+
+Source: Get2Chip
+
+In the past, there's been a disconnect between any abstraction above RTL and the target process technology. The net result was that the tools trying to automatically bridge that gap could only get lucky once in a while at producing good desig ns, they could never be good. The crux of the problem was the absence of timing information accurate enough to drive an optimization process. With these problems, chip designers rejected the adoption of those tools. However, new algorithms that integrate multiple levels of abstraction offer a solution to those problems. By tightly interweaving high-level, RTL, logic and closure-driven place and route techniques, the abstraction disconnect can be eliminated to open up a whole new frontier to IP and SoC designers alike.
+
+In conjunction with these new algorithms, an evolutionary coding style called pins-out-cycle-accurate (POCA) can be employed in Verilog, VHDL, or C dialects to offer chip designers benefits of abstraction within the confines of the language environment of their choice. Key attributes of POCA code are that it takes about 1/10 as many lines to describe a function as its RTL counterpart, that code will simulate about 25 times faster, and there is no loss of testbench compatibility thr ough the synthesis process. The synthesis technology that processes POCA code and creates optimized micro-architectures in RTL, or fully optimized netlists is called architectural synthesis by the research community.
+
+Using architectural synthesis with POCA code in Verilog, SystemVerilog, VHDL, or SystemC, the IP designer can create a single source that can generate multiple micro-architectures. Architectures are optimized for the target application (in context), design constraints and process technology. As a result, IP designers will be able to provide solutions that fit into a broader variety of applications and contexts with less effort.
+
+Coupling abstraction and architectural synthesis yields a quantum gain in handling the complexity of 100-million gate design. When coupled with the new generation of global RTL synthesis algorithms that have been tuned for timing closure, results are pretty amazing. The essential elements of the "New Front-end" have been proven on some of the biggest (more than 250-million transistors) and some of the fastest (4 GHz) designs fabricated so far.
+
+Copyright © 2003 CMP Media, LLC | Privacy Statement

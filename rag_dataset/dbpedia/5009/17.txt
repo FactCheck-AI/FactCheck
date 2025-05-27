@@ -1,0 +1,79 @@
+Qt is a cross platform application development framework with a long history and now maintained by the Qt Project. It enables developers to create applications and UIs for desktop, embedded and mobile operating systems. It provides a GUI (Graphical User Interface) for ease of development and allows creation of hybrid applications. Applications can be developed using C++ or the QML language, a JavaScript like language.
+
+In this tutorial, weâll get started with Qt framework and create a beginnerâs application.
+
+Source code from this tutorial is available on GitHub.
+
+Setting up Qt
+
+To get started with Qt, download the Qt installer for your operating system from the download page and run it. You can find more details related to installing Qt on various platforms in the official docs.
+
+Once the installation is complete, open the application and here is how it should look:
+
+Configure Qt for Android Development
+
+To get started with developing Android applications or widgets using Qt, we need to configure a few things first. Open the Tools -> Options (Application Menu -> Preferences on Mac) menu and you should see the screen below.
+
+From the left hand side menu, select Android and configure the required paths to JDK location, Android SDK location, Android NDK location (you may need to download this) and Ant executable.
+
+What weâll be creating
+
+In this tutorial weâll create a simple calculator for Android. It will support addition, subtraction, multiplication and division.
+
+Getting started
+
+From the Qt Creator, open the File -> New File or Project menu item. From the window that opens, select an Applications project and then Qt Widgets Application as shown below:
+
+Click Chooseâ¦ to proceed and on the next screen, name your widget as CalWidget and click next. On the next screen, select the Android kit and proceed (On some OSs, the ânextâ button may be âcontinueâ).
+
+Next youâll see the class information details screen. Rename the Class name to CalWidget. Click next to configure version control which is not required at the moment. Click Next and then Finish to create the project structure. Here is how the project structure should look now:
+
+Some of the files we should see in the project are calwidget.h, calwidget.cpp, main.cpp and calwidget.ui. All these files already have some boiler plate code. First, weâll create our UI and then return to these files to add our required functionality.
+
+Creating the UI
+
+Qt Creator provides an interface where we can drag and drop controls on to the screen and create our UI. Double click on the calwidget.ui file (inside the Forms folder) and it will open up a screen with controls. Here is how it should look:
+
+From the list of controls on the left hand side, try dragging and dropping controls onto the widget screen. Weâll need an input text control, label control and button control to create our UI. So drag and drop several Push Button, Label andLine Edit controls onto the widget screen to create a screen as shown:
+
+To run the widget press Ctrl/Cmd+R and you should be able to see the widget running in the emulator.
+
+If you get errors regarding missing button functions when building, Qt seems to hold on to old object names from the last build if you have renamed them. Open Headers -> calwidget.h and delete their references.
+
+Implementing functionality
+
+Next weâll try to read data from the input text boxes and display the result based on the operation clicked.
+
+To attach a click event to the push buttons, right click on the button and select go to slot, from the signals listed select the clicked signal. As you do, click event functions like below are generated in calwidget.cpp:
+
+void CalWidget::on_btnAdd_clicked() { }
+
+When the operation button is clicked, we need to read the text value from the input text boxes. To access the elements in the UI, weâll make use of the ui variable declared above. So the code to access any ui element by id is as follows:
+
+ui->(*elementId*)->text()
+
+Inside the add button click, read the input text box values, sum it and display the result in the lblResult label. Here is my add button click code:
+
+void CalWidget::on_btnAdd_clicked() { int input1,input2,result; input1 = ui->txtNum1->text().toInt(); input2 = ui->txtNum2->text().toInt(); result = input1+input2; QString qString = QString::number(result); ui->lblResult->setText(qString); }
+
+Save your code and press Ctrl/Cmd+R to run the code. Input values into the text boxes, click Add and you should be able to see the output.
+
+Here is the code for all the four click events :
+
+void CalWidget::on_btnAdd_clicked() { int input1,input2,result; input1 = ui->txtNum1->text().toInt(); input2 = ui->txtNum2->text().toInt(); result = input1+input2; QString qString = QString::number(result); ui->lblResult->setText(qString); } void CalWidget::on_btnSub_clicked() { int input1,input2,result; input1 = ui->txtNum1->text().toInt(); input2 = ui->txtNum2->text().toInt(); result = input1-input2; QString qString = QString::number(result); ui->lblResult->setText(qString); } void CalWidget::on_btnMul_clicked() { int input1,input2,result; input1 = ui->txtNum1->text().toInt(); input2 = ui->txtNum2->text().toInt(); result = input1*input2; QString qString = QString::number(result); ui->lblResult->setText(qString); } void CalWidget::on_btnDiv_clicked() { int input1,input2,result; input1 = ui->txtNum1->text().toInt(); input2 = ui->txtNum2->text().toInt(); result = input1/input2; QString qString = QString::number(result); ui->lblResult->setText(qString); }
+
+Try running the app and check the output for all the implemented operations.
+
+Next, weâll add validation to our code to check for empty and non numeric values. An approach for checking validation is using QString. It provides certain built in libraries which makes validations easier. Instead of reading the input text values into integer variables, weâll use QString variables. QString has an inbuilt function called isEmpty which we can use to check for empty values. To validate for both non numeric values and empty values, weâll use the toInt() and toFloat() functions. Both the functions return 0 on trying to convert non-numeric strings.
+
+Here is the modified code with validations included:
+
+void CalWidget::on_btnAdd_clicked() { QString input1,input2; int result; QString qString = NULL; input1 = ui->txtNum1->text(); input2 = ui->txtNum2->text(); int isNumber1 = input1.toInt(); int isNumber2 = input2.toInt(); if(isNumber1 && isNumber2){ result = input1.toInt()+input2.toInt(); qString = QString::number(result); ui->lblResult->setText(qString); } else{ qString = QString::fromStdString("Enter Valid Numbers"); ui->lblResult->setText(qString); } } void CalWidget::on_btnSub_clicked() { QString input1,input2; int result; QString qString = NULL; input1 = ui->txtNum1->text(); input2 = ui->txtNum2->text(); int isNumber1 = input1.toInt(); int isNumber2 = input2.toInt(); if(isNumber1 && isNumber2){ result = input1.toInt()-input2.toInt(); qString = QString::number(result); ui->lblResult->setText(qString); } else{ qString = QString::fromStdString("Enter Valid Numbers"); ui->lblResult->setText(qString); } } void CalWidget::on_btnMul_clicked() { QString input1,input2; int result; QString qString = NULL; input1 = ui->txtNum1->text(); input2 = ui->txtNum2->text(); int isNumber1 = input1.toInt(); int isNumber2 = input2.toInt(); if(isNumber1 && isNumber2){ result = input1.toInt()*input2.toInt(); qString = QString::number(result); ui->lblResult->setText(qString); } else{ qString = QString::fromStdString("Enter Valid Numbers"); ui->lblResult->setText(qString); } } void CalWidget::on_btnDiv_clicked() { QString input1,input2; float result; QString qString = NULL; input1 = ui->txtNum1->text(); input2 = ui->txtNum2->text(); float isNumber1 = input1.toFloat(); float isNumber2 = input2.toFloat(); if(isNumber1 && isNumber2){ result = input1.toFloat() / input2.toFloat(); qString = QString::number(result); ui->lblResult->setText(qString); } else{ qString = QString::fromStdString("Enter Valid Numbers"); ui->lblResult->setText(qString); } }
+
+Conclusion
+
+In this tutorial, we looked at how to get started with Qt by creating a simple application for the android platform. We only used some basic features of Qt, for in-depth information on Qt and its features, have a look at their official docs.
+
+Would you use Qt? Do you feel it offers any advantages over other cross platform development options?
+
+Frequently Asked Questions (FAQs) about Cross-Platform Applications with Qt

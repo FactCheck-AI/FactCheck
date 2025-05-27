@@ -1,0 +1,315 @@
+Johan (GomSpace)
+
+unread,
+
+to cubesat-space-protocol
+
+You'll need a the avr-gcc + avr-libc compiler and toolchain installed
+
+and in your PATH environment variable
+
+You can either choose to link against the compiled library or you can
+
+include the source files into your project.
+
+I suggest that you compile libcsp separately using the included python
+
+compile script called 'waf'.
+
+The steps to compile is:
+
+python waf --configure
+
+python waf build
+
+This should produce a file called libcsp.a that you should place in a
+
+lib folder within your avrstudio project, and link with your code.
+
+You also need to copy the include files into your avrstudio project.
+
+Use waf --configure help in order to see a list of available options
+
+to libcsp.
+
+If you want the script to automatically install the library and
+
+headers into your project you can do like this
+
+python waf --configure --prefix=c:\path\to\my\project\
+
+python waf build
+
+python waf install
+
+That should do it.
+
+Happy programming.
+
+
+
+ahmed
+
+unread,
+
+to cubesat-space-protocol
+
+well, I am actually having trouble installing the avr32 toolchain, so
+
+on linux I am not able to specify avr32 as a toolchain for the waf
+
+configuration,
+
+so this is basically step 1 for me.
+
+I tried to build it for toolchain avr only, and then include the
+
+libcsp.a in avr32 studio 2.6 for linux, and when I build the project I
+
+receive undefined reference for all functions got from the /usr/
+
+include header files.
+
+You do not know how much I would appreciate it if you help me with
+
+this, thank you.
+
+ahmed adel
+
+
+
+ahmed
+
+unread,
+
+to cubesat-space-protocol
+
+/media/DATA/AVRtrials/as4e-ide/ahmed/lololoy/Debug/../lol.c:141:
+
+undefined reference to `usleep'
+
+lol.o: In function `main':
+
+/media/DATA/AVRtrials/as4e-ide/ahmed/lololoy/Debug/../lol.c:193:
+
+undefined reference to `usleep'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/
+
+libcsp.a(csp_thread.c.1.o): In function `csp_thread_create':
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_thread.c:31: undefined reference to `pthread_create'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/
+
+libcsp.a(csp_route.c.1.o): In function `csp_task_router':
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/csp_route.c:
+
+275: undefined reference to `pthread_exit'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/
+
+libcsp.a(csp_semaphore.c.1.o): In function `csp_bin_sem_post_isr':
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_semaphore.c:164: undefined reference to `sem_getvalue'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_semaphore.c:164: undefined reference to `sem_post'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/
+
+libcsp.a(csp_semaphore.c.1.o): In function `csp_bin_sem_wait':
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_semaphore.c:143: undefined reference to `sem_wait'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_semaphore.c:143: undefined reference to `clock_gettime'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_semaphore.c:143: undefined reference to `sem_timedwait'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/
+
+libcsp.a(csp_semaphore.c.1.o): In function `csp_bin_sem_remove':
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_semaphore.c:110: undefined reference to `sem_destroy'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/
+
+libcsp.a(csp_semaphore.c.1.o): In function `csp_bin_sem_create':
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_semaphore.c:103: undefined reference to `sem_init'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/
+
+libcsp.a(csp_semaphore.c.1.o): In function `csp_mutex_unlock':
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_semaphore.c:94: undefined reference to `pthread_mutex_unlock'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/
+
+libcsp.a(csp_semaphore.c.1.o): In function `csp_mutex_lock':
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_semaphore.c:86: undefined reference to `pthread_mutex_lock'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_semaphore.c:86: undefined reference to `clock_gettime'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_semaphore.c:86: undefined reference to `pthread_mutex_timedlock'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/
+
+libcsp.a(csp_semaphore.c.1.o): In function `csp_mutex_remove':
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_semaphore.c:53: undefined reference to `pthread_mutex_destroy'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/
+
+libcsp.a(csp_semaphore.c.1.o): In function `csp_mutex_create':
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_semaphore.c:45: undefined reference to `pthread_mutex_init'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/
+
+libcsp.a(csp_system.c.1.o): In function `csp_sys_reboot':
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_system.c:59: undefined reference to `sync'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_system.c:59: undefined reference to `reboot'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_system.c:59: undefined reference to `__errno_location'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/
+
+libcsp.a(csp_system.c.1.o): In function `csp_sys_memfree':
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_system.c:46: undefined reference to `sysinfo'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/
+
+libcsp.a(csp_time.c.1.o): In function `csp_get_s':
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_time.c:50: undefined reference to `clock_gettime'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/
+
+libcsp.a(csp_time.c.1.o): In function `csp_get_ms':
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+csp_time.c:37: undefined reference to `clock_gettime'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/
+
+libcsp.a(pthread_queue.c.1.o): In function `pthread_queue_items':
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+pthread_queue.c:169: undefined reference to `pthread_mutex_lock'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+pthread_queue.c:169: undefined reference to `pthread_mutex_unlock'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/
+
+libcsp.a(pthread_queue.c.1.o): In function `pthread_queue_dequeue':
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+pthread_queue.c:159: undefined reference to `clock_gettime'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+pthread_queue.c:159: undefined reference to `pthread_mutex_lock'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+pthread_queue.c:159: undefined reference to `pthread_cond_timedwait'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+pthread_queue.c:159: undefined reference to `pthread_mutex_unlock'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+pthread_queue.c:159: undefined reference to `pthread_cond_broadcast'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/
+
+libcsp.a(pthread_queue.c.1.o): In function `pthread_queue_enqueue':
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+pthread_queue.c:117: undefined reference to `clock_gettime'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+pthread_queue.c:117: undefined reference to `pthread_mutex_lock'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+pthread_queue.c:117: undefined reference to `pthread_cond_timedwait'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+pthread_queue.c:117: undefined reference to `pthread_mutex_unlock'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+pthread_queue.c:117: undefined reference to `pthread_cond_broadcast'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/
+
+libcsp.a(pthread_queue.c.1.o): In function `pthread_queue_create':
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+pthread_queue.c:62: undefined reference to `pthread_mutex_init'
+
+/media/DATA/AVRtrials/GomSpace-libcsp-206debd/build/../src/arch/posix/
+
+pthread_queue.c:62: undefined reference to `pthread_cond_init'
+
+collect2: ld returned 1 exit status
+
+Build error occurred, build is stopped
+
+Time consumed: 311 ms.
+
+

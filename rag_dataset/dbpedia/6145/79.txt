@@ -1,0 +1,155 @@
+Technical Articles ID: KB91035
+
+Last Modified: 2022-09-23 11:04:22 Etc/GMT
+
+Environment
+
+Database Activity Monitoring 4.x
+
+Problem
+
+We no longer produce Sentrigo-branded builds. To migrate from Sentrigo-branded Sensors and Servers to Trellix-branded Sensors and Servers, follow the steps below.
+
+Solution
+
+IMPORTANT: You must first upgrade the Server and then the Sensor.
+
+Upgrade the Server:
+
+Stop the Sentrigo-branded Server service.
+
+On Windows, stop the service named Hedgehog:
+
+​Open the Task Manager
+
+Click the Services tab.
+
+Right-click the entry named Hedgehog and select Stop Service.
+
+On Linux, stop the service named sentrigo-server.
+
+​Open a command-line session.
+
+Type /etc/init.d/sentrigo-server stop and press Enter.
+
+Back up the back-end database:
+
+Use your regular DBMS tools to perform the backup.
+
+NOTE: HSQLDB back-end database isn't supported for production environments.
+
+Install the Database Security Standalone Server with an HSQLDB back-end database.
+
+For further instructions, see the "Server Installation" section of the Installation Guide for your release.
+
+IMPORTANT:
+
+Don't start the Database Security Server service.
+
+The final step of the installation process shows a prompt that asks whether you want to start the Database Security Server service. Click No.
+
+Copy the contents of the Sentrigo server custom properties file to the Trellix server custom properties file.
+
+IMPORTANT:
+
+Don't replace the file; instead, copy the content from one file to another.
+
+On Windows:
+
+Open C:\Program Files\Sentrigo\Hedgehog\conf\sentrigo-custom.properties in Notepad.
+
+Select and copy the entire contents of the file.
+
+Open C:\Program Files\McAfee\McAfee Database Security\conf\server-custom.properties in Notepad.
+
+Locate the bottom of the file and paste the copied content into the server-custom.properties file.
+
+Save the file.
+
+On Linux:
+
+Open /usr/local/sentrigo-server/conf/sentrigo-custom.properties in a text editor of your choice.
+
+Select the contents of the file.
+
+Open usr/local/mfe-dbs-server/conf/server-custom.properties.
+
+Locate the bottom of the file and paste the copied contents of sentrigo-custom.properties into the file.
+
+If you're upgrading to Database Security Standalone Server 4.6.6 or higher, you must add another property to the server-custom.properties file.
+
+After the pasted content from the steps above, add the following text:
+
+For a 32-bit architecture:
+
+JRE_HOME=/usr/local/mfe-dbs-server/jre_32
+
+For a 64-bit architecture:
+
+JRE_HOME=/usr/local/mfe-dbs-server/jre_64
+
+Save your changes.
+
+Start the Database Security Server:
+
+On a Windows Server, the service is named McAfeeDBS.
+
+​Open the Task Manager.
+
+Select the Services tab.
+
+Locate the McAfeeDBS Service.
+
+Right-click and click Start Service.
+
+On a Linux server, the service is named mfe-dbs-server.
+
+Open a command-line session.
+
+Type /etc/init.d/mfe-dbs-server start and press End.
+
+Uninstall the Sentrigo-branded Server:
+
+On Windows:
+
+Navigate to Installed Programs.
+
+Highlight Sentrigo Server and click Uninstall.
+
+Click No when you see the prompt:
+
+Note! Selecting 'Yes' removes alerts, configurations, and the entire Hedgehog database. Select 'No' to keep files
+
+On Linux:
+
+Open a command-line session.
+
+Type rpm -e sentrigo-server and press Enter.
+
+Remove the Sentrigo installation directories.
+
+On Windows:
+
+Open File manager.
+
+Navigate to C:\Program Files.
+
+Delete Sentrigo.
+
+On Linux:
+
+Navigate to /usr/local/.
+
+Delete the folder sentrigo-server.
+
+Upgrade the Sensor:
+
+Upgrade your Sensor according to the steps documented in the "Sensor Installation" section of the Database Activity Monitoring Installation Guide for your release.
+
+IMPORTANT: Don't upgrade the Sensor using the .sup files because this method isn't recommended.
+
+Affected Products
+
+Languages:
+
+This article is available in the following languages:

@@ -1,0 +1,339 @@
+Intro [^]
+
+In the past restoring to a different location was not supported by Clonezilla Live at all. Because of that, a script called reloc-img was added to Clonezilla-SysRescCD, which would help the user perform this task.
+
+Recent versions of Clonezilla Live partly support restoring to a different location, so the reloc-img script is obsolete, and has been removed. Clonezilla Live now supports:
+
+Relocation of a disk image (restoring a whole disk)
+
+Relocation of a partition image (restoring a partition)
+
+Clonezilla Live does not support:
+
+Relocation of a single partition contained into a disk image.
+
+Imagine you have a disk backup image named hda-2009-02-02. The image contains three partitions, hda1 (operating system), hda2 (user data) and hda3 (other data).
+
+You want to restore your other data partition (hda3), to a different system (partition sdb2) but there is no way to restore (extract) a single partition from a disk image - you can only restore the whole disk.
+
+In order to address this situation, two new scripts have been written for Clonezilla-SysRescCD: imginfo and imgconvert
+
+Script imginfo [^]
+
+The script will be used to print info about existing image files.
+
+Its help screen is:
+
+# imginfo -h
+
+Clonezilla Live Image Information
+
+imginfo v. 0.1 - (C) 2009 S. Georgaras <sng@hellug.gr>
+
+Usage: imginfo <options> <directory>
+
+Available options:
+
+s Search in sub-directories too
+
+i [name] Pring info for image [name]
+
+v Print version info and exit
+
+h Print this screen and exit
+
+Script imgconvert [^]
+
+The script will be used to convert an existing disk image file to a new partition image file.
+
+imgconvert can create two type of images:
+
+Temporary image
+
+This type of image is created by linking the data files of the existing disk image to the new partition image. This means that the original image must be present for the new image to be used. This is the default image type created by imgconvert.
+
+Permanent image
+
+This type of image is created by copying the data files from the existing disk image to the new partition image. This means that the original image is not needed in order to use the new one. Permenant image files are created using the command line parameter -p.
+
+Its help screen is:
+
+# imgconvert -h
+
+Clonezilla Live Image Conversion
+
+imgconvert v. 0.1 - (C) 2009 S. Georgaras <sng@hellug.gr>
+
+Usage: imgconvert <options> [image] [partition] <new partition>
+
+Parameters are:
+
+[image] Disk image to be converted to partition image
+
+[partition] Partition name to convert. It must be a valid device name
+
+Available options:
+
+o [image] Save new imag as [image]
+
+p Save new partition instead of making a link to the old one
+
+v Print version info and exit
+
+h Print this screen and exit
+
+Using the scripts [^]
+
+Restoring to a partition [^]
+
+After booting into Clonezilla Live, I select
+
+Enter_shell Enter command line prompt
+
+when the menu is displayed and then I press 2 to exit to the shell.
+
+At this point I will mount my images partition (in this example /dev/sdc4), and use script imginfo to get info about my image files.
+
+$ sudo su -
+
+# mount /dev/sdc4 /home/partimag
+
+# cd /home/partimag
+
+# imginfo
+
+Image files found in: /home/partimag
+
+Image: usb250-img, disk: sda, size: 259MB, parts: 1
+
+part: sda4, size: 247.00MB, type: FAT16
+
+Image: sys-bck, disk: hda, size: 320.0GB, parts: 3
+
+part: hda1, size: 22.36GB, type: Linux
+
+part: hda2, size: 39.06GB, type: Linux
+
+part: hda3, size: 233.87GB, type: Linux
+
+As you can see there are two disk images under /home/partimag: usb250-img and sys-bck.
+
+sys-bck is a backup of my old system, which had three partitions. What I need to do now is "copy" the hda3 partition to my current system, by transfering its data to partition sdb2.
+
+The way to proceed is:
+
+Create a new partition image (containing hda3's data) based on the existing disk image file, by executing the command:
+
+# imgconvert sys-bck hda3 sdb2
+
+Clonezilla Live Image Conversion
+
+imgconvert v. 0.1 - (C) 2009 S. Georgaras
+
+Determining input image
+
+Input image: "/home/partimag/sys-bck"
+
+Validating image... ok
+
+Determining input partition
+
+Input partition: "hda3"
+
+Validating input partition... ok
+
+Determining output image
+
+Output image: "/home/partimag/sys-bck-cnv"
+
+Validating output image... ok
+
+Checking permissions... ok
+
+Determining output partition
+
+Output partition: "sda2"
+
+Validating output partition... ok
+
+Creating output image: /home/partimag/sys-bck-cnv
+
+Linking files... done
+
+Fixing info files... done
+
+This command will create a temporary partition image file (automatically named sys-bck-cnv), which contains sdb2 only, as you can see by executing:
+
+# imginfo -i sys-bck-cnv
+
+Image: sys-bck-cnv, part: sdb2, size: 233.87GB, type: Linux
+
+Restart Clonezilla Live by pressing Control-D twice.
+
+Restore the new image file into sdb2, by selecting
+
+Screen 1: Start_Clonezilla Start Clonezilla
+
+Screen 2: device-image disk/partition to/from image
+
+Screen 3: skip use existing /home/partimag
+
+Screen 4: Beginer / Expert
+
+Screen 5: restoreparts Restore_an_image_to_local_partition
+
+and continue as usual to restore the partition.
+
+Converting image files [^]
+
+# imgconvert -p -o other_data sys-bck hda3 sdb2
+
+Clonezilla Live Image Conversion
+
+imgconvert v. 0.1 - (C) 2009 S. Georgaras
+
+Determining input image
+
+Input image: "/home/partimag/sys-bck"
+
+Validating image... ok
+
+Determining input partition
+
+Input partition: "hda3"
+
+Validating input partition... ok
+
+Determining output image
+
+Output image: "/home/partimag/other_data"
+
+Validating output image... ok
+
+Checking permissions... ok
+
+Determining output partition
+
+Output partition: "sda2"
+
+Validating output partition... ok
+
+Creating output image: /home/partimag/other_data
+
+Copying files... done
+
+Fixing info files... done
+
+# imginfo -i other_data
+
+Image: other_data, part: sdb2, size: 233.87GB, type: Linux
+
+# ls -la sys-bck
+
+total 1111972
+
+drwxr-xr-x 2 root root 4096 2007-11-22 03:21 .
+
+drwxr-xr-x. 34 root root 4096 2009-04-06 21:28 ..
+
+-rw-r--r-- 1 root root 4 2007-11-20 20:33 disk
+
+-rw-r--r-- 1 root root 1081716736 2007-11-20 20:32 hda1.aa
+
+-rw-r--r-- 1 root root 45453312 2007-11-20 20:33 hda2.aa
+
+-rw-r--r-- 1 root root 10317824 2007-11-20 20:33 hda3.aa
+
+-rw-r--r-- 1 root root 37 2007-11-21 18:56 hda-chs.sf
+
+-rw-r--r-- 1 root root 37 2007-11-21 18:50 hda-chs.sf.orig
+
+-rw-r--r-- 1 root root 512 2007-11-20 20:31 hda-mbr
+
+-rw-r--r-- 1 root root 259 2007-11-21 18:59 hda-pt.sf
+
+-rw-r--r-- 1 root root 259 2007-11-21 18:50 hda-pt.sf.orig
+
+-rw-r--r-- 1 root root 15 2007-11-20 20:33 parts
+
+-rw-r--r-- 1 root root 17 2007-11-20 20:33 swappt-hda4.info
+
+#
+
+#
+
+# ls -la other_data
+
+total 24
+
+drwxr-xr-x 2 root root 4096 2009-04-06 21:27 .
+
+drwxr-xr-x. 35 root root 4096 2009-04-06 21:27 ..
+
+-rw-r--r-- 1 root root 5 2009-04-06 21:27 parts
+
+-rw-r--r-- 1 root root 10317824 2009-04-06 21:27 sdb2.aa
+
+-rw-r--r-- 1 root root 37 2009-04-06 21:27 sdb-chs.sf
+
+-rw-r--r-- 1 root root 106 2009-04-06 21:27 sdb-pt.sf
+
+Booting a restored Linux system [^]
+
+A Linux system that has been restored to a new disk/partition, is usually not ready to be booted right after the restoration procedure is finished.
+
+There are two more steps that you may have to take:
+
+Fix /etc/fstab
+
+Reinstall GRUB.
+
+I will assume GRUB is your boot manager, as it is the usual case nowadays.
+
+For this example I will assume that you have restored a Linux system (that used to be in sdb), to a new disk (hda), and that it contains three partitions, / (the root partition), /home (user's partition) and a swap partition. You must be really careful here, as the name of the new disk depends on the system to be booted. If it uses one of the newest Linux kernels (using the libata disk driver), ALL your disks will be recognised as SCSI. More info: "Identifying devices in Linux" section "SCSI disks when there are none!!!".
+
+This is what we have:
+
+root partition home partition swap partition
+
+Old system /dev/sdb1 /dev/sdb2 /dev/sdb3
+
+New system /dev/hda1 /dev/hda2 /dev/hda3
+
+Fixing /etc/fstab [^]
+
+Since we are still in Clonezilla Live, right after the restore procedure has finished, we will use it to mount our restored root partition, and edit its /etc/fstab. We issue the commands:
+
+mkdir /new-root
+
+mount /dev/hda1 /new-root
+
+vi /new-root/etc/fstab
+
+The contents of /etc/fstab could be something like
+
+/dev/sdb1 / reiserfs acl,user_xattr 1 1
+
+/dev/sdb2 /home reiserfs defaults 1 2
+
+/dev/sdb3 swap swap defaults 0 0
+
+and we have to change ti to
+
+/dev/hda1 / reiserfs acl,user_xattr 1 1
+
+/dev/hda2 /home reiserfs defaults 1 2
+
+/dev/hda3 swap swap defaults 0 0
+
+Finally, we unmount the partition, and we are ready to reboot
+
+umount /new-root
+
+reboot
+
+Reinstalling GRUB [^]
+
+When Clonezilla-SysRescCD menu appears, we select Tools > Super Grub Disk
+
+Then we select Super Grub Disk > Super Grub Disk (WITH HELP) > English Super Grub Disk > Gnu/Linux > Fix Boot of Gnu/Linux (GRUB). From this entry we will be able to reinstall GRUB to our hard disk.

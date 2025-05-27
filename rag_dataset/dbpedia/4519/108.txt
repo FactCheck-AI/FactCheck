@@ -1,0 +1,101 @@
+2 Bits, 1 Byte is an assembly language for a 2-bit CPU, made by User:Gilbert189. With 1 byte of memory, this machine could store at least 2 instructions.
+
+Operations
+
+The following are instructions of 2 Bits, 1 Byte:
+
+Code Name Description 00 DON DO Nothing. 01 ACT ACTion. Given value in memory, change the value according to the following table:
+
+From To 00 11 01 10 10 00 11 01
+
+10 JMP JuMP. Jump (unconditionally) to address specified. 11 END END. Print the entire memory as character and end the program.
+
+The instruction pointer can wrap around, thus allowing more "complicated" programs.
+
+Programs
+
+Since the memory is one byte, you can represent the entire program with just one character.
+
+For example:
+
+I
+
+becomes:
+
+01001001
+
+which, when disassembled, becomes:
+
+ACT 00b JMP 01b
+
+Example codes
+
+Endless loop
+
+'
+
+Disassembled:
+
+DON JMP 01b END ; lol
+
+Output 'm'
+
+a
+
+Try it online
+
+Disassembled:
+
+ACT 10b DON ; becomes END
+
+Alternative
+
+]
+
+Quine
+
+Any digit outputs itself. For example:
+
+7
+
+Try it online
+
+Each ASCII digit starts with 0011 in binary, so the first two instructions are DON END.
+
+Also, any character with ASCII value not less than 0xC0 is a quine, because the first instruction is END.
+
+Another Quine
+
+?
+
+Output "|"
+
+~
+
+Output "{"
+
+t
+
+Truth-machine
+
+nn 01 01 11
+
+Where nn is replaced with the two-bit representation of the input: 00b or 01b. In line with truth-machines with limited IO, the memory location to monitor is the first two bits, and can be "read" every time the IP = 1. The final memory dump is not relevant under this convention. The zero input program is \x17 and the one input is W.
+
+All examples
+
+\x00 → Does not terminate \x01 → Does not terminate \x02 → Does not terminate \x03 → \x03 \x04 → \xC4 \x05 → 5 \x06 → Does not terminate \x07 → 5 \x08 → Does not terminate \x09 → Does not terminate \x0A → Does not terminate \x0B → \x0B \x0C → \x0C \x0D → \x0D \x0E → \x0E \x0F → \x0F \x10 → \xD0 \x11 → Does not terminate \x12 → Does not terminate \x13 → \xD3 \x14 → Does not terminate \x15 → Does not terminate \x16 → Does not terminate \x17 → ' \x18 → \xD0 \x19 → m \x1A → Does not terminate \x1B → \x13 \x1C → \x1F \x1D → \x1F \x1E → \x1F \x1F → Does not terminate \x20 → Does not terminate ! → Does not terminate " → Does not terminate # → Does not terminate $ → Does not terminate % → Does not terminate & → Does not terminate ' → Does not terminate ( → Does not terminate ) → Does not terminate * → Does not terminate + → + , → Does not terminate - → Does not terminate . → Does not terminate / → / 0 → 0 1 → 1 2 → 2 3 → 3 4 → 4 5 → 5 6 → 6 7 → 7 8 → 8 9 → 9 : → : ; → ; < → < = → = > → > ? → ? @ → Does not terminate A → \x8D B → Does not terminate C → \x83 D → \xC4 E → \xB9 F → Does not terminate G → Does not terminate H → Does not terminate I → Does not terminate J → Does not terminate K → \x8B L → \x8C M → \x8D N → \x8E O → \x8F P → l Q → q R → n S → c T → Does not terminate U → \xB9 V → n W → Does not terminate X → l Y → Does not terminate Z → Does not terminate [ → k \ → l ] → m ^ → n _ → o ` → l a → m b → n c → o d → l e → Does not terminate f → Does not terminate g → k h → l i → q j → n k → c l → Does not terminate m → \xB9 n → n o → Does not terminate p → s q → r r → s s → \x9E t → { u → { v → Does not terminate w → \xB9 x → { y → Does not terminate z → { { → y | → \x7F } → ~ ~ → | \x7F → } \x80 → Does not terminate \x81 → Does not terminate \x82 → Does not terminate \x83 → Does not terminate \x84 → Does not terminate \x85 → Does not terminate \x86 → Does not terminate \x87 → Does not terminate \x88 → Does not terminate \x89 → Does not terminate \x8A → Does not terminate \x8B → Does not terminate \x8C → Does not terminate \x8D → Does not terminate \x8E → Does not terminate \x8F → Does not terminate \x90 → \xD0 \x91 → m \x92 → Does not terminate \x93 → \x13 \x94 → Does not terminate \x95 → Does not terminate \x96 → Does not terminate \x97 → \xA7 \x98 → \xD0 \x99 → \x9E \x9A → Does not terminate \x9B → \x93 \x9C → \x9F \x9D → \x9E \x9E → \x9F \x9F → Does not terminate \xA0 → Does not terminate \xA1 → Does not terminate \xA2 → Does not terminate \xA3 → \xA3 \xA4 → Does not terminate \xA5 → Does not terminate \xA6 → Does not terminate \xA7 → Does not terminate \xA8 → Does not terminate \xA9 → Does not terminate \xAA → Does not terminate \xAB → \xAB \xAC → \xAC \xAD → \xAD \xAE → \xAE \xAF → \xAF \xB0 → Does not terminate \xB1 → \xBD \xB2 → Does not terminate \xB3 → \xB3 \xB4 → Does not terminate \xB5 → \xB9 \xB6 → Does not terminate \xB7 → \xB7 \xB8 → Does not terminate \xB9 → \xB1 \xBA → Does not terminate \xBB → \xBB \xBC → Does not terminate \xBD → \xB5 \xBE → \xBE \xBF → \xBF \xC0 → \xC0 \xC1 → \xC1 \xC2 → \xC2 \xC3 → \xC3 \xC4 → \xC4 \xC5 → \xC5 \xC6 → \xC6 \xC7 → \xC7 \xC8 → \xC8 \xC9 → \xC9 \xCA → \xCA \xCB → \xCB \xCC → \xCC \xCD → \xCD \xCE → \xCE \xCF → \xCF \xD0 → \xD0 \xD1 → \xD1 \xD2 → \xD2 \xD3 → \xD3 \xD4 → \xD4 \xD5 → \xD5 \xD6 → \xD6 \xD7 → \xD7 \xD8 → \xD8 \xD9 → \xD9 \xDA → \xDA \xDB → \xDB \xDC → \xDC \xDD → \xDD \xDE → \xDE \xDF → \xDF \xE0 → \xE0 \xE1 → \xE1 \xE2 → \xE2 \xE3 → \xE3 \xE4 → \xE4 \xE5 → \xE5 \xE6 → \xE6 \xE7 → \xE7 \xE8 → \xE8 \xE9 → \xE9 \xEA → \xEA \xEB → \xEB \xEC → \xEC \xED → \xED \xEE → \xEE \xEF → \xEF \xF0 → \xF0 \xF1 → \xF1 \xF2 → \xF2 \xF3 → \xF3 \xF4 → \xF4 \xF5 → \xF5 \xF6 → \xF6 \xF7 → \xF7 \xF8 → \xF8 \xF9 → \xF9 \xFA → \xFA \xFB → \xFB \xFC → \xFC \xFD → \xFD \xFE → \xFE \xFF → \xFF
+
+Interpreters
+
+JavaScript interpreter by User:Hakerh400
+
+x86 assembly interpreter by User:Bangyen
+
+Interpreter in Snap!
+
+C++ interpreter by User:None1
+
+Haskell interpreter by User:Hakerh400
+
+See also

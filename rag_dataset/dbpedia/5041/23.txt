@@ -1,0 +1,23 @@
+In the Datatable you can align right using standard CSS, for example:
+
+https://live.datatables.net/hojugeye/1/edit
+
+My understanding is there is not a built in way to align the decimal points with CSS. You may need to find a JS solution, such as the options in this SO thread, that work for you. Use columns.render to facilitate the JS solution and return the generated HTML. Do this for the display operation as described in the Orthogonal data docs.
+
+Allan may have other options for you.
+
+Kevin
+
+You've got me thinking with this one, and it might actually made a good feature. DataTables does have a collection of classes for text alignment, but they are not automatically applied.
+
+So what I've done is to create a little example that uses draw listening at the top level of the document, so it will see all tables. When the draw event happens it uses the internal API to get the type information that was detected for the column and then apply a class if needed.
+
+This is the event listener in question:
+
+$(document).on('draw.dt', function (e, settings) { let api = new DataTable.Api(settings); settings.aoColumns.forEach((c, i) => { if (c.sType.includes('num')) { api .cells(null, i, { page: 'current' }) .nodes() .to$() .addClass('dt-body-right'); } }); });
+
+I'll have a think about how we might improve things in DataTables to offer that kind of feature automatically. Possibly an align: auto option for the columns.
+
+Regarding alignment to the decimal point - like Kevin, I'm not aware of any way of doing that. I think you'd need to split the number into two elements. Even right padding with 0s wouldn't be enough due to the unequal width of numeric characters.
+
+Allan

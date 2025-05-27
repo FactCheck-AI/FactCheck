@@ -1,0 +1,47 @@
+5.360. xinetd
+
+download PDF
+
+5.360.1. RHBA-2012:1162 — xinetd bug fix update
+
+An updated xinetd package that fixes one bug is now available for Red Hat Enterprise Linux 6.
+
+Xinetd is a secure replacement for inetd, the Internet services daemon. Xinetd provides access control for all services based on the address of the remote host and/or on time of access, and can prevent denial-of-access attacks. Xinetd provides extensive logging, has no limit on the number of server arguments, and allows users to bind specific services to specific IP addresses on a host machine. Each service has its own specific configuration file for Xinetd; the files are located in the /etc/xinetd.d directory.
+
+Bug Fix
+
+BZ#841916
+
+Due to incorrect handling of a file descriptor array in the service.c source file, some of the descriptors remained open when xinetd was under heavy load. Additionally, the system log was filled with a large number of messages that took up a lot of disk space over time. This bug has been fixed in the code, xinetd now handles the file descriptors correctly and no longer fills the system log.
+
+All users of xinetd are advised to upgrade to this updated package, which fixes this bug.
+
+5.360.2. RHBA-2012:0409 — xinetd bug fix update
+
+An updated xinetd package that fixes multiple bugs is now available for Red Hat Enterprise Linux 6.
+
+The xinetd daemon is a secure replacement for xinetd, the Internet services daemon. The xinetd daemon provides access control for all services based on the address of the remote host, on time of access, or both, and can prevent denial of service (DoS) attacks.
+
+Bug Fixes
+
+BZ#694820
+
+Under certain circumstances, the xinetd daemon could become unresponsive (for example, when trying to acquire an already acquired lock for writing to its log file) when an unexpected signal arrived. With this update, the daemon handles unexpected signals correctly and no longer hangs under these circumstances.
+
+BZ#697783
+
+Previously, a bug in the xinetd code could cause corruption of the time_t variable resulting in the following compiler warning:
+
+warning: dereferencing type-punned pointer will break strict-aliasing rules
+
+A patch has been applied to address this issue, so that the warning no longer occurs.
+
+BZ#697788
+
+Previously, the xinetd daemon ignored the "port" line of the service configuration file, and it was therefore impossible to bind certain RPC services to a specific port. The underlying source code has been modified to ensure that xinetd honors the "port" line, so that the port numbers are now handled appropriately.
+
+BZ#711787
+
+Incorrect use of the realloc() function could cause memory corruption. This resulted in the xinetd daemon terminating unexpectedly right after the start when a large number of services had been configured. The realloc() function has been removed, which ensures that memory corruption no longer occurs in this scenario, and the xinetd daemon starts successfully even when configuring a large number of services.
+
+All users of xinetd are advised to upgrade to this updated package, which fixes these bugs.

@@ -1,0 +1,263 @@
+After two and a half years of work, autopackage 1.0 has finally escaped into the wild. It has a fundamentally new design, and offers an alternative system of software distribution and management on Linux. This article will talk about what this means for the Linux community, and what new directions and possibilities it opens up. It’ll talk about problems remaining to be solved, and finally it will propose solutions for them. If you just want to see what autopackage is like, check out the screenshots or the Flash demo, available from the website.
+
+What is autopackage?
+
+At heart, it’s about allowing developers
+
+to provide binary packages that can be used by every Linux user,
+
+regardless of what distribution or desktop they run. While not
+
+perfect, its success rate is already high and will become higher
+
+in future. Though young, there are already autopackages of Gaim, Inkscape and
+
+AbiWord
+
+. It is also being used by much smaller projects such as the
+
+GtkQt engine or Lincity which otherwise
+
+would have no packages for most distributions, rendering them
+
+difficult and awkward to install for many users.
+
+It has several interesting features apart from working on any
+
+distribution: it understands dependencies and
+
+can resolve them. It supports multiple frontends,
+
+with both textual and GUI frontends coming out of the box. It
+
+ships with a manager application that lets you uninstall
+
+3rd party software installed using autopackage (and in future,
+
+this will develop into a generic tool that works for all
+
+packages). Most importantly, it’s been designed with usability in
+
+mind from the ground up.
+
+“What idiots, a new package format is the last thing we need!”
+
+To do things like support dependency resolution without depending
+
+on particular distributions or package managers, a new dependency
+
+model had to be devised and implemented. To provide binaries that
+
+would run reliably on a rainbow of machines, new tools such
+
+as apbuild and relaytool were written. To provide
+
+the flexibility needed to deal with a wide range of systems, a
+
+completely script/API based approach was used. To provide an
+
+aesthetically pleasing experience GTK+ and Qt frontends were
+
+developed. And finally, to make it simple even for non-technical
+
+users, the ability to bootstrap the whole thing just by running
+
+the packages themselves was added. To meet these requirements it
+
+would not have been possible to adapt existing formats.
+
+There was an additional, psychological reason. By providing a new
+
+format, users who have been failed by the existing system have a
+
+concrete feature request to make of the developers – rather than
+
+being limited to vague expressions of dissatisfaction, users can
+
+ask developers for something specific to help them. As developers
+
+learn how to build autopackages, we can show them how to make
+
+their software easier to install by evaluating dependencies for
+
+stability, penetration (how many systems it’s installed on) and so
+
+on. We can also teach them how to use programs like relaytool to relax
+
+dependencies. They can then begin to improve their software to be
+
+easier to install, for ease of installation – like usability – is
+
+not something that can be slapped on in five minutes. It must be
+
+considered while the software is built.
+
+What’s wrong with depsolvers like apt?
+
+Now apt and friends are fine tools for sure, but they do not solve
+
+the developers problem of how to get the latest version of their
+
+program to their users now, and not in six months time when
+
+it finally gets packaged and integrated into the repositories of
+
+all the distributions out there. The apt model of centralised
+
+repositories is the polar opposite of the decentralised model of
+
+software distribution as used by Windows, MacOS X and BeOS. What
+
+makes sense for the packages comprising the operating system
+
+itself doesn’t make much sense for third party applications. Even
+
+if it was possible to provide an apt repository in which
+
+everything was packaged and everything was up to date, the
+
+usability problems would be crippling. Synaptic offers
+
+unmanageable lists of choice and solutions such as
+
+gnome-app-install simply lessen the problem but do not eliminate
+
+it. Even search-oriented rather than list-oriented interfaces have
+
+problems: no matter how smart your searching is, you’ll never beat
+
+Google. Other problems, which you can read about in the FAQ, slam
+
+the nails into the coffin of this model.
+
+Moving to a decentralised model for distributing applications
+
+raises fundamental questions about the structure and design of
+
+Linux. It’s no longer enough to guarantee source code portability
+
+– instead, binary portability must be provided too. It’s no longer
+
+enough to check for optional libraries in a configure script and
+
+compile the code to use them out when missing, instead the
+
+libraries must be linked to at runtime and the fallback path used
+
+if the library is missing. It’s no longer enough to have to guess
+
+what is on your users systems: instead a large and solid platform
+
+is required on which developers can build.
+
+During the development of autopackage, we have considered and
+
+addressed many of these problems. Binary portability problems have
+
+been tackled with an easy to use GCC wrapper, called apbuild. The
+
+POSIX dlopen interface is awkward to work with, so relaytool was
+
+written to make weak linkage a snap. It makes it easy to fall
+
+back to the old GTK+ file chooser if the new one is not available,
+
+or disable spell checking if gtkspell isn’t installed. Finally
+
+binreloc is a toolkit for making programs installable to any
+
+prefix at runtime: this allows users without root to install
+
+software to their home directory, and administrators can install
+
+programs to network mounts and additional hard disks without
+
+needing union mounts or LVM. It’s a rule that autopackages must be
+
+relocatable.
+
+Looking towards the future
+
+There are lots of ideas and plans for what happens now. Probably
+
+the most important is native package manager integration. Right
+
+now, autopackages integrate well with a variety of desktop
+
+environments. However, it doesn’t integrate much with the
+
+underlying package management technology. In future, it will do
+
+so.
+
+That means registering with the RPM database when a package is
+
+installed so you can list its files and metadata, so it can
+
+fulfil dependencies for other RPMs and so it’s possible to
+
+smoothly upgrade a package from RPM to an autopackage or
+
+vice-versa. It means using apt-get, yum or emerge to resolve
+
+dependencies as well as autopackages own built-in dep
+
+resolution. Finally, it means a way to put autopackages inside apt
+
+repositories to aid deployment on managed networks.
+
+Dependency hell is a difficult problem to solve, as you may have
+
+guessed by the fact that it still plagues Linux as late as
+
+2005. Nothing in the design of autopackage stops a developer
+
+depending on extremely new, rare or unstable libraries – the
+
+primary cause. While autopackages check the system directly for
+
+what they need (so avoiding the problem of inconsistent metadata
+
+and package managers that don’t recognise source installs) if you
+
+actually don’t have the necessary code then the install will
+
+fail. To solve this, it is essential to provide developers with a
+
+broad base of functionality that can be depended upon with only
+
+one expressed dependency: a base set
+
+or platform.
+
+The user interface provided by both autopackage and traditional
+
+package managers isn’t best of breed. What should be seamless and
+
+transparent is not: the user is still expected to understand the
+
+distinction between a program and a package, and has to comprehend
+
+the purpose of installation. This means users need to think about
+
+non-obvious questions “Do I keep the package I downloaded around?
+
+Do I still need it after installing it? Can I send it to other
+
+people?”. Drag and drop is not supported. Support for upgrades and
+
+uninstallation is crude and not integrated with the desktop. Many
+
+of these issues affect other platforms like Windows and MacOS X
+
+too, but we should aim high. Solving this means integrating
+
+package management with the desktop so applications become
+
+first-class objects that the user can manipulate just like
+
+documents. The concept of “installation” should fade away and
+
+eventually disappear thanks to seamless desktop integration not
+
+only with autopackage but with all package managers.

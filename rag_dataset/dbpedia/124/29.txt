@@ -1,0 +1,63 @@
+Symmetric encryption is a data encryption method whereby the same key is used to encode and decode information. Until the first asymmetric ciphers appeared in the 1970s, it was the only cryptographic method.
+
+How symmetric algorithms work
+
+In general, any cipher that uses the same secret key for encryption and decryption is considered symmetric.
+
+For example, if the algorithm replaces letters with numbers, the sender of the message and its recipient must have the same mapping table. The former encrypts the message with it, the latter decrypts.
+
+However, such simple ciphers are easy to crack — for example, if the frequency of letters in the given language is known, it is possible to match the most common letters with the most recurrent numbers or symbols in the code until meaningful words emerge. With the use of computers, this task became so banal that using such algorithms lost all sense.
+
+As such, modern symmetric algorithms are considered reliable only if they meet the following requirements:
+
+The output data does not repeat statistical patterns in the source data (per the example above, the most frequent symbols in the source and in the cipher should not coincide).
+
+The cipher is nonlinear (that is, no patterns or regularities exist in the encrypted data that someone in possession of some plain text and its ciphers could trace).
+
+To achieve the desired result, most present-day symmetric ciphers use a combination of substitution (replacing fragments of the source message, such as letters, with other data, such as numbers, according to a specific rule or mapping table) and permutation (jumbling parts of the source message according to a certain rule), repeating them alternately. One cycle of such operations is called a round.
+
+Types of symmetric encryption algorithms
+
+Symmetric encryption algorithms are divided into two types by their operating principle:
+
+block ciphers
+
+stream ciphers
+
+Block algorithms encrypt data in fixed-length blocks (64, 128, or another number of bits, depending on the algorithm). If the whole message or its final part is smaller than the block size, the algorithm adds its own symbols, known as padding.
+
+Current block algorithms include:
+
+AES
+
+GOST 28147-89
+
+RC5
+
+Blowfish
+
+Twofish
+
+Stream data encryption involves the use of an additive cipher whereby each bit of information is changed using the corresponding bit of a pseudorandom secret keystream (a sequence of numbers generated on the basis of a key) that has the same length as the encrypted message. Typically, bits of the source data are compared against those of the keystream using the logical XOR operation (excluding OR, which returns 0 if the values ​of the bits match and 1 if they differ).
+
+Stream encryption is employed in the following algorithms:
+
+RC4
+
+Salsa20
+
+HC-256
+
+WAKE
+
+Pros and cons of symmetric encryption
+
+Symmetric algorithms are less resource-heavy and faster than their asymmetric counterparts. Most symmetric ciphers are presumed to be resistant to attacks using quantum computers, which in theory pose a threat to asymmetric algorithms.
+
+The Achilles heel of symmetric encryption is the key exchange. Because the message sender and recipient need the same key for the algorithm to work, it has to be transmitted somehow. And if that is done over an unprotected channel, it can be intercepted. In practice, many systems solve this problem by using an asymmetric algorithm to encrypt the key.
+
+Scope of application for symmetric encryption
+
+Many modern services use symmetric encryption to exchange data, often in combination with asymmetric encryption. For example, instant messengers use such ciphers to secure correspondence (with the symmetric encryption key typically being delivered in asymmetrically encrypted form), and video services do likewise to secure streams of audio and video. In the Transport Layer Security (TLS) protocol, symmetric encryption ensures the confidentiality of transmitted data.
+
+Symmetric algorithms are no good for generating digital signatures and certificates, because the secret key must be made known to all who work with the cipher, which negates the very idea of an electronic signature (the ability to check its authenticity without reference to the owner).

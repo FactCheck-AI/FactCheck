@@ -1,0 +1,25 @@
+Decoupling of storage from compute and data processing â In traditional Hadoop and data warehouse solutions, storage and compute are tightly coupled, making it difficult to optimize costs and data processing workflows. With Amazon S3, you can cost-effectively store all data types in their native formats. You can then launch as many or as few virtual servers as you need using Amazon Elastic Compute Cloud (Amazon EC2) to run analytical tools, and use services in AWS analytics portfolio, such as Amazon Athena, AWS Lambda, Amazon EMR, and Amazon QuickSight, to process your data.
+
+Centralized data architecture â Amazon S3 makes it easy to build a multi-tenant environment, where multiple users can run different analytical tools against the same copy of the data. This improves both cost and data governance over that of traditional solutions, which require multiple copies of data to be distributed across multiple processing platforms.
+
+S3 Cross-Region Replication: â You can use Cross-Region Replication to copy your objects across S3 buckets within the same account or even with a different account. Cross-Region Replication is particularly useful in meeting compliance requirements, minimizing latency by storing the objects closer to the user location, and improving operational efficiency.
+
+Integration with clusterless and serverless AWS services â You can use Amazon S3 with Athena, Amazon Redshift Spectrum, and AWS Glue to query and process data. Amazon S3 also integrates with AWS Lambda serverless computing to run code without provisioning or managing servers. You can process event notifications from S3 through AWS Lambda, such as when an object is created or deleted from a bucket. With all of these capabilities, you only pay for the actual amounts of data you process or for the compute time that you consume. For machine learning use cases, you need to store the model training data and the model artifacts generated during model training. Amazon SageMaker integrates seamlessly with Amazon S3, so you can store the model training data and model artifacts on a single or different S3 bucket.
+
+Standardized APIs â Amazon S3 RESTful application programming interfaces (APIs) are simple, easy to use, and supported by most major third-party independent software vendors (ISVs), including leading Apache Hadoop and analytics tool vendors. This allows customers to bring the tools they are most comfortable with and knowledgeable about to help them perform analytics on data in Amazon S3.
+
+Secure by default â Amazon S3 is secure by default. Amazon S3 supports user authentication to control access to data. It provides access control mechanisms such as bucket policies and access-control lists to provide fine-grained access to data stored in S3 buckets to specific users and groups of users. You can also manage the access to shared data within Amazon S3 using S3 Access Points. More details about S3 Access Points are included in the Securing, protecting, and managing data section. You can also securely access data stored in S3 through SSL endpoints using HTTPS protocol. An additional layer of security can be implemented by encrypting the data-in-transit and data-at-rest using server-side encryption (SSE).
+
+Amazon S3 for storage of raw and iterative data sets â When working with a data lake, the data undergoes various transformations. With extract, transform, load (ETL) processes and analytical operations, various versions of the same data sets are created or required for advanced processing. You can create different layers for storing the data based on the stage of the pipeline, such as raw, transformed, curated, and logs. Within these layers you can also create additional tiers based on the sensitivity of the data.
+
+Storage classes for cost savings, durability, and availability â Amazon S3 provides a range of storage classes for various use cases.
+
+S3 Standard â General purpose storage for frequently accessed data.
+
+S3 Standard Infrequent Access (S3 Standard-IA) and S3 One Zone Infrequent Access (S3 One Zone â IA) â Infrequently accessed, long lived data.
+
+S3 Glacier and S3 Glacier Deep Archive â Long-term archival of data.
+
+Using S3 Lifecycle policy, you can move the data across different storage classes for compliance and cost optimization.
+
+Scalability and support for structured, semi-structured, and unstructured data â Amazon S3 is a petabyte scale object store which provides virtually unlimited scalability to store any type of data. You can store structured data (such as relational data), semi-structured data (such as JSON, XML, and CSV files), and unstructured data (such as images or media files). This feature makes Amazon S3 the appropriate storage solution for your cloud data lake.

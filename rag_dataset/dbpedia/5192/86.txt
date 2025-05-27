@@ -1,0 +1,63 @@
+The Federal Information Processing Standard (FIPS) is a set of standards for information processing systems that all U.S. federal agencies, contractors, and vendors must adhere to. FIPS standards cover a wide range of areas, including encryption algorithms, computer security, network protocols, and information technology management. The standards are developed and maintained by the National Institute of Standards and Technology (NIST), which is a non-regulatory agency of the U.S. Department of Commerce.
+
+FIPS standards are used by government agencies, contractors, and vendors to ensure that their systems and products meet the government’s security and interoperability requirements. They are also used by private sector organizations that want to ensure the security and interoperability of their systems and products, especially if they work with the government.
+
+Examples of FIPS standards include FIPS 140-2, which defines the requirements for cryptographic modules used in protecting sensitive information, and FIPS 199, which provides guidance on categorizing information and information systems based on the potential impact of a security breach.
+
+FedRAMP and Authorization to Operate
+
+Information systems used by the U.S. federal government require an Authorization to Operate (ATO). ATO is a formal declaration by a designated authorizing official that a system or application has been assessed and meets the necessary security requirements to operate within a particular environment.
+
+The most common ATO in the U.S. government is the Federal Risk and Authorization Management Program (FedRAMP), a government-wide program that provides a standardized approach for assessing, monitoring, and authorizing cloud products and services for use in federal government agencies.
+
+The FedRAMP program was created to address the unique security challenges associated with cloud computing, and to provide a consistent and transparent process for evaluating cloud products and services across government agencies. The program establishes a set of security controls and requirements that cloud service providers must meet to receive FedRAMP authorization.
+
+The FedRAMP process involves a rigorous security assessment that evaluates compliance with applicable security controls, policies, and regulations. This assessment may be performed by an accredited third-party assessment organization (3PAO) or by a government agency. The results of the assessment are used to determine the cloud product or service’s FedRAMP authorization level.
+
+There are three FedRAMP authorization levels: Low, Moderate, and High. The authorization level depends on the level of sensitivity of the information being processed, stored, or transmitted. The higher the authorization level, the more rigorous the security requirements and controls.
+
+FedRAMP authorization allows government agencies to leverage cloud products and services with confidence, knowing that they have been rigorously assessed and authorized to meet the government’s security requirements.
+
+FedRAMP requires that encryption modules used by U.S. government information systems be validated for compliance with FIPS standards under the Cryptographic Module Validation Program (CMVP) managed by NIST.
+
+FIPS Validation
+
+FedRAMP requires the use of FIPS 140-2 validated modules for encrypting data in transit and at rest. FIPS validation is the process of testing and certifying that a particular cryptographic module meets those requirements.
+
+Cryptographic modules are validated under FIPS using the CMVP which works with accredited testing laboratories to perform a rigorous testing process which evaluates the module’s compliance with the FIPS requirements. The testing process includes both laboratory testing and a formal review of the module’s documentation and design.
+
+If the module passes all of the testing requirements, it is awarded a FIPS validation certificate, which confirms that the module has been tested and validated to meet the security requirements specified in FIPS 140-2. This certification is important for organizations that are required to use FIPS-validated cryptographic modules to protect sensitive information.
+
+FIPS validation. As part of CMVP, NIST authorizes independent labs to audit cryptographic modules submitted for review. Modules that pass this review are said to be FIPS validated. The validation status of all modules submitted to CMVP is published via a publicly searchable database.
+
+FIPS verification. Software that uses FIPS-validated cryptographic modules may need additional verification from an accredited testing lab that those cryptographic modules are used correctly in order to be authorized by a program like FedRAMP. Such software is said to be FIPS verified.
+
+This approach to achieving federal authorization is a safer alternative to forking a module for independent FIPS validation. The forking approach has the sole advantage of listing the vendor of the forked module in the CMVP database. In contrast, the verification approach (what Tetrate does for Tetrate Istio Distro) offers the smallest possible footprint of sensitive code that must be FIPS validated and avoids the inevitable risk that a fork will drift from the more well-maintained upstream version of the module.
+
+Applicability of validated modules. Currently validated modules under FIPS 140-2 are acceptable for use in new systems until Sept. 21, 2026, after which they will be placed on the “Historical” list. At that point, their use will be allowed only for existing systems. Agencies should continue to use FIPS 140-2 validated modules until a FIPS 140-3 validated module becomes available.
+
+FIPS certification. Certification is an industry term used to apply more generally to programs like CMVP that seek to provide provable compliance with a standard. In the context of FIPS 140, certified essentially means validated.
+
+Istio and Envoy in a FedRAMP Environment
+
+Istio and Envoy are not built against validated crypto modules by default. Because of this, the stock community builds of Istio are not FIPS-compliant, either. But, it is possible to compile against FIPS-validated crypto modules to produce a build that can be verified by an independent testing lab to be compliant with FIPS and suitable for FedRAMP. There are at least two ways to create FIPS-compliant builds for Istio.
+
+Fork and validate. One way is to fork an existing crypto library and go through the process of having it validated by CMVP. The forking approach has the sole advantage of listing the vendor of the forked module in the CMVP database. Unfortunately, this approach also has significant downsides: the forked module must be maintained by the vendor and is subject to the inevitable risk that highly sensitive cryptography will drift from the more well-maintained upstream version of the module.
+
+Reuse and verify. The other approach is to compile against a crypto module that has already been validated by CMVP and then have the build process verified as FIPS-compliant by a third-party laboratory. This approach eliminates the risk to the user of a drifting fork and offers only the smallest and most well-scrutinized footprint of sensitive cryptographic code that must be FIPS validated.
+
+How Do I Get a FIPS-Compliant Version of Istio?
+
+Tetrate offers FIPS-compliant Istio builds in its open source Istio distribution, Tetrate Istio Distro. Tetrate Istio Distro is Tetrate’s hardened, performant, and fully upstream Istio distribution. It is also the first distribution of Istio to be FIPS verified for use in FedRAMP environments. Tetrate’s Istio and Envoy binaries are built with FIPS-validated crypto modules and independently verified by an accredited third-party testing laboratory.
+
+Boring Crypto. Istio—and its data plane of Envoy proxies—use BoringSSL which, in turn, uses a core module called Boring Crypto. Boring Crypto is FIPS 140-2 validated (Certificate #4407). Boring Crypto’s FIPS 140-2 validation status will be active until Sept. 21, 2026, and the Boring Crypto team is actively working towards FIPS 140-3 validation.
+
+Tetrate Istio Distro FIPS builds. When pursuing FIPS validation for Istio and Envoy in TID, Tetrate used an existing crypto module that has already been validated (BoringSSL’s Boring Crypto). We then engaged an NVLAP-accredited testing lab to verify that our distribution uses the CMVP-validated crypto module correctly. This lets us deliver 100% upstream Istio and Envoy in Tetrate Istio Distro, with no need for proprietary forks. And, when Boring Crypto achieves FIPS 140-3, we will update TID FIPS build certification accordingly.
+
+Get Started with Tetrate’s FIPS-Verified Istio Distribution
+
+Tetrate Istio Distro is open source and free to use with the option to get FIPS-verified builds when you need them as part of Tetrate Istio Subscription. You can get started right away by downloading the Tetrate Istio Distro CLI and following the quick start guide. Amazon EKS users can install Tetrate Istio Distro from the AWS marketplace. When you need FIPS-verified Istio builds and production support from Tetrate, contact us for information on Tetrate Istio Subscription.
+
+Tetrate Istio Distro quick start
+
+Tetrate Istio Distro on EKS

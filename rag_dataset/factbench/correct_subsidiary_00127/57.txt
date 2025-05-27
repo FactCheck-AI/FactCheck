@@ -1,0 +1,197 @@
+In the IOUG Fusion Task Force meeting this week, we were discussing what could be provided to build a better community around the Fusion Middleware world and it’s ever growing list of products and acquisitions. A lot of us are classic Oracle guys that have been doing Java, ADF, App Server, Portal, Discoverer, etc. since its first release. We’ve always known the standard Oracle Metalink, Forums, and ListServs for Oracle help when we need it. Now with so many acquisitions it’s getting incredibly hard to catch up and the communities for many of the new products don’t exist.
+
+One of the big questions that came up was where have all the developers gone. For some reason the term “The Lost Developers” popped into my head, which of course popped the bad 80’s movie “The Lost Boys,” and in turn this bad graphic. (Trust me you don’t want to try and understand whats in my head)
+
+But in all seriousness, where did everyone go. I know a lot of the people went to start their own independent consulting shops, some stayed with Oracle, but what about the rest of the world? What about all the customers and other implementation partners? I went through, looked at the acquisition list, and couldn’t find user groups or message boards for many of them. Maybe I’m looking in the wrong places or haven’t been taught the secret handshake yet, but here is the list I came up with:
+
+Agile: Nothing
+
+AppForge: Palm and Windows Media Local User Groups, nothing centralized
+
+Bharosa: Nothing
+
+Tangosol: LCUG (http://wiki.tangosol.com/display/LCUG/Home)
+
+HotSip: Nothing
+
+Siebel (Analytics): ITtoolbox Group (http://siebel.ittoolbox.com/groups/technical-functional/siebel-analytics-l)
+
+SigmaDynamics: Nothing
+
+Sleepycat: Nabble Forums (http://www.nabble.com/Berkeley-DB-f2899.html)
+
+Stellent: Stellentforums.com and regional user groups
+
+Context Media: Nothing
+
+Oblix: Nothing
+
+Octet String: Nothing
+
+Thor Technologies: Nothing
+
+TimesTen: Nothing
+
+TripleHop: Nothing
+
+Yes there are the Oracle boards, but many of them aren’t trolled by the experts of the acquired companies yet. So what happened? Where did everyone go? Right now I’m working on building a lot of pre-built virtual machines for my side project (thanks again for the people volunteering to help), but on the newer components I’m having to learn a ton as I go and it would be helpful to bounce ideas / questions off of people who have already been there and done that. I’m sure a lot of them are having the same problems now trying to deploy on to the Fusion Middleware stack.
+
+So here it is, an open invite to come out of the corners and reveal yourselves. Where is everyone hiding? How can we build a better collaborative Oracle development world? I would love to hear people’s feedback. Maybe we need a myspace or facebook for Oracle people? I’m only half joking here, there sure are enough of us to keep it busy. What features would make it a kick ass collaboration environment? Forums? Wiki? Torrents? Instant Messaging? Desktop Sharing? Blogs Provider? Maybe just an Aggregator? Rent a VM development environments? Calendaring? Mapping? Presence? Ok, enough web 2.0 buzz words (crap, there was another one).
+
+Call me, email me, IM me, post comments here, I just want to figure out how to make it easier on all of us.
+
+As promised (I know a couple days late, but I had a brainfart on some of the non-codable data) here is the analysis of the Geocoder.us data vs. the Free San Francisco data from Navteq. The data I used to prove this was 75 records for the Starbucks with a San Francisco address.
+
+The first thing to discuss is the extra time it took for the Geocoder.us data. When I geocoded the data against the Navteq data that was loaded inside of the Oracle database it took me approximately 1:15 seconds to geocode the 75 records on my laptop. The same data through the Geocoder.us csv webservice took almost 10x as long, it was ~10 minutes to took to code the same 75 rows. OK, definitely a major hit there, the latency was due to the UTL_HTTP call I was making out of the database was taking 12 seconds per record to return. The Geocoder.us website discusses how to setup your own local Geocoder.us server, maybe in the future I will see what the difference in time is using their interface locally.
+
+On a good note, there were 3 addresses that the Navteq data would not recognize, but the Geocoder.us data recognized all but one row. The one row that it did not recognize had ‘ONE’ for the street number instead of the actual number 1. When replacing the number for the string in the data, the site was successfully coded. Simple enough to fix, but still a limitation.
+
+OK, now onto the data. The Navteq data was coded down to 12 decimal places, while the Geocoder.us data only gets coded down to 5 decimal places. This might not seem like a big deal, but take this into account.
+
+decimals degrees miles-statute feet inches 0 1 69 364320 4371840 1 0.1 6.9 36432 437184 2 0.01 0.69 3643.2 43718.4 3 0.001 0.069 364.32 4371.84 4 0.0001 0.0069 36.432 437.184 5 0.00001 0.00069 3.6432 43.7184 6 0.000001 0.000069 0.36432 4.37184
+
+So basically we are talking a difference in less than inches. While this might not be a big deal for the address is off by 4″ (I think we’ll be able to find it) but if it was a missle defense system, we may have some issues that need to be discussed. Since normal GPS devices are only accurate to about 15 feet on the best days this pretty darn good for free.
+
+The first problem we run into is that the Geocoder data from Navteq is in SRID 8307 format, aka Longitude/Latitude (WGS 84) and the Geocoder.us data is in SRID 8265 format aka Longitude / Latitude (NAD83). So for most people this means nothing, but its actually very important. Remember back in elementary / middle school where they showed all the different maps of the world; one where greenland was really big, one where there were rips in the map, etc. Well this all comes back to us when we are talking about Coordinate Systems in Oracle Spatial. All the different types of map projections; coordinate, catesian, geodetic, projected, geodetic datum, and authalic sphere are all present in the Oracle Spatial database predefined for our use. These projections follow the defined standard projections defined by the OpenGIS consortium ( http://www.opengeospatial.org/specs/?page=specs ).
+
+Very simply I wrote a quick SQL statement that uses the built in SDO_CS package to transform the data from 8265 to 8307 and then calculates the distance between the two points in meters.
+
+select /*+ordered*/
+
+o.store_name
+
+, o.location navteq_location
+
+, g.location geocoder_location
+
+, sdo_geom.sdo_distance ( o.location, sdo_cs.transform(g.location, 8307), .005, 'unit=METER') distance
+
+from sf_starbacks o,
+
+sf_starbucks_geocoder_us g
+
+where g.store_name=o.store_name
+
+order by distance;
+
+Below is the results table that was returned from the function.
+
+Store Name Distance in Meters SF Courtyard Marriott Lobby 2.71659553129724 Spear Street 3.34121058899212 455 Market 3.55328348605654 Market & Fell – San Francisco 3.8057058105241 1750 Divisadero Street 4.69942861653962 99 Jackson 4.70218233521226 Sansome 5.11814739909792 California & Battery – SF 5.29755965611037 123 Battery 6.05824239531821 505 Sansome Street 6.08548442574047 Laurel Village 6.3455649117665 3727 Buchanan – San Francisco 7.21260972749949 Kearny @ Bush 7.22469004513458 123 Mission Street 7.4188927049375 1231 Market Street 7.42953327611775 4094 18th St. 8.08740578188483 3rd & Howard 8.64205159112492 701 Battery 9.9626753714261 Grant & Bush – San Francisco 10.0439995350524 1800 Irving Street 10.0918780314643 398 Market St. 10.0937804181894 425 Battery – San Francisco 10.2121900661491 333 Market St. 10.3904072176329 340 Mission 10.4766571905475 Hills Plaza 10.5820256764645 50 California St. 10.812256443162 Fillmore & O'Farrell (UCO) 11.235605600453 Masonic @ Fulton – S.F. 11.2570582622603 901 Market St. 11.383558585046 565 Clay St. 11.500375430594 675 Portola – Miraloma 12.0143457537109 4th & Brannan – WFB 12.0215273447908 Chestnut 12.7235318198783 199 Fremont @ Howard – SF 13.2578337955333 Union Street 14.4825612550203 390 Stockton @ Sutter (Union Sq) 15.419906040731 36 Second Street 15.6140523231353 74 New Montgomery 15.9682235898887 Safeway-San Francisco #1490 16.1190250104597 Safeway-San Francisco #2606 16.1745772800324 Mariposa & Bryant 16.2510104423628 44 Montgomery @ Market St. 16.4293094494693 King & 4th Street – San Francisco 16.5061673580469 Levi's Plaza @ Sansome 17.097438240954 Fillmore 17.2944166057407 Kansas & 16th St. – San Francisco 17.4991251104624 9th & Howard 17.6327431473884 Sony Metreon SF (UCO) 18.213309935106 120 4th Street 18.3932339959993 27 Drumm Street 19.067431537748 Polk Street 19.2677065095131 201 Powell Street – San Francisco 19.2714989034239 Beach & Hyde – San Francisco 19.3904276298555 Irving Street 19.5731611233583 Van Ness & California – WFB 19.5861907980684 15 Sutter St. 19.9180139893338 Grand Central Market – Mollie Stone 21.2170151879307 Albertsons – San Francisco #7146 21.217250792467 Jones @ Jefferson – San Francisco 21.3270789286301 Cyril Magnin @ O`Farrell – Nikko 21.4961567925423 24th & Noe 22.2641624424109 Geary & Taylor – San Francisco 24.0074384547142 350 Parnassus 25.5867539051804 555 California St. 27.5157348868899 Safeway – San Francisco #667 28.7814007353958 Bush & Van Ness – S.F. 28.9662827730563 100 West Portal/Vicente 31.8815087423281 4th & Market – S.F. 49.9397278381422 Church & Market – S.F. 71.3778706089687 Safeway-San Franscisco #1507 74.3198277064713 Stonestown Galleria 76.3800406139539 Albertsons – San Francisco #7128 182.468554131262 5455 Geary Blvd. – WFB N/A Albertsons – San Francisco #7137 N/A
+
+Out of the 75 Starbuck stores in the table, 3 could not be compared because one of the two distances did not have a geocoded value for the address. The minimum distance difference was 2.71 meters and the maximum was 182.47 meters. The average distance difference was 19.44 meters. So on average the difference is alright, 20 meters average is fine if your trying to find a stores location on the street, but to do anything that requires more precision than driving directions you’d probably want to be assured that your data was more accurate. Even in the worst case it is only off by a tenth of a mile. Which data is more correct? Within the industry its typically accepted to be the Navteq data. Navteq spends many dollars a year to validate their data and make sure its the most accurate around.
+
+The Yahoo uses both Navteq and TeleAtlas data for their geocoder. Maybe I should run some analysis against their service to see what comes out…anyone interested?
+
+In my “Spatially Enabling Your Oracle Business Intelligence Solution” presentation today a question was asked about free geocoding services. The Navteq and TeleAtlas spatial data is expensive and there are some free alternatives out there. One of those options for US data is the website geocoder.us . The data is gathered from the US census data and is definitely not as accurate as the commercial providers, it does an extremely good job at making it easy to geocode your data and is free for non-commercial purposes. Thats right FREE!!! If you do decide to use it for commercial purposes their pricing is more than reasonable in my opinion, as of today they charge $50 US Dollars to geocode 20,000 addresses. There developer documentation is available online and they provide four different web service interfaces to access the data (http://geocoder.us/help/). As promised, here is a simple function that uses their CSV webservice to geocode an address and return it as the Oracle Spatial native datatype sdo_geometry.
+
+CREATE OR REPLACE FUNCTION geocode_address_geocoder_us (
+
+street varchar2 --Includes street number and street name
+
+,city varchar2 --Name of the city for the address
+
+,state varchar2 --US Standard Postal Abbreviation for the state
+
+-- Official List: http://www.usps.com/ncsc/lookups/abbr_state.txt
+
+,zipcode varchar2 --Either the 5 digit or zip+4 notation for the address
+
+)
+
+RETURN sdo_geometry IS
+
+l_geocoder_url varchar2(100) := 'http://rpc.geocoder.us/service/csv?address='; --URL to the csv geocoder.us interface
+
+l_returned_address varchar2(2000); --String of the returned URL from geocoder.us
+
+l_address_not_found varchar2(100) := 'couldn''t find this address! sorry'; --The error string that is returned
+
+-- if an address is not found
+
+l_not_found_position integer; -- Position of not found string
+
+l_latitude varchar2(50);
+
+l_longitude varchar2(50);
+
+l_geo_location sdo_geometry; --Geographical location
+
+l_srid number := '8265'; --The SRID is the Oracle Spatial Projection code for NAD83,
+
+-- the projection that all US census data is in
+
+BEGIN
+
+--Make a call to the csv webservice
+
+l_returned_address := utl_http.request( l_geocoder_url || urlencode( street || ',' || city || ', ' || state || ' ' || zipcode) );
+
+--Check the return string to see if the address was found
+
+l_not_found_position := instr(l_returned_address, l_address_not_found, 1, 1);
+
+--If we find the address not found string we raise a NO_DATA_FOUND exception
+
+if ( l_not_found_position > 0 ) then
+
+RAISE NO_DATA_FOUND;
+
+else
+
+--The data returned is a comma separated list
+
+--The first element returned in the string is the latitude of the address, so we substring out the element
+
+l_latitude := substr(l_returned_address, 0, instr(l_returned_address, ',', 1, 1) - 1);
+
+--The second element returned in the string is the longitude of the address, so we substring out the element
+
+l_longitude := substr(l_returned_address, instr(l_returned_address, ',', 1, 1) + 1, instr(l_returned_address, ',', 1, 1));
+
+--We not create the point location for the address we have geocoded
+
+l_geo_location := sdo_geometry (2001, l_srid, sdo_point_type (l_longitude, l_latitude, null), null, null);
+
+RETURN l_geo_location;
+
+end if;
+
+EXCEPTION
+
+WHEN NO_DATA_FOUND THEN
+
+RAISE;
+
+WHEN OTHERS THEN
+
+RAISE;
+
+END geocode_address_geocoder_us;
+
+/
+
+The code uses a function from an askTom article to urlencode the query string sent to the geocoder.us webservice. The function is available here: http://asktom.oracle.com/pls/ask/f?p=4950:8:::::F4950_P8_DISPLAYID:10444643777538. This function is included inside of HTMLDB and Oracle Portal, but I can’t assume your using those products so there you have it. The geocoder.us service will attempt to make changes to the address if it doesn’t follow the address listed in the census data. I will warn that this function does not take into account any of those changes to the address that the geocoder returns. I can write a procedure, if need be, that takes that into account if anyone needs one.
+
+Tomorrow night, I’m going to do some analysis to compare how close the geocoder.us data matches the free geocoder data available from Navteq for San Francisco.
+
+So I’ve been looking for a good excuse to play with the google maps API a little bit. After all I haven’t touched spatial in a while and its supposed to be my specialty. (Note to self, you still need to setup that 10.1.2 database with all the new Oracle spatial features and get playing) Anyways, I decided to throw together a little site that would allow the members of LS1GTO to put down where they live, their handle on the boards and their year and color. I geocoded all of the cities on the 2000 census, I would have done it at the zip code level, but I couldn’t find a good dataset. The google maps api is pretty slick and really easy to use. It definitely does start to get bogged down when you have many members your looking to map. Does anyone have any good free resources of Oracle spatial data for the US? I’d like to do this in mapviewer and spatial, largely due to the performance benefits, but I can’t find a decent dataset. I might just make my own, it sure would be cool if somone would but out a free Oracle/Navteq competitor to google maps using the mapviewer APIs (anyone from Oracle listening, I’ll write the code, you just provide the hardware and data). Anyways, heres the quick and dirty version of the site:
+
+https://matttopper.com/gto-maps/
+
+A week out at Oracle World is enough to kill anyone, I thought that I would get a week of rest away from work. Boy was I wrong. It seemed like everyday I was busy from 7am to 10pm. The BI Customer Advisory Council was really good. There are a lot of people out there doing some cool stuff with Discoverer. Its amazing how many different ways a ‘Ad-hoc Query’ tool is interpretted by so many different people.
+
+I really enjoyed taking a look at the new OWB “Paris” it really helps in automating and prototyping Discoverer EULs. Jean-Pierre Dijcks and John Leigh really put on a good presenation about this, you can find it here .
+
+I went to the inaugural Oracle Spatial Special Interests Group meeting on Tuesday night. It really wasn’t what I expected, way too many sales guys and not enough people who are in the meat everyday. And the technical people I met were more interested in spatial data rather than rendering information in a map. They are having a follow up meeting at a conference in March. I’m not sure whether or not I want to go yet.
+
+Speaking of Spatial and GIS, a lot of people want mapping built into Discoverer. Being able to select data like from a parameter from at map and also displaying maps like another graph type. I think its a great idea. Obviously, since I went through so much pain implementing it in the previous versions of Discoverer. I’m happy to continue adding the functionality but if its something they want to support I’ll let them. By not having an API into their cache and backend it really makes it painful to having to rewrite the integration with almost every upgrade. I think a lot of people aren’t thinking about the cost of the spatial data if they enable mapping in Discoverer though. I haven’t found a good source of cheap, accurate and detailed spatial data for Oracle yet. Hopefully they’ll realize the need for people to support custom geography as well since most corporations have their own regional, market and retial store geographies that would need to be included as well.
+
+Its really going to be a fun couple of years for the Oracle BI team. It looks like Larry is back to supporting them and the rest of the tools stack and there is a definite drive to have the best BI tools in the industry. I think with the right group of people they can be there pretty quickly
+
+Most people have mixed emotions when have to goto a conference. First you think, ahh a nice 4 days away from the office, then the reality sets in that the work doesn’t stop when your gone and chances are your gonna have to work twice as hard when you get back just to catch up. I’m actually looking forward to this year’s Oracle World Conference.
+
+The Business Intelligence group is going to launch a huge number of new applications. Oracle Discoverer Drake will finally be released. I’m going to be on the customer panel for the Mini Keynote called “Oracle and Gartner unveil the new Oracle Business Intelligence 10g.’ My first 5 minutes of conference fame.
+
+I’m also looking forward to taking a look at the new Oracle Warehouse Builder (OWB) Paris from what I’ve heard it does a great job at creating OLAP warehouses and automatically generates the Discoverer OLAP EULs. Should be great for doing some rapid OLAP prototyping.
+
+Lastly, I’m geeked to see Oracle’s plan for SOA, while probably nothing ground breaking, it’ll be interesting to see what components Oracle is going to implement for their SOA stack, whether its just a container and BPEL or if its actually a big competitive stack with logging, auditing, security, realiability, etc. Most importantly how closely does it follow the standards that are out there.

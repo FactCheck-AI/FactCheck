@@ -1,0 +1,79 @@
+CODE 128 is the barcode developed by Computer Identics Corporation (U.S.A.) in 1981. CODE 128 can represent all 128 ASCII code characters (numbers, upper case/lower case letters, symbols and control codes). Since it can represent all characters (except Japanese kanji, hiragana and katakana) that can be used with a computer keyboard, it is a computer friendly barcode.Code-128 can be very compact due to the "double-density compression" of data, when two numbers are written into one barcode modulus.
+
+The Code-128 barcode contains 107 characters,103 of them are data characters, 3 start, and 1 stop character. To encode all 128 ASCII characters, there are three sets of Code128 barcode characters - A, B and C, which can be used within a single barcode.
+
+128 A - characters in ASCII format from 00 to 95 (numbers from "0" to "9", letters from "A" to "Z") and special characters;
+
+128 B - characters in ASCII format from 32 to 127 (numbers from “0” to “9”, letters from “A” to “Z” and from “a” to “z”), as well as special characters;
+
+128 C - ASCII characters from 00 to 99 (only for numeric code).
+
+Technical requirements for the symbology of the Code-128 bar code, symbology indicators, encoding of data characters, sizes, decoding algorithms, application parameters, prefix strings and symbology identifiers are worldwide regulated by ISO/IEC 15417: 2007 “Information technology - Automatic identification and data capture techniques - Code 128 bar code symbology specification".
+
+The basic composition is as follows:
+
+1) Start code
+
+2) Check digit (modulus 103)
+
+3) Stop code
+
+Code-128 structure
+
+The structure of the Code128 barcode is quite simple. The barcode consists of 6 zones:
+
+- White field;
+
+- Start symbol (Start);
+
+- Encoded information;
+
+- Check symbol (check digit);
+
+- Stop symbol;
+
+- White field.
+
+Code-128 barcode symbols consist of 3 bars and 3 spaces (6 elements in total). The bars and spaces are modular in width from 1 to 4 moduli (1 modulus = 0.33 mm). The character width is 11 moduli.The stop symbol consists of thirteen modules and has 4 bars and 3 spaces.
+
+By the way, "Modulus 103" is used in this barcode as a check digit. According to the Code-128 barcode symbol table, each character is assigned a corresponding value. Then, for each character, except for the “Stop” and the control character, a weighting coefficient is assigned, 1, 2, 3, ..., n. In this case, the symbols "Start" and the first character following it are assigned a weighting coefficient equal to one. The check digit is calculated as the sum of the products of the weight coefficients by the corresponding values modulus 103. The check digit is located between the last data symbol and the "Stop" symbol.
+
+Code-128 can change the encoding type in one barcode. The following figure shows the transition from Code-C to Code-A.
+
+1] Start with CODE-C
+
+2] Change to CODE-A
+
+When CODE-C is used as the start character, one bar pattern can represent 2-digits numbers, it is the so-called "double-density compression". This allows for increased data density. The example above is just this case.
+
+If the barcode data has 12 or more digits, CODE 128 provides smaller size than ITF and EAN-128.
+
+Since CODE 128 uses 4 types of bar size, printers with high print quality are required. CODE 128 is not suitable for printing with dot matrix printers and FA ink-jet printers and for flexographic printing on corrugated cardboards.
+
+Applications
+
+CODE 128 is used in the following industries:
+
+- US apparel industry.
+
+- US food process Industry.
+
+- US drugs and medical equipment industry.
+
+- Food industry in Australia and New Zealand.
+
+- European drugs and medical instruments industry.
+
+Unit packaging Transport packaging Logistic packaging Blueberry juice bottle, 3 l., glass bottle 6 pcs., cardboard box 24 pcs., pallet 4611234567893 14611234567899 (02)14611234567890(37)24 EAN-13 ITF-14 Code-128 461 in each barcode is called the regional code of the national GS1 organizations (for example, 460-469 Russia) (000-139 USA) 1 (at the very beginning) is an indicator of the packaging level for a particular carton. This single-digit prefix can range from 0 to 8. (for example, 1 for a box, 2 for a container, etc.).
+
+(02) - GTIN of trade items in the cargo
+
+(37) - the number of trade items in the cargo
+
+24 (at the end) - number of pieces in a pallet
+
+Creating a barcode from code in FastReport VCL
+
+Creating a barcode from a code in FastReport .NET
+
+Now you know a little more about the Code-128 barcode and its varieties A, B, C.

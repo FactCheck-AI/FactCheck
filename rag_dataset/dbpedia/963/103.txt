@@ -1,0 +1,97 @@
+I've just created a bbox with these coordinates in EPSG:31466 (X;Y):
+
+2586000.000;5705000.000 2583000.000;5705000.000 2583000.000;5703000.000 2586000.000;5703000.000 2586000.000;5705000.000
+
+GM15 has calculated its perimeter to 9.999 km - that's wrong of course, should be 10,000.0 km.
+
+GM15 has also calculated the heading between the vertixes: 271.0°, 180.9°, 90.9° - some dirty needle deviation?!
+
+I know, working with floating numbers is always a problem, but that's no good for geoinformation software.
+
+There are a lot of math-libraries to solve the problem. Please don't use any fake rounding to fix it quickly.
+
+Actually the reported numbers are correct for the perimeter and bearing along the surface of the ellipsoid. Any projected system is inherently distorted so if you calculate lengths and bearing using the projected coordinates those values will be incorrect as compared to ground truth. If you would rather Global Mapper use grid distance/bearing calculations rather than the more accurate ellipsoidal versions you can select the Measure Tool, then right-click and check the option to Use Grid Distance and to 'Display Bearings Relative to Grid North' rather than True North or Magnetic North.
+
+Let me know if I can be of further assistance.
+
+Thanks,
+
+Mike
+
+Global Mapper Guru
+
+geohelp@bluemarblegeo.com
+
+Blue Marble Geographics for Coordinate Conversion, Image Reprojection and Vector Translation
+
+There is already a switch for it in the interface. You can switch to grid distances and grid bearings on the right-click menu in the Measure Tool.
+
+Thanks,
+
+Mike
+
+Global Mapper Guru
+
+geohelp@bluemarblegeo.com
+
+Blue Marble Geographics for Coordinate Conversion, Image Reprojection and Vector Translation
+
+Again a question on this topic. These coordinates are in UTM32N:
+
+476000;5756000 477000;5756000
+
+Measured "on paper", the distance is 1000 m.
+
+Length of the line in GM15 feature information is 1 km (= 1000 m). But why this time?
+
+Normally, you also need to correct the distortion of UTM32 in. The correct length of the line should be 1000.407m.
+
+But:
+
+Actually, you only can measure on ellispoid correctly, if you know the height of the point...
+
+What formula did you use to calculate the actual distance between the points along the ellipsoid? There will of course be places in a projection where the ellipsoid (great circle) distance will match the grid distance. I'm guessing that for UTM perhaps lines of equal northing have no distortion in distance, but I'm not certain. Global Mapper uses the Vincenty formula to calculate the distance when doing great circle distance calculations.
+
+There are differences in measured distance when doing calculations at some elevation. Global Mapper does most calculations at the surface of the ellipsoid, except for a few special places where 3D distances along a terrain surface are also calculated.
+
+Thanks,
+
+Mike
+
+Global Mapper Guru
+
+geohelp@bluemarblegeo.com
+
+Blue Marble Geographics for Coordinate Conversion, Image Reprojection and Vector Translation
+
+I'm in a hurry right now, but I'll answer you later. I've used the official formulars given by European survey offices for area and distance correction. Since UTM32N with ETRS89 is using a scale factor, you always need to correct it... But then, you need the correct height.
+
+Vincenty is "outdated" since a few years, there a many libraries with higher accurenty and they're open source.
+
+But Vicentiy is okay for most calculations.
+
+As far as I know Vincenty is about as good as it gets for distance calculation along the ellipsoid. It should be accurate to within 0.5mm (Vincenty's formulae - Wikipedia, the free encyclopedia) on the Earth ellipsoid.
+
+Thanks,
+
+Mike
+
+Global Mapper Guru
+
+geohelp@bluemarblegeo.com
+
+Blue Marble Geographics for Coordinate Conversion, Image Reprojection and Vector Translation
+
+As far as I know Vincenty is about as good as it gets for distance calculation along the ellipsoid. It should be accurate to within 0.5mm (Vincenty's formulae - Wikipedia, the free encyclopedia) on the Earth ellipsoid.
+
+Vincenty's algorithm is based on 1975 math and has many problems, f.e. on nearly antipodal points.
+
+Nowerdays computers can or better should handle geodetic calculations based on integrals.
+
+For my project and calculations, I'm using this one: GeographicLib
+
+It can do 1 nm on distances, 15 nm per vertex in polygons and has solutions for gravity, geoid, and geomagnetic field etc.
+
+It's a C++ class in a MIT/X11 License - give it a try
+
+I'll send you more details about calculating areas and lines in UTM on ETRS89 later (back to the topic).

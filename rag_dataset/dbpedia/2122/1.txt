@@ -1,0 +1,11 @@
+Let us assume k patterns of equal length m and a text of length n.
+
+The best case seems easy: if the first comparison with the first pattern succeeds immediately, the answer is returned after m character comparisons, where m is the length of the first pattern. Anyway, you could get a faster result if all pattern tests concluded "no match" as soon as possible, which can be achieved in n-m+1 character comparisons, hence after k(n-m+1) comparisons in total. Though unlikely, k(n-m+1) < m is possible.
+
+The worst case is a little more difficult. We can imagine that it occurs when the match fails for all patterns, so that k matches need to be performed. Now the maximal time to conclude a mismatch is when all offsets lead to a failure, while the string comparisons are carried as far as possible.
+
+This occurs when you search a pattern like xxxxxxxy inside xxxxxxxxxxxxxxxxxxxx: the string comparisons must always be performed in full.
+
+So we have a total worst-case of k(n-m+1)m character comparisons. If the lengths are not constant, precise analysis becomes pretty difficult.
+
+This does vary quite a bit based on the sizes of the pattern and the tested strings. I'm assuming that both are of length n (for computational simplicity, since the actual case should have the same time complexity) and there are k strings being tested Each character comparison takes O(1) time, and you perform, per string being matched, n string comparisons of length 1..n (i.e. 1..n character comparisons). This is (n^2+n)/2 comparisons = O(n^2). Since there are k of these tests, the complexity is O(n^2k).

@@ -1,0 +1,255 @@
+Recovery from Link/Node Failure using MPLS and Tunnel
+
+1Athishtalakshmi S
+
+PG Scholar, Department of CSE,
+
+Sri Vidya College of engineering and technology, Virudhunagar Dist, Tamilnadu
+
+2Dharmaraj R
+
+Assistant Professor, Department of CSE,
+
+Sri Vidya College of engineering and technology, Virudhunagar Dist, Tamilnadu,
+
+Abstract MPLS fast reroute (MPLS-FRR) mechanisms deviate the traffic in case of network failures. The Fast-reroute applications have been presents for Multiprotocol Label Switching (MPLS) networks to make it workable to fast reroute traffic locally in case of failure. The peak of this approach is that fast re-route a packet throughout the link. The Multiprotocol label switching (MPLS) packet forwarding based on some Constraint. Having identified a link/node failure in the MPLS, an alternate path must be found that push the packets from the source node to the destination node. This mechanism is known as fast rerouting and the procedure with the help of which the label switching path (LSP) is calculated before a failure occurs is known as fast reroute. By using this fault recovery technique we can make MPLS network is fault tolerant. Multiprotocol Label Switching (MPLS) fast reroute (FRR) can be defined by various methods, for example local repair and global repair. After reaching LER we don`t have to take reroute instead which a tunnel can be created to send the packets.
+
+Keywords MPLS fast reroute, Tunnel, Failure recovery
+
+I. INTRODUCTION
+
+In recent year, multiprotocol label switching has become one of the most network backbone technologies. [11] The technology also helps to deliver highly scalable, discriminated end-to-end IP services with simpler configuration and provisioning for both Internet providers and end-users. [14] In case of failure MPLS first has to establish a new label switched path (LSP) and then forward the packets to the newly established LSP. For this cause MPLS has a slow restoration response to a link or node failure on the LSP.
+
+The first we address the fast rerouting mechanisms for MPLS networks and then we focus on the problem of packet loss and packet delay for protected LSP in MPLS- based network for a single node/link failure. [14] In case of failure, MPLS has to establish a new label switched path (LSP) and then forward the packets to the newly established LSP. For this cause MPLS has a slow restoration response to a link or node failure on the LSP. [16] Our fast rerouting mechanism avoids packet disorder and significantly reduces packet delay during the restoration period. The objective is to avoid packet delay during the restoration period.
+
+In this paper we have proposed a new algorithm that belongs to link/node recovery and using routing protocol and TCL [23] we have simulated it in network simulator [24]. We estimate it with the rerouting fault recovery algorithm
+
+focusing on fault recovery time. Fault recovery time is the most important in fault tolerance. So an algorithm may be used to recover it. Since there are packet loss, time delay and acknowledgement, traffic in the rerouted path will definitely be increased. Which is not preferable [10]. Here by saying failure in the network we mean that first fault occurs in the working label switch path and proposed algorithm switches over the traffic on the alternative path.
+
+Then second fault occurs in the alternative path mean while the primary path was not restored yet and the alternate path to reach dead end of LER/source node itself that time to create tunnel [7]. The justification for creating tunnel is to save time. We developed a fault recovery protocol that performs well in terms of fault recovery time.
+
+In addition to this we propose a mechanism for failure recovery in an LSP. This proposal integrates the path protection, local repair and global repair methods. [12] In addition to the link/node failure protection, the fault tolerance proposal provides a significant reduction of delay that the fast rerouted traffic can experience after a link failure, because the repair activity is taken close to the point of failure.
+
+The first goal of this paper is to find a path protection in MPLS networks. This path calculation based on the labels. The second goal is to find link /node failure recovery, when a failure is detected in the protected LSP, the traffic is sent backwards to the ingress LSR using a pre-established LSP [4]
+
+. When the ingress LSR receives the first packet from the backward LSP, the traffic flow for the protected LSP is redirected [19] to the alternative LSP that was established previously between ingress and egress LSRs following a global repair strategy. Finally the packet reaches LER and there not exit any path to the destination then the packet cannot be forwarded so LER/source to create tunnel.
+
+II BACKGROUND AND RELATED WORK
+
+The related work aims in reviewing the existing literature related to failure recover to fast reroute. In the existing methodology we find fast recovery from dual/single link failure or single node failure.
+
+In this section, we explain the basics of the MPLS fast reroute (MPLS-FRR) [14] mechanism to improve the Internet behavior in speed. Each node executes the forwarding
+
+and routing operations independently for each packet, on the basis of the destination address in the packet header [18]. Each router selects the next-hop on the basis of the routing table, created through information exchange among routers, according to routing algorithms rules.
+
+The network which has two or more feasible paths to send the traffic from ingress node to an egress node, we can call these paths as the primary path and the alternative path [15]. The second will be the path where the traffic will be sent when a network problem appears. It is possible to say that the alternative path protects the primary path. This alternative path can be established either after the failure is detected, or simultaneously with the first LSP establishment.
+
+A problem exists when it is necessary to fast reroute the traffic between two paths. This process must be performed minimizing the time. In this section different methods for computing the alternative path have been presented.[14] In a new mechanism to fast rerouting is described. Basically, having an alternative path selection is based on local/global repair [18]. The ingress node must detect both local/global failure and reroute the traffic through the alternative path.
+
+For fault occurs in MPLS networks there are several schemes and algorithms are developed, some of them are related to the domain of link/node failure recovery [8] and some of them are tunnel. They are generally tested on major criterias like, Recovery Time, Packet Loss and Most important criteria that we focused are fault tolerance though it is very rare but has strong impact on the reliability of the network. [17] The major types of recovery schemes that are used for MPLS recovery are link/node failure recovery and Rerouting are defined under. Figure 1 shows an example of MPLS based network.
+
+Multi-protocol Label Switching (MPLS) is a scalable broad band technique used to strength the IP networks. Packets enter the MPLS network through a router called Ingress router [19]. In an MPLS network, incoming packets are assigned a label on the packet for further transmission. Functionally label is a short fixed length identifier that is used to forward the packets.
+
+Figure 1: MPLS Network
+
+[16] Inside the network the labels are used to route the packets without regard to the original packets header information. Packets are forwarded along a labelswitch path (LSP) where each label switch router (LSR) makes forwarding decisions based solely [10] on the contents of the label. To be able to quickly react to failures in the network, MPLS provides fast reroute (FRR) capabilities. These are local mechanisms that enable the failure-detecting router to switch
+
+packets to preconfigured backup LSPs.[19] At each hop, the LSR strip off the existing label and applies a new label which tells the next hop how to forward the packet. The last router in the LSP is responsible for removing the label from the packet. That router is called Egress router. [3] Like IP or faults may occur in the MPLS network. For such link /node failure, for this situation there should be a specific mechanism for resolving faults.
+
+III PROBLEM DEFINITION
+
+3.1 Problem Definition
+
+When the primary label switched path (LSP) [17] encounters a problem due to link or node failure, the data that travel needs to be rerouted over an alternative LSP. [19] This is equivalent to using a new LSP to carry the data. The alternative LSP can be established after a protected LSP failure is detected, or [13] it can be established before hand in order to reduce the LSP switchover time. The former option has a slow response in the rerouting function. The latter has a much better response.
+
+Explicit Paths for One-to-One Backup
+
+This process is only for tiny networks (e.g., to have a benchmark solution for another method). [17] It does not provide the solution of the problem in terms of multiple explicit paths. Only ingress routers initiate fast reroute but other nodes would take more time.
+
+Many-to-one backup
+
+Both ingress and transmit routers need to be configured. While taking reroute, [18] since configuration process has to be done for every single node, much of time is spent. If may to one is adopted, the backup length will become large.
+
+Dual Link Failures
+
+There is no additional information carried in the packet header to improve the multi-failure tolerance of FIR. The secondary failure identification takes more time [8].
+
+Single /dual Node Failures
+
+The recovery mechanism of single node failure avoids the data leakage or data loss. [7] When the dual node fails, the amount of recovery and reroute time is increased.
+
+IV METHODOLOGY
+
+In our proposal, when a fault is detected by an LSR, a switchover procedure is initiated and the packets are sent back via the backward LSP. When all packets [1] are returned to the ingress LSR (i.e., the ingress LSR receives its tagged packet) and have been rerouted to the alternative LSP, the restoration period terminates [3]. The packets stored during this time in the ingress LSR, along with all new incoming packets are now sent via the alternative LSP. [2] Note that global ordering of packets is preserved during the whole process.
+
+Failure recovery
+
+In the MPLS network, the packet enter in the ingress router to select label switching path (LSP).In this LSP any failure occurs to take MPLS fast reroute to find an alternate path [19].
+
+Local repair means after identifying the failure in the link/node, we have to find a neighour node through which packets can be sent [18]. Figure 2 shows an example of local repair approach is given below.
+
+Figure 2: Local repair
+
+Global repair means even after taking neighbour node to send the packet, if any failure occurs that the packet can`t be sent, we must take reroute to the previous node and forward the packet hop-by-hop to reach the destination [12]. Figure 3 shows an example of global repair is given below.
+
+At the beginning of the tunnel, the LSR assigns the same label to packets from different LSPs by pushing the label onto each packets stack. At the end of the tunnel, the LSR pops the top label. In the Bypass tunnel a LSP used to protect a set of LSPs passing over a common facility [14]. Label stacking allows different primary LSPs to use the same bypass tunnel for failure protection. Switch packets received on the protected LSP onto the bypass tunnel replace the old label with a new label that will be understood by the last node in the bypass tunnel to indicate LSP. [16] Push the bypass tunnels label onto the label-stack of the redirected packets.
+
+V. ALGORITHM
+
+This algorithm describes failure recovery from link
+
+Extract FC, label, destination address from received packets.
+
+Compute the outgoing link corresponding to the destination address FC, and label in the packet. For Each out going link do
+
+If FC=0 then
+
+let L1 be the forwarding link
+
+If L1 is available then forward the going link has failed packet along L1
+
+Outgoing link has failed then
+
+else single link failure scenario
+
+Send link failure message to all neighbour of node adjacent to failed link
+
+Set FC to 1,forward packet along link failure fast reroute paths, go to step 4
+
+end if
+
+End if
+
+/node. [14] This failure is identified based on Failure code (FC). Figure 5 shows an example of Failure recovery algorithm
+
+Tunnel creation
+
+Figure 3: Global repair
+
+If the failure is identified in the LSP, it should be rerouted to find an alternate path to reach LER. If the packet is rerouted to source node then it is directed directly to the destination by using tunnel. Figure 4 shows an example of global repair is given below.
+
+Figure 4 : Creating tunnel
+
+if FC=1 then
+
+Assume that the packet arrived along the arc that reverse of L1 reroute to as L2
+
+If check current node to find neighbour node available
+
+If neighbour node is LER or source Go to step 6
+
+Neighbour node available to forward to next node(local repair)
+
+else reroute to source node to find alternate path (global repair)
+
+end if
+
+If outgoing link incident on node has failed then
+
+single node failure scenario
+
+Send failure message to all neighbour of failure node
+
+set FC=2 end if
+
+End if
+
+If FC=2 then
+
+Node failure has occurred
+
+Node to connect all the link to forward node failure in the neighbour node
+
+Go to step 3
+
+If FC=3 then
+
+The current node is LER or source node to create tunnel
+
+Go to step 7
+
+Stop
+
+stop
+
+FC=3 is nothing but creating a tunnel between LER to destination.
+
+.
+
+VI EXPERIMENTAL RESULT
+
+The simple network topology [23] with a protected LSP and a pre-established end-to-end alternative LSP are used. When the proposed failure recovery algorithm is compared with the existing algorithm, It is understood that the proposed algorithm saves much time. The simulation platform
+
+[24] for these proposals was the same in order to be able to compare the simulation results [22].
+
+VII CONCLUSION
+
+In this paper we have focused on the recovery in MPLS network. After identifying the node/link failure we would be able to take fast reroute so that time could be saved [14]. It compute recovery path on demand after the occurrence of the fault, where as the proposed fault recovery algorithm is followed. [18] After reaching LER we don`t have to take reroute instead which a tunnel can be created to send the packets. Having not taken the reroute time is once again saved.
+
+Figure 5: Failure recovery algorithm
+
+FC = Failure code
+
+LER = Label Edge Router LSP = Label Switching Path
+
+LSR = Label Switching Router
+
+In MPLS packet header, FC (Failure code), label and destination address are added. If there is no link failure, Failure code is set as 0 to send the packet provided the next hop is available. If the outgoing link has failed then FC value is replaced as 1.
+
+FC=1 means link failure in the network. At tis point we must take reroute to the previous node and then apply local/global repair to forward the packets. When forward the packets if there is any node failure we must take to previous node and replace the FC value as 2.
+
+FC=2 means if there is one again a single node failure we must take reroute to the previous node and look if there are alternate paths available where one can available two approaches that are local/global repair to send the packets to the destination. If the packet do not reach the destination but reach LER, We must replace the value as 3.
+
+VIII FUTURE WORK
+
+The Enhancement of this project includes creation of more number of nodes and links [17], and also simulate recovery scheme for different types of wired networks in order to achieve better performance.
+
+REFERENCES
+
+Lemeshko, O.V. ; Kozlova, H.V. ; Romanyuk, A.A., Flow- based model of fault-tolerant routing in MPLS-network , 2013 , Page(s): 509 510
+
+A Fast Re-Route Method,Eric Rosenberg and James Uttaro, Member, IEEE, ieee communications letters, vol. 17, no. 8, august 2013
+
+S. Bryant, S. Previdi, and M. Shand, A framework for IP and MPLS fast reroute using not-via addresses, Internet-Draft draft- ietf-rtgwg-ipfrrnotvia-addresses-10, Dec. 2012.
+
+Hock, D. ; Hartmann, M. ; Menth, M. ; Schwartz, C., Optimizing unique shortest paths for resilient routing and fast reroute in IP-based networks 2010 , Page(s): 309 316
+
+M. Menth, R. Martin, M. Hartmann, and U. Spoerlein, Efficiency of Routing and Resilience Mechanisms in Packet- Switched Communication Networks, European Transactions on Telecommunications (ETT), vol. 21, no. 2, 2010.
+
+N. Wang and B. Dong, Fast failure recovery for reliable multicast-based content delivery, in International Conference on Network and Service Management (CNSM), Oct. 2010, pp. 505 510.
+
+Shrinivasa Kini, Srinivasan Ramasubramanian, Amund Kvalbein, Audun F. Hansen, Fast Recovery from Dual Link or Single Node Failures in IP Networks Using Tunneling., Feb 2009
+
+S. Kini, S. Ramasubramanian, A. Kvalbein, and A. Hansen, Fast recovery from dual link failures in ip networks, in Proceedings of IEEE INFOCOM, 2009, pp. 13681376.
+
+G. Jayavelu, S. Ramasubramanian, and O. Younis, Maintaining colored trees for disjoint multipath routing under node failures, to appear in IEEE/ACM Transactions on Networking, 2008.
+
+Dongmei Wang ; Guangzhi Li Networking, IEEE/ACM Transactions on, Efficient Distributed Bandwidth Management for MPLS Fast Reroute Volume: 16 , Issue: 2 ,2008
+
+Martin, R. ; Menth, M. ; Canbolat, K. Capacity Requirements for the One-to-One Backup Option in MPLS Fast Reroute 2006
+
+U-turn alternates for IP/LDP fast-reroute, IETF draftatlas-ip- local-protect-uturn-03, Feb. 2006.
+
+J. Wang, Z. Zhong, and S. Nelakuditi, Cam05-4: Handling multiple network failures through interface specific forwarding, Global Telecommunications Conference, 2006. GLOBECOM 06. IEEE, pp. 16, Nov. 2006.
+
+Master Thesis Johan Martin Olof Petersson, MPLS Based Recovery Mechanisms, UNIVERSITY OF OSLO May 2005
+
+Tricha Anjali, Caterina Scoglio, Jaudelice C. de Oliveira, Leonardo C. Chen, Ian F. Akyildiz, Jeff A. Smith, GeorgeUhl, and Agatino SciutoA New Path Selection Algorithm for MPLS Networks Based on Available Bandwidth Estimation in Proc. IEEE INFOCOM, Mar. 2004, vol. 1, pp. 176186.
+
+Aubin, R. ; Nasrallah, H., MPLS fast reroute and optical mesh protection: a comparative analysis of the capacity required for packet link protection Year: 2003 , Page(s): 349 355
+
+Micha PiÃ³ro, Artur Tomaszewski, Cezary Zukowski, David Hock, Matthias Hartmann, Michael Menth, Optimized IP- Based vs. Explicit Paths for One-to-One Backup in MPLS Fast Reroute, Institute of Telecommunications.2 2002
+
+Shrinivasa Kini, Srinivasan Ramasubramanian, Amund Kvalbein, Audun F. Hansen, Fast Recovery from Dual Link or Single Node Failures in IP Networks Using Tunneling , March 2011
+
+Rosen, E., et al. Multiprotocol Label Switching Architecture, Internet draft< draft-ietf-mpls-arch- 05.txt>, April 1999.
+
+Shrinivasa Kini, Srinivasan Ramasubramania, Amund Kvalbein, Audun F. Hansen, Fast Recovery from Dual Link Failures in IP Networks, Feb 2008
+
+Aditya Sundarrajan, Srinivasan Ramasubramanian, Fast Rerouting for IP Multicast Under Single Node Failures Department of Electrical and Computer Engineering University of Arizona
+
+http://www.isi.edu/nsnam/vint/
+
+NS Simulator for Beginners By Eitan Altman, Tania Jimenez.
+
+Network Simulator complete reference by zacker

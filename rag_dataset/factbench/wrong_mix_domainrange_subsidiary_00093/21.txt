@@ -1,0 +1,287 @@
+Understanding How NTP Works
+
+Default NTP Configuration
+
+Configuring NTP on the Switch
+
+Enabling NTP in Broadcast-Client Mode
+
+Configuring NTP in Client Mode
+
+Configuring Authentication in Client Mode
+
+Setting the Time Zone
+
+Enabling the Daylight Saving Time Adjustment
+
+Disabling the Daylight Saving Time Adjustment
+
+Clearing the Time Zone
+
+Clearing NTP Servers
+
+Disabling NTP
+
+Configuring NTP
+
+This chapter describes how to configure the Network Time Protocol (NTP) on the Catalyst enterprise LAN switches.
+
+Note For complete syntax and usage information for the commands that are used in this chapter, refer to the Catalyst 4500 Series, Catalyst 2948G, Catalyst 2948G-GE-TX, and Catalyst 2980G Switches Command Reference.
+
+This chapter consists of these sections:
+
+•Understanding How NTP Works
+
+•Default NTP Configuration
+
+•Configuring NTP on the Switch
+
+Understanding How NTP Works
+
+NTP synchronizes timekeeping among a set of distributed time servers and clients. With this synchronization, you can correlate events to the time that system logs were created and the time that other time-specific events occur. An NTP server must be accessible by the client switch.
+
+NTP uses the User Datagram Protocol (UDP) as its transport protocol. All NTP communication uses Coordinated Universal Time (UTC), which is the same as Greenwich Mean Time. An NTP network usually gets its time from an authoritative time source, such as a radio clock or an atomic clock that is attached to a time server. NTP distributes this time across the network. NTP is extremely efficient; no more than one packet per minute is necessary to synchronize two machines to within a millisecond of one another.
+
+NTP uses a stratum to describe how many NTP hops away a machine is from an authoritative time source. A stratum 1 time server has a radio or atomic clock that is directly attached, a stratum 2 time server receives its time from a stratum 1 time server, and so on. A machine running NTP automatically chooses as its time source the machine with the lowest stratum number that it is configured to communicate with through NTP. This strategy effectively builds a self-organizing tree of NTP speakers.
+
+NTP has two ways to avoid synchronizing to a machine whose time might be ambiguous:
+
+• NTP never synchronizes to a machine that is not synchronized itself.
+
+• NTP compares the time that is reported by several machines and does not synchronize to a machine whose time is significantly different from the others, even if its stratum is lower.
+
+The communications between machines running NTP, known as associations, are usually statically configured; each machine is given the IP addresses of all machines with which it should form associations. An associated pair of machines can keep accurate timekeeping by exchanging NTP messages between each other. However, in a LAN environment, you can configure NTP to use IP broadcast messages. With this alternative, you can configure the machine to send or receive broadcast messages, but the accuracy of timekeeping is marginally reduced because the information flow is one-way only.
+
+Cisco's implementation of NTP does not support stratum 1 service; it is not possible to connect to a radio or atomic clock. We recommend that you obtain the time service for your network from the public NTP servers available on the IP Internet.
+
+If the network is isolated from the Internet, Cisco's NTP implementation allows a machine to be configured so that it acts as though it is synchronized using NTP, when it actually has determined the time using other methods. Other machines synchronize to that machine using NTP.
+
+Default NTP Configuration
+
+Table 39-1 shows the default NTP configuration.
+
+Configuring NTP on the Switch
+
+The following sections describe how to configure NTP.
+
+Enabling NTP in Broadcast-Client Mode
+
+Enable the switch in NTP broadcast-client mode if an NTP broadcast server, such as a router, regularly broadcasts time-of-day information on the network. To compensate for any server-to-client packet latency, you can specify an NTP broadcast delay (a time adjustment factor for the receiving of broadcast packets by the switch).
+
+To enable NTP broadcast-client mode on the switch, perform this task in privileged mode:
+
+This example shows how to enable NTP broadcast-client mode on the switch, set a broadcast delay of 4000 microseconds, and verify the configuration:
+
+NTP Broadcast Client mode enabled
+
+NTP Broadcast delay set to 4000 microseconds
+
+Current time: Tue Jun 23 1998, 20:25:43
+
+Timezone: '', offset from UTC is 0 hours
+
+Summertime: '', disabled
+
+Last NTP update:
+
+Broadcast client mode: enabled
+
+Broadcast delay: 4000 microseconds
+
+Client mode: disabled
+
+NTP-Server
+
+----------------------------------------
+
+Console> (enable)
+
+Configuring NTP in Client Mode
+
+Configure the switch in NTP client mode if you want the client switch to regularly send time-of day requests to an NTP server. You can configure up to ten server addresses per client.
+
+To configure the switch in NTP client mode, perform this task in privileged mode:
+
+This example shows how to configure the NTP server address, enable NTP client mode on the switch, and verify the configuration:
+
+NTP server 172.20.52.65 added.
+
+NTP Client mode enabled
+
+Current time: Tue Jun 23 1998, 20:29:25
+
+Timezone: '', offset from UTC is 0 hours
+
+Summertime: '', disabled
+
+Last NTP update: Tue Jun 23 1998, 20:29:07
+
+Broadcast client mode: disabled
+
+Broadcast delay: 3000 microseconds
+
+Client mode: enabled
+
+NTP-Server
+
+----------------------------------------
+
+172.16.52.65
+
+Console> (enable)
+
+Configuring Authentication in Client Mode
+
+Authentication can enhance the security of a system running NTP. When you enable the authentication feature, the client switch sends time-of-day requests only to trusted NTP servers. The authentication feature is documented in RFC 1305.
+
+You can configure up to ten authentication keys per client. Each authentication key is actually a pair of two keys:
+
+• A public key number—A 32-bit integer that can range from 1-4,294,967,295
+
+• A secret key string—An arbitrary string of 32 characters, including all printable characters and spaces
+
+To authenticate the message, the client authentication key must match the key on the server. Therefore, the authentication key must be securely distributed in advance (the client administrator must get the key pair from the server administrator and configure it on the client).
+
+To configure authentication, perform this task in privileged mode:
+
+This example shows how to configure the NTP server address, enable NTP client and authentication modes on the switch, and verify the configuration:
+
+NTP server 172.20.52.65 with key 879 added.
+
+NTP Client mode enabled
+
+NTP authentication feature enabled
+
+Current time: Tue Jun 23 1998, 20:29:25
+
+Timezone: '', offset from UTC is 0 hours
+
+Summertime: '', disabled
+
+Last NTP update: Tue Jun 23 1998, 20:29:07
+
+Broadcast client mode: disabled
+
+Broadcast delay: 3000 microseconds
+
+Client mode: enabled
+
+Authentication: enabled
+
+NTP-Server Server Key
+
+---------------------------------------- ----------
+
+172.16.52.65
+
+Key Number Mode Key String
+
+---------- --------- --------------------------------
+
+Console> (enable)
+
+Setting the Time Zone
+
+You can set a time zone for the switch to display the time in that time zone. You must enable NTP before you set the time zone. If NTP is not enabled, this command has no effect. If you enable NTP and do not specify a time zone, UTC is shown by default.
+
+To set the time zone, perform this task in privileged mode:
+
+This example shows how to set the time zone on the switch:
+
+Timezone set to 'Pacific', offset from UTC is -8 hours
+
+Console> (enable)
+
+Enabling the Daylight Saving Time Adjustment
+
+Following U.S. standards, you can have the switch advance the clock one hour at 2:00 a.m. on the first Sunday in April and move the clock back one hour at 2:00 a.m. on the last Sunday in October. You can also explicitly specify start and end dates and times and whether the time adjustment recurs every year.
+
+To enable the daylight saving time clock adjustment following the U.S. standards, perform this task in privileged mode:
+
+This example shows how to set the clock that is adjusted for Pacific Daylight Time following the U.S. standards:
+
+Summertime is enabled and set to 'PDT'
+
+Console> (enable)
+
+To enable the daylight saving time clock adjustment that recurs every year on different days or with a different offset than the U.S. standards, perform this task in privileged mode:
+
+This example shows how to set the daylight saving time clock adjustment, repeating every year, starting on the third Monday of February at noon and ending on the second Saturday of August at 3:00 p.m. with a 30-minute offset forward in February and back in August.
+
+Console> (enable) set summertime recurring 3 mon feb 3:00 2 saturday aug 15:00 30
+
+Summer time is disabled and set to ''
+
+start: Sun Feb 13 2000, 03:00:00
+
+end: Sat Aug 26 2000, 14:00:00
+
+Offset: 30 minutes
+
+Recurring: yes, starting at 3:00am Sunday of the third week of February and ending 14:00pm Saturday of the fourth week of August.
+
+Console> (enable)
+
+To enable the daylight saving time clock adjustment to a nonrecurring specific date, perform this task in privileged mode:
+
+This example shows how to set the nonrecurring daylight saving time clock adjustment on April 30, 2003, at 4.30 a.m., ending on February 1, 2004 at 5:30 a.m., with an offset of 1 day (1440 min):
+
+Console> (enable) set summertime date apr 13 2003 4:30 jan 21 2004 5:30 50
+
+Summertime is disabled and set to ''
+
+Start : Thu Apr 13 2000, 04:30:00
+
+End : Mon Jan 21 2002, 05:30:00
+
+Offset: 1440 minutes (1 day)
+
+Recurring: no
+
+Console> (enable)
+
+Disabling the Daylight Saving Time Adjustment
+
+To disable the daylight saving time clock adjustment, perform this task in privileged mode:
+
+This example shows how to disable the daylight saving time adjustment:
+
+Summertime is disabled and set to 'Arizona'
+
+Console> (enable)
+
+Clearing the Time Zone
+
+To clear the time zone settings and return the time zone to UTC, perform this task in privileged mode:
+
+This example shows how to clear the time zone settings:
+
+Timezone name and offset cleared
+
+Console> (enable)
+
+Clearing NTP Servers
+
+To clear an NTP server address from the NTP servers table on the switch, perform this task in privileged mode:
+
+This example shows how to clear an NTP server address from the NTP server table:
+
+NTP server 172.16.64.10 removed.
+
+Console> (enable)
+
+Disabling NTP
+
+To disable NTP broadcast-client mode on the switch, perform this task in privileged mode:
+
+This example shows how to disable NTP broadcast-client mode on the switch:
+
+NTP Broadcast Client mode disabled
+
+Console> (enable)
+
+To disable NTP client mode on the switch, perform this task in privileged mode:
+
+This example shows how to disable NTP client mode on the switch:
+
+NTP Client mode disabled

@@ -1,0 +1,69 @@
+Clonezilla is one of the greatest Open Source backup tools for Linux. The absence of a Graphical User Interface combined with a simpler, fast, and intuitive guided command line wizard that runs on top of a live Linux Kernel makes it a perfect candidate back-up tool for every sysadmin out there.
+
+With Clonezilla, not only you can perform a full backup of a device data blocks directly to another drive but also known disk cloning, but you can also backup entire disks or individual partitions remotely (using SSH, Samba or NFS shares) or locally to images which can be all encrypted and stored in central backup storage, typically a NAS, or even on external hard-disks or other USB devices.
+
+In case of a drive failure, the backed-up images can be easily restored to a new device plugged-in into your machine, with the remark that the new device must meet the minimum required space value, which is at least the same size that the failed backed-up drive had.
+
+In simpler terms, if you clone a 120 GB hard-disk which has 80 GB free space, you can’t restore the backed-up image to a new 80 GB hard-drive. The new hard drive which will be used for cloning or restoring the old one must have at least the same size as the source drive (120 GB).
+
+In this tutorial we are going to show you how you can clone a block device, typically a hard-disk on top of which we run a CentOS 8/7 server (or any Linux distribution such as RHEL, Fedora, Debian, Ubuntu, etc.).
+
+In order to clone the target disk, you need to physically add a new disk into your machine with at least the same size as the source disk used for cloning.
+
+Requirements
+
+Download Clonezilla ISO Image – http://clonezilla.org/downloads.php
+
+New Hard Drive – physically plugged-in into the machine and operational (consult BIOS for device information).
+
+How to Clone or Backup CentOS 7 Disk with Clonezilla
+
+1. After you download and burn Clonezilla ISO image to a CD/DVD, place the bootable media into your machine optical drive, reboot the machine and press the specific key (F11, F12, ESC, DEL, etc) in order to instruct the BIOS to boot from the appropriate optical drive.
+
+2. The first screen of Clonezilla should appear on your screen. Select the first option, Clonezilla live and press Enter key to proceed further.
+
+3. After the system loads the required components into your machine RAM a new interactive screen should appear which will ask you to choose your language.
+
+Use up or down arrow keys to navigate through the language menu and press Enter key in order to choose your language and move forward.
+
+4. On the next screen, you have the option to configure your keyboard. Just press Enter key at Don’t touch keymap option to move to the next screen.
+
+5. On the next screen choose Start Clonezilla in order to enter the Clonezilla interactive console menu.
+
+6. Because in this tutorial we are going to perform a local disk clone, so choose the second option, device-device, and press Enter key again to proceed further.
+
+Also, make sure that the new hard-drive is already physically plugged-in intro your machine and properly detected by your machine.
+
+7. On the next screen choose Beginner mode wizard and press Enter key to move to the next screen.
+
+If the new hard disk is larger than the old one you can choose Expert mode and select -k1 and -r options that will assure that the partitions will be proportionally created in the target disk and the file system will be automatically resized.
+
+Be advised to use the expert mode options with extreme caution.
+
+8. On the next menu choose disk_to_local_disk option and press Enter to continue. This option ensures that a full disk clone (MBR, partition table, and data) with the same size as the source disk to target disk will be performed further.
+
+9. On the next screen, you must choose the source disk that will be used for the clone. Pay attention to disk names used here. In Linux a disk can be named sda, sdb, etc, meaning that sda is the first disk, sdb the second, and so on.
+
+In case you’re not sure what’s your source disk name you can physically examine the source disk name and serial No, check SATA port cabling on the motherboard, or consult the BIOS in order to obtain disk information.
+
+In this guide we’re using Vmware Virtual disks for cloning and sda is the source disk that will be used for cloning. After you successfully identified the source drive press Enter key in order to move to the next screen.
+
+10. Next, select the second disk that will be used as a target for cloning and press the Enter key to continue. Proceed with maximum attention because the cloning process is destructive and will wipe all data from the target disk, including MBR, partition table, data, or any boot loader.
+
+11. If you’re sure the source file system is not corrupted you can safely choose to Skip checking/repairing source file system and press Enter to continue.
+
+Next, the command used for this cloning session will be displayed on your screen and the prompt will wait for you to hit the Enter key in order to continue.
+
+12. Before starting the real process of disk cloning, the utility will display some reports concerning its activity and will issue two warning messages.
+
+Press y key twice to agree with both warnings and press y key the third time in order to clone the boot loader on the target device.
+
+13. After you agreed with all warning the cloning process will automatically start. All data from the source drive will be automatically replicated to the target device with no user interference.
+
+Clonezilla will display a graphical report regarding all data it transfers from a partition to the other, including the time and speed it takes to transfer data.
+
+14. After the cloning process finishes successfully a new report will be displayed on your screen and the prompt will ask you whether you would like to use Clonezilla again by entering the command line or exit the wizard.
+
+Just press Enter key to move to the new wizard and from there select poweroff option in order to halt your machine.
+
+That’s all! The cloning process is finished and the new hard disk can now be used instead of the old one after it has been physically detached from the machine. If the old hard drive is still in better shape you can store it in a safe location and use it as a backup solution for extreme cases.

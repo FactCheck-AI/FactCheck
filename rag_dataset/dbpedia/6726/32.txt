@@ -1,0 +1,163 @@
+A movement decades in the making
+
+SCALE: When did you realize that containers are a good way to build infrastructure or to build a multi-tenant platform?
+
+JASON HOFFMAN: When was the first time that I used containers? … I think FreeBSD Jails showed up in FreeBSD 4 in the early 2000s. I was using them production in 2003, and I remember messing around with them in 2002.
+
+…
+
+There had been chroot, as far as that base concept, for quite a while. Unix always had at least the idea that you could restrict what processes were doing by user, and chroot was a little magical, weird. And then when Jails first came out at FreeBSD, you basically had to read source code to figure out how to configure them and you literally moved file systems around with dd and stuff like that, but that was then.
+
+Then when we started a hosting service. In the old TextDrive days, everybody ran inside a big FreeBSD Jail, and then when we started doing virtual private server services those were FreeBSD Jail-based.
+
+When TextDrive became Joyent, it was originally built on Solaris Zones, right?
+
+No, it started out on FreeBSD Jails.
+
+…
+
+I think I got a hand on one of the Solaris “Nevada” builds at some point, and DTrace, ZFS and Zones were in there, and the whole source code for the whole thing was out, and then I was sold at that point.
+
+You have to think of it in context — this is 2005. The only decent 64-bit chip on the market was from AMD. Intel hadn’t quite shipped their EMT chips yet and everyone’s going through this 32- to 64-bit transition, which of course limits the size of a system to only 4 gigabytes of addressable memory. There’s not a lot of reason to do full-blown virtualization where you’re running a kernel on a kernel in 32-bit memory.
+
+When the biggest server you can have has 4 gigabytes of DRAM, you virtualized that with OS-level virtualization and you used FreeBSD Jails and Solaris Zones.
+
+“Solaris at that point in time was rock-solid. My god — it had ZFS and DTrace inside of there and it could go 64-bit.”
+
+Was the rationale when you built TextDrive and then eventually Joyent, “How can we host as much as possible on the limited resources we have?”
+
+Basically, how could you give people the experience of their own box, but do that at actual utilization rates.
+
+…
+
+Solaris at that point in time was rock-solid. My god — it had ZFS and DTrace inside of there and it could go 64-bit, and you could effectively sit down and easily clone things with ZFS. You could determine real utilizations and what people are actually doing from a workload perspective with DTrace, and you could basically overprovision and not have to hard-allocate memory. You could 1.5x, 2x, 3x, 4x sell a box, basically, and drive at high utilization rates and everything else.
+
+That was the thinking back then.
+
+What does the Joyent OS, SmartOS, look like at this point? Is it still based on Solaris?
+
+SmartOS is still open source and out there, and it’s still the basis of Joyent. From a pedigree perspective, SmartOS can be thought of as a distro of the Illumos kernel, and Illumos was a fork of open source Solaris. It was forked when Oracle close-sourced it after buying Sun.
+
+Why Linux? Why Docker?
+
+You’re pretty adamant that Solaris is a superior OS and Solaris Zones are a superior container technology. So why do you think Linux took off as the OS of choice and Docker, which is Linux-based, took off as the container format of choice?
+
+I think Linux took off because of package management. I think that’s basically it. Docker’s taking off because it’s the new package management. It’s just that simple.
+
+FreeBSD was very attractive because there was a tremendous amount of ports inside of there. The fact is in Solaris it was always a pain to get all this other stuff to work. There never really was the equivalent of apt.get competing with this and that. There wasn’t this diversity of packaging systems that allowed one to get up and running.
+
+At the end of the day, if you’re learning how to develop on a system like that, having it be convenient and easy to use — you type a command and the stuff you have is just there, you’re not figuring out how to compile the thing — matters.
+
+…
+
+When you think about why would someone pick one Linux distro over the other, it’s because of — literally — the aesthetics of how the directories are laid out and what they’re called; the default shell and how much stuff was in there; and the packaging system. That was it.
+
+I think Docker is just the next evolution of a Linux packaging system. … The Amazon [Web Services] Machine Image got in people’s minds, you really get used to provisioning as this atomic, immutable image — you just grab this image — and Docker brought that next level of packaging to Linux.
+
+I think it’s regrettably the reasons why these things win. These things win because of aesthetics and convenience and ease and packaging. It’s a pretty box.
+
+“The Linux packaging systems were better for making it really easy. … I think Docker’s just a continuation of that mindset.”
+
+But from a developer standpoint isn’t that the goal? If you want to build a service-oriented application and Docker is easier to use, you’re not going to spend your time learning some obscure Solaris configurations.
+
+A million thousand percent, yes.
+
+Yet, the mindset we had to have in running a large service was about the ability to do postmortem debugging in a big distributed system as it hit messed-up edge cases, which is totally different. We dealt with aesthetics and packaging issues by minimizing them. Basically bringing it all the way down to a really, really, really small operating system.
+
+In the old Solaris days, you would literally type “package in” and it would just shell out to tar. It was just basically a wrapper around tar. People will say it’s not, but it was a wrapper around tar.
+
+The Linux packaging systems were better for making it really easy. Anything you wanted was there, and it was one command away from being installed. I think Docker’s just a continuation of that mindset.
+
+How Amazon won over cloud developers
+
+Joyent is now a full-blown cloud provider, but why do you think it is that other clouds didn’t go down the container and resource-isolation route? I have a theory that Amazon Web Services was so successful everyone felt obliged to follow suit.
+
+We basically launched what we called back then, in 2006, the Grid Containers service. If you looked at the landscape back in 2006, we had Sun Grid, which was you upload your Excel file through a web portal and then it crunches on your Excel file. I mean, it was really a pointless thing; it really was very “griddy.”
+
+…
+
+We were very web-app-focused … so the whole Grid Containers service that launched was basically predefined web stacks and containers, predefined database stacks and containers, and then elastic load-balancing in front of it.
+
+It was the only service like that at the time and we even had a service called Ruby on Rails Apps on which you could do push deployment out of Subversion and stuff like that. For some stupid reason we stopped doing that and some people that found it irritating then went off to start Heroku and stuff like that.
+
+“The smartest thing we could’ve done was never let all the web 2.0 companies go away. … One thing that Amazon did a great job of was that they loved those guys.”
+
+…
+
+Back then we had Wordpress.com and Twitter. I mean name your San Francisco startup that’s now a $10, $20 … $100 billion dollar company, and they were all customers.
+
+Then Amazon S3 came out. There’s a whole story behind making Twitter use S3 because the developers, back then, had no idea how to do a hash directory structure on disk as a scalable way of storing images. They essentially had one gigantic directory with a million-plus images inside of it.
+
+The first big, gigantic Twitter user that had 5,000 followers was John Edwards. I remember the day that John Edwards showed up, when he was running for president. Back then, the images weren’t paginated and so all the thumbnails of all your followers would load up with every page load, and they were stored poorly on disk, and caching headers were off, and then it became like, “Well, Amazon’s got this new S3 thing, why don’t you put all your images there so you don’t have to think about how to actually store these on a disk? It can be like a poor man’s CDN.”
+
+Then when Amazon EC2 came out, EC2 was a batch compute service for processing things out of S3. They did a really good evolutionary job back then. There was no disk persistence and no IP address persistence and they didn’t have a load balancing service yet, et cetera. But what Amazon really nailed in those years was they just really nailed making it easy and convenient.
+
+The killer service was S3. … We even, back then, just had our customers dumping their logs in S3 and images in S3, and then pulling them back down to Joyent and manipulating them there. Then EC2 shows up and, of course, that’s a perfect way to go and process a log.
+
+…
+
+[Joyent ended up making a lot decisions to expand its business, but] the smartest thing we could’ve done was never let all the web 2.0 companies go away. We had everybody back then. One thing that Amazon did a great job of was that they loved those guys.
+
+It was probably the biggest tactical error, if you will, but the tech was fine.
+
+“When you can dimension a piece of hardware exactly how you want it to be, as some bare metal experience, then you subdivide that piece of hardware with a native container environment — that’s going to be the vast majority of the world’s footprint.”
+
+Better operations and efficiency with containers
+
+Now that these new container formats are here, are we in a better place if people start building container-based applications than we were relying on the virtual machine as the unit of measurement or the unit of compute?
+
+Yeah, a million percent. A million percent.
+
+If you look at my team now, we just launched this “disaggregated hardware,” meaning we took apart all the normal hardware components inside of server storage and networking. There’s a board that, say, just has memory on it and some CPUs, and a board that just has NICs, and a board that just has drives. On the back of them there’s onboard silicon photonics where you can actually convert these electrical signals to light, and these are very high-speed connections. What you can literally do is you can have the “local hard drive” be a kilometer away from its CPU and its memory.
+
+We made it so that all the components are independently managed, independently scaled and everything’s basically been disaggregated, and everything’s been cross-connected by silicon photonics. That, on the hardware side, is really disruptive.
+
+On the operating system side, Windows has native containers now and Linux has native containers, and they over the next 2 to 3 years will get good. It’s even at the point now where VMware announced a project to do native containers on ESX, and even when that was a “secret project” they were originally doing ESX containers on ESX.
+
+“If you’re below 50 percent occupancy of a facility, the economics of the facility dominates your economics.”
+
+…
+
+When you think about disaggregated hardware — and we did this with Intel, and it’s not like Intel’s not going to do it with other people 2 or 3 years from now — the hardware disaggregation thing is now something that’s finally technically possible. We’ll have native Linux containers that are good, native Windows containers that are good. The role of hardware-assisted virtualization, where you’re running a full kernel on top of another kernel, that will be relegated only to situations where you’re trying to subdivide a CPU socket.
+
+When you can dimension a “server” or storage or a network switch — when you can dimension a piece of hardware exactly how you want it to be, as some bare metal experience, then you subdivide that piece of hardware with a native container environment — that’s going to be the vast majority of the world’s footprint. The hypervisors we’ve been messing around with for the last decade in production are going to be relegated, I think, to test-dev situations where you’re subdividing a CPU socket.
+
+The analogy we use at a lot at Mesosphere is that when you’re doing this kind of stuff, especially if you’re doing it at some sort of scale and with an orchestration system, you’re running in a way that companies like Google have been running forever. Is that the end goal here — how efficiently and how automatically can you run something?
+
+Yes. Disaggregated hardware means you never have component waste and you’re able to differentially lifecycle-manage those components. You can make incremental investments to go and change the hardware into a different footprint rather than a full system swap-out. It’s supposed to meet the true promise of things like blades, not a chassis swap-out every couple years
+
+If you’re below 50 percent occupancy of a facility, the economics of the facility dominates your economics. The fact that you used to use 100 racks, then you did a consolidation and now you’re using 20 racks, means you just now made the facility cost a larger percentage of your overall economics than it was before. You used to be at a low utilization rate and, my god, you consolidated and you’re at the same utilization rate.
+
+It didn’t solve the problem of trying to actually have perfectly dimensioned systems that are at high utilization rates sitting in facilities at high occupancy rates. I think that’s going to happen with containers. It’s particularly going to happen when you combine containers with the sort of disaggregated rack-scale hardware approaches.
+
+The past: virtual machines. The future: 128 bits.
+
+Did we have to have the virtual machine era in order to get here?
+
+The issue was always an insistence on operating system heterogeneity. VMware Workstation 1.0 first came out in like ’98 or ‘99, and then in 2003 Xen came out. Xen at the time was only capable of running Linux on Linux, so Linux in the beginning made the wrong choice. It should’ve gone with the container model in 2003, not the Xen model in 2003. Both of those systems, back then, were software-only approaches to running a kernel on top of another kernel.
+
+…
+
+For a bunch of us, say at Joyent — and Google’s a great example of this — we realized from the very beginning that operating system heterogeneity was evil. If you decide that you’re not going to have a whole bunch of different operating systems, you’re going to standardize on one operating system, then the OS-level virtualization or the container approach is the way you do virtualization.
+
+I think we ended up in this situation with virtual machines, and we ended up in the situation with containers, because of two things. It was because of the operating system wars and the massive operating system heterogeneity that you had in the ‘70s, ‘80s and ‘90s, and then the 32- to 64-bit transition, where all of a sudden you could have large memory systems and you could do consolidation of all these operating systems onto one system.
+
+That helped people make a very easy evolutionary step. But if you stop again and think, everybody that did net-new infrastructure, where they built it themselves, made a container choice any time after 1999.
+
+“For a bunch of us, say at Joyent — and Google’s a great example of this — we realized from the very beginning that operating system heterogeneity was evil.”
+
+Despite any misgivings about what Docker and Linux, does it seem like at least in an era where we’re headed down the right path in terms of infrastructure and application architectures? Dare I say a golden era?
+
+Well, we’ve had a couple things happen. x86 won so far, until a 128-bit chip is needed or quantum computing shows up — so keep an eye out — but x86 won and that got rid of a lot of that level of heterogeneity. Linux and Windows have won, so that’s gotten rid of a lot of heterogeneity.
+
+As a result, you can start taking a much more atomic view of your infrastructure. You can take this idea that you have these immutable building blocks or Legos of set sizes, and you can start introducing concepts of atomicity and immutability in the infrastructure.
+
+…
+
+But at the same time, I think there’s still quite a lot to do. I think we haven’t quite gotten to the big issues in some of the distributed computing issues. That becomes how do you start giving them have some degree of autonomic behavior, so an application workload actually changes where it is and what it is doing on its own. You have a thing that decides it’s going to change how it’s scheduled on its own.
+
+…
+
+And most people that are doing some of these distributed systems are still dealing with tens of datacenters. I think there’s a lot to do still around what does it mean to start looking at hundreds to thousands, to tens of thousands, to hundreds of thousands of “datacenters” that have a wide range of known capabilities inside of them. How do you start having autonomic application behavior on top of that type of infrastructure?
+
+There’s still a lot to do. And like I said, 128-bit chips are going to show up and everything’s just going to go to shit again.

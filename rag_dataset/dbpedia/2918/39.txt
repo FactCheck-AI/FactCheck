@@ -1,0 +1,11 @@
+I must admit I'd have my doubts AX.25 is my "protocol" of choice for anything designed post-1980. However, there's so much amateur radio material out there that I'll leave it up to you to find a project that vaguely resembles what you need to build. Still, if possible, I'd recommend using a modern protocol; AX.25 is suboptimal in many was, not the least being the strange checksum and packet format.
+
+In any case, Cubesat Space protocol is its own network layer protocol. It's fairly versatile, not totally unlike what people designed TCP/IP for. I think you can use KISS (which is related to AX.25) as physical layer for CSP. I'd, again, recommend not doing that. For a ground/space/ground link, CCSCP 131.0-B is probably the PHY layer you're looking for.
+
+CSP's transmission is also specified for I²C. Since your OCB talks I²C, you'll have to teach your MSP430 to do that, too. But that's normally integrated in the hardware, just use the I²C interface instead of SPI.
+
+The obvious source for all CSP-related information is the original university's source code and specs:
+
+https://github.com/libcsp/libcsp
+
+Look in the "doc/" directory.

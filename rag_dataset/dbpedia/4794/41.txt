@@ -1,0 +1,389 @@
+Apple iRack beats Dell
+
+Yup, according to this story on Yahoo News, Apple's new Xserve (or iRack, as it ought to be called) ran right past a Dell server in a recent benchmark.
+
+At the big Xserve announcement, Steve Jobs made it quite clear that they were going head to head with Dell, IBM, and others. This just serves to strengthen Apple's position.
+
+Posted by jzawodn at 11:43 PM
+
+Palladium or not, here he comes!
+
+The Register is running a story titled MS security patch EULA gives Billg admin privileges on your box. Yup. Microsoft isn't waiting around for Palladium or specialized hardware. They're gonna force the new restrictions on Windows users as they download critical security updates.
+
+Microsoft has just assumed the right to attack your computer and surreptitiously install code of its choosing. You will not be warned; you will not be offered an opportunity examine the download or refuse it. MS will simply connect remotely and install what it will, or install it secretly when you contact them.
+
+Posted by jzawodn at 07:39 PM
+
+NexLand ISB Pro800 Turbo Router
+
+There was a link over on slashdot to a review of the NexLand ISB Pro800 Router. I had never heard of NexLand before, but the device is quite compelling. It is able to do load-balancing for dual broadband connections. If you're like me (unlikely) and have both DSL and a cable modem, this is the way to go! No more hassling with switching the default route on your machines when one provider's service dies.
+
+Posted by jzawodn at 03:04 PM
+
+Cringely saw the future...
+
+At least that's what his latest pulpit says. He foresaw the recent accounting scandals as well as Microsoft's Palladium announcement. Heh.
+
+Posted by jzawodn at 03:53 AM
+
+Blog Index Updates
+
+After having installed MT 2.21, I managed to get the google integration going. Now you'll see a box on the right side of the main index page which lists matches that google has found based on the titles of my most recent blog entries. In case you're not a rocket surgeon, it's called "related links via google."
+
+Also, I've manged to write a very simple Perl script called opml2html.pl that converts the myChannels.opml file created by AmphetaDesk (the cool RSS aggregation software I use) into an include file. That include file is sucked it by PHP and appears in the "feeds/blogs I read" box on the right side of the main index page, just below the aforementioned google box. So now you can know what I read and easily get the feed URL by clicking on the ever-popular orange XML button.
+
+I'll probably add a "book I'm reading" and "favorite new CD" module at some point too. I just need time to do it. Remember, I do have a book to write.
+
+Posted by jzawodn at 02:15 AM
+
+Nikon Coolpix 5700 -- Cool Camera
+
+I'm not really in the market for a new digital camera. My existing Kodak DC-290 is doing quite well. It replaced my Kodak DC-210 about 2.5 years ago. However, if I was looking around, I'd have to give the Coolpix 5700 a serious look. Here's a review of a pre-release model at Digital Photography Review.
+
+Posted by jzawodn at 09:44 PM
+
+blogdex ranking
+
+blogdex:
+
+is a system built to harness the power of personal news, amalgamating and organizing personal news content into one navigable source, moving democratic media to the masses. at current, blogdex is focused on the referential information provided by personal content, namely using the timeliness of weblogs to find important and interesting content on the web
+
+Interesting. As of right now my blog is listed as #9 on their site. Wonder how long that will last. The only link listed in the detail for my site is Tony Bowden's in sanity, one of the blogs I check daily.
+
+Posted by jzawodn at 08:53 PM
+
+More Palladium Info
+
+Adam Goodman points me at this TCPA / Palladium FAQ and an article over at The Register.
+
+Here's a bit of the FAQ that struck me:
+
+12. Scary stuff. But can't you just turn it off?
+
+Sure - one feature of TCPA is that the user can always turn it off. But then your TCPA-enabled applications won't work, or won't work as well. It will be like switching from Windows to Linux nowadays; you may have more freedom, but end up having less choice. If the applications that use TCPA / Palladium are more attractive to the majority of people, you may end up simply having to use them - just as many people have to use Microsoft Word because all their friends and colleagues send them documents in Microsoft Word.
+
+Yuck. Microsoft and the media industry are saying "you don't have to play the game, but if you do play you're gonna play by our rules."
+
+Posted by jzawodn at 08:35 PM
+
+MovableType 2.21 is available
+
+And check it out, it comes with MySQL support now. Guess what I'll have to play with soon. Maybe the Google API stuff works right too. I still haven't managed to get it working right. Hmm.
+
+I still don't quite grok the new TrackBack feature. Can someone show me the power?
+
+Posted by jzawodn at 01:56 AM
+
+Broken Trust
+
+Dylan Tweney (the brother of a guy I went to high school with--both are geniuses) wrote an article called Broken Trust about Microsoft's Palladium in which he concludes:
+
+But the rest of us should be very wary of putting so much faith in Microsoft. The real question is, for whom does Palladium make computing safer? It will surely make the digital world safer for Microsoft and Disney. But who will defend us from Bill Gates?
+
+I couldn't agree more. When I first read about Microsoft's plans a few days ago, I couldn't believe what I was reading. The guys in Redmond really have balls. It's pretty scary.
+
+Posted by jzawodn at 12:24 AM
+
+Tim Mentioned Me
+
+That's right. Tim O'Reilly, in his article The Strange Case of the Disappearing Open Source Vendors mentions:
+
+Jeremy Zawodney [sic] of Yahoo talks about MySQL Optimization not because Yahoo sells MySQL but because it uses it to deliver its service. And of course, it's not just the speakers but the attendees at the conference who are using open source to improve productivity, cut costs, and drive innovation in the products and services that they do sell.
+
+Well, it's good to see that he's getting the message out. I was just wondering what I'd write about in the blog when I read Tim's article. Unlike in past years, I wasn't very surprised by anything he said. There's nothing wrong with that, it's a just different. If nothing else, he's pimping my talk. Maybe I' should beef up the slides a bit.
+
+Oh, if you look at the URL for my talk, you'll notice that it's apparently session 2600. I'm not sure what to make of that.
+
+Posted by jzawodn at 12:10 AM
+
+MySQL Tuning Advice
+
+Here's a bit of advice. Don't make your record buffer too large. In fact, if you're adjusting it at all, there's probably something wrong. I was helping someone at work figure out what was wrong with their MySQL server today. It worked pretty well until it was stressed with more queries.
+
+I looked at the disk stats. The machine had relatively fast SCSI disks in it. Running iostat -d -n 5 5 didn't show any particular disk bottlenecks. The CPU was pretty busy, but it wasn't saturated. I checked to see how much ram was in the machine (1GB) and roughly 40% was unused. The CPU wasn't a speed daemon (500MHz Pentium 2). But it should have been able to perform much better.
+
+Then I began to watch the output of vmstat 5 and noticed something very odd. In each 5 seconds worth of output, there were thousands of page faults. The number was really high. There was clearly something funky going on with memory utilization.
+
+I looked again at startup options that were set for MySQL on that machine. It turns out that the record_buffer was set to 24MB. What that means is that each active thread in MySQL was constantly allocating and releasing a lot of memory. The kernel was doing a lot of unnecessary work by keeping track of that.
+
+After taking that setting out and letting MySQL use its default value (roughly 1MB), the server performed much better. CPU utilization was far lower. We were able to see the server plow through 500 queries per second with room to spare.
+
+That was the lesson of the day.
+
+Posted by jzawodn at 12:51 AM
+
+I want to learn Ruby
+
+I've been a die-hard Perl user for years now. Started with Perl 4 back in 1994 and have been programming Perl ever since. Perl is a great language. I can get a lot done with relatively little effort most of the time. But some of the time it can be a real pain to work with. No language is perfect. They're just tools in the computer world. Being a good Software Engineer means knowing when to use a particular tool.
+
+Recently I've realized that my tool set hasn't grown much. Yes, I'm more skilled with the tools I do use, but that's no substitute for picking up a few new tools. I briefly toyed with the notion of picking up Java a while back. Heck, I did C++ in college for a few years, so it wouldn't be too hard. But Java never really got me excited. The closest I've come has been to read a bit more about Python and to try and study the occasional Python code I come across. Python sort of gets me excited--or at least curious.
+
+Seeing this article on the O'Reilly Network reminded me of a 2.5 hour lunch conversation I had at work a few weeks ago.
+
+Without recounting all the details, I'll say this. One of the engineers that I really respect spent a lot of time singing the praises of Ruby. He talked about being like Perl but better than Perl. Less strict that Python, more readable than Perl, and most importantly, it was fun to write. As I said, this is a guy I respect. Someone who knows more computer languages that I've ever studied. I believe him. I just need to find the time to see why he (and others I know) are excited about Ruby.
+
+The only thing I need is a project to get started. I'm considering doing some back-end XML blog-related stuff as a way of learning the language--if I can squeeze any time away from working on the book, of course.
+
+Posted by jzawodn at 01:19 AM
+
+I shouldn't have ignored the World Cup
+
+Apparently there has been quite a bit of, uhm, exposure at the World Cup festivities. And that's one of the more tame shots that has been flying around on Yahoo Messenger recently. I guess I should be proud. That is a Yahoo site hosting the content. :-)
+
+Posted by jzawodn at 12:54 AM
+
+Help for OS X Converts
+
+While blogging around tonight, I ran across an old article on the O'Reilly Network that helps get folks (former Windows users, mostly) acquainted with OS X and the MacOS in general. Good stuff.
+
+Have I mentioned how cool the Mac TiBook is? When my review in Linux Magazine finally appears on the Web site, I'll link to it.
+
+Posted by jzawodn at 12:25 AM
+
+MySQL Presentation Fixed
+
+Oops. Apparently PowerPoint defaulted to saving my recent MySQL presentation in a web format only viewable by Internet Explorer. What a moronic thing for Microsoft to do.
+
+Anyway, it's all fixed now and still available at the same url.
+
+Posted by jzawodn at 12:21 AM
+
+The Disease is Spreading
+
+Or something like that. I've managed to help convince at least one other person that I know of. Huh? Derek (aka Dredd) has setup a blog using Movable Type now too.
+
+Posted by jzawodn at 02:50 PM
+
+Open Source Security -- A Bad Month
+
+It has been a bad month for security in the Open Source world. First was the Apache chunk handling bug, and now there's an OpenSSH root exploit just waiting exercised. Aren't we supposed to be immune to this?
+
+Eric Raymond rose to fame in the midst of the great Internet boom as a visionary who saw into the future of Open Source and computing in general. One of his most famous saying, often cited as the reason that Open Source software is more secure than commercial software like Microsoft Windows, goes like this:
+
+The reason I'm confident that the bazaar model, the open-source model, will continue to thrive and claim new territory, is because all of the other verification models have run out of steam. It's not that open sourcing is perfect, it's not that the many-eyeballs effect is in some theoretical sense necessarily the best possible way to do things, the problem is that we don't know anything that works as well. And the scale of problems with other methods of QA (quality assurance) is actually increasing in severity as the size of projects goes up. On the other hand, open-source development, open-source verification, the many-eyeballs effect, seems to scale pretty well. And in fact it works better as your development community gets larger. [ZDNet Interview]
+
+He proposes that the availability of the source code means that thousands of eyes are looking over the code and are more likely to find bugs and security problems than the small Engineering and QA departments at most software companies.
+
+I think he's full of it. Actually, I know he is. In theory it makes sense. It's a mathematical argument. Simple probability. You're also more likely to win the lottery if you buy more tickets. But the argument only makes sense on the surface.
+
+There several assumptions built into Eric's claim that often go unchecked. They're questions that nobody seems to ask. Let's have a quick look at them.
+
+How many Open Source developers actually read the code?
+
+I'd wager that nearly all the so-called open source developers don't read the code that we've been led to believe. In fact, I'd wager that virtually all of them install their software the same way the rest of us do--using our distribution's packaging system (rpm, apt, etc.).
+
+But surely some are reading the code, right? Of course they are.
+
+Why are they reading the code?
+
+So, let's think about the motivation of the folks who do read the code. Many of them are simply trying to figure out how it works, either so they can copy some of the functionality or ideas for their own purposes or to figure out how to add their favorite feature.
+
+My experience has been that when someone is reading code they're not familiar with, they spend most of their time and mental energy simply trying to digest the code. They need to develop a mental model of how the data is stored, common flow, and so on. Once they finally "get it", they go back to solving their original problem. Few continue analyzing the code.
+
+Even if a brave hacker communities to read the code, they're not terribly likely to spot one of the hard-to-spot problems. Why? Few open source hackers are security experts. That leads to the next question that nobody seems to ask.
+
+How many experts are reading the code?
+
+Few. Very few.
+
+What makes me say that? There are simply very few folks in the world (open source or otherwise) who really know how to write secure code and how to spot insecure code when reading it. One of the most famous is Theo de Raadt of the OpenBSD project. Theo spends a lot of his time auditing OpenBSD's code, attempting to find and fix potential security holes. He's one of the best.
+
+There aren't many others like Theo. Really good security skills takes time and experience to develop. Theo spends his life doing this. It often takes money. Many software companies send their engineers to security training.
+
+Few open source hackers have the time, motivation, or money to invest in really learning how to write secure code. Have a look at the recent Bugtraq archives.
+
+In the past few years, I've seen little evidence to support Eric's many-eyeballs theory. Have I just missed it? I'd be surprised. Even so, look at the sheer number of open source projects and compare it with the number of developers who are likely to find the bugs. The numbers are not that impressive.
+
+Posted by jzawodn at 11:32 PM
+
+I was right, Yahoo was wrong
+
+According to this article on CNet's news.com site:
+
+Yahoo on Tuesday said it is shutting down several broadcast services, including its financial news program Finance Vision and Yahoo Radio. The closures will result in fewer than 30 layoffs, said Henry Sohn, Yahoo's vice president and general manager for network services.
+
+Yahoo has been refocusing its businesses after an early growth spurt that featured a string of pricey acquisitions, including a $5 billion stock purchase of Broadcast.com in 1999 that thrust the company into streaming services. That industry has suffered as harsh a downturn as many with the burst of the dot-com bubble, thanks to high expenses and a tough advertising market.
+
+I was right. Back when Yahoo launched Finance Vision, I said it was stupid idea--a large void into which we (well, Yahoo as a company) would pour buckets of cash, seeing little return.
+
+We were told that it was important to be the first in the on-line streaming space. If we produced original content back in 2000, then when broadband became ubiquitous users would turn do us. The argument made sense, but the assumptions behind it were terribly flawed. A few people listened to me, but mostly folks just drank the Kool-Aid.
+
+The biggest problem is that the adoption rate of broadband technology wasn't anywhere near the predictions that folks were citing. It was clear to me that broadband was going to take at least 5 years to become popular enough for it to be a money-making business. Of course, Yahoo had money to burn at the time (and still does), but that didn't mean it was right.
+
+Then, when the first round of layoffs hit in early 2001, some of us expected Finance Vision and similar services to vanish. Why? They never made us a dime. The infrastructure was expensive to build and maintain. There was no sign of it becoming profitable. And we didn't have many viewers. But they kept it going.
+
+When the second round of layoffs hit, I was certain that Finance Vision would be axed. It was not.
+
+Oh, well. It's good to see the right folks finally coming to their senses. Better late than never. I just hope they learned the lesson. We cannot afford to repeat it.
+
+Posted by jzawodn at 09:15 PM
+
+Snicker
+
+Chcek out this picture. You may laugh too.
+
+Posted by jzawodn at 07:19 PM
+
+Office 11: Will Grok XML
+
+According to this article at news.com, Office version 11:
+
+will include better support for XML (Extensible Markup Language), an industry standard for data description and exchange and a key technology behind Microsoft's .Net Web services plan.
+
+Amusingly, they're playing catch-up again. A lot of Office alternatives already gork XML.
+
+Posted by jzawodn at 12:50 PM
+
+Must Resist Blogs
+
+I need to get to bed before 3 or 4am for a change. So I'm going to not go surfing other weblogs tonight. Instead I'm going to try and be like a normal person and sleep. Let's see if it actually works.
+
+Posted by jzawodn at 01:38 AM
+
+Iron Chef!
+
+That's right. I can finally get the Iron Chef. After resetting my Tivo and configuring the channels, it turns out that I can get the Food Network. I don't pay for it and it's a little fuzzy, but the audio is good and my Tivo is smart enough to record it for me. Woohoo!
+
+Posted by jzawodn at 11:40 PM
+
+Things I didn't expect to see...
+
+Okay, here are a few things I didn't expect to see. First off, we have a tennis picture that makes you wonder what the photographer was thinking. Then we have something completely different. It seems that some folks in Korea have decided to nab a picture of mytop from my site. It appears to be a discussion of the tool. I just hope they like it. It's always interesting to see what turns up in my server logs.
+
+Posted by jzawodn at 09:44 PM
+
+American Airlines going All E-Ticket
+
+As noted in Dave's weblog, American Airlines is getting serious about E-Tickets. That's great. I've recently become a big fan of AA anyway. Not only do they have the "more room in coach" (you really can tell), they have laptop power at the seat in most of their large jets.
+
+Now if I could only find a way to transfer my 60,000 miles on the Northwest, Continental, America West plan over to AA. Hmm.
+
+Posted by jzawodn at 05:47 PM
+
+Expensive Messenger Bills
+
+According to a Reuters story,
+
+Users of Instant Messenger can keep receiving messages, even when they are not logged on to their personal computer, as Microsoft and eight European mobile operators expanded the service to cellphones. A message sent from a PC to a user who is 'off-line' will automatically be forwarded to his mobile phone in the form of a short SMS text message. Replies from a mobile phone will land back in the Instant Messenger dialog box on the computer. Mobile phone users will be charged per message received or sent.
+
+I can imagine people just trying to jack up each others bills by spamming their phones. I sure hope there are some good filterting options.
+
+Posted by jzawodn at 05:20 PM
+
+The Motivation for .NET?
+
+There is an interesting discussion going on at K5 about Microsoft's real motivation for .NET. The author derives some of his ideas from Joel's latest column, Strategy Letter V.
+
+In his latest strategy letter Joel Spolsky describes a general principle, Smart companies try to commoditize their product's complements. It's interesting to try and apply this to Microsoft's .NET efforts. In programming the best way to learn a language is to try to write programs in it. With these sorts of ideas the best way to understand them is to try and apply them.
+
+I'm not sure if I buy it or not. They may be on to something. But a part of me really thinks that .NET is Microsoft's answer to the threat of Java and things like Java--the thought that they'd lose control of part of the development foundation.
+
+Posted by jzawodn at 03:16 AM
+
+Over the Edge
+
+Props to Ye Olde Phart for pointing out Over the Edge. It looks like a weblog to watch. I think that the Phart is right about Dan's weblog. It does feel rather journalistic. I like what I've read so far.
+
+This is certainly isn't helping me get to bed at a reasonable hour.
+
+Posted by jzawodn at 03:11 AM
+
+XMMS and Cool WinAMP Plugins
+
+While reading a few comments in this thread on slashdot, I saw mention of a guy who makes some cool WinAMP plugins. Then I looked at what one of them actually produces. Amazing. Yet another thing to try out if the notebook ever arrvies.
+
+Posted by jzawodn at 11:14 PM
+
+MySQL/FreeBSD Problems Get Worse
+
+The odd problems we've been seeing with MySQL on FreeBSD have flared up recently. I just had to throw all traffic off our east coast servers and send it to the west coast (ouch!) to restart one of the east coast machines. The other east coast machine has been off-line since it got messed up on Friday.
+
+It seems that FreeBSD's threading is to blame once again. Grr. I'm working to get a good build of MySQL with LinuxThreads support to see if this all goes away. In the meantime, things are quite fragile. I'm starting to really wish we had a Linux box on the east coast. Right now they're all on the west cost.
+
+Damn you, Murphy. Can't you ever just leave me alone for a week?
+
+Posted by jzawodn at 10:38 PM
+
+Wireless at the Park
+
+No, not me. But this guy named Joe found wireless at the park in New York. How cool. I have a feeling that I'd find something similar if I moved up to San Francisco, but that's not exactly a good reason to pack up and move, now is it?
+
+Posted by jzawodn at 08:25 PM
+
+Excellent Win XP FAQ
+
+The folks over at DSLReports.com have assembled a very good FAQ on Windows XP. When (if?) my new notebook ever arrives, it will be very useful.
+
+Thanks to Steve Friedl, I'm a big fan of the DSLR discussion forums too. There's a lot of very good info in them.
+
+Posted by jzawodn at 07:59 PM
+
+Open Source Conference Talks
+
+I've been trying to ignore all the fun new stuff I want to explore so that I can finish working on the slides for two of my three talks at OSCON this year.
+
+Posted by jzawodn at 03:29 PM
+
+w.bloggar
+
+w.bloggar is a great little (free) Windows program for doing blog sumbission from your desktop. It uses the blogger API, to do its work, and that means it can talk to many different blogging back-ends. The only trouble I had was making it work via SSL. So I'm temporarily using it via normal http until that's figured out.
+
+Posted by jzawodn at 10:49 PM
+
+Blog Overload
+
+Well, I've spent the better part of today (literally, since I got up) playing with MT, browsing other blogs and blog-related sites, and a bit of catching up on e-mail.
+
+To try and track my discoveries, I'm going to make a list of the more interesting or useful stuff I've come across. Here goes.
+
+SQLData's RSS Reader -- contains a list of some high-profile sites that provide RSS feeds (or scraped feeds of other big sites). There's also a quick tool you can use to check out a feed if you already have the syndication URL handy.
+
+Ye Olde Phart -- this guy has an amusing weblog. I'll be checking it out from time to time. Don't have a clue how I found it, but that's what's fun about this.
+
+NewsIsFree -- a great free service that will pull RSS feeds and agregate them on a series of pages for you. Has alerts, shortcuts to blog what you find via the Blogger API, and other cool stuff. I've been looking for a good service like this. I can see myself using it quite heavily.
+
+Syndic8 -- a great collection of RSS feeds. Has a ton of useful stats. As I write this, there are over 6,700 feeds but only 700 users. Wonder why more people don't go there. Ah, it doesn't appear ot have a customizable interface like NewsIsFree does. That could be it.
+
+The Snewp -- a simple search engine to help locate feeds and individual articles. Once you find one, it's easy to integrate with other systems.
+
+The Open Directory has a good list of RSS links as well as RSS newsreaders.
+
+Registering and publishing with RSS -- an undated (why do news sites do that?) article on webreference.com about how to get a new RSS feed syndicated at some of the more popular RSS portals.
+
+All of this has given me a most excellent idea for a project at work.
+
+Posted by jzawodn at 09:28 PM
+
+MT Template Fun
+
+I'm really getting into tweaking MT templates and adjusting style sheets. With a little bit of futzing, I've figured out how to give my site a relatively decent look without going too far overboard.
+
+My next task will be to attempt pulling all the old content from my nearly 3 year old on-line journal and getting it into MT. Yeah, I was doing the "blog thing" before people really called 'em blogs.
+
+Posted by jzawodn at 01:40 PM
+
+No More Radio For Me
+
+After a brief attempt at using UserLand's Radio to maintain a blog I had setup, I've given up on it. There were several problems I had with it:
+
+First of all, it was very fond of crashing. On both Windows 98 and Windows NT, I experienced a lot of random crashes. I'm really not fond of Dr. Watson.
+
+It was a fat client application. Yes, it ran thru a browser, but there is a web server component that runs on the desktop -- a desktop that must be either Windows or Mac OSX
+
+It was too large a hammer for what I wanted to do. I can see why some of the hard-core bloggers like it. But it was more than I really needed.
+
+So at the suggestion of Jon Udell, I've begun using Movable Type (MT). It seems to be one of the clear leaders in this area. And since it runs completely server-side, I can install it on a remote server, put it behind SSL, and use it from anywhere I want. Ah, the power of the web.
+
+Anyway, things will probably be rough going here for a few days while I shake down MT and get used to it.
+
+Posted by jzawodn at 11:58 AM
+
+What's new in MySQL 4.0
+
+I gave a "What's new in MySQL 4.0" presentation at work today. I was suprised that roughly 50 people showed up to see it. Last time I did a MySQL talk, I had about 20. I guess that's a good sign.
+
+Anyway, the presentation is available here. A lot of it isn't too helpful if you didn't hear the auido (me) that went with it, but someone might find it useful anyway.
+
+Part of my motivation for doing that now was that I could kill two birds with one stone. The LAMP column in the September issue of Linux Magazine will be about MySQL 4.0 too.
+
+Posted by jzawodn at 06:37 PM

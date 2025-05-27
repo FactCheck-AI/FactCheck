@@ -1,0 +1,41 @@
+Now that I have my clonezilla live running in full automation with PXE boot, I would like to run a script after clonezilla finishes.
+
+I saw a '-o1' parameter during expert mode to run the script in $OCS_POSTRUN_DIR as clone finishes, but I don't know where the OCS_POSTRUN_DIR directory to put my script in?
+
+I copy my script (named czpostrun1) from my tftp server just before calling the ocs-sr. After clonezilla finishes, I saw a post run message saying that it will run scripts within the …/postrun directory, with 3 lines of asteris (*), but it did not list or run anything.
+
+I checked the /opt/drbl/share/ocs/postrun/ directory, and my czpostrun1 file is in there.
+
+Is /opt/drbl/share/ocs/postrun/czpostrun1 excutable? i.e. is its mode is 755, for example.
+
+Or you can run:
+
+run-parts -test /opt/drbl/share/ocs/postrun/
+
+to see if your command will be excuted or not.
+
+Steven.
+
+Added the chmod 755 after download the file and it showed up in the list to run.
+
+But now I have a "Exec format error" when clonezilla tries to execute the script. I just have one line in my script to download a file from my tftp server.
+
+Once clonezilla drop out to the command line, I can manually execute my script with bash or sh with no error.
+
+Normally a "Exec format error" means the script was edited on MS windows, and you want to run it on GNU/Linux.
+
+You can use the command "dos2unix" to convert the script file. Then this problem should be gone.
+
+Steven.
+
+Steven,
+
+I created my file using vi from my other redhat machine, but I ran the dos2unix anyway. Still have the same problem.
+
+After clonezilla drop to a shell, I ran the dos2unix on my script czpostrun1 and ran the 'run-parts /opt/drbl/share/ocs/postrun/' command, and still have the same error.
+
+As a test, I remove my czpostrun1 script and created a file name 'test' with just one line 'echo test1' using vi. Then I ran the run-parts command and got the same 'Exec format error' error message when run-parts tried to execute my test script.
+
+I also tried the dos2unix on the test script and re-run the run-parts, but I still see the same problem.
+
+BTW, I'm using the 20091230-karmic version.

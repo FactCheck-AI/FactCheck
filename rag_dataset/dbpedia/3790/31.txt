@@ -1,0 +1,67 @@
+Main goals of Traffic Operation Centre on wide area could be::
+
+·Real-Time Traffic Monitoring: traffic measurement acquisition, treatment and fusion;
+
+·Real-Time Data Completion: estimate traffic state also on areas without measurements;
+
+·Automatic Real-Time anomalous traffic situations identification (e.g. Traffic Jams);
+
+·Traffic control, by informing drivers/travelers with and also by providing target or forecast traffic states to the Urban Traffic Control (UTC) subsystems;
+
+Off-line determination and Real-time actuation of traffic strategies for special events;
+
+Integration and management of data coming from all physical devices on CSR-TOC road network: sensors, Variable Message Signs (VMS), parking, UTC traffic lights.
+
+In this context, an important issue is the scalability since Traffic sensors are usually available only on a subset of the main roads and they are always expensive in terms of installation and maintenance. The only way to minimize “classic” sensors usage (while, at the same time, increasing data availability with sustainable costs) is to integrate them with sources that can move together with the traffic itself: the vehicles. These “virtual” sensors are commonly defined Floating Car Data (FCD): they have been integrated with data coming from conventional physical sensors and have been revealed to be very promising notwithstanding some pending difficulties in their usage and gathering.
+
+Traffic Data for real-time traffic monitoring and forecast
+
+Real-time traffic monitoring and forecast consists in the determination of the current and actual traffic state, and its short-term evolution (1 hour), in terms of traffic flow, average speed and traffic density on every link of the road network. A way to do this can be the adoption of a simulation approach implements a model for the transportation offer (Graph) and one for the transportation demand (O/D Matrix).
+
+The model input data usually are gathered in near real-time, operating on a per 5’ time slots basis (the primary time interval of whole system).like the following:
+
+traffic flow or traffic flow and (punctual) average speed, referred to a road section and provided by physical data sources (fixed sensors),
+
+travel time, referred to a link of the network and provided by vehicular data sources (Floating Car Data);
+
+The data are then loaded on the transportation Graph using a “forward propagation” process, using real-time traffic conditions defined by real-time measurements and taking into account also traffic events This information is used as impedance in traffic models..
+
+The results of the Network Loading process is the current traffic state on the whole monitored network (flow, speed, density) and his forecast at 15’, 30’, 45’ and 60’ horizons, updated every time_code.
+
+Vehicular data sources
+
+The trajectories of probe vehicles (FCD) are provided by vehicular data sources (fleet managers) in the following formats:
+
+Raw Data (RD): information about speed, position and time of sample gathered on the vehicles; position is provided by GPS receivers without any map-matching elaboration; RD are elaborated by a map-matching algorithm that associates GPS coordinates to the relevant element of the SVR transportation Graph;
+
+Map-matched Raw Data (MRD): speed, position and time; the position is associated to the geographic reference system used by Fleet Manager;
+
+Travel Time (TT): travel times for each single element of the geographic reference system already calculated by the fleet managers.
+
+MRD and TT data are related to the fleet manager reference system (e.g. TMC). FCD Aggregator translates the geo-reference information and matches it with the correct links in the transportation Graph.
+
+The RD and MRD are also elaborated to identify the start and the end of each single performed travel using a “Key-on” and “Key-off” attribute that will then be used by an algorithm to create Origin/Destination (OD) travel matrix.
+
+The FCD elaboration of travel times (and average speeds) is performed on each link of the road network by merging the received data (data fusion) and applying filtering process (based on spatial and temporal criteria, in particular, data with a latency higher than 2’ are not used) on data, and then performs the projection of FCD on the SVR Graph.
+
+Vehicular data sources integration and evaluation methodology
+
+FCD usage in real-time calculation of current and short-term forecast traffic state has strategic relevance, but these kinds of data are not available for free and Providers have to be chosen wisely. In this perspective, an evaluation methodology need to be adopted to assess the integration level of the data provided by an FCD Producer. Evaluation methodology is aimed to evaluate the integration level in terms of the following metrics:
+
+service continuity (temporal coverage): it involves real-time data provided by the FCD Producer (“input data”) and aims to certify fleet data collection and distribution systems reliability in continuous data exchange environment.
+
+spatial coverage, it is aimed to evaluate FCD data quality, paying particular attention to their “usability”: FCD data must be provided with small time delay and they have to be correctly geo-referenced, because excessive time delay or wrong geo-localization will make them useless lowering total spatial coverage.
+
+Each Indicator is calculated in terms of:
+
+Global value: average value over the entire trial period synthesizing the magnitude of metrics and indicators; it contributes to define the main characteristics of the evaluated FCD service;
+
+Profiled value: time series of hourly average values (1 time series for each day type) showing the evolution of the indicators during the day, allowing to analyze their variation across hours and day types, to fetch information about sample penetration and representativeness.
+
+FCD Aggregator algorithms can be enhanced to enable exchange and processing of XFCD (eXtended Floating Car Data). Moreover, the potential data sources penetration allow collecting a huge amount of data to improve the system capability of traffic monitoring and forecasting across the whole regional area.
+
+Social media could become another potential innovative data source for Traffic Management models when treated as sources of information about traffic events: user knowledge of unexpected events (accidents, traffic jams, demonstrations) always appear on social media a long time before the same news is reported by classic informative channels.
+
+Since a well-timed knowledge of traffic situation on the whole monitored area is a vital need for any Traffic Operation Centre, this new source of information, never experimented before, will improve a traffic supervisor ability to react in real-time to changes in traffic conditions.
+
+With the increased number of connected vehicles the usage of FCD will become more and more important for Traffic Operation Centres and such convergence between Traffic Management and CCAM (Connected Cooperative Autonomous Mobility) will happen soon!

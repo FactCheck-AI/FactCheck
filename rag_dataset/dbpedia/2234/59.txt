@@ -1,0 +1,75 @@
+Version 4.16.104
+
+Release Date: August 19, 2015
+
+New Features since COPASI 4.15 (Build 95)
+
+Graphical User Interface (CopasiUI)
+
+The copy to next feature in the Experimental data description dialog is now able to handle the situation were the target experiment has less columns than the copied one.
+
+Simulation Engine
+
+The Gamma distribution and the Poisson distribution are now accessible in mathematical expressions and exported to SBML.
+
+SBML
+
+COPASI now exports the SBML L1V1 legacy format.
+
+Bug Fixes since COPASI 4.15 (Build 95)
+
+Graphical User Interface (CopasiUI)
+
+The tool "Create Events For Time-series Experiment" does now handle ignored columns correctly.
+
+Fix issue where deleting a reaction and running a parameter estimation afterward could cause the initial values to be corrupted.
+
+Fixed problem in the tool "Convert to irreversible" which could lead to crashes if a reaction parameter of a reversible reaction was referenced out side the reaction.
+
+Fixed handling of HTML entities like &mdash; in notes.
+
+Improved performance of the "Update MIRIAM" tool.
+
+Warning about unknown MIRIAM resources are now only issued when the resource is accessed.
+
+All available tasks are now selectable as sub-tasks for the Optimization task.
+
+Fixed issue where copying a compartment could lead to a crash in COPASI.
+
+Simulation Engine
+
+Fixed problem in the Linear Noise Approximation task which occasionally lead to crashes in COPASI.
+
+Fixed issue in the Parameter Estimation Task where the un-normalized weight would not be calculated correctly.
+
+The recently introduced Persistent Trigger flag for events was not correctly read from files causing the default value to be used.
+
+Numerical instability issues in the Metabolic Control Analysis task result in a warning reported to the user.
+
+Removed erroneous error messages caused by a premature function compile during when loading a file.
+
+Fixed issue were HTML notes not save correctly when the user added the name space manually to the top level element.
+
+Renaming an object triggers now an immediate update of the infix of all mathematical expression where the object is referenced.
+
+Improved handling of experimental data files for parameter estimation which are not in the same directory as the the COPASI file.
+
+Fixed issue where incorrect numerical values for parameter bounds in Optimization or Parameter Estimation would lead to an occasional crash.
+
+SBML
+
+The import of SBML files previously exported from COPASI does no longer create any warnings.
+
+COPASI handles the export of log10 correctly.
+
+The import of n-ary relational operators is now correctly handled.
+
+Improved handling of incorrect SBML documents on import.
+
+Fixed issue where COPASI could crash when loading and SBML file, which contains the same model name as the currently loaded model in COPASI.
+
+Source package
+
+The python example files are now also compatible with Python 3.x
+
+Fixed problems compiling COPASI for the arm architecture.

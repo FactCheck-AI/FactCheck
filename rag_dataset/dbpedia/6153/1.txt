@@ -1,0 +1,55 @@
+1 JANUARY 1997
+
+by Zachary Beane
+
+Spencer Kimball and Peter Mattis are undergraduate students at the University of California at Berkeley. They're responsible for creating the GIMP. Version 0.54 is out right now; version 0.60 is in the works.
+
+They agreed to answer a collection of questions for an interview via email. Peter did most of the writing.
+
+Your home page says that you created GIMP to address the lack of free or inexpensive Unix graphics tools. How did you guys actually get together to tackle this? Was it like in Blues Brothers? Were you on a mission from God?
+
+Spencer was my brother's roommate for four years. (He's been my roommate for the past six months). So I knew who he was when we decided to take the compilers course here together. Big mistake. During one of the impossibly boring assignments we decided we wanted to do something which wouldn't suck. The idea of doing the GIMP actually fell out fairly naturally.
+
+We wanted to
+
+do something
+
+which wouldn't
+
+suck.
+
+It took us a little while to come up with the name. We knew we wanted an image manipulation program like Photoshop, but the name IMP sounded wrong. We also tossed around XIMP (X Image Manipulation Program) following the rule of when in doubt prefix an X for X11 based programs. At the time, Pulp Fiction was the hot movie and a single word popped into my mind while we were tossing out name ideas. It only took a few more minutes to determine what the 'G' stood for.
+
+And to make the matter clear, the GIMP originally stood for General Image Manipulation Program, but has since been dubbed GNU software by Richard Stallman (with our agreement). Spencer and I decided that GNU Image Manipulation Program is a better usage of the 'G'.
+
+How have people reacted to GIMP? What's been the biggest surprise or the most unexpected result of creating and releasing GIMP?
+
+The reaction has been very positive and much larger than either of us expected, given that it still isn't finished. The biggest surprise is probably the level of fanaticism. Both of us are firmly aware that the GIMP is not yet up to Photoshop's level, yet many people have written stating that it is "kicks Photoshop's butt". That surprised us. We're also surprised and amazed at the quality of images that can be produced with the GIMP. Neither of us are artists. The GIMP homepage suffers from this fact when viewed in comparison to some of the other GIMP web sites.
+
+Is GIMP a side project or the main event for you? How much time does it take away from your "real life"?
+
+I would say that GIMP is a side project and that school is the main event. When not busy with school work we both spend much of our time programming. Of course, every now and then a distraction occurs and school work has this annoying habit of consuming my time near the end of the semester.
+
+GIMP has a definite Photoshop feel to it. What programs did you use for inspiration? What were the features you had to have in GIMP that weren't available anywhere for Unix?
+
+We've used Photoshop as the basis for functionality the GIMP needs. I used Photoshop quite a bit on the Macintosh which is the reason we knew it was such a cool program. Everytime we complete a feature we look to Photoshop for the next item to add. This will eventually stop as we're quickly running out of features to add.
+
+The main feature that the GIMP had to have that wasn't available elsewhere in free software for Unix was plug-ins. Other than that, we also decided that undo was very important. Unlimited undo has made Spencer's life tough at times and in the past he cursed it regularly, but it has made the GIMP a much more usable program.
+
+What are some of the features that you have planned (or implemented) for a future release? You mentioned that it's not up to Photoshop's level, but what features (for you) would put it in the general vicinity?
+
+In previous version images used a linear memory scheme where pixels were laid out consecutively in memory. While simple, that scheme has definite problems with large images. The latest development versions of the GIMP have switched to a tile based memory management system. It's now possible to work images that are larger than physical memory fairly efficiently. In fact, the biggest limitation on image size now is probably disk space.
+
+The plug-in API has also been expanded and generalized. This was necessary in part due to the need for the plug-ins to be able to deal with the tile based images, but it also means a lot more. The main GIMP application maintains a database of procedures. These procedure allow plug-ins to access much of the GIMP's internals. Additionally, plug-ins actually install themselves in the procedural database which will allow plug-ins to be able to call each other. The mechanism is sufficiently general to allow a scripting language to eventually be added as a plug-in.
+
+Spencer has recently added many of the color correction dialogs found in Photoshop, such as Hue-Saturation, Color Balance, Brightness/Contrast, Threshold and Posterize. These have been needed for a long time.
+
+Do you see any technical limitation to Linux/Unix/X that may give you problems taking it to that level?
+
+SysV shared memory has always been a sore spot. The main problem is that there are limitations on the size of a shared memory segment and on the number of shared memory segments the entire operating system can support. However, this problem has been greatly reduced with the tiled images as only a handful of small shared memory segments are needed at the moment and the plan is to allow for operation when shared memory is completely unavailable.
+
+Plug-ins were another troublesome area. Dynamically loading code seems like the best option but it's difficult to do in a portable manner. If we were starting off writing the GIMP today we probably would have used the ELF dlopen family of functions and tried to adapt it for different systems. But at the time we started a.out Linux systems were still the majority as ELF was only starting to emerge. It turns out that making plug-ins entirely separate processes was a good idea. A bug in a plug-in will not cause the GIMP to crash. (Make that, a bug in a plug-in shouldn't cause the GIMP to crash). And by being separate processes it paves the way for having plug-ins run on separate server machines or in a distributed environment.
+
+Are you going to implement any drawing primitives at all, like lines and circles and things like that? Why/why not?
+
+We probably won't implement them for version 1.0. We're a little resistant because our original design specified the GIMP as an image manipulation program and not a painting program. However, they would be fairly easy and it's likely they'll be added sometime simply because we get so much demand for them.

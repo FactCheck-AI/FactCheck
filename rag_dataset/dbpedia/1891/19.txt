@@ -1,0 +1,67 @@
+A fast, efficient Python library for generating country- and subdivision- (e.g. state or province) specific sets of government-designated holidays on the fly. It aims to make determining whether a specific date is a holiday as fast and flexible as possible.
+
+PyPI
+
+CI/CD
+
+Code
+
+GitHub
+
+Install
+
+The latest stable version can always be installed or updated via pip:
+
+$ pip install --upgrade holidays
+
+The latest development (dev) version can be installed directly from GitHub:
+
+$ pip install --upgrade https://github.com/vacanza/python-holidays/tarball/dev
+
+All new features are always first pushed to dev branch, then released on main branch upon official version upgrades.
+
+Quick Start
+
+from datetime import dateimport holidaysus_holidays = holidays.US() # this is a dict-like object# the below is the same, but takes a string:us_holidays = holidays.country_holidays('US') # this is a dict-like objectnyse_holidays = holidays.NYSE() # this is a dict-like object# the below is the same, but takes a string:nyse_holidays = holidays.financial_holidays('NYSE') # this is a dict-like objectdate(2015, 1, 1) in us_holidays # Truedate(2015, 1, 2) in us_holidays # Falseus_holidays.get('2014-01-01') # "New Year's Day"
+
+The HolidayBase dict-like class will also recognize date strings and Unix timestamps:
+
+'2014-01-01' in us_holidays # True'1/1/2014' in us_holidays # True1388597445 in us_holidays # True
+
+Some holidays may be only present in parts of a country:
+
+us_pr_holidays = holidays.country_holidays('US', subdiv='PR')'2018-01-06' in us_holidays # False'2018-01-06' in us_pr_holidays # True
+
+Please see the python-holidays documentation for additional examples and detailed information.
+
+Available Countries
+
+We currently support 149 country codes. The standard way to refer to a country is by using its ISO 3166-1 alpha-2 code, the same used for domain names, and for a subdivision its ISO 3166-2 code. Some countries have common or foreign names or abbreviations as aliases for their subdivisions. These are defined in the (optional) subdivisions_aliases attribute. Some of the countries support more than one language for holiday names output. A default language is defined by default_language (optional) attribute for each entity and is used as a fallback when neither user specified language nor user locale language available. The default language code is a ISO 639-1 code. A list of all languages supported by country is defined by supported_languages (optional) attribute. If there is no designated ISO 639-1 code then ISO 639-2 code can be used.
+
+Many countries have other categories of holidays in addition to common (national-wide) holidays: bank holidays, school holidays, additional (paid or non-paid) holidays, holidays of state or public employees, religious holidays (valid only for these religions followers). A list of all categories supported by country is defined by supported_categories (optional) attribute.
+
+The following is a list of supported countries, their subdivisions followed by their aliases (if any) in brackets, available languages and additional holiday categories. All countries support PUBLIC holidays category by default. All other default values are highlighted with bold:
+
+Country
+
+Code
+
+Subdivisions
+
+Supported Languages
+
+Supported Categories
+
+Available Financial Markets
+
+The standard way to refer to a financial market is to use its ISO 10383 MIC (Market Identifier Code) as a “country” code when available. The following financial markets are available:
+
+Entity
+
+Code
+
+Info
+
+Contributions
+
+Issues and pull requests are always welcome. Please see here for more information.

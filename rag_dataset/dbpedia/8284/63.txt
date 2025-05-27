@@ -1,0 +1,97 @@
+CodeGuru content and product recommendations are editorially independent. We may make money when you click on links to our partners. Learn More.
+
+MySQL Connector/C++ is an object-oriented database API library to work with MySQL database and C++. The API is partly built upon the JDBC 4.0 API specification. As a result, the C++ class names and functional interfaces are same as we use in JDBC programming in Java. MySQL already has a C-style native API library and the problem is that, to fit it with the C++ paradigm, one has to manipulate using cryptic code. MySQL Connector/C++, on the other hand, is purely object-oriented, backed by a well-designed architecture. On the C++ GUI framework, C++ has a variety of options for creating a cross-platform GUI interface. But, Qt is perhaps the best among them. The library is simple to implement and contains highly intuitive classes and functions to fit almost every need of the developer. This article is an attempt to couple these two techs and show how effectively they can be used to create a Qt C++ GUI interface for a MySQL Connector/C++ database application.
+
+The Advantages
+
+From a programmer’s point of view, the key benefits of using MySQL Connector/C++ over native API library are as follows:
+
+The API is built to support a Object-Oriented paradigm; therefore, C-style function calls are not required.
+
+JDBC 4.0 is an industry standard specification; the MySQL Connector/C++ API is based on this architecture.
+
+The evolution of the API will be consistent with industry standards.
+
+The API is simple and intuitive.
+
+The Qt C++ Framework needs no introduction. It is a masterpiece work pioneered by Haavard and Eirik. In its present form, Qt has developed a chain of toolkits to suffice almost every need of the developer and has become one of the most versatile frameworks in the C++ arena. It is an excellent framework for building cross-platform C++ applications; it can be ported to all major platforms available in the market. Apart from supporting many other languages, Qt is extensively used for embedded application development.
+
+Here, we focus on going hands-on to create a MySQL database application with a Qt interface.
+
+What You Need
+
+You’ll need following tools to go hands-on with the following code. (The underlying platform used here is Linux. So, the configuration and settings will be shown based on the Linux platform only.)
+
+MySQL Database
+
+MySQL Connector/C++
+
+Qt5 Framework with QtCreator
+
+Note: MySQL Connector/C++ depends on the Boost C++ library. So, make sure you install it before installing MySQL Connector/C++. Refer to the MySQL Connector/C++ Manual for details about the installation procedure. Also, Qt widgets have a dependency on the OpenGL library. Make sure it is installed, too.
+
+Once every requirement is installed correctly, open QtCreator, create a New Project, and choose Qt Widgets Application from the available project template. Select QWidget as the Base class in the Class Information window.
+
+Figure 1: Choosing the project type from the project template in QtCreator
+
+Figure 2: Providing Class information in the QtCreator Project creation wizard
+
+Add header files and corresponding CPP files in the project. The project structure would be as follows.
+
+Figure 3: Arrangements of files in the project in QtCreator
+
+Open the qmake file (<your_project_name>.pro) and make sure that the structure is as follows.
+
+QT += core gui greaterThan(QT_MAJOR_VERSION, 4): QT += widgets TARGET = MySQLCppConnDatabaseApp_final TEMPLATE = app LIBS += -lGL LIBS += -L/usr/local/lib -L/usr/lib -lmysqlcppconn INCLUDEPATH += -I/usr/include -I/usr/local/include -I/usr/local/include/cppconn SOURCES += main.cpp widget.cpp person.cpp personcontroller.cpp HEADERS += widget.h person.h personcontroller.h FORMS += widget.ui
+
+Note: In Linux, library files are installed in /usr/local/lib and /usr/lib by default. Similarly, header files are installed in /usr/include and /usr/local/include. Make appropriate changes in the path if it is installed in a different location. Also, do not forget to provide the linker directive -lmysqlcppconn; this informs the linker that we are using MySQL Connector/C++ drivers.
+
+Double clicking widget.ui in the Projects pane will open the UI designer window. From there, you can design the window in drag-and-drop mode.
+
+Figure 4: Designing forms in Qt Designer in QtCreator
+
+Project Overview
+
+The idea is pretty simple. There is a Person class that acts as a model, a PersonController class that acts as a controller and contains the business logic, and the view is provided by the Qt widget class. The underlying database is MySQL and the interfacing role play between the database and C++ classes is done by MySQL Connector/C++. That’s all!
+
+Figure 5: A conceptual design of the application
+
+The code below is self-explanatory. For detailed information on the API, refer to the Qt framework Documentation. The API documentation is shipped with the framework and can be found in the help section of QtCreator.
+
+And, for any detail information on MySQL Connector/C++, refer to its manual and the MySQL documentation site. Otherwise, one can also follow the Java JDBC API documentation. Much intricate and valuable information can be found from it regarding the API.
+
+#ifndef PERSON_H #define PERSON_H #include <QString> using namespace std; class Person { private: int addressId; QString firstName; QString lastName; QString email; QString phoneNumber; public: Person(); Person(const int, const QString&, const QString&, const QString&, const QString&); int getAddressId(); void setAddressId(const int); QString getFirstName(); void setFirstName(const QString&); QString getLastName(); void setLastName(const QString&); QString getEmail(); void setEmail(const QString&); QString getPhoneNumber(); void setPhoneNumber(const QString&); }; #endif // PERSON_H
+
+Listing 1: person.h
+
+#include "person.h" Person::Person(){ addressId=0; firstName=""; lastName=""; email=""; phoneNumber=""; } Person::Person(const int id, const QString &fname, const QString &lname, const QString &mail, const QString &phone){ addressId=id; firstName=fname; lastName=lname; email=mail; phoneNumber=phone; } int Person::getAddressId(){ return addressId; } void Person::setAddressId(const int id){ addressId=id; } QString Person::getFirstName(){ return firstName; } void Person::setFirstName(const QString &fname){ firstName=fname; } QString Person::getLastName(){ return lastName; } void Person::setLastName(const QString &lname){ lastName=lname; } QString Person::getEmail(){ return email; } void Person::setEmail(const QString &mail){ email=mail; } QString Person::getPhoneNumber(){ return phoneNumber; } void Person::setPhoneNumber(const QString &phone){ phoneNumber=phone; }
+
+Listing 2: person.cpp
+
+#ifndef PERSONCONTROLLER_H #define PERSONCONTROLLER_H #include <QList> #include <QString> #include <cppconn/connection.h> #include <cppconn/prepared_statement.h> #include <cppconn/driver.h> #include <cppconn/exception.h> #include <cppconn/resultset.h> #include "person.h" using namespace std; using namespace sql; class PersonController { private: Driver *driver; Connection *connection; public: PersonController(); QList<Person> getAllPeople(); QList<Person> getPeopleByLastName(const QString& ); int addNewPerson(Person&); int updatePerson(Person&); int deletePerson(int); void closeConnection(); ~PersonController(); }; #endif // PERSONCONTROLLER_H
+
+Listing 3: personcontroller.h
+
+#include "personcontroller.h" PersonController::PersonController() { try{ driver=get_driver_instance(); connection=driver->connect("localhost", "mano", "mano"); connection->setAutoCommit(0); connection->setSchema("addressbook"); }catch(SQLException &ex){ cout<<"Exception occurred"<<ex.getErrorCode()<<endl; } } QList<Person> PersonController::getAllPeople(){ QList<Person> list; PreparedStatement *pstmt=connection->prepareStatement ("SELECT * FROM Addresses"); ResultSet *resultSet=NULL; try{ resultSet=pstmt->executeQuery(); while(resultSet->next()){ Person p; p.setAddressId(resultSet->getInt("addressId")); p.setFirstName(QString::fromStdString(resultSet->getString ("firstName"))); p.setLastName(QString::fromStdString(resultSet->getString ("lastName"))); p.setEmail(QString::fromStdString(resultSet->getString ("email"))); p.setPhoneNumber(QString::fromStdString(resultSet->getString ("phoneNumber"))); list.append(p); } }catch(SQLException &ex){ cout<<"Exception occurred"<<ex.getErrorCode()<<endl; } resultSet->close(); pstmt->close(); delete pstmt; delete resultSet; return list; } QList<Person> PersonController::getPeopleByLastName(const QString &lname){ QList<Person> list; ResultSet *resultSet=NULL; PreparedStatement *pstmt=connection->prepareStatement ("SELECT * FROM Addresses WHERE lastName = "); try{ pstmt->setString(1,lname.toStdString()); resultSet=pstmt->executeQuery(); while(resultSet->next()){ Person p; p.setAddressId(resultSet->getInt("addressId")); p.setFirstName(QString::fromStdString(resultSet->getString ("firstName"))); p.setLastName(QString::fromStdString(resultSet->getString ("lastName"))); p.setEmail(QString::fromStdString(resultSet->getString ("email"))); p.setPhoneNumber(QString::fromStdString(resultSet->getString ("phoneNumber"))); list.append(p); } }catch(SQLException &ex){ cout<<"Exception occurred"<<ex.getErrorCode()<<endl; } resultSet->close(); pstmt->close(); delete pstmt; delete resultSet; return list; } int PersonController::addNewPerson(Person &p){ int result=0; PreparedStatement *pstmt=connection->prepareStatement ("INSERT INTO Addresses ( firstName, lastName, email, phoneNumber ) VALUES (?,?,?,?)"); try{ pstmt->setString(1,p.getFirstName().toStdString()); pstmt->setString(2,p.getLastName().toStdString()); pstmt->setString(3,p.getEmail().toStdString()); pstmt->setString(4,p.getPhoneNumber().toStdString()); result=pstmt->executeUpdate(); connection->commit(); }catch(SQLException &ex){ cout<<"Exception occurred"<<ex.getErrorCode()<<endl; } pstmt->close(); delete pstmt; return result; } int PersonController::updatePerson(Person &p){ int result=0; PreparedStatement *pstmt=connection->prepareStatement ("UPDATE Addresses SET firstName=?, lastName=?, email=?, phoneNumber=? WHERE addressID=?"); try{ pstmt->setString(1,p.getFirstName().toStdString()); pstmt->setString(2,p.getLastName().toStdString()); pstmt->setString(3,p.getEmail().toStdString()); pstmt->setString(4,p.getPhoneNumber().toStdString()); pstmt->setInt(5,p.getAddressId()); pstmt->executeUpdate(); connection->commit(); }catch(SQLException &ex){ cout<<"Exception occurred"<<ex.getErrorCode()<<endl; } pstmt->close(); delete pstmt; return result; } int PersonController::deletePerson(int id){ int result=0; PreparedStatement *pstmt=connection->prepareStatement ("DELETE FROM Addresses WHERE addressID=?"); try{ pstmt->setInt(1,id); result=pstmt->executeUpdate(); connection->commit(); }catch(SQLException &ex){ cout<<"Exception occurred"<<ex.getErrorCode()<<endl; } pstmt->close(); delete pstmt; return result; } void PersonController::closeConnection() { connection->close(); } PersonController::~PersonController(){ delete connection; // delete driver; }
+
+Listing 4: personcontroller.cpp
+
+#ifndef WIDGET_H #define WIDGET_H #include <QWidget> #include <QList> #include <QMessageBox> #include "person.h" #include "personcontroller.h" namespace Ui { class Widget; } class Widget : public QWidget { Q_OBJECT public: explicit Widget(QWidget *parent = 0); ~Widget(); private: Ui::Widget *ui; Person currentPerson; PersonController *personController; QList<Person> list; int totalRecord; int currentIndex; void populateRecord(); void populateUI(); signals: private slots: void browseButtonClicked(); void addNewButtonClicked(); void updateButtonClicked(); void deleteButtonClicked(); void findButtonClicked(); void prevButtonClicked(); void nextButtonClicked(); }; #endif // WIDGET_H
+
+Listing 5: widget.h
+
+#include "widget.h" #include "ui_widget.h" Widget::Widget(QWidget *parent) : QWidget(parent), ui(new Ui::Widget){ ui->setupUi(this); personController=new PersonController(); ui->addressLineEdit->setEnabled(false); connect(ui->browseButton, SIGNAL(clicked()), this, SLOT(browseButtonClicked())); connect(ui->addNewButton, SIGNAL(clicked()), this, SLOT(addNewButtonClicked())); connect(ui->findButton, SIGNAL(clicked()), this, SLOT(findButtonClicked())); connect(ui->prevButton, SIGNAL(clicked()), this, SLOT(prevButtonClicked())); connect(ui->nextButton, SIGNAL(clicked()), this, SLOT(nextButtonClicked())); connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(updateButtonClicked())); connect(ui->deleteButton, SIGNAL(clicked()), this, SLOT(deleteButtonClicked())); browseButtonClicked(); } Widget::~Widget() { personController->closeConnection(); delete personController; delete ui; } void Widget::populateUI(){ ui->addressLineEdit->setText(QString::number (currentPerson.getAddressId())); ui->fNameLineEdit->setText(currentPerson.getFirstName()); ui->lNameLineEdit->setText(currentPerson.getLastName()); ui->emailLineEdit->setText(currentPerson.getEmail()); ui->phoneLineEdit->setText(currentPerson.getPhoneNumber()); ui->totalCountLineEdit->setText(QString::number(totalRecord)); ui->countLineEdit->setText(QString::number(currentIndex+1)); } void Widget::populateRecord() { currentIndex=ui->countLineEdit->text().toInt()-1; if(totalRecord!=0 && currentIndex < totalRecord){ currentPerson=list.at(currentIndex); populateUI(); } } void Widget::browseButtonClicked() { list=personController->getAllPeople(); totalRecord=list.size(); if(totalRecord!=0){ currentIndex=0; currentPerson=list.at(currentIndex); populateUI(); ui->nextButton->setEnabled(true); ui->prevButton->setEnabled(true); } } void Widget::addNewButtonClicked() { Person p; p.setFirstName(ui->fNameLineEdit->text()); p.setLastName(ui->lNameLineEdit->text()); p.setEmail(ui->emailLineEdit->text()); p.setPhoneNumber(ui->phoneLineEdit->text()); int result=personController->addNewPerson(p); if(result==1) QMessageBox::information(this, tr("New Person Added"), tr("Insertion Successful"),QMessageBox::Ok ); else QMessageBox::warning(this, tr("New Person not Added"), tr("Insertion Unsuccessful!!"),QMessageBox::Ok ); browseButtonClicked(); } void Widget::updateButtonClicked() { Person p; p.setAddressId(ui->addressLineEdit->text().toInt()); p.setFirstName(ui->fNameLineEdit->text()); p.setLastName(ui->lNameLineEdit->text()); p.setEmail(ui->emailLineEdit->text()); p.setPhoneNumber(ui->phoneLineEdit->text()); int result=personController->updatePerson(p); if(result==0) QMessageBox::information(this, tr("Person updated"), tr("Updation Successful"),QMessageBox::Ok ); else QMessageBox::warning(this, tr("Person not updated"), tr("Updation Unsuccessful!!"),QMessageBox::Ok ); browseButtonClicked(); } void Widget::deleteButtonClicked() { int result=personController->deletePerson (ui->addressLineEdit->text().toInt()); if(result==1) QMessageBox::information(this, tr("Person deleted"), tr("Deletion Successful"),QMessageBox::Ok ); else QMessageBox::warning(this, tr("Person not deleted"), tr("Deletion Unsuccessful!!"),QMessageBox::Ok ); browseButtonClicked(); } void Widget::findButtonClicked() { list=personController->getPeopleByLastName (ui->lNameFindLineEdit->text()); totalRecord=list.size(); if(totalRecord!=0){ currentIndex=0; currentPerson=list.at(currentIndex); populateUI(); ui->nextButton->setEnabled(true); ui->prevButton->setEnabled(true); } } void Widget::prevButtonClicked() { currentIndex--; if(currentIndex<0) currentIndex=totalRecord-1; ui->countLineEdit->setText (QString::number(currentIndex+1)); populateRecord(); } void Widget::nextButtonClicked() { currentIndex++; if(currentIndex>=totalRecord) currentIndex=0; ui->countLineEdit->setText (QString::number(currentIndex+1)); populateRecord(); }
+
+Listing 6: widget.cpp
+
+#include "widget.h" #include <QApplication> #include <QStyleFactory> using namespace std; int main(int argc, char *argv[]) { QApplication a(argc, argv); QApplication::setStyle (QStyleFactory::create("fusion")); Widget w; w.show(); return a.exec(); }
+
+Listing 7: main.cpp
+
+Output:
+
+Figure 6: Application in execution
+
+Conclusion
+
+It’s really fun to work with these two techs; I’m sure you’ll agree. The application developed here can be improved further to create a more sophisticated Address Book application. The signal slot mechanism in the Qt Framework to carry on with events is simply the best. And, any Java developer coding in MySQL Connector/C++ would hardly find much difference in implementing the API in an application.

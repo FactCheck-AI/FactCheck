@@ -1,0 +1,33 @@
+An increasing number of attackers are trying to exploit a critical vulnerability in firewall appliances from Palo Alto Networks after proof-of-concept exploit code was published last week. The flaw was originally reported on April 12th as a zero-day after an APT group was found exploiting it in the wild in limited attacks.
+
+As of April 18, there were still about 22,500 devices accessible from the internet that were potentially vulnerable, according to statistics from the Shadowserver Foundation. While the number is significant considering that every such device is a potential gateway into a corporate network, it’s much lower than the more than 150,000 vulnerable devices estimated when the flaw was announced.
+
+The vulnerability, tracked as CVE-2024-3400, is located in the GlobalProtect feature of PAN-OS and allows attackers to inject commands that would be executed on the underlying system with root privileges. PAN-OS is the operating system running on Palo Alto Networks’ next-generation firewall (NGFW) devices and appliances and GlobalProtect is the SSL VPN feature that enables secure remote access to the corporate network.
+
+Threat actor UTA0218 identified as culprit
+
+Researchers from security firm Volexity discovered the vulnerability on April 10 while investigating suspicious traffic coming from the Palo Alto Networks firewall of a customer. The researchers determined that the firewall had been compromised by a threat actor the company tracks as UTA0218 through a previously unknown vulnerability.
+
+After notifying the Palo Alto Networks product security team, the firewall vendor ran its own investigation and released an advisory on April 12 providing mitigation information to customers while the company worked on patches. The patches for the affected PAN-OS versions were then released between April 14 and 18.
+
+It’s worth noting that one of the mitigations originally suggested by Palo Alto Networks was for customers to disable the device telemetry feature which was believed to be necessary for the exploit to work. However, the company’s security team later identified alternative exploitation methods that did not require device telemetry to be enabled, so this mitigation advice was retracted.
+
+Attackers have exploited the flaw since late March
+
+After its initial discovery, Volexity was able to create a detection signature and went back through its customer telemetry to find past compromises. The earliest exploitation signs the company managed to find dated from March 26, but those incidents looked like attempts by UTA0218 to test the exploit without deploying a malicious payload, whereas by April 10, the threat actor had begun deploying a custom backdoor written in Python and dubbed UPSTYLE.
+
+“After successfully exploiting devices, UTA0218 downloaded additional tooling from remote servers they controlled in order to facilitate access to victims’ internal networks,” the Volexity researchers said in their report.
+
+“They quickly moved laterally through victims’ networks, extracting sensitive credentials and other files that would enable access during and potentially after the intrusion. The tradecraft and speed employed by the attacker suggest a highly capable threat actor with a clear playbook of what to access to further their objectives.”
+
+Proof-of-concept exploit released
+
+On April 16, researchers from security firm WatchTowr Labs managed to reconstruct the vulnerability by reverse engineering the PAN-OS code and published a technical write-up along with a proof-of-concept exploit in the form of an HTTP request with the payload injected into the cookie value.
+
+The following day, GreyNoise, a company that monitors malicious traffic on the internet through a series of global sensors, reported a spike in the number of IP addresses attempting to exploit CVE-2024-3400. Palo Alto Networks has also updated its advisory to warn customers that it’s aware of an increasing number of attacks leveraging the vulnerability and that proof-of-concept exploit code is now publicly available.
+
+The company has also released commands that PAN-OS users can execute on their devices in order to identify if there was an exploitation attempt, while the company’s threat research unit published indicators of compromise in a blog post analyzing the UPSTYLE backdoor.
+
+It’s worth noting that it’s hard to say if an internet-reachable Palo Alto Networks firewall is vulnerable with just a passive scan. The presence of a vulnerable PAN-OS version indicates that the full patch hasn’t been applied, but it doesn’t mean the device lacks the alternative mitigations Palo Alto Networks suggested be put in place and is therefore protected from an exploit.
+
+“A Threat Prevention signature with Threat ID 95187 (released on April 11, 2024) detects and blocks, with 100% accuracy, all known and observed suspicious patterns in session IDs,” the company said in a blog post on Friday. “This prevention signature was released by Palo Alto networks within a day of confirming the vulnerability. We see approximately 90% of susceptible devices are already protected.”

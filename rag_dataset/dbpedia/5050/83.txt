@@ -1,0 +1,21 @@
+So I just learned how to align the words or phrases in an ordered list but I noticed that the actual numbers stay aligned on the left side. Is there a way to align those numbers to the left or the center as well?
+
+As a typographical norm, lists are never center aligned. It affects their readability and is non-standard. If we are determined to center the list, then we should remove the list-style, which makes more sense on an unordered list.
+
+ul { list-style: none; margin: 0; padding: 0; } li { text-align: center; }
+
+Bullets and numbers are actually not part of the LI, but are pseudo-elements applied :before the list item element. They take their position reference from the UL left and margin properties, as I understand it. Do some follow up reading.
+
+You can use list-style: inside; to align the numbers.
+
+you can read more about this here, and his parent list-style
+
+the initial value is set to outside, but i have the feeling firefox set it to inside by default. Anyway, this property gives you control of position the bullets/numers from your list.
+
+what do you mean with not collaps toward the center of the line?
+
+if i have this code:
+
+<!DOCTYPE html> <html> <head> <meta charset="utf-8"> <title>align</title> <style> li {list-style-position: inside;} </style> </head> <body> <ol> <li style="text-align: left">item 1</li> <li style="text-align: center">item 2</li> <li style="text-align: right">item 3</li> </ol> </body> </html>
+
+the numbers seems to align, don’t ask me for the technical reasons. I don’t know, and don’t like this aligning much more then you, i just stumbled on this property one time by accident.

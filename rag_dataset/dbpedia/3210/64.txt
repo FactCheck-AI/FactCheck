@@ -1,0 +1,55 @@
+Windows Server 2003 Release 2 (R2) is perhaps Microsoft's most misunderstood Windows Server release. Planned for a late 2005 ship date, R2 satisfies Microsoft's new Windows Server shipping schedule, which specifies major releases every 4 years and a minor release 2 years after that. (For an overview of how Windows 2003 Service Pack 1 (SP1) and R2 fit into Microsoft's Windows Server roadmap, see "Microsoft Talks About Windows Server 2003 SP1," May 2005, InstantDoc ID 45898.) R2 is a minor release that builds on Windows 2003 SP1 but doesn't include any new core technology. Instead, R2 addresses some specific customer scenarios, which means that many enterprises can afford to skip it. Here's what you need to know about R2.
+
+The Windows Server Release Cycle
+
+First, let's look at the history of the Windows Server release cycle. Back in the late 1990s, Microsoft was struggling to release Windows 2000 Server, which proved to be the biggest update in Windows Server history. Since then, the company has reevaluated the way it ships enterprise-class OSs, and Windows 2003 was the first release in the new era.
+
+One key difference between Windows 2003 and Win2K is that Microsoft didn't continually delay Windows 2003 so that it could include every feature imaginable. Instead, features that didn't make the initial Windows 2003 release were later shipped as free Web downloads that Microsoft calls feature packs. To date, the company has released more than 20 Windows 2003 feature packs, which include such components as Active Directory Application Mode (ADAM), Group Policy Management Console (GPMC), and Software Update Services (SUS) and Windows Server Update Services (WSUS). These feature packs extend Windows Server functionality, but only those businesses that want or need the functionality need to install them.
+
+The problem with feature packs is that many administrators don't know that they exist and consequently miss out on potentially worthwhile new features. So last year, Microsoft began promoting its new schedule for Windows Server releases. The first major release in that schedule, Windows 2003, shipped in 2003. The first minor release, Windows 2003 R2, is scheduled for late 2005. Subsequent releases, such as Longhorn Server (a major release due in 2007), Longhorn Server R2 (a minor release due in 2009), and Blackcomb Server (a major release due in 2011) will follow in 2-year intervals.
+
+The minor releases, currently called R2 versions, will include no major changes to the core Windows Server subsystems and thus will maintain compatibility with the previous major release. Going forward, the R2 releases will largely replace feature packs—although Microsoft representatives have told me that each major Windows Server release will likely be followed by a few feature packs.
+
+Because Windows 2003 R2 isn't a major Windows Server version, its kernel, networking stack, and Active Directory (AD) are all identical to its predecessor's. The included device drivers are identical as well. That means you can roll out Windows 2003 R2 servers alongside existing Windows 2003 servers without a problem. This compatibility will benefit businesses that need specific R2 functionality but only want or need to roll it out on specific machines.
+
+R2's New Features
+
+I categorize the new R2 features into three groups: major new functionality, minor new features, and features that shipped originally as Windows 2003 feature packs. There are only a few of each, which will likely limit the appeal of this release.
+
+Major new functionality. Windows 2003 R2 will address three major areas of functionality: simplified branch-office server deployment and management, Active Directory Federation Services (ADFS—formerly code-named TrustBridge), and storage management. Here's a brief overview of this functionality.
+
+On the branch-office front, Microsoft is tackling the needs of businesses that have physically separate offices, particularly those that aren't staffed with administrators or technically savvy IT professionals. Businesses need to deploy and manage systems in remote offices, where they often must contend with low-bandwidth connections. They also need solutions that can work remotely, removing the need for administrators to continually travel to remote offices.
+
+To help address these needs, R2 includes a new version of Microsoft DFS, which the company renamed DFS Namespaces. DFS Namespaces includes DFS Replication (the successor to File Replication Service—FRS) and support for multilevel failover and failback. A new technology, Remote Differential Compression (RDC), provides sub-file replication. In earlier Windows versions, files are the smallest entity you can replicate. RDC now lets you replicate parts of files. The technology uses an algorithm to determine which parts of which files have changed and replicates only those file parts, which saves time and bandwidth. R2 also supports new server roles for branch-office file and print serving.
+
+ADFS provides cross-company Federated Identity Management (FIM) services, which let large corporations selectively open their infrastructures to trusted partners and customers. ADFS supports a variety of organizational infrastructures via standardized Web Services Federation Language (WS_Federation) technologies. ADFS will appeal to large enterprises and governments; Microsoft says that the auto industry, European governments, and insurance companies are among those organizations now evaluating this solution.
+
+In R2, Microsoft is improving two core storage-management solutions—quota management and SAN provisioning. Storage Resource Manager provides folder-based quota management rather than the more limited volume-based system that earlier Windows Server versions use. The tool supports file screening—so you can restrict users to storing only certain types of files—and has a full reporting engine. R2's Storage Manager for SANs simplifies SAN management by providing an easy-to-use Microsoft Management Console (MMC) snap-in and a wizard that let you create LUNs to allocate space on storage arrays and chop up the storage in SANs or NAS however you want. It's compatible with all Virtual Disk Service (VDS) 1.1 hardware providers.
+
+Minor new features. Windows 2003 R2 provides several minor new features, including Microsoft .NET Framework 2.0, MMC 2.1 (which features a new task-oriented pane), the Common Log File System (CLFS), and IP– and Web–services-based hardware management support. R2 also includes a new MMC Printer Management Console snap-in that lets you manage all printers in an environment from one location.
+
+Minor new features adopted from feature packs. R2 bundles updated versions of three of the feature packs that were previously released for Windows 2003: ADAM, Windows SharePoint Services 2.0, and the Subsystem for UNIX Applications (previously called Windows Services for UNIX—SFU).
+
+Installing R2
+
+Windows 2003 R2 will ship on two CD-ROMs. One CD-ROM includes Windows 2003 slipstreamed with SP1; the other includes an installer for the new R2 features. If you upgrade to R2 from Windows 2003, you must first install SP1. After you install SP1, you need only the second R2 disk, which includes a new product key that replaces the original Windows 2003 product key.
+
+Installing the new R2 features doesn't automatically add the new functionality; you'll need to use the Add or Remove Windows Components application in the Control Panel Add or Remove Programs applet. Alternatively, you can run Windows 2003's Manage Your Server Wizard or Configure Your Server Wizard to install the features.
+
+Dropped Features
+
+Microsoft dropped two major features from Windows 2003 R2—Network Access Protection (NAP) and Terminal Services Bear Paw. These features would have made this release more universally appealing. Both features will appear instead in Longhorn Server, Microsoft says.
+
+The NAP feature provides client-quarantining functionality so that enterprises can cordon off remotely connecting laptops and other PCs that haven't met the company's security policies. While in quarantine, these machines can receive the necessary software updates so that they can rejoin the network. (For more information about NAP, see "What You Need to Know About Windows Server 2003 R2 Network Access Protection," November 2004, InstantDoc ID 44129.)
+
+Terminal Services Bear Paw will let administrators publish applications to end users, instead of publishing an entire remote desktop environment, which many users find confusing. In Bear Paw, remote applications will run alongside local applications and offer seamless cut and paste functionality between the two.
+
+Licensing
+
+When Windows 2003 R2 ships, it will gradually replace Windows 2003 SP1 as the current Windows Server version in the channel. It will be sold as a new Windows Server version, so non-Software Assurance (SA) customers and non-Enterprise Agreement customers will need to pay full OS licensing costs for the product when it ships. (SA and Enterprise Agreement customers will get R2 as part of their subscriptions.) However, R2 won't require any customers to purchase new CALs because it will use existing Windows 2003 CALs.
+
+Recommendations
+
+The scaled-back Windows 2003 R2 is, in many ways, an enigma. It's hard not to think about what might have been, and I'm fairly certain that future R2 releases, such as Longhorn Server R2, will focus on more broadly needed technologies than what Microsoft is offering this time around. If any of the functionality in Windows 2003 R2 appeals to you, it's likely that you'll find this release valuable, and it will integrate easily into your existing infrastructure. If you're an SA or Enterprise Agreement customer, Windows 2003 R2 fulfills an important subscription role, delivering a new Windows Server version in a timely manner. Windows 2003 R2 (and subsequent releases in the Windows Server roadmap) also gives Microsoft's enterprise customers a logical and clear plan for future releases so that they can make upgrade and migration decisions.
+
+New customers who purchase Windows 2003 from third quarter 2005 onward will simply get R2, but you can choose not to install the new features, which is a handy option. Microsoft is offering a free beta download for those who want to evaluate the product. Overall, I have mixed feelings about R2: It adds valuable functionality for specific scenarios, but Windows Server customers who don't need that functionality will likely want to skip this release.

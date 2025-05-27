@@ -1,0 +1,67 @@
+A few days ago the launch of the new version of the popular audio player qmmp 1.5.0 was announced, along with which the collection of plugins has also been updated which are not part of the main package: Qmmp Plugin Pack 1.5.0 and the Qmmp 2.0 testing branch, which has migrated to Qt 6.
+
+For those who are unfamiliar with qmmp, you should know that this program is equipped with an interface based on the Qt library, similar to Winamp or XMMS and supports skins of these players. Qmmp is independent of Gstreamer and offers support for various audio output systems for the best sound. This includes OSS4 (FreeBSD), ALSA (Linux), Pulse Audio, JACK, QtMultimedia, Icecast, WaveOut (Win32), DirectSound (Win32), and WASAPI (Win32) output.
+
+Main new features of qmmp 1.5.0
+
+In this new version a module is presented to display lyrics along with which I know an integration mode was also added to the main window of the program.
+
+Another of the changes that stands out in this new version of qmmp 1.5.0, are the improvements in the qsui module, in which the integration of additional interface elements of the modules was carried out, as well as the configuration of the location of the list of tabs, icons for the file system menu, the ability to organize the interface elements in several rows and that the «Tools» menu has been simplified.
+
+In the mpeg module, an option was implemented to enable checksum verification and added encoding definition for ID3v1 / ID3v2 tags using librcd library.
+
+The interface with cover art support has also been improved, as it has added a customization of the colors of the playlist, "Show lists", "Group tracks" and "Show tabs" options moved to the "List" submenu.
+
+In addition, support for covers in WebP format has been added, rebuilding groups after updating the playlist, optimization of the title format and a new experimental music library module.
+
+Of the other changes presented in this new version:
+
+The "% dir ()" function has been added to the list of fields to format names.
+
+Added the ability to integrate module elements into the main program window.
+
+The launch of external commands is implemented in the file operations module.
+
+Added experimental support for output through the PipeWire media server.
+
+Built-in CUE file editor.
+
+Added m4b support to the ffmpeg module and API cleanup.
+
+Up to version 3.4, the minimum requirements for the FFmpeg version have been increased.
+
+Finally, it is also mentioned that the translations were updated in the plugins, a transition to the qmmp 1.5 API was made, a quick transition to Youtube videos was implemented, and manual assembler optimizations in the ffap module were replaced by GCC optimizations.
+
+If you want to know more about it of this new version, you can check the details In the following link.
+
+How to install Qmmp on Ubuntu?
+
+In order to install this great player on our system, we must add the following PPA and install it with the following commands:
+
+The first will be add repository from the application to the system:
+
+sudo add-apt-repository ppa:forkotov02/ppa
+
+Now we will proceed to update our list of repositories:
+
+sudo apt-get update
+
+And finally we proceed to install the app with:
+
+sudo apt-get install qmmp
+
+Now if we want to install a plugin to complement the player we just have to go to the page and see the available ones.
+
+In the case of Qmmp extras, they are installed with:
+
+sudo apt-get install qmmp-plugin-pack
+
+In the case for the YouTube plugin:
+
+git clone https://github.com/rigon/qmmp-plugin-youtube.git qmake make -j4
+
+Now we only have to compile the plugin with the following commands and in addition to moving some libraries that are necessary.
+
+sudo cp -v youtube/libyoutube.so /usr/lib/qmmp/Transports sudo cp -v youtubeui/libyoutubeui.so /usr/lib/qmmp/General
+
+And ready. Now it is only a matter of seeing the installation methods that they offer us on the plugins page, the link is this.

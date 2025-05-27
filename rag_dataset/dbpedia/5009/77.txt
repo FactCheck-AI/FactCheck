@@ -1,0 +1,37 @@
+Example
+
+In this example, we simply create and show a push button in a window frame on the desktop. The push button will have the label Hello world!
+
+This represents the simplest possible Qt program.
+
+First of all we need a project file:
+
+helloworld.pro
+
+QT += core gui greaterThan(QT_MAJOR_VERSION, 4): QT += widgets TARGET = helloworld TEMPLATE = app SOURCES += main.cpp
+
+QT is used to indicate what libraries (Qt modules) are being used in this project. Since our first app is a small GUI, we will need QtCore and QtGui. As Qt5 separate QtWidgets from QtGui, we need add greaterThan line in order to compile it with Qt5.
+
+TARGET is the name of the app or the library.
+
+TEMPLATE describes the type to build. It can be an application (app), a library (lib), or simply subdirectories (subdirs).
+
+SOURCES is a list of source code files to be used when building the project.
+
+We also need the main.cpp containing a Qt application:
+
+main.cpp
+
+#include <QApplication> #include <QPushButton> int main(int argc, char *argv[]) { QApplication a(argc, argv); QPushButton button ("Hello world!"); button.show(); return a.exec(); // .exec starts QApplication and related GUI, this line starts 'event loop' }
+
+QApplication object. This object manages application-wide resources and is necessary to run any Qt program that has a GUI. It needs argv and args because Qt accepts a few command line arguments. When calling a.exec() the Qt event loop is launched.
+
+QPushButton object. The push button with the label Hello world!. The next line, button.show(), shows the push button on the screen in its own window frame.
+
+Finally, to run the application, open a command prompt, and enter the directory in which you have the .cpp file of the program. Type the following shell commands to build the program.
+
+qmake -project qmake make
+
+Got any Qt Question?
+
+Ask any Qt Questions and Get Instant Answers from ChatGPT AI:

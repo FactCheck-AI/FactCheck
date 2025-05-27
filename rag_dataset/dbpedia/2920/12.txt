@@ -1,0 +1,295 @@
+Primary authors:
+
+Jens Dalsgaard Nielsen
+
+Assoc Prof PhD
+
+Jesper A Larsen
+
+Assistant Prof PhD
+
+Secondary:
+
+Kresten Kjar Sorensen
+
+Jacob Deleuran Grunnet
+
+Martin Kragelund
+
+Axel Michelsen
+
+all PhD students
+
+All from
+
+Aalborg University
+
+Section of Automation and Control
+
+Denmark
+
+http://www.aau.dk
+
+http://www.es.aau.dk/control
+
+Abstract
+
+Engineering students from Aalborg University students have constructed a pico size satellite - AAUSAT-II . It was launched on April 28 , 2008 from Satish Dhawan Space Centre, India. It was built between 2003 and 2007 at Aalborg University. More than 150 students (Danish as well as visiting students) from different master specializations participated in this multi- disciplinary cross- educational project.
+
+This paper describes the fundamentals of AAUSAT-II as well some of the educational aspects.
+
+History
+
+Students at Aalborg University have been building student satellites since 2001. The first one, AAU Cubesat (http://www.cubesat.aau.dk), was constructed between 2001 and 2003 and launched in 2003. SSETI Express (a pan- European student satellite) was constructed from January 2004 to May 2005 and launched in October 2005. And finally AAUSAT-II was launched on April 28 , 2008.
+
+AAU Cubesat was never commissioned and did not enter a real operational phase. This was primarily down to a very weak communication link. After two and a half months AAU Cubesat stopped functioning. It was later suggested - as a result of analysis of received beacons - that an antenna problem had occurred during launch and release and finally that battery collapse problems had arisen.
+
+The educational purpose of ESA SSETI EXPRESS was to have a satellite constructed in a very short time by students from all over Europe. More than 15 universities were involved. The Aalborg students contributed with ground station systems (including radio and antenna systems ) a communication protocol, an onboard computer, a camera and ADCS payload and an onboard network. And the students were also heading the operations at the control centre located in Aalborg. Launch and operations were perfect until the power supply stopped working and the mission ended when the batteries died after 16 hours of a highly successful mission. All in all, it was a great success - a 70 kg satellite was developed and constructed in less than 18 months - and it was in full operation until the end.
+
+The design of AAUSAT-II started in 2003 and was finally delivered to the launchpad in July 2007. The launch took place on April 2 8 , 2008 from Satish Dhawan Space Centre in India. At the time of writing (October 2008) AAUSAT-II is still in full operation. (See http://www.aausatii.aau.dk)
+
+AAUSAT-II
+
+Missions of AAUSAT-II
+
+As with many other student satellites, there are two primary missions:
+
+Scientific mission
+
+Educational mission
+
+Scientific Mission
+
+The background for AAUSAT-II was a kind request from the Danish National Space Center, asking if we would volunteer to carry their new radiation detector for a space mission. This would be the first time their radiation sensor would be in space.
+
+The sensor is a CdZnTe (Cadmium Zinc Telluride) crystal. The size of the crystal is 10 ?? 10 ?? 4 mm, and it weighs less tha n 5 g . This specific crystal has a detection range from 5 to 300 Kev with a resolution of 3 Kev at 60 Kev, making it a very usable scientific device and therefore suitable for being placed onboard a pico satellite. All electronics and local experiment computing (based on a PIC18) were solely developed by the students.
+
+Radiation sensor
+
+Secondary Mission Objectives
+
+The secondary mission relates to our own Attitude Determination and Control System (ADCS).
+
+Attitude Control System based on magnotorquers (3 pcs)
+
+Attitude Test System based on momentum wheels (3 pcs)
+
+SW management system for upgrade purposes
+
+Attitude Determination and Control System (ADCS)
+
+AAUSAT-II is equipped with an ADCS similar to the one on the first Danish satellite "Orsted." And in addition to that, an experimental momentum wheel sub- system was developed.
+
+The main features of the ADCS system are
+
+Active 3-axis magnetic stabilization using magnetorquers
+
+Active 3-axis fine pointing using three momentum wheels
+
+Precision attitude determination using sensor fusion
+
+The actuators are:
+
+Three magnetorquer flat coils - 250 turns
+
+Three brass momentum wheels driven by Maxon metal- brush motors
+
+The attitude sensors are:
+
+Three -axis magnetometer from Honeywell
+
+Six rate-gyro chips from Analog Devices
+
+Six photo diode sun sensors
+
+There are of course several ways to handle detumbling. Up until now (Oct 2008). The "always stable but slow" B-DOT has been used. We are, at the time of writing, not aware of any other student satellite with momentum wheel stabilization. So AAUSAT-II must be regarded as carrying the most complex attitude control system ever seen in a student satellite.
+
+For that reason we can observe and collect data on tumbling with every pass . This graph is based on 10- Hz sampling of our ground radio (Icom 910H) sensitivity output when receiving communication from space. As shown in the figure, it works very efficiently. The plot shows the tumbling rate of AAUSAT-II for approximately the first 170 days of operations. Detumbling was first initiated around day 110 and, as seen i n the figure, it successfully slows down the rotation. The momentum wheels have not yet been activated but will be before the end of the year.
+
+In the graph, the tumbling frequency goes up from time to time (like from day 135 to 140). In this period, we did not activate detumbling to see what would happen . There is still some work to do before we can explain the se spin ups - we have an idea but until we have it confirmed we still regard it as an internal rumor .
+
+All in all, our ADCS must be viewed as being efficient and stable.
+
+Mechanical Structure
+
+In m echanical terms , AAUSAT-II is very robust being made from a one- piece aluminum frame with a weight of 82 g.
+
+AAUSAT-II is the result of a Master project at the university, and the students' work was given the Mechanical Engineers Society's " Prize of the Year" for the best student project in Denmark. The enlarged figure shows the primary frame, side panels with solar cells and the PCB stack inside the satellite. The construction facilitates assembly and disassembly because the satellite can be disassembl ed just by removing one side panel.
+
+The mechanical structure has been modeled, simulated and tested (mechanically as well as thermally) to meet the launch provider's demands.
+
+At the acceptance test in Toronto Canada, it passed in its first trial and was said to be a "very professional" structure.
+
+The PCBs are of space- graded quality and are provided by a Danish company. All PCB designs and component mountings and tests have been carried out by students.
+
+Inside AAUSAT-II
+
+AAUSAT-II consists of a number of subsystems:
+
+EPS - Powersystem controlled by a PIC18 MCU (controller)
+
+Six controllable and supervised powerchannels
+
+P/L - Payload - R adiation detector XTAL controlled by a PIC18 MCU
+
+COM - UHF radiosystem and modem controlled by a PIC18 MCU
+
+ADCS - powerpart controlled by a PIC18 MCU
+
+CDH/OBC - command and data handling controlled by an ARM7 (microprocessor)
+
+The PIC18's are without an operating system and kernel, whereas the ARM7 hosts an eCOS kernel.
+
+All subsystems are interconnected by a CANBUS running at 125 Kbit/sec which has a theoretical data bandwidth of about 70 kB/sec. The communication stack (fieldbus- like protocol) , HSN , has been developed as a part of the project.
+
+EPS - Power System
+
+AAUSAT-II must be regarded as a highly complex system, and stability and reliability are therefore one of the major concerns. One of several ways to overcome this concern is by having watchdog supervision carried out by the EPS power system. The reason for that is that EPS is intentionally kept simple, because the last thing to break down (and come up again) is the EPS power system. So subsystem supervision and power management is carried out and can take action when needed - like rebooting AAUSAT-II. Th is figure show s a simplified interaction diagram between EPS and CDH/OBC
+
+The EPS Power System has six independent power channels (3.3 V and 5 V) which control various parts like the payload, ADCS system, and COM system . The main purpose is to ensure the satellite survives, so if the power drops down to a critical level the EPS system can switch off subsystems based on a static scheme. In addition to that, the ESP maintains a CANBUS- based watchdog monitoring of all subsystems and will reboot subsystems if they do n ot react as specified. The EPS system is running at only 1 MHz to obtain a high degree of robustness against radiation, and at same time minimizing power consumption. The construction has been shown to be very stable.
+
+Energy storage is provided by two lithium-ion batteries.
+
+CDH/OBC
+
+CDH/OBC is the main computing facility onboard. It is a 40 MHz ARM7 with 2 MB of RAM and 4 MB f lash memory. Programming is carried out on top of a eCos real-time kernel with all normal task and communication primitives. It has been shown to be well- suited to our purpose. The OBC/CDH system hosts the general command and data-handling interface with flight planner facilities, flash- based permanent storage and handling applications for Payload, and Attitude Determination and Control System (ADCS). SW maintenance is supported by the ability to host multiple boot images which can be uploaded from the ground during operations. The last thing hosted is the communication framework which consists of satellite-ground communication based on an AX.25 protocol.
+
+ADCS (Attitude Control System ) mentioned earlier in this paper.
+
+P/L - Payload
+
+The payload is a scientific mission as described earlier in this paper.
+
+Ground Link
+
+AAUSAT-II has the call sign OZ2CUB and is transmitting and receiving on 437.425 MHz. GMS is used as a modulating scheme and 1200/2400 and 4800 baud operation is possible by having 1200 baud as a default and fall back. The onboard radio has a transmitting power of 0.4 W.
+
+The ground station at Aalborg University is equipped with two CP-30 antennas operated by an ICAOM 910H and a Beko HLV-1100 UHF power booster. The uplink power is around 500 W.
+
+Ground station
+
+Mission
+
+The satellite was launched on April 28 , 2008. The first 175 days of the mission have proved to be quite positive and the mission is, in general, viewed as a great success.
+
+Some of the many highlights during the mission up until now are:
+
+Launch went perfectly
+
+Orbit insertion went sufficiently well
+
+Beacons were received during the first pass
+
+Two- way communication obtained on June 6
+
+Two- way communication is now daily business
+
+ADCS system works very well
+
+Radio room
+
+It has not gone completely without problems though.
+
+To summarize some the obstacles :
+
+It took longer than expected to get descent TLE 's (orbit description)
+
+The antenna system showed UHF weaknesses during the first few weeks of operations
+
+A noise specter different than that anticipated created some modem problems
+
+Tumbling was faster and grew faster than expected,
+
+which caused periodic fading and even small blind spots in communication
+
+Signals from AAUSAT-II were weaker than expected
+
+It needed more uplink power than stipulated
+
+Spontaneous rebooting of CDH/OBC occurred
+
+OBC/CDH reached 60℃ as temperature of operation (rest of AAUSAT-II is around 12℃ )
+
+Some solutions introduced to solve these problems include:
+
+Renew ing LNA- amplifying electronics
+
+Going from one to four LNA amplifiers
+
+Redesigning and improv ing the front-end electronics for the modem
+
+Redesign ing the part holding the modem
+
+Increasing the uplink from 40 W to 800 W
+
+Conducting g eneral bug fixing in GND SW
+
+Enhancing the f acilit ies of GND SW
+
+Automatic Sequencer is handling passes when staff are not present
+
+Exhaustive logging for later mission analysis
+
+The two major issues are without doubt the tumbling and the spontaneous rebooting.
+
+Although we have some ideas that we are investigating, we are for the time being not able to state what source of energy is causing the increase in the tumbling of AAUSAT-II. But our measurements show it clearly. The good thing is that the ADCS system is handling it.
+
+The other issue is the reboot ing which occurs around 11 times every 24 hours, and which is giving us problems with regards to having the payload in operation over a longer time, as well as controlling the general satellite behavior.
+
+Vacuum chamber tests have shown similar behavior in certain setups. They also show that it is only a few periphery components in the ARM7 that fail at high temperatures. A solution may be to implement an SW work around. At the time of writing, the first SW upload is planned and will take place in late 2008.
+
+Educational Mission
+
+The educational mission consists of three parts:
+
+AAUSAT-II construction as part of the university curriculum
+
+AAUSAT-II construction as voluntary work
+
+AAUSAT-II operations
+
+Aalborg University has for years being known and respected for its Problem Based Learning (PBL). Half the students' time is dedicated to carrying out real projects, with content matching the lectures and courses studied in the other half of their time.
+
+A project normally consists of:
+
+Problem d escription
+
+Problem analysis
+
+Problem refinement
+
+Design of solutions including scientific detail s
+
+Implementation of (a part) of the design
+
+Verification of d esign and solution
+
+Space Mission Analysis and Design Courses and workshops have been run concurrently with the normal curriculum.
+
+There is no dedicated space curriculum. A spacecraft consists of many disciplines, so power electronics, communication, mechanics and automation, and control specializations take place in satellite projects.
+
+This demands cooperation between students from different departments at the university, and this has been done successfully.
+
+A standard semester project is carried out by four to six students and the written part is about 120 to 250 pages, covering the six points depicted above. In addition to that, software, hardware, test setups and real solutions are designed and implemented.
+
+Still there is a long way to go before we have a functioning prototype, showing that ideas and concepts are okay for a working satellite. To achieve that goal, refinement of prototypes and test setups take place as final projects or voluntary work. This has taken place in the evenings, at weekends and in part of the summer holiday. It is important to stress that it is not possible to have all the final work count as part of a Master education.
+
+On the other hand, completing the satellite gives the students invaluable experience and skills that they can not obtain in normal master specializations.
+
+Companies which recruit "newborn" engineers deem those extra ordinary skills to be valuable.
+
+The operations after launch have been voluntary, and as at the time of writing, more than 175 days of highly successful operation have been carried out. Our students have shown that it is possible for students by themselves to construct, build and launch a satellite.
+
+Throughout the project, we have been supported and helped by radio amateurs around the world. This has proved to be very valuable during operations.
+
+Put simply, the results from an educational perspective have been enormous. All the involved students have grown and matured, and of course they have learned many engineering lessons the hard way.
+
+Some students have continued in PhD positions and some are now employed at space companies in Denmark as well around Europe.
+
+We are now also well on our way with the successor, AAUSAT3. The mission of AAUSAT3 will be to monitor AIS transponder signals from ships in Arctic regions. The expected launch date is 2010. We hereby invite students to come and participate in that project.
+
+PCI: Printed Circuit Board
+
+MCU: Micro Controller Unit
+
+PIC: Peripheral Interface Controller

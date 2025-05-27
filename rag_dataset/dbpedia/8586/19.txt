@@ -1,0 +1,35 @@
+Over the weekend I was feeling a little bored so I decided to try my hand at writing a shell script to add custom completion for autopkg to bash.
+
+(tl;dr – the script is on GitHub.)
+
+I found an example for the zsh shell which lacked a couple of features and I spent some time examining the script for brew so I wasn’t totally in the dark.
+
+There are a number of tutorials available for writing them but none are particularly detailed so that wasn’t much help.
+
+Writing Shell Scripts
+
+The first thing I should say is that I find writing shell scripts totally different to writing for any other language. I probably write shell scripts incredibly old school, shell and C were the two languages I was paid to write way back in the 1980’s. It feels like coming home.
+
+In shell I write tiny functions. The final script was 224 lines long and contains 22 functions, around half a dozen either do nothing or contain a single call to another function. Apart from the main function none is longer than ten lines of code.
+
+Even the main function is quite simple, though it runs to 40 lines or so half is a single case statement with a line for each of the commands in autopkg.
+
+Let me show you. Here’s some of those tiny functions:
+
+_autopkg_processor_info() { local cur="${COMP_WORDS[COMP_CWORD]}" case "$cur" in --*) __autopkgcomp "--help --recipe= --search-dir= --override-dir= --name=" return ;; esac } _autopkg_repo-add() { return } _autopkg_repo-delete() { _autopkg_comp_repos }
+
+In the first one we have a single case statement. This could have been an if but it looks much neater and clearer written as a case statement. You might wonder why I bothered writing the next two functions at all. It’s done in the name of consistency. Down in the main function we have the case statement :
+
+case "$cmd" in audit) _autopkg_audit ;; help) _autopkg_help ;; info) _autopkg_info ;; list-processors) _autopkg_list_processors ;; list-recipes) _autopkg_list_recipes ;; make-override) _autopkg_make_override ;; processor-info) _autopkg_processor_info ;; repo-add) _autopkg_repo-add ;; repo-delete) _autopkg_delete ;; repo-list) _autopkg_list_processors ;; repo-update) _autopkg_repo-update ;; run) _autopkg_run ;; search) _autopkg_search ;; update-trust-info) _autopkg_update_trust_info ;; verify-trust-info) _autopkg_verify_trust_info ;; version) _autopkg_version ;; install) _autopkg_install ;; *) esac
+
+This statement is one line for each possible autopkg command. By creating those “useless” functions it makes this case statement look clean and clear. It also makes it obvious what we have to do if autopkg adds a new command – add a line in this case statement, write a new function and put the new command into a string called “opts”. By using those tiny functions we’ve made our code much cleaner.
+
+The other complexity in shell scripting is that so much of what you write ends up being other tools or sometimes complex shell builtins. Writing completions is a classic example, there are two special builtins, complete and compgen which you will need to understand. Then I also had to use grep and expr. The grep command was simple but the expr comand is a little gnarly:
+
+local repos="$(for r in `autopkg repo-list`; do expr $r : '.*(\(.*\))'; done)"
+
+It’s not really the fault of expr, that’s a regular expression after the : and they’re often gnarly but it does show that you need to be familiar with a wide range of small tools for shell programming.
+
+By the way, that regular expression takes a string in the form <directorypath> (<URL) and returns the URL without the parentheses. It will even cope with parentheses in the directory path since expr has “greedy expansion” and that first .* in the expression will grab everything up to the last open parenthesis character. This is, of course, exactly the sort of detail you have to be all over when writing shell scripts.
+
+That single line probably took me more than twenty times longer to write than any other line of code in the script. Given that I wanted to check that it would cope with any possible directory path and URL I actually wrote another shell script that took it’s first argument and ran it through the expr command. My final step was to write a file containing 16 possible complications in the file path and a half dozen possible complications in the URL and loop through the file running the test script on each line. I had nothing to worry about, but it was nice to be sure. I was so happy when I finished that line I actually posted a status update to Facebook and had a celebratory bourbon.

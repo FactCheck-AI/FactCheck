@@ -1,0 +1,39 @@
+During last August I made a security audit to an interesting embedded library I have found in Github: libcsp:
+
+Cubesat Space Protocol – A small network-layer delivery protocol designed for Cubesats
+
+This blog post will describe my findings, CVE 2016-8596, CVE 2016-8597, CVE 2016-8598, will publicly disclose the vulnerabilities and will elaborate on the lessons that can be learned from them.
+
+CVE 2016-8596
+
+The satellite’s inner communication bus, shared between all of it’s components, is the CAN bus. Since the bus has a ridiculously short MTU (8 payload bytes), the CSP protocol defines a fragmentation to support messages of up to 256 bytes. As is usually the case with this high-risk network feature, the CSP library suffered from a security vulnerability. Here is the canbus interface’s code:
+
+switch (CFP_TYPE(id)) { case CFP_BEGIN: /* Discard packet if DLC is less than CSP id + CSP length fields */ if (frame->dlc < sizeof(csp_id_t) + sizeof(uint16_t)) { csp_log_warn("Short BEGIN frame received"); csp_if_can.frame++; csp_can_pbuf_free(buf); break; } /* Check for incomplete frame */ if (buf->packet != NULL) { /* Reuse the buffer */ csp_log_warn("Incomplete frame"); csp_if_can.frame++; } else { /* Allocate memory for frame */ buf->packet = csp_buffer_get(CSP_CAN_MTU); if (buf->packet == NULL) { csp_log_error("Failed to get buffer for CSP_BEGIN packet"); csp_if_can.frame++; csp_can_pbuf_free(buf); break; } } /* Copy CSP identifier and length*/ memcpy(&(buf->packet->id), frame->data, sizeof(csp_id_t)); buf->packet->id.ext = csp_ntoh32(buf->packet->id.ext); // EI-Explanation: packet->length is controllable -1- memcpy(&(buf->packet->length), frame->data + sizeof(csp_id_t), sizeof(uint16_t)); buf->packet->length = csp_ntoh16(buf->packet->length); /* Reset RX count */ buf->rx_count = 0; /* Set offset to prevent CSP header from being copied to CSP data */ offset = sizeof(csp_id_t) + sizeof(uint16_t); /* Set remain field - increment to include begin packet */ buf->remain = CFP_REMAIN(id) + 1; /* FALLTHROUGH */ case CFP_MORE: /* Check 'remain' field match */ if (CFP_REMAIN(id) != buf->remain - 1) { csp_log_error("CAN frame lost in CSP packet"); csp_can_pbuf_free(buf); csp_if_can.frame++; break; } /* Decrement remaining frames */ buf->remain--; /* Check for overflow */ // EI-Explanation: This check has no meaning, because length is controllable, see -1-. // The actual buffer's size is 256, and is NOT being checked... -2- if ((buf->rx_count + frame->dlc - offset) > buf->packet->length) { csp_log_error("RX buffer overflow"); csp_if_can.frame++; csp_can_pbuf_free(buf); break; } /* Copy dlc bytes into buffer */ // EI-Explanation: Simple bof, sizes are checked incorrectly, see -2-. memcpy(&buf->packet->data[buf->rx_count], frame->data + offset, frame->dlc - offset); buf->rx_count += frame->dlc - offset; /* Check if more data is expected */ if (buf->rx_count != buf->packet->length) break; /* Data is available */ csp_new_packet(buf->packet, &csp_if_can, NULL); /* Drop packet buffer reference */ buf->packet = NULL; /* Free packet buffer */ csp_can_pbuf_free(buf); break; default: csp_log_warn("Received unknown CFP message type"); csp_can_pbuf_free(buf); break; }
+
+And as we can see in the code, the drivers suffers from a Buffer-Overflow vulnerability due to confused length checks. This is a typical fragmentation vulnerability: sizes are validated against a controllable length field, instead of comparing against the actual allocated buffer’s size.
+
+Meaning: a hostile component in the cubesat can spread over the inner CAN bus, and take over the rest of the components.
+
+CVE 2016-8597
+
+The Small Fragmentation Protocol (SFP) was introduces as an experimental protocol, and was originally designed as a full-featured fragmentation protocol. Here is the SFP’s receive code:
+
+/* Get first packet from user, or from connection */ csp_packet_t * packet = NULL; if (first_packet == NULL) { packet = csp_read(conn, timeout); if (packet == NULL) return -1; } else { packet = first_packet; } do { /* Check that SFP header is present */ if ((packet->id.flags & CSP_FFRAG) == 0) { csp_debug(CSP_ERROR, "Missing SFP header"); return -1; } /* Read SFP header */ // EI-Vuln: no minimal size check to include this header -1- sfp_header_t * sfp_header = csp_sfp_header_remove(packet); sfp_header->offset = csp_ntoh32(sfp_header->offset); sfp_header->totalsize = csp_ntoh32(sfp_header->totalsize); csp_debug(CSP_PROTOCOL, "SFP fragment %u/%u", sfp_header->offset + packet->length, sfp_header-&gt;totalsize); if (sfp_header->offset > last_byte + 1) { csp_debug(CSP_ERROR, "SFP missing %u bytes", sfp_header->offset - last_byte); csp_buffer_free(packet); return -1; } else { last_byte = sfp_header->offset + packet->length; } /* Allocate memory */ if (*dataout == NULL) *dataout = csp_malloc(sfp_header->totalsize); if (*dataout == NULL) { csp_debug(CSP_ERROR, "No dyn-memory for SFP fragment"); csp_buffer_free(packet); return -1; } /* Copy data to output */ *datasize = sfp_header->totalsize; // EI-Vuln: allocation of 0, copying of packet>length => BOF -2- memcpy(*dataout + sfp_header->offset, packet->data, packet->length); if (sfp_header->offset + packet->length >= sfp_header->totalsize) { csp_debug(CSP_PROTOCOL, "SFP complete"); csp_buffer_free(packet); return 0; } else { csp_buffer_free(packet); } } while((packet = csp_read(conn, timeout)) != NULL);
+
+And again, there are simply too many length fields, and while the allocation is done using the overall totalsize, the copy is done using the actual length, resulting in a Buffer-Overflow in a single fragment.
+
+Meaning: an adversary that is accessible to the underlying network layers of the SFP protocol, can triggers this vulnerability to execute arbitrary code over the vulnerable module.
+
+CVE 2016-8598
+
+The libcsp library includes support for ZMQ, using an additional interface. Let’s look on the interface’s code:
+
+/* Create new csp packet */ csp_packet_t * packet = csp_buffer_get(256); if (packet == NULL) { zmq_msg_close(&msg); continue; } /* Copy the data from zmq to csp */ char * satidptr = ((char *) &packet->id) - 1; // EI-Vuln: seems like a pretty neat BOF -1- memcpy(satidptr, zmq_msg_data(&msg), datalen); packet->length = datalen - 4 - 1;
+
+And this time it’s the most simple Buffer-Overflow one can see in a C code: lack of checks on the length field that is used for the actual memcpy.
+
+Meaning: an adversary that is accessible to the ZMQ interface can execute arbitrary code over the vulnerable component using that interface.
+
+Conclusion
+
+The libcsp library is a classic example of an embedded C code in which “lightweight” network utilities are often translated into “lack of checks” over the incoming packets. An important lesson to be learned from a researcher’s point of view, is that there is a tight connection between the amount of length fields and the chance of finding a security vulnerability.

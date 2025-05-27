@@ -1,0 +1,63 @@
+This article provides steps to implement the Simple drag and drop files upload zone in the SharePoint Framework (SPFx), we have used react-filepond implement this functionality.
+
+Create a new web part project
+
+Open power shell and run following comment to create a new web part by running the Yeoman SharePoint Generator
+
+yo @microsoft/sharepoint
+
+When prompted:
+
+Enter the webpart name as your solution name, and then select Enter.
+
+Select Create a subfolder with solution name for where to place the files.
+
+Select Y to allow the solution to be deployed to all sites immediately.
+
+Select N on the question if solution contains unique permissions.
+
+Select WebPart as the client-side component type to be created.
+
+The next set of prompts ask for specific information about your web part:
+
+Enter your web part name, and then select Enter.
+
+Enter your web part description, and then select Enter.
+
+Select React framework as the framework you would like to use, and then select Enter.
+
+Start Visual Studio Code (or your favorite code editor) within the context of the newly created project folder.
+
+cd .\web part name\ code .
+
+Install the library and required dependencies
+
+npm install @pnp/sp --save npm install react-filepond filepond --save npm i filepond-plugin-image-preview npm i filepond-plugin-image-exif-orientation
+
+Configure the custom properties
+
+Create a new source code file under the src\webparts\<web part name>\components\ folder of the solution. Call the new file I<web part name>State.ts and use it to create a TypeScript Interface
+
+Update the <web part name>.tsx file. First, add some import statements to import the types you defined earlier. Notice the import for I<web part name>Props and I<web part name>State. There are also some imports for the PnP components used to render the UI of the PnP React component and pnp sp imports.
+
+Replace this render function with the following code.
+
+Update the React component type declaration and add a constructor, as shown in the following example.
+
+Add below event function inside the react component for upload files to SharePoint Library
+
+Deploy the solution
+
+You’re now ready to build, bundle, package, and deploy the solution.
+
+Run the gulp commands to verify that the solution builds correctly.
+
+gulp build
+
+Use the following command to bundle and package the solution.
+
+gulp bundle --ship gulp package-solution --ship
+
+Browse to the app catalog of your target tenant and upload the solution package. You can find the solution package under the sharepoint/solution folder of your solution. It is the .sppkg file. After you upload the solution package in the app catalog. you can find and the web part anywhere across the tenant.
+
+Sharing is caring!

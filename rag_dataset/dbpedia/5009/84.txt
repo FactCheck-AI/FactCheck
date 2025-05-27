@@ -1,0 +1,137 @@
+We generally want the projects developed to be global. In other words, we want not only the people of one country, but also the people of other countries to be able to use the project we have developed. I’m sure you’ve needed multi-language features in many projects you’ve developed in your professional life. It is possible to produce different solutions for this. Maybe we can use GNU gettext for C++, or we can create our JSON, XML based translation files. But if it uses qt, the easiest way is of course qt linguist.
+
+Qt Linguist is a tool used for managing and translating text in Qt-based applications. It’s part of the Qt framework, which is a popular C++ library for building cross-platform applications. Qt Linguist helps developers and translators to localize applications by providing an interface to view, edit, and translate text strings within the user interface of Qt applications. It’s particularly useful for handling multilingual support, allowing developers to separate the text from the application’s code, making it easier to manage translations and support multiple languages.
+
+To use QT Linguist, we must first install QT Linguist on our computer.
+
+For ubuntu the following command can be used;
+
+sudo apt-get update
+
+sudo apt-get install qttools5-dev-tools
+
+After the installation process is completed, When we search in applications we can see qt linguist as follows.
+
+Let’s try to understand QT linguist with a simple application.
+
+Let’s create a Qt Widget application and make a design in the main window as follows.
+
+As you see, the design consists of 2 buttons and 1 label.
+
+Our goal: When we press the TR button, the label should say “SELAM”. When we press the ENG button, it should say “WELCOME” on the label.
+
+You must add the translation files to the pro file as follows;
+
+Then follow the steps below and select update Translations;
+
+Tools->External->Linguist->Update Translations(lupdate)
+
+After this step, you will see that files with .ts extension have been created in the project path.
+
+The .ts file is a file format used in Qt for storing translation source files. It stands for "Translation Source." These files contain the original text or strings that need to be translated into different languages for localization purposes in Qt applications. In summary, .ts files serve as the source for translations in Qt applications, storing original text strings that are later translated into different languages and compiled into binary .qm files for actual use in the application.
+
+Let’s create our slots for our buttons, right click on the buttons and click on go to slot.
+
+Define _langTranslator in mainwindow.h as follows:
+
+#include <QMainWindow>
+
+#include <QTranslator>
+
+QT_BEGIN_NAMESPACE
+
+namespace Ui { class MainWindow; }
+
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+
+{
+
+Q_OBJECT
+
+public:
+
+MainWindow(QWidget *parent = nullptr);
+
+~MainWindow();
+
+private slots:
+
+void on_buttonENG_clicked();
+
+void on_pushButton_clicked();
+
+private:
+
+Ui::MainWindow *ui;
+
+QTranslator _langTranslator;
+
+};
+
+Of course you should write #include <QTranslator>.
+
+We can write the following codes in slot functions;
+
+void MainWindow::on_buttonENG_clicked()
+
+{
+
+_langTranslator.load("/home/cengizhan/linguistCourse/lang_eng.qm");
+
+QCoreApplication::installTranslator(&_langTranslator);
+
+ui->label->setText(QTranslator::tr("MERHABA"));
+
+}
+
+void MainWindow::on_buttonTR_clicked()
+
+{
+
+_langTranslator.load("/home/cengizhan/linguistCourse/lang_tr.qm");
+
+QCoreApplication::installTranslator(&_langTranslator);
+
+ui->label->setText(QTranslator::tr("MERHABA"));
+
+}
+
+The QTranslator::tr() function is used in Qt to translate text strings within an application. It's a method provided by the QTranslator::tr() class, which is used to manage translations.
+
+Here’s an overview of QTranslator::tr():
+
+Translation Function: QTranslator::tr() is a function used for translating text strings from the source language (usually the default language of the application) to a target language specified by the loaded translation file.
+
+Usage: Developers use QTranslator::tr() to mark text within their code that requires translation. It takes a string as an argument, which represents the text that needs to be translated.
+
+Localization Support: When the application is running, and a translation file (usually a .qm file generated from a .ts file) is loaded using QTranslator, calls to tr() will replace the original text with the translated text if a translation is available for the current language.
+
+QCoreApplication::installTranslator() is a function in the Qt framework that is used to install a translation file (usually a .qm file) for an application to enable runtime translation of text.
+
+When we add a new string that we want to translate to the code, we must repeat this step:
+
+Tools->External->Linguist->Update Translations(lupdate)
+
+Well, now let’s open the Qt Linguist application we downloaded.
+
+Click File->Open and choose our .ts files
+
+Enter the Turkish and English equivalents for the “MERHABA” text as follows.
+
+Then click File->Release All in Qt Linguist application.
+
+Yes, we have produced the .qm files in this step.
+
+.qm files are the result of compiling .ts(Translation Source) files. The translations provided by translators in the .ts files are compiled into a binary format for faster and more efficient access during runtime.
+
+After this step, let’s run our application.
+
+When the TR button is pressed;
+
+When the ENG button is pressed;
+
+Yes this is it!!
+
+You can find what is explained here in this video;

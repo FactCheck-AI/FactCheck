@@ -1,0 +1,213 @@
+The title of this article is ambiguous. Other definitions are listed on Sprite (Disambiguation).
+
+A sprite, also referred to as a Movable Object Block (abbreviated to MOB) in Commodore literature, is a piece of graphics that can move and be assigned attributes independent of other graphics or text on the screen. The VIC-II, which is responsible for this feature of the C-64, supports up to eight sprites, but through the use of raster interrupt programming more than eight sprites may be displayed simultaneously.
+
+While managing sprites is notorious for the flurry of POKEs necessary to set them up, their big strength lie in the ability to quickly and easily move a graphical object and change its shape, merely by specifying coordinates and setting a pointer – eliminating the need to constantly draw and erase graphical objects pixel-by-pixel.
+
+Sprite graphics[edit | edit source]
+
+The "pattern" or "design" of both multicolor and high-res sprites always fits in to a "grid" of 24 bits in width, and 21 bits in height; a total of 504 bits, which in turn fit into 63 bytes. These 63 bytes are stored in RAM within the current VIC bank, beginning at an address divisible by 64; i.e. 0, 64, 128, 192, 256, etc.
+
+This arrangement "interleaves" one unused byte in each avaliable 64-byte "block"; the contents of this "64th byte" has no influence on the sprite's appearance. In theory, one VIC-bank with no ROM charset mirror can hold 256 sprite patterns, but allowing for a text screen and a character set, the practical number is no larger than 208 different patterns.
+
+Each byte contains eight bits (7-0), which have these values: 128, 64, 32, 16, 8, 4, 2 and 1. If a value is used, a pixel (bit) is set (also look to the example picture on the rigt side). For setting all pixels the sum of values is 255. For different pixel patterns the values must sum together - like 170 for setting bit 1 (value 2), 3 (value 8), 5 (value 32) and 7 (value 128) . A sprite data block is setup like:
+
+Byte 1 Byte 2 Byte 3 Byte 4 Byte 5 Byte 6 ... ... ... ... ... ... Byte 61 Byte 62 Byte 63
+
+High resolution sprite pattern[edit | edit source]
+
+To the right is a 24×21 raster image depicting a solid circle: The grid is divided into "strips" of 8 pixels, or bits, i.e. into individual bytes. Each byte is read with the leftmost bit as the most significant, and the rightmost bit as the least significant one. The bytes are read from left to right, row by row (just like reading ordinary text), and converting the bit pattern for this example into decimal byte values yield the figures indicated to the right of the grid. The 63-byte sequence forming this sprite thus begins with 0, 126, 0, 3, 255, 192, 7, ...
+
+Since a bit can assume one of two states, each pixel in a high resolution sprite can do one of two things:
+
+For bits set to "0" in the sprite data set, the corresponding pixel will be transparent, i.e. whatever graphics or color is behind the sprite, will show through these pixels.
+
+Bits set to "1" will cause the corresponding pixels in the sprite to assume the individual color set for each sprite (see the section color settings below). Such pixels can appear either in front of or "hide" behind other sprites or other graphics; see the section on sprite priority below.
+
+Multicolor sprite pattern[edit | edit source]
+
+In multicolor sprites the bits are grouped in pairs, forming pixels that are twice the width of high resolution pixels. Since each such multicolor pixel is defined by two bits of data rather than one, each pixel can do one of four things:
+
+Pixels with a bit pair of "00" appear transparent, like "0" bits do in high resolution mode.
+
+Pixels with a bit pair of "01" will have the color specified in address 53285/$D025.
+
+Pixels with a bit pair of "11" will have the color specified in address 53286/$D026.
+
+Pixels with a bit pair of "10" will have the color specified assigned to the sprite in question in the range 53287–53294/$D027–D02E.
+
+Note that two of the three "visible" (non-transparent) colors will be common for all eight sprites, whereas the third visible color may be set individually for each sprite.
+
+Construction[edit | edit source]
+
+The construction of sprites by hand is very hard, so you should use a sprite editor. There are tools and help in some BASIC expansions, like Super Expander 64, Supergrafik, Simons' BASIC or in BASIC 7.0, for developing and programming sprites. For example, the BASIC command SPRDEF in BASIC 7 of a C128 or in Super Expander 64 runs the sprite editor.
+
+Programming sprites in BASIC[edit | edit source]
+
+By programming sprites in a BASIC program, the sprite datas should also put into DATA lines and read into the RAM with a FOR-NEXT loop and the BASIC commands READ and POKE - for example:
+
+10 SZ = 12288: REM Sprite block 192 20 FOR X=0 TO 62: READ Y: POKE SZ+X,Y: NEXT X 30 DATA 255, 128, 16: REM 1st data line ...(insert in this line 19 other DATA lines with 3 data values!) 50 DATA 255, 128, 16: REM 21st data line
+
+Settings[edit | edit source]
+
+Besides setting up data for the pattern in RAM, using sprites involves some further initialization work. In the following discussion of the sprite-related VIC-II registers, the eight sprites are consequently referred to as sprite #0 thru sprite #7.
+
+Sprite enable[edit | edit source]
+
+Each bit in address 53269/$D015 acts like a "switch" that turns one of the eight sprites "on" or "off"; set the bit to "1" to enable the corresponding sprite, or "0" to hide it. The least significant bit refers to sprite #0, and the most sigificant bit to sprite #7.
+
+General
+
+For a few sprite options like dis-/enable (53269/$D015), x and y size (53277/$D01D; 53271/$D017) and background sprite priority (53275/$D01B) or collision registers (53278/$D01E; 53279/$D01F), the VIC-II uses only one register for all sprites. For each sprite that uses these options (enable bit for sprite #7-#0), the bit values must be summed together.
+
+Sprite number: #7 #6 #5 #4 #3 #2 #1 #0 Bit value: 128 64 32 16 8 4 2 1
+
+Examples
+
+Switching:
+
+all sprites on - you set the sum of bit values of 255: POKE 53269,255
+
+only sprite #0 (bit value 1) on: POKE 53269,1
+
+only sprite #0 (bit value 1) and #1 (bit value 2) on: POKE 53269,3
+
+only sprite #3 (bit value 8) and #5 (bit value 32) on: POKE 53269,40
+
+all sprites off you set the value of 0: POKE 53269,0
+
+Sprite pointers[edit | edit source]
+
+Sprite Sprite pointer #0 2040 / $07F8 #1 2041 / $07F9 #2 2042 / $07FA #3 2043 / $07FB #4 2044 / $07FC #5 2045 / $07FD #6 2046 / $07FE #7 2047 / $07FF
+
+The location of the sprite pointers follow that of the text screen, so that if the VIC-II has been "told" (through address 53272/$D018) that the text screen RAM begins at address S, the sprite pointers reside at addresses S+1016 thru S+1023. Since the default text screen RAM address is 1024, this puts the sprite pointers at addresses 2040 (for sprite #0) thru 2047 (for sprite #7), or $07F8–07FF in hexadecimal.
+
+To make a given sprite show the pattern that's stored in RAM at an address A (which must be divisible with 64), set the contents of the corresponding sprite pointer address to A divided by 64. For instance, if the sprite pattern begins at address 704, the pointer value will be 704 / 64 = 11.
+
+Sprite locations[edit | edit source]
+
+Sprite x coordinate y coordinate #0 53248/$D000 53249/$D001 #1 53250/$D002 53251/$D003 #2 53252/$D004 53253/$D005 #3 53254/$D006 53255/$D007 #4 53256/$D008 53257/$D009 #5 53258/$D00A 53259/$D00B #6 53260/$D00C 53261/$D00D #7 53262/$D00E 53263/$D00F
+
+Each sprite has its own set of coordinate registers, which determine where on the screen the sprite appears, as indicated in the table to the right. However, the sprites can move across more than 256 pixels in the horizontal direction, and so their x coordinates require nine bits; one more than the eight available in each of the addresses shown.
+
+Because of this, the x coordinate addresses given in the table only holds the eight least significant bits of the x coordinates for the respective sprites. The ninth and most significant bit for each of the eight sprites are "gathered" in address 53264/$D010; the least significant bit here corresponds to sprite #0, and the most significant bit to sprite #7.
+
+Examples
+
+Sprite #5 should be positioned at X=300 (256+44).
+
+The other sprites should stay on your actual x position.
+
+BASIC
+
+10 POKE 53258,44 :REM X POSITION SPRITE #5 = 44 20 POKE 53264,PEEK(53264) OR 32 :REM ENABLE EXTRA BIT FOR SPRITE #5
+
+Assembler
+
+LDA #44 STA $D00A ; X position sprite #5 set on 44 LDA $D010 ; load X-MSB ORA #%00100000 ; set extra bit for sprite #5 STA $D010 ; write X-MSB register
+
+High resolution or multicolor mode[edit | edit source]
+
+In address 53276/$D01C, each bit is set to "tell" VIC-II which sprites are to be in high resolution mode (bit set to "0"), and which to display in multicolor mode (bit set to "1"). The least significant bit controls sprite #0, and the most significant bit sprite #7.
+
+Color settings[edit | edit source]
+
+Sprite Color register (normal/uni-color) #0 53287/$D027 #1 53288/$D028 #2 53289/$D029 #3 53290/$D02A #4 53291/$D02B #5 53292/$D02C #6 53293/$D02D #7 53294/$D02E
+
+Both multicolor and high resolution sprites have one "transparent" color, and one "solid" color that can be individually set for each sprite, using the addresses specified in the table at right.
+
+Besides these two, multicolor mode offers two more colors which are common for all eight sprites:
+
+53285/$D025 is the common color displayed for "01" bit pairs in the sprite data, and
+
+53286/$D026 is the common color displayed for "11" bit pairs in the sprite data.
+
+Bit couple Color %00 transparency %10 Sprite color register (normal/uni color; $D027-$D02E) %01 Multicolor register #0 ($D025) %11 Multicolor register #1 ($D026)
+
+Examples
+
+Bit | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 | (for a standard or normal/uni-color sprite) |---|---|---|---|---|---|---|---| Bit | 7 + 6 | 5 + 4 | 3 + 2 | 1 + 0 | (for multicolor sprite) |---|---|---|---|---|---|---|---| Bit values |128|064|032|016|008|004|002|001| |---|---|---|---|---|---|---|---| 1. Example | | | | | | | | | (background color), value 0 |---|---|---|---|---|---|---|---| 2. Example | | X | | X | | X | | X | (multicolor 0), value 85 |---|---|---|---|---|---|---|---| 3. Example | X | | X | | X | | X | | (sprite normal/uni-color), value 170 |---|---|---|---|---|---|---|---| 4. Example | X | X | X | X | X | X | X | X | (multicolor 1), value 255 |---|---|---|---|---|---|---|---| This example sprites and data values demonstrate a sprite line! |---|---|---|---|---|---|---|---| 5. Example | X | X | | X | | | X | | data value 146 |---|---|---|---|---|---|---|---| All color options mixed into a sprite line
+
+Double height and/or width[edit | edit source]
+
+By default, i.e. without the use of this feature, a sprite will cover an area 24 (high resolution) pixels wide and 21 pixels high, but by setting bits in registers 53277/$D01D and 53271/$D017, each sprite may be individually "stretched" to twice the width and/or twice the height. In both registers, the least significant bit affects sprite #0, and the most sigificant bit sprite #7.
+
+Notice that regardles of whether the sprite has been "doubled" in either or both directions, the graphic pattern displayed by the sprite still comes from the same 63 bytes: The expanded size comes at the cost of more coarse, "blocky" graphics.
+
+Examples
+
+BASIC
+
+10 POKE 53277,15 :REM SPRITE #0-#3 double size in x position (1+2+4+8=15) / sprite #4-#7 standard
+
+Assembler
+
+LDA #%00001111 STA $D01D ; Sprite #0-#3 double size in x position / sprite #4-#7 standard
+
+Sprite priority[edit | edit source]
+
+In the context of sprites, "background" refers to the text screen or other "non-sprite" graphics shown on the screen along with the sprites: Through manipulating the bits in address 53275/$D01B, sprites can be set to appear "behind" (bits set to "1") or "in front of" (bits set to "0") such background graphics. The least significant bit affects sprite #0, and the most sigificant bit sprite #7.
+
+Note that the priority amongst the sprites themselves are "hardwired": A sprite with a lower number will always overlap, or appear "in front of" a sprite with a higher number; e.g. sprite #3 will appear in front of #5, should they happen to overlap.
+
+Examples
+
+Sprite #7 should appear in the front - all other sprites, #0 to #6, aren't changed.
+
+BASIC
+
+10 POKE 53275, PEEK(53275) AND 127 :REM DISABLE BIT #7 IN PRIORITY REGISTER
+
+Assembler
+
+LDA $D01B ; read priority register AND #%01111111 ; disable Bit7, Bit #0-#6 aren't changed STA $D01B ; write priority register
+
+Collision detection[edit | edit source]
+
+The VIC-II provides hardware-supported collision detection between sprites and other graphics: "Collision" in this context means that one or more visible pixels in one visible sprite actually overlap one or more visible pixels in either another sprite, or in the background graphics.
+
+Polling for collisions[edit | edit source]
+
+There are two VIC registers that can be polled to see if a collision involving sprites have occured:
+
+Sprites involved in a collision with other sprites will have their respective bits set to "1" in address 53278/$D01E – all other sprites will have a "0" bit here.
+
+Sprites involved in a collision with background graphics will have their respective bits set to "1" in address 53279/$D01F – all other sprites will report a "0".
+
+As with all other "one bit per sprite" registers, the least significant bit affects sprite #0, and the most sigificant bit sprite #7.
+
+Interrupt on collision[edit | edit source]
+
+Both the interrupt event register (at address 53273/$D019) and interrupt enable register (at address 53274/$D01A) have provisions for raising IRQ-type interrupts at the CPU whenever collisions occur:
+
+Bit 2 (weight 4) in both registers concern sprite-to-sprite collisions, and
+
+Bit 1 (weight 2) in both registers concern sprite-to-background collisions.
+
+Animation of sprites[edit | edit source]
+
+This animation contains 8 single images (sprites) - the sprite animation at the side.
+
+For a sprite animation are required two matched images (sprites).
+
+The sprite blocks should insert in the play order into the RAM.
+
+The sprite data pointer will increased until the end of the animation is reached and then set on the start value.
+
+Examples[edit | edit source]
+
+POKE 2040,13: POKE 53248,255: POKE 53249, 100: POKE 53287,1
+
+Enables sprite #0 with random shape in white color.
+
+PRINT PEEK (53278): PRINT PEEK (53279)
+
+Reading out the sprite collisions bits.
+
+This BASIC program demonstrate a few sprite options of three sprites (multicolor and standard/uni-color). The REM-lines are only used for remarks (also with the REM command the BASIC lines are too long!). The variable V contains the start address of VIC-II.
+
+1 PRINT CHR$(147): V=53248: POKE V+33,0: REM clear screen 2 FOR X=12800 TO 12927: POKE X,0: NEXT X: REM Clear RAM for sprites 10 FOR X=12800 TO 12881: READ Y: POKE X,Y: NEXT X: REM sprite generation 11 POKE 2040,200: POKE 2041,201: POKE 2042,201: POKE V+21,7 12 POKE V+28,6: POKE V+37,15: POKE V+38,2: REM multicolor for sprite 1&2 13 POKE V+39,7: POKE V+40,8: POKE V+41,6: REM sprite color sprite 0&1&2 15 POKE V+23,7: POKE V+29,7: POKE V+16,1: REM sprite properties height, width, x position 16 POKE V+1,133: POKE V+2,170: POKE V+5,115: REM x/y positions 19 REM moving and changing colors 20 FOR X=200 TO 1 STEP -1: POKE V,X: Z=Z+0.61: POKE V+3,Z 21 POKE V+4,(201-X)/2: NEXT X 22 POKE V+16,0: POKE V,255: M=PEEK(V+4) 23 FOR X=255 TO 170 STEP -1: POKE V,X: Z=Z+0.66: POKE V+3,Z 24 POKE V+4,M+(256-X)/1.2: NEXT X 25 FOR X=0 TO 5: FOR Y=1 TO 255: POKE V+37+X,Y: NEXT Y,X 26 POKE V+38,2: POKE V+39,7: POKE V+41,6 27 FOR Y=1 TO 65: POKE V+40,Y: POKE V+37,Y+10 28 FOR Z=0 TO 15: POKE V+39,Y: NEXT Z, Y 29 REM waiting, deleting sprite 0 and fade off 30 FOR X=0 TO 3000: NEXT X 31 FOR X=0 TO 32: POKE 12832+X,0: POKE 12832-X,0 32 FOR Y=0 TO 100: NEXT Y,X: POKE V+21,0 39 REM SPRITE C64-WIKI.DE (unicolor; sprite 0) 40 DATA 239,81,85,139,81,20,137,81,28,137,81,89,137,213,89,142,85,93,138 41 DATA 95,85,138,91,85,238,91,85,0,0,0,0,0,0,0,0,0 42 DATA 0,199,0,0,231,0,0,164,0,0,180,0,0,151,0,0,180,0,0,164,0,0,231,0,0,199,0 44 REM multicolor sprite lines (sprite 1&2) 45 DATA 0,255,255,255,170,85,170,170,85,170,85,170,85,85,170,85,255,255,255
+
+[edit | edit source]
+
+Wikipedia: Sprite_(computer_graphics)

@@ -1,0 +1,175 @@
+Summary
+
+SonicWall next-generation firewall (NGFW) series 6 and 7 devices are affected by two unauthenticated denial-of-service vulnerabilities with the potential for remote code execution. SonicWall published advisories for CVE-2022-22274 and CVE-2023-0656 a year apart and reported that no exploitation had been observed in the wild; however, a proof-of-concept exploit for the latter was publicly released.
+
+Our research found that the two issues are fundamentally the same but exploitable at different HTTP URI paths due to reuse of a vulnerable code pattern. In-depth analysis of the underlying bug allowed us to produce a test script that can determine whether a device is vulnerable without crashing it. Download it here.
+
+Using BinaryEdge source data, we scanned SonicWall firewalls with management interfaces exposed to the internet and found that 76% (178,637 of 233,984) are vulnerable to one or both issues.
+
+The impact of a widespread attack could be severe. In its default configuration, SonicOS restarts after a crash, but after three crashes in a short period of time it boots into maintenance mode and requires administrative action to restore normal functionality. The latest available firmware protects against both vulnerabilities, so be sure to upgrade immediately (and make sure the management interface isn’t exposed to the internet).
+
+Background
+
+A few months ago, Watchtowr Labs published an article detailing research that led to their discovery of nine new vulnerabilities affecting SonicWall NGFW appliances. When an emerging threat like this arises, our Cosmos team responds by quickly identifying all affected internet-facing devices and notifying our customers where they are vulnerable. This case was no different, but we also took the opportunity to review historical vulnerabilities affecting SonicWall products to see if any overlooked bugs might make for interesting research.
+
+One issue in particular caught our attention: CVE-2022-22274. According to the vendor’s advisory, the vulnerability was an unauthenticated buffer overflow affecting NGFW web management interfaces. They assigned it a CVSS score of 9.4, indicating high exploitability and impact:
+
+A Stack-based buffer overflow vulnerability in the SonicOS via HTTP request allows a remote unauthenticated attacker to cause Denial of Service (DoS) or potentially results in code execution in the firewall….
+
+SonicWall PSIRT is not aware of active exploitation in the wild. No reports of a PoC have been made public and malicious use of this vulnerability has not been reported to SonicWall.
+
+Our initial research confirmed the vendor’s assertion that no exploit was available; however, once we identified the vulnerable code, we discovered it was the same issue announced a year later as CVE-2023-0656. SSD Labs had published a technical writeup of the bug with a proof of concept, noting two URI paths where the bug could be triggered. We found that CVE-2022-22274 was caused by the same vulnerable code pattern in a different place, and the exploit worked against three additional URI paths.
+
+Vulnerability Analysis
+
+To identify the vulnerable code underlying CVE-2022-22274, we used Ghidra and BinDiff to compare differences between vulnerable and patched versions of the sonicosv binary, which is responsible for handling HTTP requests for the web management interface. Thanks to Watchtowr Labs’ analysis (referenced above), we already had a pretty good sense of the SonicOS architecture and a guide for accessing the file system, which required extracting keys from encrypted LUKS partitions and decrypting them. Fortunately for us, during this stage of our research, Praetorian published an article providing a detailed analysis of the decryption process and released a tool to simplify key extraction, which accelerated our own efforts significantly.
+
+After comparing a handful of functions that were modified between NSv firmware versions 6.5.4.4-44v-21-1452 and 6.5.4.4-44v-21-1519, we found one that showed clear signs of being related to HTTP request handling, including request methods, query strings, HTML code, and messages intended for display in a web browser. The decompiled functions from the two versions revealed the following key code changes:
+
+Vulnerable
+
+Patched
+
+This code block involved two sequential calls to __snprintf_chk() with the output from the first call used to determine the arguments for the second. In the patched version, the variable storing the output from the first call was changed from a signed integer to an unsigned one, a bounds check was added before feeding this value into the second function call, and additional checks were added to the input and output of the second call.
+
+At this point, we were confident we had found the vulnerable code, but to understand the logic behind the bug and how to exploit it, we had to look at the function definition for __snprintf_chk(). According to the LSB Core Specification:
+
+int __snprintf_chk(char * str, size_t maxlen, int flag, size_t strlen, const char * format, …); …
+
+The interface __snprintf_chk() shall function in the same way as the interface snprintf(), except that __snprintf_chk() shall check for buffer overflow before computing a result….If an overflow is anticipated, the function shall abort and the program calling it shall exit.
+
+While it’s possible that the SonicWall developers explicitly used __snprintf_chk(), that function is usually inserted into C code at compile time as a replacement for the snprintf() function if the _FORTIFY_SOURCE flag is set to the necessary level. Regardless, the developers clearly intended to safeguard against buffer overflows, but they made one crucial oversight: they assumed that the return value from snprintf() or __snprintf_chk() would be equal to the number of characters written to the output buffer. If we look at the documentation for snprintf(), however, we see that this is not the case when the destination buffer is too small:
+
+The functions snprintf() and vsnprintf() do not write more than size bytes (including the terminating null byte ('\0')). If the output was truncated due to this limit then the return value is the number of characters (excluding the terminating null byte) which would have been written to the final string if enough space had been available. Thus, a return value of size or more means that the output was truncated.
+
+In other words, when the input string passed to snprintf() or __snprintf_chk() is larger than the number of bytes requested for printing, the return value is set to the number of characters in the input string, not the number of characters that were actually written to the output buffer.
+
+To illustrate, consider this example code:
+
+#include <stdio.h> int main() { char buf[20]; int result = __snprintf_chk(buf,6,1,20,"hello world"); printf("buf: %s\nresult: %d",buf,result); }
+
+The output of this code is:
+
+buf: hello result: 11
+
+Note that result holds the number of characters in the input string (11), not the number written to buf (5).
+
+We believe the SonicWall developers assumed the return value would match the length of the output string, and used that to calculate both the output buffer offset and the maximum length of the string to write when calling snprintf() or __snprintf_chk() a second time. Let’s look at the impact on each of the first two arguments passed to this function call:
+
+The first argument to __snprintf_chk() is a pointer to the buffer where the function will write data. The value passed to the second function call is the same as the first, only the pointer is incremented by the return value from the first call. The developers clearly intended for this to cause the second function call to append data to the same buffer as the first, but if the return value from the first call is larger than the number of characters that were actually written, the second call gets a pointer to some unknown location on the stack (past the end of the buffer) as its first argument.
+
+The second argument to __snprintf_chk() is the maximum size of data to be written (in bytes) to the output buffer, including the string terminator (a null byte). The value passed to the second function call is defined as 1024 minus the return value from the first call. The developers seem to have intended their code to concatenate two formatted strings together, but cap the length of the result at 1024 characters.
+
+The first problem with this approach is that maxlen uses type size_t, which is equivalent to an unsigned 64-bit integer in this case. If the return value from the first call is larger than 1024, when the second call subtracts this value from 1024, the result wraps around to the maximum integer value instead of becoming negative (see this discussion of integer overflow for more details). In other words, the second function call specifies an extremely large amount of data to write into the relatively tiny 1024-byte buffer.
+
+One might assume that the buffer overflow protection described in the documentation for __snprintf_chk() would prevent that overflow from actually occurring. However, that protection depends on the strlen parameter being set to a value smaller than the maxlen parameter. In the second function call strlen is set to the maximum value of a 64-bit unsigned integer (0xffffffffffffffff), so maxlen can never be larger than strlen and the overflow protection becomes useless. This suggests to us that the developers wrote their code using snprintf() instead of __snprintf_chk(), then enabled buffer overflow protections at compile time, causing the compiler to replace snprintf() with __snprintf_chk() and set the value of strlen to match the size of the output buffer. Since the output buffer size is dynamic in the second function call, and strlen must be declared as a constant, the compiler set strlen to the maximum possible value instead of a reasonable size (like 1024).
+
+To illustrate, consider that the developers probably wrote code like this:
+
+n = snprintf(buf, 0x400, "%s", user_input); snprintf(&buf[n], 0x400-n, "%s", user_input);
+
+Then, at compile time, the compiler changed the code to this:
+
+n=__snprintf_chk(buf, 0x400, 1, 0x400, "%s", user_input); // strlen=0x400 __snprintf_chk(&buf[n], 0x400-n, 1, 0xffffffffffffffff, "%s", user_input); // sizeof(&buf[n]) can only be determined at runtime, so strlen=(size_t) -1
+
+To fix this error in the patched version of the firmware, the developers added a check between the two snprintf() or __snprintf_chk() calls to ensure that the return value from the first call is less than 1024. If the check fails, the second function call is skipped and handling of the request is terminated. The patch effectively restores buffer overflow protection without modifying the actual calls to snprintf() or __snprintf_chk().
+
+Exploit Development
+
+Having identified the vulnerable code underlying CVE-2022-22274, we proceeded to back trace through the decompiled source to understand how to craft an HTTP request that could reach it. The request handler function contained if statements that performed a series of string comparisons against a buffer of unknown origin. Examining each of these comparisons revealed strings that appeared to be URI paths, so it wasn’t a stretch for us to assume that sending an HTTP request beginning with the URI path in a particular if statement would lead us down its corresponding code path, e.g.:
+
+We found two such URI paths leading to the vulnerable code block: /resources/ and /%s/. The latter was a format string (not the one pictured above) related to the Advanced Threat Protection (ATP) feature. When enabled, this feature is accessible at /atp/; when disabled, it can be reached at //.
+
+At that point, we knew where to send an HTTP request to trigger the bug, but still needed to come up with a payload. Based on our analysis of the vulnerable code, we knew that the URI path in the HTTP request needed to be longer than 1024 bytes in order to create the conditions for a buffer overflow, but we also had to provide a long enough input string for the second call to __snprintf_chk(). Fortunately, the second call also took its input string from the HTTP request, but instead of reading the URI path, it read the HTTP version string. It became clear, then, that the two functions were used to build a request like so:
+
+First call to __snprintf_chk(): write request method (e.g. GET) and URI path
+
+Second call to __snprintf_chk(): append HTTP version
+
+The second requirement for exploitation, then, was an exceedingly long HTTP version string. Using this knowledge together with dynamic analysis to test some of our assumptions, we ended up writing the following proof of concept in Python:
+
+import socket, ssl ctx=ssl.SSLContext() ctx.verify_mode=ssl.CERT_NONE s=socket.create_connection(("192.168.250.152",443)) ss=ctx.wrap_socket(s) data=b'GET /resources/' +b'A'*0x700 + b' HTTP/1.'+b'0'*0x4000+b'\r\n\r\n' ss.send(data)
+
+We tested the exploit against our vulnerable NSv instance and observed it crash with a segmentation fault:
+
+With a bit more testing, we discovered the application used stack canaries and a smaller payload could produce a more reliable crash by overwriting them with non-zero values:
+
+data=b'GET /resources/' +b'A'*0x400 + b' HTTP/1.1'+b'A'*0x4000+b'\r\n\r\n'
+
+We tested the DoS exploit successfully against vulnerable series 6 and 7 virtual appliances, and we confirmed that it failed against patched firmware versions in both series.
+
+(Re-)Discovery of CVE-2023-0656
+
+During our review of the sequential __snprintf_chk() function calls, we noticed that the same code pattern was reused in other places within the web handler function. By repeating our previous attack path analysis, we discovered additional exploitable URI paths:
+
+/stats/
+
+/Security_Services
+
+/prefsProcessing.html (although this path had other conditions that we were unable to satisfy)
+
+We were excited at first to find that exploiting the first two of these paths was successful not only against the NSv appliances that were vulnerable to CVE-2022-22274, but also against the ones that had been patched! Not long after, however, we discovered that instead of finding 0-days, we had independently validated CVE-2023-0656. SSD Labs had published a writeup of this vulnerability in April 2023 and released a proof-of-concept exploit nearly identical to our own.
+
+To our knowledge, no previous research has been published establishing a link between CVE-2022-22274 and CVE-2023-0656. Clearly, both vulnerabilities share the same underlying bug, but the initial patch only fixed the vulnerable code in one place, leaving the other instances to be found and reported a year later.
+
+Development of a Safe Vulnerability Check
+
+Being able to crash a target is all well and good, but what about identifying vulnerable devices without knocking them offline? Based on our analysis of the bug, we tried to come up with a test that could reliably tell whether a specific target was affected or unaffected. It proved to be rather simple – if you recall, we had to satisfy two conditions to trigger the crash using an HTTP request:
+
+URI path must be longer than 1024 bytes
+
+HTTP version string must be long enough to cause a stack canary overwrite
+
+By satisfying the first condition, but not the second, it turns out we can reliably elicit different responses from the target, because the buffer overflow check in patched versions causes the connection to be dropped without a response. Here is our modified proof of concept:
+
+import socket, ssl ctx = ssl.SSLContext() ctx.verify_mode = ssl.CERT_NONE s = socket.create_connection(("192.168.250.152", 443)) ss = ctx.wrap_socket(s) data = b"GET /resources/" + b"A" * 0x400 + b" HTTP/1.1\r\n\r\n" ss.send(data) print(ss.recv(1048))
+
+And here are the responses we get from our test targets:
+
+Vulnerable: b'HTTP/1.1 302 Found\r\nLocation: https:// 192.168.250.152/auth.html\r\n\r\n'
+
+Patched: b''
+
+In cases where a device is unaffected, i.e., a required component is not accessible because it is disabled, blocked, or simply not available (as in series 5 devices), the response is a different HTTP status code (usually 404). Therefore, we can reduce the vulnerability check to the following outcomes:
+
+HTTP 302: vulnerable
+
+empty (connection dropped): patched
+
+any other HTTP status code: unaffected
+
+We tested this against all five URI paths and found the vulnerability check was reliable across a wide variety of SonicOS versions, so we put together a user-friendly Python tool for easily testing (and exploiting, if desired) any target: download it here.
+
+Scan Methodology
+
+Having discovered a crash-safe vulnerability check, we found ourselves wondering, “How many SonicWall devices on the internet are vulnerable?” To answer this question, we first turned to BinaryEdge to assemble a target list. Since the HTTP response header “Server: SonicWALL” is hard-coded into all SonicWall NGFW devices, they are easily identifiable on the internet:
+
+A quick search returned approximately 1.5 million results, but some filtering was needed to ensure we were only getting NGFW devices and, specifically, the web management interface. Fortunately for us, this was as simple as ensuring the “Server” response header was just “SonicWALL” and not, e.g., “SonicWALL SSL-VPN Web Server,” as well as making sure the connection used TLS encapsulation. On all series 6 and 7 devices, the web management interface only allows access via HTTPS (although you can enable HTTP redirection).
+
+We exported the entire data set from BinaryEdge, extracted HTTPS URLs, filtered the list to IPv4 (for simplicity – it was a negligible difference), and removed duplicate entries. We then wrote a simple script to test reachability and check the response headers. After filtering our results in this manner, we ended up with a target set of 234,720 devices.
+
+We then wrote a threaded version of our vulnerability check to quickly scan all five potentially vulnerable paths on all the targets. By including some optimizations (like minimizing the number of test paths for each CVE), we were able to gather the results within a few hours. Here’s a sample of our result set:
+
+{"https://65.144.219.82:443": {"CVE-2022-22274": true, "CVE-2023-0656": true}} {"https://65.141.205.218:8443": {"CVE-2022-22274": false, "CVE-2023-0656": false}} {"https://65.144.97.218:443": {"CVE-2022-22274": true, "CVE-2023-0656": true}} {"https://65.141.191.90:443": {"CVE-2022-22274": false, "CVE-2023-0656": true}}
+
+In some cases, the results included different ports on the same target, so we consolidated those (resulting in 233,984 unique devices) and were left with the following results:
+
+Perhaps most astonishing was the discovery that over 146,000 publicly-accessible devices are vulnerable to a bug that was published almost two years ago!
+
+Conclusion
+
+CVE-2022-22274 and CVE-2023-0656 represent the same vulnerability on different URI paths, an issue which is easily exploited to crash vulnerable devices. Now that we know how to perform a safe vulnerability check, be sure to test any SonicWall NGFW devices you have deployed on your network! If you have a vulnerable device, there are two steps you should take immediately:
+
+Remove the web management interface from public access.
+
+Upgrade the firmware to the latest available version.
+
+At this point in time, an attacker can easily cause a denial of service using this exploit, but as SonicWall noted in its advisories, a potential for remote code execution exists. While it may be possible to devise an exploit that can execute arbitrary commands, additional research is needed to overcome several challenges, including PIE, ASLR, and stack canaries. Perhaps a bigger challenge for an attacker is determining in advance what firmware and hardware versions a particular target is using, as the exploit must be tailored to these parameters. Since no technique is currently known for remotely fingerprinting SonicWall firewalls, the likelihood of attackers leveraging RCE is, in our estimation, still low. Regardless, taking the appropriate precautions to secure your devices will ensure they don’t fall victim to a potentially painful DoS attack.
+
+As always, our Cosmos customers were the first to benefit from this research. As soon as we developed a vulnerability check, we scanned our customers and notified each one of the affected (and unaffected) devices on their attack surface. As a result, these issues have been remediated for all those under our watch as of the time of this writing. We remain committed to our mission and will continue seeking out new opportunities to keep our subscribers safe from harm!
+
+Subscribe to Bishop Fox's Security Blog
+
+Be first to learn about latest tools, advisories, and findings.
+
+Thank You! You have been subscribed.

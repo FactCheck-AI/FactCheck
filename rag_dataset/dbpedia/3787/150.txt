@@ -1,0 +1,121 @@
+This document describes how you can create and interpret a chart that displays metric data of the Distribution value type. This value type is used by services when the individual measurements are too numerous to collect, but statistical information, such as averages or percentiles, about those measurements is valuable. For example, when an application relies on HTTP traffic, you can use a distribution-valued metric that captures HTTP response latency to evaluate how quickly HTTP requests complete.
+
+To illustrate how a histogram is created, consider a service that measures the HTTP latency of requests and that reports this data by using a metric with a distribution-value type. The data is reported every minute. The service defines ranges of values for the metric, called buckets, and records the count of measured values that falls into each bucket. For example, when an HTTP request completes, the service increments the count in the bucket whose range includes the request's latency value. These counts create a histogram of values for that minute.
+
+Assume that the latencies measured in a one-minute interval are 5, 1, 3, 5, 6, 10, and 14. If the buckets are [0, 4), [4, 8), [8, 12), and [12, 16), then the histogram of this data is [2, 3, 1, 1]. The following table shows how individual measurements affect the count for each bucket:
+
+Bucket Latency measurements Number of values in the bucket [12,16) 14 1 [8,12) 10 1 [4,8) 5, 5, 6 3 [0,4) 1, 3 2
+
+When this data is written to the time series, a Point object is created. For metrics with a distribution value, that object includes the histogram of values. For this sampling period, the Point contains [2, 3, 1, 1]. The individual measurements aren't written to the time series.
+
+Assume that the previous table records the histogram for the latency data as measured at time 1:00. That table illustrates how to take a series of measurements and convert them into bucket counts. Suppose that the bucket counts at times 1:01, 1:02, and 1:03 are as shown in the following table:
+
+Bucket Histogram for
+
+1:00 Histogram for
+
+1:01 Histogram for
+
+1:02 Histogram for
+
+1:03 [12,16) 1 6 0 1 [8,12) 1 0 2 2 [4,8) 3 1 1 8 [0,4) 2 6 10 3
+
+The previous table displays a sequence of histograms indexed by time. Each column in the table represents the latency data for a one-minute period. To get the number of measurements at a specific time, sum the bucket counts. However, the actual measurements aren't shown as those measurements aren't available in distribution-valued metrics.
+
+Heatmap charts
+
+Heatmap charts are designed to display a single time series with distribution values. For these charts, the X-axis represents time, the Y-axis represents the buckets, and color represents the value. The brighter the color indicates a higher value. For example, dark areas of the heatmap indicate lower bucket counts than yellow or white areas.
+
+The following figure is one representation of a heatmap for the previous example:
+
+In the previous figure, the heatmap uses black to represent the smallest bucket count, 0, and yellow to represent the largest bucket count, 10. Reds and oranges represent values between these two extremes.
+
+Because heatmap charts can display only a single time series, you must set the aggregation options to combine all time series.
+
+To use Metrics Explorer to display the sum of the RTT latencies of a VM instance, do the following:
+
+In the Google Cloud console, go to the leaderboard Metrics explorer page:
+
+Go to Metrics explorer
+
+If you use the search bar to find this page, then select the result whose subheading is Monitoring.
+
+In the Metric element, expand the Select a metric menu, enter RTT latencies in the filter bar, and then use the submenus to select a specific resource type and metric:
+
+In the Active resources menu, select VM Instance.
+
+In the Active metric categories menu, select Vm_flow.
+
+In the Active metrics menu, select RTT latencies.
+
+Click Apply.
+
+In the previous example, the heatmap chart is configured by selecting values from menus. However, you can also use Monitoring Query Language (MQL) to chart distribution-valued metrics. To enter a MQL query, do the following:
+
+In the toolbar of the query-builder pane, select the button whose name is either code MQL or code PromQL.
+
+Verify that MQL is selected in the Language toggle. The language toggle is in the same toolbar that lets you format your query.
+
+Enter a query and then run your query.
+
+For example, enter the following into the into the code editor:
+
+fetch gce_instance | metric 'networking.googleapis.com/vm_flow/rtt' | align delta(1m) | every 1m | group_by [], [aggregate(value.rtt)]
+
+In the previous expression, the time-series data is fetched, aligned, and then grouped. The alignment process uses a delta alignment function with a one minute alignment period. Because the first argument to group_by is [], all time series are combined. The second argument, [aggregate(value.rtt)], defines how the time series are combined. In this example, for each timestamp, the values of the rtt field of the different time series are combined with the aggregate function, which is selected by MQL.
+
+If you use menus to select the metric and then switch to MQL, your selections are converted into a MQL query that is in strict form:
+
+fetch gce_instance | metric 'networking.googleapis.com/vm_flow/rtt' | align delta(1m) | every 1m | group_by [], [value_rtt_aggregate: aggregate(value.rtt)]
+
+The previous expression is functionally equivalent to the original MQL example.
+
+For more information about MQL, see Monitoring Query Language overview.
+
+Line and bar charts
+
+Line charts, stacked bar charts, and stacked line charts, which are designed to display scalar data, can't display distribution values. To display a metric with a distribution value with one of these chart types, you must convert the histogram values into scalar values. For example, you can set the aggregation options to compute the mean of the values in the histogram or to compute a percentile.
+
+For information about how to display a distribution-valued metric on a line chart, see the following section.
+
+Aggregation and distribution metrics
+
+Aggregation is the process of regularizing points within a time series and of combining multiple time series. Aggregation is the same for distribution type metrics as it is for metrics that have a value type of integer or double. However, the chart type enforces some requirements on the choices used for aligning and grouping time series.
+
+Heatmap charts
+
+Heatmap charts display one distribution-valued time series. Therefore, the alignment function and grouping function must be set to create a single time series.
+
+Select a sum or delta alignment function when a chart displays a heatmap. These functions combine, at the bucket level, all samples for a single time series that are in the same alignment period, and the result is a distribution value. For example, if two adjacent samples of a time series are [2, 3, 1, 1] and [2, 5, 4, 1], then the sum alignment function produces [4, 8, 5, 2].
+
+The grouping function defines how different time series are combined. This function is sometimes called an aggregator or a reducer. For heatmaps, set the grouping function to the sum function. The sum function adds the values of the same buckets across all histograms, resulting in a new histogram. For example, the sum of the value [2, 3, 1, 1] from timeseries-A and the value [1, 5, 2, 2] from timeseries-B is [3, 8, 3, 3].
+
+Line charts
+
+Line charts display only scalar-valued time series. If you select a distribution-valued metric, then the chart is configured with optimal parameters to display a heat map. The fields of the Aggregation element are set to Distribution and None.
+
+The interpretation of Distribution depends on the specific metric. For distribution-valued metric types that have a GAUGE metric kind, the default alignment function is set to sum. When a distribution-valued metric type has a CUMULATIVE metric kind, the default alignment function is DELTA.
+
+The setting of None ensures that all time times are combined.
+
+If you want to display a distribution-valued metric on a line chart, then you must change the default settings of your chart. For example, to configure a line chart on a dashboard to display the 99th percentile of every time series for a distribution-valued metric, do the following:
+
+In the Google Cloud console, go to the Dashboards page:
+
+Go to Dashboards
+
+If you use the search bar to find this page, then select the result whose subheading is Monitoring.
+
+In the toolbar, click add Add widget.
+
+In the Add widget dialog, select leaderboard Metric.
+
+In the Metric element, and select the VM Instance - RTT latencies metric.
+
+In the Aggregation element, expand the first menu and select 99th percentile.
+
+In the Display pane, set the value of the Widget type menu to Line chart.
+
+Optional: In the Aggregation element, expand the second menu and select the labels used to group time series. By default, no labels are selected, and therefore one line is displayed on the chart.
+
+What's next

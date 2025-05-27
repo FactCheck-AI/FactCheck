@@ -1,0 +1,21 @@
+COPASI's sources are available as source packages or from our github repository. These sources are written in standard C++ and will compile on Linux, OS X and Windows.
+
+Dependencies
+
+To start compiling COPASI we recommend to use the copasi-dependencies package.The dependency package compiles all the dependencies necessary for COPASI, they include clapack, cppunit, expat, raptor libSEDML, libsbml, SBW as well as the Qt libraries QWT, QWT3D and the Qt MML widget. Instructions for building the dependencies are described here:
+
+General Instructions
+
+Linux build instructions
+
+Compiling COPASI
+
+Once the dependencies have been built, COPASI is easily compiled using CMake:
+
+git clone https://github.com/copasi/COPASI mkdir build_copasi cd build_copasi cmake -DBUILD_GUI=OFF -DCMAKE_INSTALL_PREFIX=~/copasi -DCOPASI_DEPENDENCY_DIR=../copasi-dependencies/bin ../COPASI make make install
+
+In the above ../copasi-dependencies is the location of the compiled copasi-dependencies project. The option BUILD_GUI=OFF builds only the command line version of COPASI (aka CopasiSE). To build the graphical frontend (aka CopasiUI), and having Qt 4 installed, the option would need to be BUILD_GUI=ON. The option CMAKE_INSTALL_PREFIX=~/copasi specifies, that COPASI ought to be installed in the current users home directory in a subfolder copasi.
+
+There are many more compile options available, options for building the language bindings as well as options to enable some experimental features that are not yet available in the stable builds that are released publicly. To view the complete set of options, start the graphical cmake frontend in the continuing from the above command this would be done with:
+
+cmake-gui ../COPASI

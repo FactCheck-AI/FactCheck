@@ -1,0 +1,1403 @@
+Flow control system architecture Download PDF
+
+Info
+
+Publication number
+
+US20050063307A1
+
+US20050063307A1 US10/901,952 US90195204A US2005063307A1 US 20050063307 A1 US20050063307 A1 US 20050063307A1 US 90195204 A US90195204 A US 90195204A US 2005063307 A1 US2005063307 A1 US 2005063307A1
+
+Authority
+
+US
+
+United States
+
+Prior art keywords
+
+pep
+
+flow control
+
+data
+
+packet
+
+control module
+
+Prior art date
+
+2003-07-29
+
+Legal status (The legal status is an assumption and is not a legal conclusion. Google has not performed a legal analysis and makes no representation as to the accuracy of the status listed.)
+
+Granted
+
+Application number
+
+US10/901,952
+
+Other versions
+
+US7656799B2 (en
+
+Inventor
+
+Allen Samuels
+
+Paul Sutter
+
+Current Assignee (The listed assignees may be inaccurate. Google has not performed a legal analysis and makes no representation or warranty as to the accuracy of the list.)
+
+Citrix Systems Inc
+
+Original Assignee
+
+Individual
+
+Priority date (The priority date is an assumption and is not a legal conclusion. Google has not performed a legal analysis and makes no representation as to the accuracy of the date listed.)
+
+2003-07-29
+
+Filing date
+
+2004-07-28
+
+Publication date
+
+2005-03-24
+
+2003-10-29 Priority claimed from US10/696,507 external-priority patent/US7542471B2/en
+
+2004-07-28 Application filed by Individual filed Critical Individual
+
+2004-07-28 Priority to US10/901,952 priority Critical patent/US7656799B2/en
+
+2004-07-29 Priority to EP04779654.5A priority patent/EP1652087B1/en
+
+2004-07-29 Priority to PCT/US2004/024655 priority patent/WO2005013083A2/en
+
+2004-12-03 Assigned to ORBITAL DATA CORPORATION reassignment ORBITAL DATA CORPORATION ASSIGNMENT OF ASSIGNORS INTEREST (SEE DOCUMENT FOR DETAILS). Assignors: SAMUELS, ALLEN R., SUTTER, PAUL G.
+
+2005-03-24 Publication of US20050063307A1 publication Critical patent/US20050063307A1/en
+
+2009-12-09 Priority to US12/634,496 priority patent/US8310928B2/en
+
+2010-02-02 Application granted granted Critical
+
+2010-02-02 Publication of US7656799B2 publication Critical patent/US7656799B2/en
+
+2011-12-15 Assigned to CITRIX SYSTEMS, INC. reassignment CITRIX SYSTEMS, INC. NUNC PRO TUNC ASSIGNMENT (SEE DOCUMENT FOR DETAILS). Assignors: ORBITAL DATA CORPORATION
+
+2022-09-30 Assigned to WILMINGTON TRUST, NATIONAL ASSOCIATION reassignment WILMINGTON TRUST, NATIONAL ASSOCIATION SECURITY INTEREST (SEE DOCUMENT FOR DETAILS). Assignors: CITRIX SYSTEMS, INC.
+
+2022-10-07 Assigned to WILMINGTON TRUST, NATIONAL ASSOCIATION, AS NOTES COLLATERAL AGENT reassignment WILMINGTON TRUST, NATIONAL ASSOCIATION, AS NOTES COLLATERAL AGENT PATENT SECURITY AGREEMENT Assignors: CITRIX SYSTEMS, INC., TIBCO SOFTWARE INC.
+
+2022-10-07 Assigned to GOLDMAN SACHS BANK USA, AS COLLATERAL AGENT reassignment GOLDMAN SACHS BANK USA, AS COLLATERAL AGENT SECOND LIEN PATENT SECURITY AGREEMENT Assignors: CITRIX SYSTEMS, INC., TIBCO SOFTWARE INC.
+
+2022-10-07 Assigned to BANK OF AMERICA, N.A., AS COLLATERAL AGENT reassignment BANK OF AMERICA, N.A., AS COLLATERAL AGENT PATENT SECURITY AGREEMENT Assignors: CITRIX SYSTEMS, INC., TIBCO SOFTWARE INC.
+
+2023-04-14 Assigned to CLOUD SOFTWARE GROUP, INC. (F/K/A TIBCO SOFTWARE INC.), CITRIX SYSTEMS, INC. reassignment CLOUD SOFTWARE GROUP, INC. (F/K/A TIBCO SOFTWARE INC.) RELEASE AND REASSIGNMENT OF SECURITY INTEREST IN PATENT (REEL/FRAME 062113/0001) Assignors: GOLDMAN SACHS BANK USA, AS COLLATERAL AGENT
+
+2023-04-14 Assigned to WILMINGTON TRUST, NATIONAL ASSOCIATION, AS NOTES COLLATERAL AGENT reassignment WILMINGTON TRUST, NATIONAL ASSOCIATION, AS NOTES COLLATERAL AGENT PATENT SECURITY AGREEMENT Assignors: CITRIX SYSTEMS, INC., CLOUD SOFTWARE GROUP, INC. (F/K/A TIBCO SOFTWARE INC.)
+
+2024-05-24 Assigned to WILMINGTON TRUST, NATIONAL ASSOCIATION, AS NOTES COLLATERAL AGENT reassignment WILMINGTON TRUST, NATIONAL ASSOCIATION, AS NOTES COLLATERAL AGENT SECURITY INTEREST (SEE DOCUMENT FOR DETAILS). Assignors: CITRIX SYSTEMS, INC., CLOUD SOFTWARE GROUP, INC. (F/K/A TIBCO SOFTWARE INC.)
+
+Status Active legal-status Critical Current
+
+2025-06-28 Adjusted expiration legal-status Critical
+
+Links
+
+USPTO
+
+USPTO PatentCenter
+
+USPTO Assignment
+
+Espacenet
+
+Global Dossier
+
+Discuss
+
+238000000034 method Methods 0.000 claims description 158
+
+230000005540 biological transmission Effects 0.000 claims description 84
+
+239000000872 buffer Substances 0.000 claims description 40
+
+238000012545 processing Methods 0.000 claims description 34
+
+230000004044 response Effects 0.000 claims description 31
+
+230000003139 buffering effect Effects 0.000 claims description 5
+
+238000004422 calculation algorithm Methods 0.000 description 182
+
+238000011144 upstream manufacturing Methods 0.000 description 48
+
+238000004891 communication Methods 0.000 description 41
+
+230000007246 mechanism Effects 0.000 description 37
+
+238000003860 storage Methods 0.000 description 37
+
+230000001965 increasing effect Effects 0.000 description 35
+
+230000006399 behavior Effects 0.000 description 33
+
+230000008901 benefit Effects 0.000 description 32
+
+230000008569 process Effects 0.000 description 31
+
+238000005457 optimization Methods 0.000 description 23
+
+238000001152 differential interference contrast microscopy Methods 0.000 description 19
+
+238000013467 fragmentation Methods 0.000 description 19
+
+238000006062 fragmentation reaction Methods 0.000 description 19
+
+238000012546 transfer Methods 0.000 description 18
+
+230000004048 modification Effects 0.000 description 17
+
+238000012986 modification Methods 0.000 description 17
+
+235000014510 cooky Nutrition 0.000 description 16
+
+230000000977 initiatory effect Effects 0.000 description 14
+
+238000007906 compression Methods 0.000 description 13
+
+230000006835 compression Effects 0.000 description 13
+
+238000001514 detection method Methods 0.000 description 12
+
+230000006855 networking Effects 0.000 description 12
+
+230000003190 augmentative effect Effects 0.000 description 10
+
+238000012544 monitoring process Methods 0.000 description 9
+
+230000009467 reduction Effects 0.000 description 9
+
+230000007812 deficiency Effects 0.000 description 7
+
+230000006870 function Effects 0.000 description 7
+
+238000011084 recovery Methods 0.000 description 7
+
+230000008859 change Effects 0.000 description 6
+
+230000001976 improved effect Effects 0.000 description 6
+
+230000015556 catabolic process Effects 0.000 description 5
+
+238000006731 degradation reaction Methods 0.000 description 5
+
+230000003111 delayed effect Effects 0.000 description 5
+
+238000010586 diagram Methods 0.000 description 5
+
+230000000694 effects Effects 0.000 description 5
+
+238000013519 translation Methods 0.000 description 5
+
+230000009286 beneficial effect Effects 0.000 description 4
+
+238000013144 data compression Methods 0.000 description 4
+
+238000005516 engineering process Methods 0.000 description 4
+
+238000007726 management method Methods 0.000 description 4
+
+230000004224 protection Effects 0.000 description 4
+
+230000002829 reductive effect Effects 0.000 description 4
+
+230000000717 retained effect Effects 0.000 description 4
+
+230000002441 reversible effect Effects 0.000 description 4
+
+230000001960 triggered effect Effects 0.000 description 4
+
+230000005641 tunneling Effects 0.000 description 4
+
+230000009471 action Effects 0.000 description 3
+
+238000013459 approach Methods 0.000 description 3
+
+230000000903 blocking effect Effects 0.000 description 3
+
+238000013461 design Methods 0.000 description 3
+
+238000011161 development Methods 0.000 description 3
+
+230000018109 developmental process Effects 0.000 description 3
+
+239000000284 extract Substances 0.000 description 3
+
+239000012634 fragment Substances 0.000 description 3
+
+230000005012 migration Effects 0.000 description 3
+
+238000013508 migration Methods 0.000 description 3
+
+239000000523 sample Substances 0.000 description 3
+
+230000008093 supporting effect Effects 0.000 description 3
+
+230000004075 alteration Effects 0.000 description 2
+
+238000003491 array Methods 0.000 description 2
+
+230000002457 bidirectional effect Effects 0.000 description 2
+
+239000003795 chemical substances by application Substances 0.000 description 2
+
+238000012790 confirmation Methods 0.000 description 2
+
+238000012937 correction Methods 0.000 description 2
+
+230000001186 cumulative effect Effects 0.000 description 2
+
+230000006378 damage Effects 0.000 description 2
+
+230000001627 detrimental effect Effects 0.000 description 2
+
+239000006185 dispersion Substances 0.000 description 2
+
+238000009826 distribution Methods 0.000 description 2
+
+230000009977 dual effect Effects 0.000 description 2
+
+230000002708 enhancing effect Effects 0.000 description 2
+
+239000000835 fiber Substances 0.000 description 2
+
+230000008676 import Effects 0.000 description 2
+
+230000006872 improvement Effects 0.000 description 2
+
+238000009616 inductively coupled plasma Methods 0.000 description 2
+
+239000003999 initiator Substances 0.000 description 2
+
+238000003780 insertion Methods 0.000 description 2
+
+230000037431 insertion Effects 0.000 description 2
+
+230000010354 integration Effects 0.000 description 2
+
+230000003993 interaction Effects 0.000 description 2
+
+230000000670 limiting effect Effects 0.000 description 2
+
+230000007257 malfunction Effects 0.000 description 2
+
+238000011160 research Methods 0.000 description 2
+
+230000011664 signaling Effects 0.000 description 2
+
+230000001360 synchronised effect Effects 0.000 description 2
+
+230000007704 transition Effects 0.000 description 2
+
+108010078791 Carrier Proteins Proteins 0.000 description 1
+
+RYGMFSIKBFXOCR-UHFFFAOYSA-N Copper Chemical compound [Cu] RYGMFSIKBFXOCR-UHFFFAOYSA-N 0.000 description 1
+
+206010012186 Delayed delivery Diseases 0.000 description 1
+
+241001522296 Erithacus rubecula Species 0.000 description 1
+
+230000001133 acceleration Effects 0.000 description 1
+
+230000004913 activation Effects 0.000 description 1
+
+238000001994 activation Methods 0.000 description 1
+
+230000006978 adaptation Effects 0.000 description 1
+
+239000000654 additive Substances 0.000 description 1
+
+230000000996 additive effect Effects 0.000 description 1
+
+230000002776 aggregation Effects 0.000 description 1
+
+238000004220 aggregation Methods 0.000 description 1
+
+238000010420 art technique Methods 0.000 description 1
+
+230000001174 ascending effect Effects 0.000 description 1
+
+230000004888 barrier function Effects 0.000 description 1
+
+238000004364 calculation method Methods 0.000 description 1
+
+230000001413 cellular effect Effects 0.000 description 1
+
+238000012512 characterization method Methods 0.000 description 1
+
+238000006243 chemical reaction Methods 0.000 description 1
+
+239000003638 chemical reducing agent Substances 0.000 description 1
+
+230000001427 coherent effect Effects 0.000 description 1
+
+230000001143 conditioned effect Effects 0.000 description 1
+
+238000010276 construction Methods 0.000 description 1
+
+239000010949 copper Substances 0.000 description 1
+
+229910052802 copper Inorganic materials 0.000 description 1
+
+230000002089 crippling effect Effects 0.000 description 1
+
+238000005520 cutting process Methods 0.000 description 1
+
+230000003247 decreasing effect Effects 0.000 description 1
+
+230000001934 delay Effects 0.000 description 1
+
+230000001419 dependent effect Effects 0.000 description 1
+
+238000009795 derivation Methods 0.000 description 1
+
+238000002592 echocardiography Methods 0.000 description 1
+
+230000008030 elimination Effects 0.000 description 1
+
+238000003379 elimination reaction Methods 0.000 description 1
+
+238000005538 encapsulation Methods 0.000 description 1
+
+230000003116 impacting effect Effects 0.000 description 1
+
+230000000266 injurious effect Effects 0.000 description 1
+
+238000007689 inspection Methods 0.000 description 1
+
+238000009434 installation Methods 0.000 description 1
+
+238000002372 labelling Methods 0.000 description 1
+
+238000012423 maintenance Methods 0.000 description 1
+
+230000014759 maintenance of location Effects 0.000 description 1
+
+230000009022 nonlinear effect Effects 0.000 description 1
+
+238000004806 packaging method and process Methods 0.000 description 1
+
+230000036961 partial effect Effects 0.000 description 1
+
+229940043340 pep-back Drugs 0.000 description 1
+
+230000002028 premature Effects 0.000 description 1
+
+230000000135 prohibitive effect Effects 0.000 description 1
+
+230000006798 recombination Effects 0.000 description 1
+
+238000005215 recombination Methods 0.000 description 1
+
+238000007670 refining Methods 0.000 description 1
+
+230000010076 replication Effects 0.000 description 1
+
+238000013515 script Methods 0.000 description 1
+
+238000000926 separation method Methods 0.000 description 1
+
+238000007493 shaping process Methods 0.000 description 1
+
+238000004513 sizing Methods 0.000 description 1
+
+239000000758 substrate Substances 0.000 description 1
+
+239000000725 suspension Substances 0.000 description 1
+
+230000002123 temporal effect Effects 0.000 description 1
+
+235000010384 tocopherol Nutrition 0.000 description 1
+
+230000009466 transformation Effects 0.000 description 1
+
+238000000844 transformation Methods 0.000 description 1
+
+230000001131 transforming effect Effects 0.000 description 1
+
+235000019731 tricalcium phosphate Nutrition 0.000 description 1
+
+239000002699 waste material Substances 0.000 description 1
+
+Images
+
+Classifications
+
+H—ELECTRICITY
+
+H04—ELECTRIC COMMUNICATION TECHNIQUE
+
+H04L—TRANSMISSION OF DIGITAL INFORMATION, e.g. TELEGRAPHIC COMMUNICATION
+
+H04L67/00—Network arrangements or protocols for supporting network services or applications
+
+H04L67/2866—Architectures; Arrangements
+
+H04L67/2876—Pairs of inter-processing entities at each side of the network, e.g. split proxies
+
+H—ELECTRICITY
+
+H04—ELECTRIC COMMUNICATION TECHNIQUE
+
+H04L—TRANSMISSION OF DIGITAL INFORMATION, e.g. TELEGRAPHIC COMMUNICATION
+
+H04L41/00—Arrangements for maintenance, administration or management of data switching networks, e.g. of packet switching networks
+
+H04L41/12—Discovery or management of network topologies
+
+H—ELECTRICITY
+
+H04—ELECTRIC COMMUNICATION TECHNIQUE
+
+H04L—TRANSMISSION OF DIGITAL INFORMATION, e.g. TELEGRAPHIC COMMUNICATION
+
+H04L67/00—Network arrangements or protocols for supporting network services or applications
+
+H04L67/50—Network services
+
+H04L67/56—Provisioning of proxy services
+
+H—ELECTRICITY
+
+H04—ELECTRIC COMMUNICATION TECHNIQUE
+
+H04L—TRANSMISSION OF DIGITAL INFORMATION, e.g. TELEGRAPHIC COMMUNICATION
+
+H04L69/00—Network arrangements, protocols or services independent of the application payload and not provided for in the other groups of this subclass
+
+H04L69/16—Implementation or adaptation of Internet protocol [IP], of transmission control protocol [TCP] or of user datagram protocol [UDP]
+
+H—ELECTRICITY
+
+H04—ELECTRIC COMMUNICATION TECHNIQUE
+
+H04L—TRANSMISSION OF DIGITAL INFORMATION, e.g. TELEGRAPHIC COMMUNICATION
+
+H04L69/00—Network arrangements, protocols or services independent of the application payload and not provided for in the other groups of this subclass
+
+H04L69/16—Implementation or adaptation of Internet protocol [IP], of transmission control protocol [TCP] or of user datagram protocol [UDP]
+
+H04L69/166—IP fragmentation; TCP segmentation
+
+H—ELECTRICITY
+
+H04—ELECTRIC COMMUNICATION TECHNIQUE
+
+H04L—TRANSMISSION OF DIGITAL INFORMATION, e.g. TELEGRAPHIC COMMUNICATION
+
+H04L43/00—Arrangements for monitoring or testing data switching networks
+
+H04L43/08—Monitoring or testing based on specific metrics, e.g. QoS, energy consumption or environmental parameters
+
+H04L43/0852—Delays
+
+H04L43/0864—Round trip delays
+
+Definitions
+
+This invention pertains to the processing of computer networks, networking equipment, and networking protocols, and in particular to systems that enhance the performance of existing networking applications through the deployment of additional networking entities.
+
+IP Internet protocol
+
+IP Internet protocol
+
+TCP Transmission Control Protocol
+
+the TCP protocol layer provides required functionality such as flow control, packet loss detection, lost packet retransmission, congestion avoidance, etc. (hereinafter referred to as upper-layer behaviors) that are needed to provide reliable communications over the unreliable IP networking substrate.
+
+TCP/IP Transmission Control Protocol/IP
+
+TCP performance may limit performance below what the model provides as a maximum. For example, if the receiver does not advertise a window that is at least as large as the bandwidth delay product of the connection, then maximum TCP performance will be limited accordingly. Standard implementations of TCP are also known to perform poorly in certain environments and/or conditions. For example, the high rate of packet loss in typical wireless links results in poor TCP performance.
+
+One method of correcting many of these problems is to modify the TCP implementation of one or both of the participants. However, this is frequently not a viable option such as when the source code is unavailable or when there are too many endpoints to manage conveniently.
+
+PEP Performance Enhancing Proxy
+
+Another method of deploying a conventional PEP is to insert it into the software driver stack of a node.
+
+Many operating systems provide the ability to insert a software agent (shim) between the TCP/IP processing stack and the driver for the network interface card (NIC).
+
+shim software agent
+
+NIC network interface card
+
+PEPs have a number of shortcomings, including the need for substantial network changes, utility and application changes, administrative overhead, and extensive use of system and network resources. It would be desirable for the addition of PEPs (either in shim or stand-alone form) be done in such a way as to minimize changes required to other nodes of the network. In particular, no changes should be required to existing utilities and application programs. No changes to firewall settings, routing tables, or port assignments should be required. No retraining of users or network operations staff should be required. No re-installation of applications or utilities should be required. New software that is being developed should be able to take advantage of PEP capabilities without any change to the development process or to the software itself.
+
+TCP connection characteristics can be measured along multiple dimensions.
+
+a partial list of the dimensions includes: RTT, connection bandwidth, aggregate loss rate, connection lifetime, application burstiness, and others. Across all of these dimensions, no algorithm can be optimal.
+
+a PEP should monitor the connection, characterizing it as conditions change, adapting the PEP algorithms accordingly.
+
+FTP File Transfer Protocol-based
+
+TCP/IP File Transfer Protocol/IP
+
+This product consists of a âboxâ that the user connects to his network. The user must explicitly copy the files to be transferred to the box before the files can be transferred. Thus, all applications programs and scripts that wish to utilize the product must be changed to utilize the new box with its proprietary command set.
+
+the transfer protocols used by the product are UDP based, requiring the modification of network settings, such as security, QoS, SLA, traffic management, and others. The transcoding from FTP to UDP interferes with any network element that might attempt to process the individual TCP connection, such as QoS, SLA or traffic management.
+
+Sequence Reducer from Peribit Corporation of Santa Clara, Calif.
+
+This product provides data compression using advanced data sequence recognition techniques developed for the Human Genome project.
+
+general-purpose lossless data compression is typically limited to a two- to three-times reduction in data, placing an upper limit on the total performance improvement that can be provided by this technique.
+
+many data types are already compressed, wasting system resources attempting any further compression for these data types.
+
+the computational expense of this method requires the addition of an extra box to the network and limits the speed at which packets can be processed.
+
+Current CPU technology seems to limit processing speeds to about 45 Mb/sec (T3) for any one connection.
+
+Current data link speeds are well in excess of this limit and growing at a faster rate than CPU performance is growing.
+
+the product does not address the fundamental limits of the TCP/IP protocol and is thereby permanently limited to a maximum of two- to three-times performance improvement over offerings without the PEP.
+
+PEPs would preferably supply algorithms that remove the performance limitations inherent in TCP implementations.
+
+a present embodiment includes a system and a process to utilize networks bandwidth at a bottleneck point in the network.
+
+a data transmission rate is established between the first flow control module and the second flow control module.
+
+data packets between the source node and the destination node are buffered in the first flow control module and the second flow control module as they are received from the sending node and ultimately transmitted to the receiving node.
+
+the data transmission rate between the first flow control module and the second flow control module is configured and sent during transmission of any data packet, for example, an acknowledgement (âACKâ) packet (or signal), from the second flow control module back to the first flow control module.
+
+ACK acknowledgement
+
+the data transmission rate is configured and sent from the first flow control module to the second flow control module.
+
+the data transmission rate between the flow control modules may be set independent of the rate between, for example, the flow control modules and nodes such as the sending node, the receiving node, and nodes not within the data path of another receiving node.
+
+the system and process are configured for use with transmission control protocol (âTCPâ) data packets.
+
+TCP transmission control protocol
+
+IP Internet-protocol
+
+IP security IPSec
+
+IPV4 IP version 4
+
+IPV6 IP version 6
+
+UDP user datagram protocol
+
+the present invention also includes a system and a process to utilize bandwidth in a network, which includes identifying a two or more flow control modules between a sending node and a plurality of receiving nodes, establishing, for a first session between the sending node and a first receiving node, a data transmission rate between a first flow control module and a second flow control module, establishing, for a second session between the sending node and a second receiving node, a data transmission rate between the first flow control module and third second flow control module, and transmitting, from the first flow control module, a first round trip time (âRTTâ) information to the second flow control module and a second RTT information to the third flow control module.
+
+RTT round trip time
+
+FIG. 1 depicts a Virtual Private Network gateway.
+
+FIG. 2 depicts the Virtual Private Network of FIG. 1 augmented with a single PEP.
+
+FIG. 3 depicts the Virtual Private Network of FIG. 1 augmented with two PEPs.
+
+FIG. 4 shows an architecture of a PEP (or flow control module).
+
+FIG. 5 a shows the architecture of a TCP endpoint.
+
+FIG. 5 b shows the architecture of a TCP endpoint augmented with a PEP.
+
+FIG. 6 shows the architecture of a system using a PEP with only one physical connection to the network.
+
+FIG. 7 a shows the architecture of a gateway.
+
+FIG. 7 b shows the architecture of a gateway augmented with a PEP.
+
+FIG. 8 a depicts a common network configuration utilizing one wireless link.
+
+FIG. 8 b shows the system of FIG. 8 a augmented with a PEP.
+
+FIG. 10 shows the architecture of a system with two PEPs and a network address translation (NAT) device.
+
+NAT network address translation
+
+FIG. 11 shows the system of FIG. 3 augmented with a connection oriented network.
+
+FIG. 12 depicts the architecture of a system with two PEPs using the proxy deployment mode.
+
+FIG. 13 depicts the architecture of a system with two PEPs using the proxy deployment mode in which the downstream PEP is dual-homed.
+
+FIG. 14 depicts the architecture of the hybrid half-proxy deployment mode.
+
+FIG. 15 depicts the architecture of the dual PEP HTTP system.
+
+FIG. 16 illustrates one embodiment of a flow control system, which includes three flow control modules, for use in transporting data between a sender.
+
+FIG. 17 is a trace diagram for one embodiment of a method for generating early acknowledgements for flow control.
+
+FIG. 18 is a schematic diagram of one embodiment of a flow control module, or PEP, for generating early acknowledgements for flow control.
+
+FIG. 19 illustrates one embodiment of a flow control system including a first flow control module and a second flow control module for use in transporting data from a first node to a second node.
+
+FIG. 20 illustrates one embodiment of a data packet for use in a flow control system.
+
+FIG. 21 illustrates one embodiment of session initialization in a flow control system.
+
+FIG. 22 illustrates one embodiment of scaling in a flow control system.
+
+FIG. 23 illustrates one embodiment of buffer virtualization in a flow control system.
+
+FIG. 24 illustrates an example of a series of data packets transmitted from a sender to a receiver over a network.
+
+FIG. 25 is a flow chart of a method for wavefront detection and disambiguation of acknowledgments.
+
+FIG. 26 illustrates one embodiment of a system for transmitting and acknowledging data packets.
+
+the present invention addresses the deficiencies of conventional PEPs. Several advances in the state of the art are provided, eliminating numerous barriers to deployment present in the prior art solutions.
+
+the present invention can be deployed into a network without requiring significant additional resources.
+
+the present invention is not fundamentally limited in its performance boost by RTT. Minimal additional latency is introduced by its presence in the network, allowing the PEP benefits to be extended to connections with small RTTs.
+
+Distributed implementations of the present invention support redundantly connected networks in order to provide superior reliability and scalable performance.
+
+the invention interoperates seamlessly with the existing security, performance, QoS, SLA, traffic, and network management infrastructure. Usage of existing standard protocols and packet formats allows the invention to be deployed without modification to any part of the network and ensures compatibility with current and future developments in network processing devices.
+
+TCP protocol is bidirectional (i.e., every sender is also a receiver), and that every packet may contain information for both directions, this specification will normally describe only one direction of the TCP conversation. It should be understood that the techniques and methods described herein may be applied to one or both directions of a TCP connection, serially and/or simultaneously. In places where the bidirectional nature requires special handling, this specification will address specifically those issues when encountered.
+
+embodiments of the systems and processes described herein are configured for use with transmission control protocol (âTCPâ) data packets
+
+TCP transmission control protocol
+
+alternative embodiments of the system and process are configured for use with other Internet-protocol (âIPâ) based packets, e.g., IP security (âIPSecâ), IP version 4 (âIPV4â), IP version 6 (âIPV6â, or user datagram protocol (âUDPâ) data packets.
+
+IP Internet-protocol
+
+IP IP security
+
+IPV4 IP version 4
+
+IPV6 IP version 6
+
+UDP user datagram protocol
+
+Packet-switched networks are constructed of interior and endpoint elements.
+
+An endpoint element (or end node) is either a sender (or source or initiation) or receiver (or destination or responder) of data, i.e., a place where data enters or exits the network.
+
+an endpoint consists of a network interface card (NIC) for performing physical data reception and transmission and software running on a microprocessor (CPU) that processes the data packets.
+
+NIC network interface card
+
+CPU microprocessor
+
+Endpoints can be dedicated processing devices as well as general-purpose computers.
+
+IP endpoints including: storage arrays, storage array controllers, storage switches, Fibre Channel bridges, remote tape libraries, disk arrays, file servers, mail servers, personal digital assistants (PDA), handheld computers, cellular phones, embedded computer systems, personal video recorders, media appliances, and others.
+
+storage arrays storage array controllers, storage switches, Fibre Channel bridges, remote tape libraries, disk arrays, file servers, mail servers, personal digital assistants (PDA), handheld computers, cellular phones, embedded computer systems, personal video recorders, media appliances, and others.
+
+PDA personal digital assistants
+
+interior elements Many types are known including: hubs, bridges, switches, routers, bridging routers, modems, gateways, and others.
+
+the interior elements may be divided into two categories: modifying and non-modifying.
+
+a nonmodifying interior element passes packets through it without modifying the packet data.
+
+Typical nonmodifying interior elements include: hubs, bridges, switches, and others.
+
+many interior elements also contain endpoints for maintenance, control, monitoring, and other reasons. Modifying interior elements perform some alteration of packets as they transit. Examples of modifying interior elements include: routers, gateways, modems, base stations, and others.
+
+the interior elements of networks can be connected in many configurations. Often, redundant transmission paths are created to improve bandwidth and/or reliability. As described in RFC 3135, adding a conventional PEP to a network requires consideration of the network topology.
+
+a conventional PEP algorithm can be classified with respect to network topology.
+
+One class of conventional PEP algorithms requires that all packets associated with a single TCP connection pass through the same PEP instance (full-duplex).
+
+Another class of TCP PEP algorithms requires that only the data for one direction of a TCP connection pass through the same PEP instance (half-duplex).
+
+Yet another class of TCP PEP algorithms has no restriction of this type (unrestricted). Deployment of full- and half-duplex PEP algorithms may be restricted depending on the implementation of a PEP âinstance.â
+
+an enhanced PEP algorithm for repacketization might be disabled when the connection is to a well-known port for an application program known to provide maximum-sized packets.
+
+the enhanced PEP enables repacketization and observes the transiting traffic. Observation may indicate that repacketization is unnecessary, at which time the enhanced PEP disables the algorithm, thereby reducing processing time and decreasing latency. This decision need not be irrevocable. Observation of a connection with disabled repacketization may conclude that it is profitable to re-enable repacketization. Observation need not be continuous; intermittent observation will function equally well for many applications and further reduces processing requirements.
+
+the enhanced PEP contains a list of TCP connections that are known to have no PEP algorithms enabled. Upon receiving an incoming packet, the enhanced PEP consults the list. If the packet belongs to a connection in the list, then the enhanced PEP immediately forwards the packet without applying any PEP algorithms. This âfast pathâ through the enhanced PEP reduces latency.
+
+a second list contains rules for determining which PEP algorithms should be attempted for new connections.
+
+the enhanced PEP receives a connection-initiating packet for TCP, it consults the rules list to determine if PEP algorithms should be attempted or if the fast path should be applied.
+
+the second section contains rules based on IP addresses and TCP port numbers.
+
+Some enhanced PEP algorithms can be enabled or disabled on a packet-by-packet basis. These algorithms can monitor the conversation and adjust themselves accordingly. Other enhanced PEP algorithms only can be enabled or disabled when the TCP conversation is initiated. These algorithms monitor the connection open sequence (SYN packets) to make their choice. Other algorithms only can be enabled at open time, but can be abandoned at any point afterwards.
+
+connection data either full- or half-duplex, hereinafter x-duplex
+
+x-duplex connection data
+
+Deployment of these algorithms is conditional upon knowing that the x-duplex condition exists. Since network topologies can vary over time and since there is no topology change notification mechanism in an IP network, a PEP should be able to detect the creation and the destruction of the x-duplex condition. Detection of the negative x-duplex condition allows the enhanced PEP to disable the algorithms that would malfunction.
+
+the detection algorithm it is acceptable for the detection algorithm to generate false negatives (i.e., where the detection algorithm incorrectly asserts a negative x-duplex condition) as the system continues to operate correctly, although the performance benefits of the disabled PEP algorithm are not obtained.
+
+the PEP directly to detect the existence of the x-duplex condition; however, it can detect it indirectly simply by assuming its existence and then detecting a negative x-duplex condition.
+
+One simple technique for detecting a negative x-duplex condition is to monitor the packet stream and look for acknowledgements to packets that have not been seen, this is an indication that packets are being sent through a different path.
+
+Another method of detecting the negative x-duplex condition is to monitor timeouts. Too many timeouts in a time horizon are a strong indication of the negative x-duplex condition.
+
+the x-duplex condition is a characteristic of network topology, not of an individual connection. Thus, when an enhanced PEP makes an assertion of the x-duplex condition, it applies not only to that connection, but to all other connections that are part of the same flow (see below for the definition of flow).
+
+a flow is the collection of packets and connections that passes through the same two nodes on the network. There may be variations in the routing before, between, and after the two nodes. Packets belonging to a flow share the same path maximum transmission unit (PMTU) and share the bandwidth of the network connections between the two nodes. Many PEP algorithms may be applied to all connections within a flow. For example, recongestion and repacketization operations are applied to all packets within a flow, optimizing the usage of system resources.
+
+PMTU path maximum transmission unit
+
+a sending node uses a slow start and congestion avoidance algorithms to determine data transmission rate. Because the data transmission rate determination is made in a distributed fashion based on packet loss feedback, response time is poor and utilization is often low in high latency circumstances.
+
+TCP transmission control protocol
+
+FIG. 16 illustrates one embodiment of a flow control system, which includes three flow control modules, for use in transporting data between a sender and a receiver in accordance with the present invention.
+
+FIG. 16 illustrates one embodiment of a flow control system 20 including a first flow control module 1620 and a second flow control module 1630 for use in transporting data from a first node, e.g., computer 1600 , to a second node, e.g., computer 1640 .
+
+the flow control system may have coupled with a third node, e.g., computer 175 , which communicatively couples the wide area network 120 .
+
+the flow control system 20 includes a one or more first (or sender, sending, source, or initiating) nodes, e.g., computers 1600 to 1603 , one or more second nodes (receiver, receiving, destination, or responding) nodes, e.g., computers 1640 to 1643 , one or more third nodes (receiver, receiving, destination, or responding) nodes, e.g., computers 1670 to 1673 , one or more fourth nodes (receiver, receiving, destination, or responding) nodes, e.g., computers 1680 to 1683 , a first flow control module 1620 , a second flow control module 1630 , a third flow control module 1625 , and a wide area network (e.g., the Internet) 1615 .
+
+first (or sender, sending, source, or initiating) nodes e.g., computers 1600 to 1603
+
+second nodes receiveriver, receiving, destination, or responding
+
+third nodes e.g., computers
+
+Each one or more nodes may be networked, e.g., on a local area network (LAN), which are often high-speed networks and have shorter distances and/or latencies than wider area networks.
+
+the one or more nodes couple with a nearest flow control module in provided illustration, although the fourth set of one or more nodes A 80 does not have an associated flow control module and is considered to be external to the flow control system, although interoperable with it.
+
+Each flow control module 1620 , 1625 , 1630 communicatively couples with the wide area network (WAN) 1615 , which is often a low speed network and may have longer distances and/or latencies that LANs.
+
+the flow control modules 1620 , 1625 , 1630 are inserted between the appropriate LAN and the WAN 1615 .
+
+the LANs or WAN may be wired or wireless.
+
+the flow control modules 1620 , 1625 , 1630 may also be referred to as enhanced performance enhanced proxies (enhanced PEP).
+
+the flow control modules 1620 , 1625 , 1630 may be configured in hardware, software (including firmware), or a combination thereof.
+
+the flow control module 1620 , 1625 , 1630 may be a physical device configured to execute software embodying processes described herein through a processing mechanism (e.g., processor, controller, or state machine) or it may be a software component embodying processes described herein residing within a network point, e.g., a switch or router, to operate within and/or in conjunction with that network point.
+
+Each flow control module 1620 , 1625 , 1630 regulates data transfer rates, and can do so effectively because it is connected at a bandwidth bottleneck in the overall network.
+
+flow control modules 1620 , 1625 , 1630 also may be placed at points on the network of latency transitions (low latency to high latency) and on links with media losses (such as wireless or satellite links).
+
+each flow control module 1620 , 1625 , 1630 is configured to allow bandwidth at the bottleneck to be fully utilized, yet not overutilized.
+
+the flow control module 1620 , 1625 , 1630 transparently buffers (or rebuffers data already buffered by, for example, the sender) network sessions that pass between nodes having associated flow control modules. When a session passes through two or more flow control modules, one or more of the flow control modules controls a rate of the session(s).
+
+the flow control module 1620 , 1625 , 1630 is either configured with predetermined data relating to bottleneck bandwidth. Alternatively, the flow control module 1620 , 1625 , 1630 may be configured to detect the bottleneck bandwidth. Unlike conventional network protocols such as TCP, the receiver-side flow control module e.g., 1630 , controls the data transmission rate.
+
+the receiver-side flow control module controls 1630 the sender-side flow control module, e.g., 1620 , data transmission rate by forwarding transmission rate limits to the sender-side flow control module 1620 .
+
+the receiver-side flow control module 1630 piggybacks these transmission rate limits on acknowledgement (ACK) packets (or signals) sent to the sender 1600 by the receiver 1640 .
+
+ACK acknowledgement
+
+the receiver-side flow control module 1630 does this in response to rate control requests that are sent by the sender side flow control module 1620 .
+
+the requests from the sender-side flow control module 1620 may be piggybacked on data packets sent by the sender
+
+a sender node at site B establishes a connection to transfer data to a receiver node at site A.
+
+the flow control module 1620 at site B includes a send rate request for bandwidth O with the session establishment packet for the session.
+
+the flow control module 1630 at site A notifies the flow control module 1620 at site B to use a data transmission rate of, e.g., min(N, O), and data transfer commences at that rate.
+
+a data transmission rate e.g., min(N, O)
+
+the bandwidth would have to be allocated among the sessions. This could be done fairly, with equal bandwidth given to each active session, or it could be done according to a predetermined policy configured for use with the appropriate flow control modules.
+
+a node at site C now also seeks to establish a connection to a node at site A also with node B.
+
+the third flow control module 1625 at C sends a rate request for bandwidth M.
+
+the second flow control module 1630 at site A now must reallocate the bandwidth between the two flow control nodes 1620 , 1630 requesting bandwidth. In one embodiment, there may be an allocation of half bandwidth to each site.
+
+the flow control module at A sends a rate limit of N/2 to the third flow control module 1625 and a rate limit of N/2 to the first flow control module 1620 . Thereafter, data transfer continues at these rates.
+
+different latencies between the sites can create data transmission issues. For example, if the round trip time (RTT) for data transmission between sites A and B is 100 milliseconds (ms), and the RTT between sites A and C is only 10 ms, if the second flow control module 1630 at site A sends the rate limits simultaneously, the first flow control module 1620 at site B will reduce its transmission rate 90 ms after the third flow control module 1625 at site C starts sending. Hence, for 90 ms the bottleneck at A may be overbooked.
+
+RTT round trip time
+
+the flow control modules may be configured to delay rate control changes according to the known latencies. For example, in TCP, TCP protocol receivers have no knowledge of RTT, but TCP senders can calculate an estimate for RTT. If the sending-side flow control module, e.g., 1620 , 1625 , forwards its RTT estimate to the receiving-side flow control module, e.g., 1630 , the receiving-side flow control module 1630 uses this information to determine when to send rate control information. In such embodiments, there is a significant reduction of packet loss.
+
+TCP protocol receivers have no knowledge of RTT, but TCP senders can calculate an estimate for RTT. If the sending-side flow control module, e.g., 1620 , 1625 , forwards its RTT estimate to the receiving-side flow control module, e.g., 1630 , the receiving-side flow control module 1630 uses this information to determine when to send rate control information. In such embodiments, there is a significant reduction of packet loss.
+
+a sending-side first flow control module e.g., 1620
+
+the receiver-side second flow control module 1630 at A waits until it receives confirmation from the sender-side first flow control module 1620 at B that it is reducing its sending rate before notifying the sending-side third flow control module 1625 at C to increase its sending rate.
+
+this approach minimizes or eliminates overbooking while still reducing or eliminating packet loss.
+
+those skilled in the art will recognize other alternative embodiments may be configured to vary rate control changes more slowly or more quickly depending on the send rate history of a given flow control node.
+
+system and process describe herein may be configured as modular component having appropriate functionality for the process or flow described.
+
+the processes or flows may be configured as software executable by a processor.
+
+the process or flows may be configured as a combination of modules and or processor executable software.
+
+a single enhanced PEP instance can consist of multiple PEP members that communicate among themselves. These members share data so that they can jointly and individually perform PEP processing while simultaneously maintaining the coherence of a single PEP instance.
+
+the enhanced PEP or flow control module
+
+PEP will simply be referred to as a PEP for ease of discussion.
+
+the benefits of distributed PEP processing are scaling in performance, capacity and reliability. Performance scaling comes from improving the processing of a single TCP connection. Capacity scaling comes from increasing the total number of connections that can be handled. Reliability scaling comes from having multiple cooperating implementations that can survive the failure of one or more members. Distributed PEPs, that have members along all network paths for which a TCP connection may traverse, are able to implement those PEP algorithms that require access to all of the packets for a TCP connection (either half- or full-duplex), whereas multiple instances of nondistributed PEPs in a similar configuration would not be able to implement these same PEP algorithms. A distributed PEP can be deployed in environments that include link aggregation, multi-homing, link failover, and multiply interconnected networks.
+
+portions of some PEP algorithms require global consistency. These portions necessitate that a single packet not completely traverse one cooperating PEP member until all of the members have been updated to a consistent state. This update increases the per-packet computation cost, as well as potentially adding to the latency of the system. Just as with nondistributed PEPs, these increased costs may result in overall degradation. Again as with nondistributed PEPs, careful monitoring of the TCP conversation allows the appropriate algorithms to be enabled and disabled so as to avoid degradation.
+
+Communication between PEP members can be accomplished in a variety of ways: through common memory or via an external message facility, like a packet-switched network or a communications bus. As the communications method becomes more expensive, the costs of the PEP cooperation increase accordingly, raising the crossover point to yield a PEP benefit.
+
+individual TCP connections are assigned to individual PEP members.
+
+a PEP member receives a packet pertaining to a TCP conversation that is assigned to another PEP member, it forwards the packet to that PEP member for processing.
+
+This method requires global synchronization only during connection establishment and termination, at other times no global synchronization is required.
+
+a PEP member receives a connection initiation or termination packet, it communicates with the other members to update their connection tables. Upon receipt of a connection initiation packet, the receiving PEP member determines which member this connection will be placed on (i.e., performs a load-balancing selection) and informs all of the PEP members of the choice for the new connection.
+
+the establishment of the connection can be allowed to proceed by forwarding the connection-initiating packet.
+
+the distributed PEP members will be certain to understand how to forward (i.e., which PEP member is responsible for) any further packets associated with this conversation. It is possible that two PEP members will receive connection initiation packets for the same connection simultaneously (i.e., before they have had a chance to communicate). The PEP must detect this case, ensuring that the connection table remains globally consistent; typically, one of the two packets is simply ignored.
+
+This method guarantees that all the packets associated with a single TCP connection are processed by a single PEP member, enabling the application of the PEP algorithms that require access to all of the conversation data (i.e., full- or half-duplex).
+
+This model of implementing a distributed PEP does not provide performance scaling, in that a single TCP connection can run no faster than the limit of a single PEP member.
+
+multiple TCP conversations are present, they can be distributed among the plurality of members so that, in aggregate, overall performance is improved, as each individual connection has the PEP algorithms implemented on it.
+
+Another advantage of this scheme is that it is relatively easy to disable PEP algorithms for individual TCP connections. This information can be distributed in the same fashion, at which point any of the PEP members can process packets for that TCP connection without forwarding it to other PEP members, minimizing the additional latency imposed on the connection.
+
+Implementation of the tightly coupled model does not require a single table for globally consistent information.
+
+the table can be distributed, provided that it is maintained consistently as packets transit the members.
+
+the cost of maintaining the distributed, consistent tables may result in increased latency and computation costs.
+
+relatively expensive member interconnections can be utilized while still obtaining substantial system-level performance boosts.
+
+a failover condition occurs when one of the PEP members fails, or when the network path through one of the PEP members ceases to operate (due to failure, operator request, routing change, etc.).
+
+Recovery is defined as the procedure that the system uses to recover from a failover condition.
+
+In the tightly coupled configuration recovery is relatively easy to perform, as the globally consistent state is still available to all remaining PEP members.
+
+Typical recovery actions involve ensuring the integrity of shared data structures and addressing the reduction in overall capacity due to the failure.
+
+a connection can be transferred from one PEP member to another member. This action, called migration, can be initiated for several reasons.
+
+One reason is due to loading issues, (i.e., a PEP member may be overloaded and will use the migration of a TCP connection to a different PEP member as a method of rebalancing the system load).
+
+Another reason is external routing change, (i.e., one PEP member may notice that the preponderance of packets for a TCP conversation is arriving at a PEP member that does not own the connection; rather than continuing to pay the costs of internally forwarding those packets to the owning member, the connection is migrated to the member that is receiving the preponderance of packets).
+
+Another reason is route failure.
+
+the owning PEP member may lose connectivity to one or both of the endpoints.
+
+the connection is migrated to another PEP member to reestablish connectivity.
+
+Yet another reason is member failure. Connections owned by a failing member are migrated to operational members.
+
+Migration is similar to connection establishment. First, packet forwarding for the connection is suspended. Second, the connection table of the PEP members is updated to indicate the new owner. Finally, packet forwarding is enabled (naturally, any packets received during this process must be forwarded to the new owner).
+
+an enhanced PEP When adding an enhanced PEP to a network, there are many choices for the deployment vehicle.
+
+One method of deployment is to create a new interior element. This element may have one or more network connections and may contain facilities for performing the selected enhanced PEP algorithms on the packets that flow through it.
+
+Another option is to deploy the enhanced PEP within an already existing element, either interior or endpoint.
+
+an enhanced PEP can be deployed in either an endpoint or interior element configuration.
+
+network topology affects the classes of enhanced PEP algorithms that can be enabled.
+
+Multiple deployed implementations of enhanced PEPs, either in endpoints or interior nodes or both, may cooperate to create a single distributed enhanced PEP instance, as described above.
+
+enhanced PEPs (or flow control module) may be referenced as a PEP for ease of discussion.
+
+Certain network interior nodes are natural places to deploy PEPs, as they tend to aggregate network traffic, reducing the number of members required to create a distributed PEP instance. Additionally, these nodes tend to be the most profitable places to locate performance-boosting PEP algorithms. For example, a wireless base station is a natural place to deploy a PEP, as all traffic between wireless nodes and the wired network must pass through it. Further, there are many PEP algorithms that would be ideal in improving the performance of the high error-rate wireless link.
+
+FIG. 1 depicts one example of a VPN gateway.
+
+Computers 1 . 00 - 103 are connected to switch 150 . Communication between computers 100 - 103 are routed amongst each other by switch 150 , as directed by the routing tables contained therein. Likewise, computers 140 - 143 communicate through switch 160 , to which they are connected.
+
+switch 150 uses its routing tables, directs these packets to VPN gateway 110 .
+
+VPN 110 accepts these packets and inspects them. Using its own routing tables, VPN 110 determines that these packets must be forwarded to VPN 130 .
+
+Each of the packets to be forwarded is placed into an envelope that specifies VPN 130 as the destination and then the packet is sent to Internet 120 .
+
+Wide area network (WAN) e.g., Internet
+
+WAN Wide area network
+
+the packet while traveling over the Internet, is placed inside an envelope, the contents and format of the original packet do not affect, and are unaffected by, its transport via Internet 120 .
+
+cryptographic techniques are used to hide the contents of the packet, ensuring that no intermediate node is able to examine the packet.
+
+Other cryptographic techniques can be employed to allow the receiving node to detect if a packet has been altered after initial transmission. In this case, the altered packet can simply be dropped, whereupon the upper-level behavior will detect this and retransmit an original copy;
+
+Internet 120 need not be the public Internet, it could be any particular network, public or private.
+
+switch should be understood to include all forms of switching, including routing, bridging, forwarding, and others.
+
+This technique allows the use of Internet 120 as a private link between the two VPN instances. Indeed, the addressing domain of the packets used by computers 100 - 103 and 140 - 143 and switches 130 and 160 are distinct and possibly separate from that used by Internet 120 . Further, the packets contained within the envelopes may contain protocols unknown to Internet 120 .
+
+the transport of the contained packets through the Internet in this fashion is commonly known as tunneling.
+
+the network interface that connects the VPN to Internet 120 is can be referenced as the wide-area network (WAN) side.
+
+the other VPN network interface is known as the local-area network (LAN) side.
+
+WAN- and LAN-sides of the VPN is logical and not physical (i.e., there may be only a single network connection over which both sets of traffic are multiplexed).
+
+VPN 110 may be combined with switch 130 , yielding certain efficiencies due to sharing of resources and computations.
+
+VPN 140 may be combined with switch 160 .
+
+VPN 110 and 130 typically perform little or no special processing, as compared to the other Internet protocols.
+
+Each TCP packet is placed into its envelope and transmitted to the other VPN participant.
+
+Each TCP endpoint remains unaware of the presence of the intermediate VPN nodes or of Internet 120 .
+
+IP Internet Protocol Security
+
+L2TP Layer 2 Tunneling Protocol
+
+PPTP Point to Point Tunneling Protocol
+
+TCP endpoints remain solely responsible for the upper-level TCP behaviors, as these VPN protocols do not provide them.
+
+the VPN's upper-level TCP behaviors may interact with the upper-level TCP behaviors of the endpoints (computers 100 and 140 ). This interaction may severely limit the performance of the TCP connection between computers 100 and 140 . For example, packets that are dropped by Internet 120 must be retransmitted. Initially, one of the VPN nodes notices that a packet has been dropped, using one of the known TCP methods: duplicate acknowledgements (dupacks) or selective acknowledgements (sacks), retransmitting the lost packet accordingly.
+
+dupacks duplicate acknowledgements
+
+sacks selective acknowledgements
+
+the TCP implementations in the endpoint computers 100 and 140 may also experience a timeout, since the retransmit by the VPN may take substantially longer than the endpoint's current running estimate of the RTT. In this case, the endpoints will also assume that the packet has been lost and perform their own retransmit.
+
+the endpoint retransmit is redundant, as the VPNs are already engaged in retransmitting the missing data. This entire sequence results in an overall degradation of system throughput.
+
+the redundantly retransmitted packets may be treated by the VPN as additional packets to be transmitted (i.e., the VPN may fail to recognize a packet received from an endpoint as representing a retransmission, packaging the redundant packet and sending it across the tunnel, also).
+
+a PEP inserted into the conversation between the endpoint and the VPN, could improve this situation.
+
+the PEP upon detecting the unnecessary retransmission, the PEP could simply drop the redundant packet. Detecting the situation requires that the PEP have access to state information for the VPN's TCP (tunnel) connection. This access could be performed in several manners. First, the PEP could be in the same node as the VPN and could access the VPN transmission state directly. Second, the PEP could be connected to the WAN side of the VPN, monitoring its packets directly to detect retransmissions. Thirdly, the VPN could explicitly notify the PEP via a message when a retransmission occurs.
+
+VPN algorithms use cryptographic techniques to prohibit inspection and/or alteration of the encapsulated packets. If the PEP is connected to the LAN side of the VPN, then it can apply its algorithms to packets prior to their encapsulation, avoiding cryptographic issues. However, a PEP connected to the WAN side of the VPN may be severely limited in the presence of cryptographic protection techniques if it has no access to the clear-text of the encapsulated packets: But, in the case of a VPN tunnel using TCP (e.g., PPTP), the PEP algorithms may be applied to the TCP envelope, provided that the cryptographic techniques are used only to protect the interior packet and not the envelope. With support for a cryptographic NIC, even this restriction can be removed (as further described below).
+
+TCP e.g., PPTP
+
+the typical data center configuration results in the principal bandwidth bottleneck occurring right at the VPN node.
+
+the VPN node has a high-speed connection to the LAN and a much lower-speed connection to the WAN. Indeed, when the VPN is integrated into a switch, this mismatch is accentuated, as the VPN may have access to all of the traffic across all the LAN ports of the switch, which usually greatly exceeds the speed of a single WAN link. Further, the connections that pass through the VPN normally have higher RTTs and packet-loss rates than do LAN connections, particularly when the VPN uses the public Internet as its tunnel transport.
+
+the VPN is a natural place for making bandwidth allocation decisions; however, the standard VPN lacks efficient mechanisms to implement these decisions.
+
+the only bandwidth allocation technique available to the standard VPN is to drop packets, assuming that the sender will reduce his sending rate appropriately. However, this technique is inefficient, resulting in retransmission of data that was otherwise properly received. Further, the technique lacks the ability to provide a fine resolution to the permitted bandwidth, particularly when the sender is using TCP. This is because standard TCP implementations reduce their bandwidth by one-half when a packet is dropped. Also, many TCP implementations will provide data in bursts rather than evenly spaced after a packet drop.
+
+a better flow control mechanism allows the VPN to manipulate the receive window seen by a sending endpoint. Also, since a TCP acknowledgement contains a window advertisement, a VPN can manipulate the window to provide a more effective form of flow control. Thus, the VPN is able to more precisely inform and control the sending rate of the endpoint.
+
+window manipulation is limited, as once the window is opened to a certain value, the receiver is not permitted to retract the advertisement unless the data has been received accordingly. This limitation imposes a time lag between the decision to reduce a sender's rate and the actual realization of that rate reduction. This rate limiting mechanism can be used by a VPN to efficiently provide a fine-grained control over individual connections.
+
+an enhanced PEP handles the acknowledgements and retransmits for a sender, effectively terminating the sender's connection with the downstream portion of a network connection.
+
+a PEP can be implemented in a variety of network topologies. Again, in this section the enhanced PEP (or flow control module) is referenced as a PEP for ease of discussion.
+
+FIG. 2 shows one possible deployment of a PEP 200 into a network architecture to implement this feature.
+
+a sender computer 100 sends data to switch 150 , which determines that the data are destined for VPN box 130 . Because of the chosen LAN topology, all data destined for VPN 130 must transit PEP 200 , so the PEP 200 can apply any necessary algorithms to these data.
+
+FIG. 17 illustrates a trace diagram for one embodiment of the flow of information among the sender 100 , the PEP 200 , and a VPN 130 (or any other network entity downstream on the network connection).
+
+the sender 100 transmits 1705 a packet, which is received by the PEP 200 .
+
+the PEP 200 sees the packet, which is transmitted from the sender 100 to a recipient via the VPN 130 , the PEP 200 retains 1710 a copy of the packet and forwards 1715 the packet downstream to the VPN 130 .
+
+ACK acknowledgement packet
+
+This ACK a pre-acknowledgment, causes the sender 100 to believe that the packet has been delivered successfully, freeing the sender's resources for subsequent processing.
+
+the PEP 200 retains the copy of the packet data in the event that a retransmission of the packet is required, so that the sender 100 does not have to handle retransmissions of the data. This early generation of acknowledgements may be called âpreacking.â
+
+the PEP 200 retransmits 1730 the packet containing the missing data.
+
+the PEP 200 may determine whether retransmission is required as a sender would in a traditional system, for example, determining that a packet is lost if an acknowledgement has not been received for the packet after a predetermined amount of time. To this end, the PEP 200 monitors acknowledgements generated by the receiving endpoint (or any other downstream network entity) so that it can determine whether the packet has been successfully delivered or needs to be retransmitted. If 1725 the PEP 200 determines that the packet has been successfully delivered, the PEP 200 is free to discard 1735 the saved packet data. The PEP 200 may also inhibit forwarding acknowledgements for packets that have already been received by the sending endpoint.
+
+the PEP 200 controls the sender 100 through the delivery of pre-acknowledgements, or preacks, as though the PEP 200 were the receiving endpoint itself. But because the PEP 200 is not an endpoint and does not actually consume the data, the PEP 200 preferably includes a mechanism for providing overflow control to the sending endpoint. Without overflow control, the PEP 200 could run out of memory because, as explained above, the PEP 200 stores packets that have been preacked to the sending endpoint but not yet acknowledged as received by the receiving endpoint. Therefore, in a situation in which the sender 100 transmits packets to the PEP 200 faster than the PEP 200 can forward the packets downstream, the memory available in the PEP 200 to store unacknowledged packet data can quickly fill. A mechanism for overflow control allows the PEP 200 to control transmission of the packets from the sender 100 to avoid this problem.
+
+the PEP 200 includes an inherent âself-clockingâ overflow control mechanism. This self-clocking is due to the order in which the PEP 200 may be designed to transmit A 50 packets downstream and send A 55 ACKs to the sender 100 . In the embodiment shown in FIG. 17 , the PEP 200 does not preack A 55 the packet until after it transmits A 50 the packet downstream. In this way, the sender 100 will receive the ACKs at the rate at which the PEP 200 is able to transmit packets rather than the rate at which the PEP 200 receives packets from the sender 100 . This helps to regulate the transmission of packets from the sender 100 .
+
+Another overflow control mechanism that the PEP 200 may implement is to use the standard TCP window, which tells the sender 100 how much buffer the receiver is permitting the sender to fill up.
+
+a nonzero window size e.g., a size of at least one Maximum Segment Size (MSS)
+
+MSS Maximum Segment Size
+
+the PEP 200 may regulate the flow of packets from the sender 100 , for example when the PEP's buffer is becoming full, by appropriately setting the TCP window size in each preack. This scheme has the advantages of simplicity and adherence to standard TCP methodologies.
+
+TCP window size is the high expense of ACK processing.
+
+two ACK packets are sent by the PEP, as well as processed by the sending endpoint, for every packet sent by the sender. This occurs as follows: Due to the bandwidth imbalance, the sender will eventually fill the PEP (i.e., exhaust the PEP's advertised receive window to the sender), causing the PEP to generate a zero window size ACK packet. Eventually, the link between the PEP and the receiving endpoint, which is slower, will succeed in delivering a packet, causing the PEP to realize that it is no longer full.
+
+the PEP then sends a packet to the sending endpoint, indicating a nonzero window (e.g., the space for the packet just delivered), causing the sending endpoint to deliver another packet, in turn causing the PEP to generate, once again, a zero window size ACK packet to prevent the sender from sending packets.
+
+a nonzero window e.g., the space for the packet just delivered
+
+the overflow control mechanism in the PEP 200 can require that a minimum amount of space be available before sending a nonzero window advertisement to the sender 100 .
+
+the PEP 200 waits until there is a minimum of four packets of space available before sending a nonzero window packet (in this case, a window size of four packets). This reduces the overhead by approximately a factor four, since only two ACK packets are sent for each group of four data packets, instead of eight ACK packets for four data packets. However, this may increase the âburstinessâ of the delivery of packets, since the sender's window is opened four packets at a time.
+
+TCP delayed ACK Another technique for overflow control is to use the TCP delayed ACK mechanism, which skips ACKs to reduce network traffic.
+
+Standard TCP delayed ACKs automatically delay the sending of an ACK, either until two packets are received or until a fixed timeout has occurred. This mechanism alone can result in cutting the overhead in half; moreover, by increasing the numbers of packets above two, additional overhead reduction is realized.
+
+the PEP 200 may also use the advertised window mechanism on the ACKs to control the sender 100 .
+
+the PEP 200 preferably avoids triggering the timeout mechanism of the sender by delaying the ACK too long. Accordingly, the PEP delay should be designed with this concern in mind, avoiding delaying an ACK, if possible, so long that it will cause a timeout in the sender 100 .
+
+the PEP does not preack the last packet of a group of packets.
+
+the PEP avoids a false acknowledgement for a group of packets. For example, if the PEP were to send a preack for a last packet and the packet were subsequently lost, the sender would have been tricked into thinking that the packet is delivered when it was not. Thinking that the packet had been delivered, the sender could discard that data. If the PEP also lost the packet, there would be no way to retransmit the packet to the recipient. By not preacking the last packet of a group of packets, the sender will not discard the packet until it has been delivered. Accordingly, this problem is avoided.
+
+This preacking technique may also be employed at downstream entities, for example just before the recipient.
+
+a downstream PEP coupled to the recipient, there are a number of options for handling packets and acknowledgements.
+
+the downstream PEP may preack received packets just as described in connection with FIG. 17 .
+
+the downstream PEP may avoid preacking, instead waiting to send back an ACK until the recipient acknowledges receipt of the packet.
+
+the downstream PEP sends a SACK after it receives and forwards a packet, but waits to send an ACK until the recipient actually acknowledges receipt of the packet. This gives the sender-side PEP information about whether the packet passes through the downstream PEP as well as when it arrives at its destination. This is good when the connection fails, as this technique provides the network entities the most information about the status of the packets.
+
+FIG. 18 illustrates one embodiment of a PEP 200 , which includes an overflow control module 1810 , a memory 1820 , a network interface 1830 , and a preack module 1840 .
+
+the network interface 1830 allows the PEP 200 to communicate with other network entities, such as the sender and the VPN.
+
+the PEP 200 store packet data received from the network in its memory 1820 , which may be logically partitioned into separate receive and transmit buffers.
+
+the overflow control module 1810 is coupled to the network interface 1830 to implement one or more of the flow control mechanisms described above.
+
+the preack module 1840 is configured to send early acknowledgements, or preacks, to the sender 100 .
+
+preacking is beneficial because it eliminates the need to retransmit packets by the endpoint, thereby saving sender-side bandwidth and sender-side transmission delays (i.e., a reduction in latency). It can be appreciated that this benefit is accentuated in a number of situations, for example before a high-loss link in a network connection, at a point of bandwidth mismatch where the downstream portion of the network connection has a lower bandwidth (i.e., a bottleneck), and at a point of latency transition in the network connection.
+
+Another benefit of this technique is to eliminate the RTT limitation on the upper bound of TCP performance. But preacking may have detrimental effects as well. For example, failure of the PEP instance may result in the two endpoints of the TCP conversation becoming unsynchronized.
+
+insufficient receive window size is one limiter of TCP performance.
+
+the receive window sizes of many TCP implementations are limited for various reasons.
+
+One reason for the limitation may be a lack of support for well-known protocol extensions (e.g., RFC 1323), that allow the receive window to be increased beyond its standard 16-bit range.
+
+Another reason may be the desire to limit the consumption of system buffer memory by each TCP connection, since the advertised receive window carries a promise of dedicated buffer space. The latter is especially crucial in certain system configurations that may have large numbers of relatively idle TCP connections open at any instant.
+
+default window-size settings are set for LAN environments, as these tend to dominate connections in most environments.
+
+the send window is similar to the receive window, in that it consumes buffer space (though on the sender), and sometimes serves to limit performance.
+
+the sender's send window consists of all data sent by the application that has not been acknowledged by the receiver. This data must be retained in memory in case retransmission is required. Since memory is a shared resource, TCP stack implementations limit the size of this data.
+
+the send window When the send window is full, an attempt by an application program to send more data results in blocking the application program until space is available. Subsequent reception of acknowledgements will free send-window memory and unblock the application program.
+
+This window size is known as the socket buffer size in some TCP implementations. Unlike the receive window, no network interoperability standard limits the size of the send window, although, many implementations either provide a fixed limit or require source code modifications to utilize a larger window. Thus, although there appears to be promise of reserved memory the practical reality is otherwise.
+
+the flow control module (or enhanced PEP) is configured as described herein to provide access to increased window (or buffer) sizes. This configuration may also be referenced to as window virtualization. In one embodiment, âwindowâ may be referenced in a context of send, receive, or both.
+
+FIG. 19 illustrates one embodiment of a flow control system 20 including a first flow control module 220 and a second flow control module 230 for use in transporting data from a first node, e.g., computer 100 , to a second node, e.g., computer 140 .
+
+the flow control system may have coupled with a third node, e.g., computer 175 , which communicatively couples the wide area network 120 .
+
+the flow control system 20 includes a one or more first (or initiating) nodes, e.g., computers 100 - 103 , a first switch 150 (which may include a network such as a local area network (LAN)), a first flow control module 220 , a wide area network (e.g., the Internet) 120 , a second flow control module 230 , a second switch 160 (which also may include a network such as a LAN), and one or more second (or responding) nodes, e.g., computers 140 - 143 .
+
+the one or more first nodes 100 - 103 couple the first switch 150 .
+
+the first flow control module 220 couples the first switch 150 and the wide area network 120 .
+
+the second flow control module 230 couples the wide area network 120 and the second switch 160 .
+
+the second switch 160 couples the one or more second nodes 140 - 143 .
+
+the flow control modules 220 , 230 may also be referred to as enhanced performance enhanced proxies (PEP), or simply, PEPs in this section for each of discussion.
+
+PEP enhanced performance enhanced proxies
+
+the components between the one or more first nodes, e.g., source (or initiating or sender or sending) nodes, and the one or more second nodes, e.g., the destination (or responding or receiver or receiving) nodes, may be referenced as points (or intermediary nodes) along a data path between these end nodes in the flow control system 20 .
+
+the flow control modules 220 , 230 may be configured in hardware, software (including firmware), or a combination thereof.
+
+the flow control module 220 , 230 may be a physical device configured to execute software embodying processes described herein through a processing mechanism (e.g., processor, controller, or state machine) or it may be a software component embodying processes described herein residing within a network point, e.g., a switch or router, to operate within and/or in conjunction with that network point.
+
+a processing mechanism e.g., processor, controller, or state machine
+
+a software component embodying processes described herein residing within a network point, e.g., a switch or router, to operate within and/or in conjunction with that network point.
+
+each flow control node 220 , 230 is configured to allow a process for auto-discovery.
+
+auto-discovery identifies appropriate flow control modules, e.g., 220 , 230 , additional mechanisms and processes are leveraged for increasing session window sizes and buffer utilization along points in a data path.
+
+Auto-discovery may be configured when establishing a communication connection, for example, in TCP environments during synchronization (SYN) and synchronization acknowledgement (SYN-ACK).
+
+SYN synchronization
+
+SYN-ACK synchronization acknowledgement
+
+one embodiment of the present system and process involves using a modified synchronization (SYN) and synchronization acknowledgement (SYN-ACK) structure in the flow control system 20 to determine whether a particular point from a first node to a second node is enabled as a flow control module.
+
+FIG. 20 it illustrates one embodiment of a data packet 2010 for use in a flow control system 20 in accordance with the present invention.
+
+the data packet includes an Ethernet header 2020 , an Internet protocol (âIPâ) header, 2030 , a transmission control protocol (âTCPâ) header 2040 , and data 2050 .
+
+IP Internet protocol
+
+TCP transmission control protocol
+
+the IP header 2030 and the TCP header 2040 there are corresponding options area 2035 , 2045 .
+
+the TCP header also includes a bit string corresponding to a window scale 2055 .
+
+FIG. 21 illustrated is initiation of a data communication session between a source node, e.g., computer 100 (for ease of discussion, now referenced as source node 100 ), and a destination node, e.g., computer 140 (for ease of discussion, now referenced as destination node 100 ) in accordance with the present invention.
+
+the source node 100 initially transmits a synchronization signal (âSYNâ) through its local area network 150 to first flow control module 220 .
+
+the first flow control module 220 inserts a configuration identifier into the TCP header 2040 options area 2045 .
+
+the configuration identifier e.g., FCM, identifies this point in the data path as a flow control module.
+
+the SYN-FCM signal continues onto the wide area network 120 to the second flow control module 230 .
+
+the second flow control module 230 recognizes the configuration identifier in the TCP header 2040 options area 2045 and extracts that information to store it. It can be stored in any storage mechanism, e.g., a state block, a volatile memory, a non-volatile memory, disk storage, or the like.
+
+the second flow control module 230 optionally forwards the SYN-FCM signal or the SYN signal to the destination node 140 via the destination node's local area network 160 . Note that if the SYN-FCM signal is sent, the destination node 140 will ignore the configuration identifier in the TCP header 2040 options area 2045 .
+
+the destination node 140 Upon receipt of the SYN-FCM or SYN signal, the destination node 140 returns a synchronization acknowledgement (âSYN-ACKâ) signal for the source node 100 .
+
+the second flow control module 230 receives the SYN-ACK signal and inserts its configuration identifier into the TCP header 2040 options area 2045 of the SYN-ACK signal.
+
+the SYN-ACK signal with the second flow control module configuration identifier (SYN-ACK-FCM) is transmitted through the wide area network 120 to the first flow control module 220 .
+
+the first flow control module recognizes the configuration identifier in the TCP header 2040 options area 2045 and extracts it for storage.
+
+the first flow control module 220 passes the SYN-ACK-FCM or a SYN-ACK signal to the source node 100 , which ignores the configuration identifier in the TCP header 2040 options area 2045 if it receives the SYN-ACK-FCM signal.
+
+the flow control system 20 is now able to identify the first flow control module 220 and the second flow control module 230 in the data path.
+
+the connection between the local area networks 150 , 160 and the respective flow control modules 220 , 230 can be referenced as a fast side connection, e.g., having gigabit connection speeds and low latencies, while the connection between the two flow control modules 220 , 230 can be referenced as a slow side connection, e.g., having megabit connection speeds and high latency (e.g., with respect to the fast side connection).
+
+the flow control module 220 does not interfere, or provides a passive conduit, between the source node 100 and the outside node 175 .
+
+the outside node ignores the configuration identifier (FCM) and returns a SYN-ACK to the flow control module 220 that ultimately goes back to the source node 100 .
+
+FCM configuration identifier
+
+the flow control module 220 may be considered to have two fast sides to its connection.
+
+the flow control module may perform fast side optimizations, such as improved retransmit support, which could be useful near a link with media losses such as a wireless (e.g., WiFi) base station.
+
+fast side optimizations such as improved retransmit support, which could be useful near a link with media losses such as a wireless (e.g., WiFi) base station.
+
+the flow control modules 220 , 230 also provide window virtualization.
+
+Window (or buffer) virtualization allows increasing data buffering capabilities within a session despite having end nodes with small buffer sizes, e.g., typically 16 k bytes.
+
+RFC 1323 requires window scaling for any buffer sizes greater than 64 k bytes, which must be set at the time of session initialization (SYN, SYN-ACK signals).
+
+the window scaling corresponds to the lowest common denominator in the data path, often an end node with small buffer size.
+
+This window scale often is a scale of 0 or 1, which corresponds to a buffer size of up to 64 k or 128 k bytes. Note that because the window size is defined as the window field in each packet shifted over by the window scale, the window scale establishes an upper limit for the buffer, but does not guarantee the buffer is actually that large.
+
+Each packet indicates the current available buffer space at the receiver in the window field.
+
+FIG. 22 illustrates one embodiment of scaling in a flow control system in accordance with the present invention.
+
+the first flow control module 220 receives from the source node 100 the SYN signal (or packet), it stores the windows scale of the source node 100 (which is the previous node) or stores a 0 for window scale if the scale of the previous node is missing.
+
+the first flow control module 220 also modifies the scale, e.g., increases the scale to 4 from 0 or 1, in the SYN-FCM signal.
+
+the second flow control module 230 When the second flow control module 230 receives the SYN signal, it stores the increased scale from the first flow control signal 4 and resets the scale in the SYN signal back to the source node 100 scale value for transmission to the destination node 140 .
+
+the second flow 230 receives the SYN-ACK signal from the destination node 140 , it stores the scale from the destination node 140 scale, e.g., 0 or 1, and modifies it to an increased scale that is sent with the SYN-ACK-FCM signal.
+
+the first flow control node 220 receives and notes the received window scale and revises the windows scale sent back to the source node 100 back down to the original scale, e.g., 0 or 1. Based on the above window shift conversation during connection establishment, the window field in every subsequent packet, e.g., TCP packet, of the session must be shifted according to the window shift conversion.
+
+the process described above may also apply to non-flow control modules.
+
+the process can use the increased scale between the first flow control module 220 and the outside node 175 when the outside node 175 is configured to also use a similar increased scale, e.g., a windows scale of 4.
+
+a similar increased scale e.g., a windows scale of 4.
+
+the flow control module e.g., here 220
+
+the window scale expresses buffer sizes of over 64 k and may not be required for window virtualization.
+
+shifts for window scale may be used to express increased buffer capacity in each flow control module 220 , 230 .
+
+This increase in buffer capacity in may be referenced as window (or buffer) virtualization.
+
+the increase in buffer size allows greater packet through put from and to the respective end nodes 100 , 140 .
+
+buffer sizes in TCP are typically expressed in terms of bytes, but for ease of discussion âpacketsâ may be used in the description herein as it relates to virtualization.
+
+FIG. 23 illustrates one example of window (or buffer) virtualization in a flow control system in accordance with the present invention.
+
+the source node 100 and the destination node 140 are configured similar to conventional end nodes having a limited buffer capacity of 16 k bytes, which equals approximately 10 packets of data.
+
+an end node 100 , 140 must wait until the packet is transmitted and confirmation is received before a next group of packets can be transmitted.
+
+the first flow control module 220 receives the packets, stores it in its larger capacity buffer, e.g., 512 packet capacity, and immediately sends back an acknowledgement signal indicating receipt of the packets (âREC-ACKâ) back to the source node 100 .
+
+the source node can then âflushâ its current buffer, load it with 10 new data packets, and transmit those onto the first flow control module 220 .
+
+the first flow control module 220 transmits a REC-ACK signal back to the source node 100 and the source node 100 flushes its buffer and loads it with 10 more new packets for transmission.
+
+the first flow control module 220 receives the data packets from the source nodes, it loads up its buffer accordingly. When its ready to transmit the first flow control module 220 can begin transmitting the data packets to the second flow control module 230 , which also has an increased buffer size, for example, to receive 512 packets.
+
+the second flow control module 230 receives the data packets and begins to transmit 10 packets at a time to the destination node 140 .
+
+Each REC-ACK received at the second flow control node 230 from the destination node 140 results in 10 more packets being transmitted to the destination node 140 until all the data packets are transferred.
+
+the present invention is able to increase data transmission throughput between the source node (sender) 100 and the destination node (receiver) 140 by taking advantage of the larger buffer in the flow control modules 220 , 230 between the devices.
+
+a sender or source node 100 is allowed to transmit more data than is possible without the preacks, thus affecting a larger window size.
+
+this technique is effective when the flow control module 220 , 230 is located ânearâ a node (e.g., source node 100 or destination node 140 ) that lacks large windows. If both communicants are lacking large windows, then two flow control modules 220 , 230 may be required, one near each node 100 , 140 to obtain greater performance.
+
+ânearâ may be referenced as a bandwidth delay product of the path between a source node 100 or destination node 140 (e.g., endpoints) and the flow control module 220 , 230 is less than the maximum window size supported by the end nodes 100 , 140 . If the flow control module 220 , 230 is âfartherâ away, some performance enhancement may still be provided, but the maximum may be limited by the insufficient window size (e.g., TCP window size) between the end node 100 , 140 and the flow control module 220 , 230 .
+
+the insufficient window size e.g., TCP window size
+
+the flow control module e.g., 220
+
+the flow control module can be configured to cause the source node 100 (or sender) to provide enough data to fill both the source node-to-flow control module path and the flow control module-to-destination (or receiver) path.
+
+the flow control module 220 performs an appropriate computation as described herein to determine the buffer size to place into the packet (i.e., the window size to advertise).
+
+window virtualization can be performed.
+
+the flow control module could simply alter the contents of the advertised receive window as packets transited it. This could cause the advertisement of a larger window than the endpoint was actually offering. This might not be a problem, as the endpoint node might be capable of processing the data at a high enough rate to avoid overflowing.
+
+the flow control module 230 itself could monitor the inflow of data, holding up the transmission of packets that would overrun the window of the destination node 140 . These packets could be stored locally until space became available at the destination node 140 . Alternatively, the overflow packets could be dropped, eventually causing a retransmission. In either scenario, the flow control module 220 , 230 could monitor the rate that the destination node 140 is absorbing data and limit the increase in the advertised send window so as to minimize overruns.
+
+window sizing Another optimization with respect to window sizing can be applied. For example, many TCP implementations advertise a fixed window size for each TCP connection (actually a fixed maximum). However, TCP performance does not increase substantially when the window size is increased beyond the bandwidth delay product of the connection. Further, the advertised window size implies an equivalent reservation of system buffer memory. Thus, for connections with a bandwidth delay product less than the maximum window size, excess memory is reserved; while connections with a bandwidth delay product exceeding the fixed maximum experiences performance loss.
+
+a fixed maximum window size may be either wasteful of memory or underutilizes available bandwidth or both.
+
+an advertised window size that more closely tracks the bandwidth delay product of the TCP connection.
+
+Another method sets a relatively small fixed window size and uses a flow control module 220 , 230 , located within the bandwidth delay product range of the small window size, to provide the monitoring required to adjust the window size accordingly.
+
+the flow control module 220 , 230 can optimize the window size of each individual connection so as to better utilize buffer memory.
+
+PEP Another enhanced PEP algorithm is recongestion.
+
+the enhanced PEP (or flow control module) is referred to as PEP for ease of discussion in this section.
+
+the standard TCP congestion avoidance algorithms are known to perform poorly in the face of certain network conditions, including: large RTTs, high packet loss rates, and others. When the PEP detects one of these conditions, it intervenes, substituting an alternate congestion avoidance algorithm that better suits the particular network conditions.
+
+This PEP algorithm uses preacks to effectively terminate the connection between the sender and the receiver. It then resends the packets from itself to the receiver, using a different congestion avoidance algorithm. For maximum performance, the PEP should be located near the sender, as the connection between the sender and the PEP may serve to limit overall performance.
+
+Recongestion algorithms are dependent on the characteristics of the TCP connection. An optimal algorithm for large RTT connections may perform poorly in a small RTT environment.
+
+the PEP monitors each TCP connection, characterizing it with respect to the different dimensions, selecting a recongestion algorithm that is appropriate for the current characterization.
+
+a recongestion algorithm upon detecting a TCP connection that is limited by RTT, a recongestion algorithm is applied which behaves as multiple TCP connections.
+
+Each TCP connection operates within its own performance limit but the aggregate bandwidth achieves a higher performance level.
+
+One parameter in this mechanism is the number of parallel connections that are applied (N). Too large a value of N and the connection bundle achieves more than its fair share of bandwidth. Too small a value of N and the connection bundle achieves less than its fair share of bandwidth.
+
+N One method of establishing âNâ relies on the PEP monitoring the packet loss rate, RTT, and packet size of the actual connection. These numbers are plugged into the TCP response curve formula (see Mathis, et al.) to provide an upper limit on the performance of a single TCP connection in the present configuration. If the each connection within the connection bundle is achieving substantially the same performance as that computed to be the upper limit, then additional parallel connections are applied. If the current bundle is achieving less performance than the upper limit, the number of parallel connections is reduced. In this manner, the overall fairness of the system is maintained since individual connection bundles contain no more parallelism than is required to eliminate the restrictions imposed by the protocol itself. Further, each individual connection retains TCP compliance.
+
+Another method of establishing âNâ is to utilize a parallel flow control algorithm such as the TCP âVegasâ algorithm or its improved version âStabilized Vegas.â
+
+the network information associated with the connections in the connection bundle e.g., RTT, loss rate, average packet size, etc.
+
+the results of this algorithm are in turn distributed among the connections of the bundle controlling their number (i.e., N).
+
+each connection within the bundle continues using the standard TCP congestion avoidance algorithm.
+
+the individual connections within a parallel bundle are virtualized, i.e., actual individual TCP connections are not established. Instead the congestion avoidance algorithm is modified to behave as though there were N parallel connections (more details below). This method has the advantage of appearing to transiting network nodes as a single connection. Thus the QOS, security and other monitoring methods of these nodes are unaffected by the recongestion algorithm.
+
+the individual connections within a parallel bundle are real, i.e., a separate.
+
+TCP connection is established for each of the parallel connections within a bundle.
+
+the congestion avoidance algorithm for each TCP connection need not be modified.
+
+transiting nodes will now see âNâ separate connections and this may alter their behavior.
+
+FIG. 10 depicts the architecture of a system with two PEPs ( 200 and 300 ) and a network address translation (NAT) device 1000 .
+
+computer 100 sends a TCP connection to computer 140 (receiver, destination or responder), resulting in the transfer of a large amount of data from computer 140 back to computer 100 (e.g., fetching a file via FTP, accessing a web page, etc.).
+
+the PEP 300 determines that the performance of the data transfer is limited and acts to increase the parallelism. In the preferred embodiment with virtual connection bundles, the PEP 300 uses the alternate congestion control algorithm to send data at the higher rate.
+
+PEP 300 may be unable to directly open a connection to PEP 200 since it is behind a NAT device (this is a limitation of NAT devices). In this situation, PEP 300 adds a TCP option to one of the TCP packets indicating the need for an additional connection (or alternately, the number of additional connections needed). When PEP 200 receives a packet with this option, it initiates a connection to PEP 300 .
+
+This secondary connection is tagged to indicate that it should be made a part of the original bundle (possibly the original request contained a tag that is reflected back). The tagging may be in the form of a TCP or IP option. After the secondary connection is established, it is made part of the connection bundle, enhancing performance.
+
+the sending PEP i.e., the PEP desiring to increase the number of connections in the bundle
+
+the receiving PEP e.g., there is no NAT-like device in the path
+
+the sending PEP can open the correction directly using a normal TCP SYN packet, tagged to indicate to the receiver that this new connection is a secondary connection associated with the original bundle. Additional performance optimization can be made in this case by combining data to be sent with the opening SYN packet. This is expressly allowed by the TCP standard but is not commonly used due to limitations in the applications program interface (API) used in most operating systems (i.e., BSD sockets).
+
+API applications program interface
+
+the congestion avoidance algorithm parameters for the new connection may be based on the other members of the bundle, avoiding the standard TCP slow-start behavior which is used to determine network conditions.
+
+the sender can simply transfer half of the cwnd and ssthresh control variables of the primary connection to the second connection and allow the second connection to skip the slow-start phase and move directly into the congestion avoidance phase (alternate congestion avoidance algorithms would use different, but analogous, variables).
+
+One implementation difficulty of this choice is the lack of a TCP self-clock due to the absence of ACKs having been established by the second connection. However, the second connection could share the ACKs of other connections within the connection bundle itself.
+
+the second connection could utilize a rate-based sending scheme until the TCP ACK self-clock is established. This is particularly effective since the round trip time of the second connection is already well established, allowing a rate-based sending scheme to spread the inter-packet delay evenly.
+
+the sender may simply close a secondary connection by sending a FIN on that secondary connection.
+
+a FIN on the primary connection may be considered a shorthand to close all of the connections.
+
+the system may optimize the creation of a secondary connection near in time to the destruction of a secondary connection by reusing the same port numbers so that the TCP control block associated with them can be reused (remember, TCP control blocks must remain active for up to two minutes after a connection is closed due to IP packet duplication, loss and delayed delivery issues).
+
+the PEP creates additional real connections, there are issues associated with how it is addressed. If the initiating PEP is known to have an independent IP address that is visible to the responding PEP (this information may be exchanged during the open of the original connection when the PEPs identify each other's presence), then the secondary connections can utilize the IP address and port numbers associated with the originating PEP. Otherwise, the originating PEP must utilize the IP address of the original initiating system. This may force the PEP to pick a port number that is not currently in use by the originating system (for example, by tracking all connections opened by the originating system that transit the PEP whether to PEP enabled destinations or not) for the new secondary connection. Future activity by the originating system may cause it to choose as a port number the same port number chosen by the PEP.
+
+the PEP detects the port number collision and translates it into an unused port number (again, this is done independently of whether the connection is to another PEP or not).
+
+the PEP might choose to close the previously established secondary connection, allowing the new connection (that reuses the same port number) to proceed without port number translation.
+
+the closed secondary connection could be reestablished on a different, currently unused port number.
+
+a special option could be sent that directly transfers the second connection to an unused port (i.e., combines the close and subsequent open into a single message).
+
+the receiving PEP must be able to order the data received from the multiple parallel connections into a single stream of data.
+
+One method is for a TCP or IP option to be appended to each packet to indicate the ordering of the data between the multiple streams. Preferentially, this option contains either a starting sequence number and size or two sequence numbers (starting and ending). A single sequence number is insufficient as TCP packets can be fractured into two TCP packets legally by transiting nodes. By including the second number (i.e., size or ending sequence number) the receiving PEP is able to detect and handle this situation.
+
+Another method is to multiplex based on data index and an arbitrary data size.
+
+M bytes of connection 0 could be bytes [0 . . . M) and M Bytes of connection 1 could be bytes [M . . . 2*M), etc.
+
+Other multiplexing schemes could be used, including placing additional demultiplexing information directly in the TCP payload itself.
+
+a single congestion window is computed for the overall aggregate connection.
+
+the referenced paper âDifferentiated End-to-End Internet Services using a Weighted Proportional Fair

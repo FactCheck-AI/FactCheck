@@ -1,0 +1,39 @@
+Microsoft System Center Configuration Manager 2007 includes 17 built-in collections of computer and user objects.
+
+Because SCCM 2007 was written before Windows Server 2008 or 2008 R2 we're available, the latest server collection is for All Windows Server 2003 Systems. This article explains how to create new collections for All Windows Server 2008 Systems and All Windows Server 2008 R2 Systems.
+
+Let's get started by creating the All Windows Server 2008 Systems collection.
+
+Launch the SCCM 2007 Configuration Manager Console
+
+Navigate to Site Database > Computer Management > Collections
+
+Click New Collection in the Actions pane
+
+Enter Windows Server 2008 Systems for the name and the comment, then click Next:
+
+On the New Collection Wizard screen, for Membership Rules click the Query Rule button, which looks like an orange cylinder. The Query Rule Properties window will appear:
+
+For the Name, enter All Windows Server 2008 Systems as shown above and then click the Edit Query Statement button.
+
+On the All Windows Server 2008 Systems Query Statement Properties window, click the Criteria tab and click the New button, which looks like a sunburst. The Criterion Properties window will appear:
+
+Click the Select button and select System Resource for the Attribute Class and Operating System Name and Version for the Attribute, as shown below, then click OK.
+
+Select is like for the Operator and enter %server%6.0% for the Value. Click OK.
+
+Note:
+
+The value for Windows Server 2008 R2 servers is %server%6.1%.
+
+The value for Windows 7 workstations is %workstation%6.1%.
+
+The value for Windows Vista workstations is %workstation%6.0%.
+
+Click OK to close the Criterion Properties window:
+
+Click OK to close the All Windows Server 2008 Systems Statement Properties window, then click Next.
+
+Click Close to create the new collection:
+
+Finally, click Update the Collection Membership in the Actions pane in the Configuration Manager Console, and then click Refresh.

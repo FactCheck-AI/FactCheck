@@ -1,0 +1,51 @@
+New ways of running Ruby code keep on springing up - after the recent release of MacRuby, now RubyInside reports the relase of HotRuby.
+
+Yu Kobayashi's HotRuby is a little different from other Ruby implementations, though. First off, it doesn't come with a Ruby parser - instead it executes opcodes of the Ruby 1.9 VM. Ruby 1.9, like Rubinius, compiles Ruby source code to opcodes which are then executed by it's opcode interpreter. These opcodes can also be stored on disk.
+
+HotRuby is also remarkable simply because it's written in JavaScript. In fact the opcode interpreter, runtime, and implementations of a few miscellaneous classes fit inside a ~40 KB JavaScript file: HotRuby.js (or look at HotRuby's Google Code repository.
+
+HotRuby is written in JavaScript which also works in Flash, which is used for a few nice demos, eg. the Pinball Demo. The logic for these demos is written in Ruby, albeit it's important to mention that a lot of the functionality of the demos comes from libraries in Flash. However, this shows the close integration of the Ruby code with the underlying JavaScript platform. Using JavaScript classes and functions is very simple, both from an implementation and usage point of view. Eg. importing JavaScript classes in Ruby (from the PinBall Demo source):
+
+$n = $native
+
+$n.import "Box2D.Dynamics.*"
+
+$n.import "Box2D.Collision.*"
+
+$n.import "Box2D.Collision.Shapes.*"
+
+In this case, $native is a global variable of type NativeEnvironment - as a matter of fact, it doesn't contain anything. In HotRuby, accessing members of objects of this type provides functionality. Eg. $n.import "Box2D.Dynamics.*" loads the given JavaScript classes. These can then be accessed the same way, ie. via the NativeEnvironment (in these samples, also from the PinBall Demo, it's stored in the variable $n):
+
+def add_sprite
+
+@sprite = $n.Sprite.new
+
+$n.Main.m_sprite = @sprite
+
+$n._root.addChild @sprite
+
+@input = $n.Input.new @sprite
+
+end
+
+Another way to see HotRuby in action is the Do It Yourself page. This allows to type in Ruby code and run it with HotRuby. The way this works is that the Ruby source is sent to a server side service that compiles the source to opcodes which are then returned and executed by HotRuby in the browser.
+
+One issue with HotRuby, at the moment, becomes obvious after trying to run a few bits of Ruby code, or simply by looking at the list of implemented classes/methods: the library support of HotRuby is minimal (actually, only a handful of methods of crucial classes are implemented). As a matter of fact, it's easy to see the implemented base classes, as their implementation can also be seen at the bottom of the HotRuby.js source file.
+
+This is, however, a problem that might not be that hard to solve anymore - at least when it comes to functionality (performance is a different question). The Rubinius project is hard at work reimplementing a lot of basic Ruby classes in Ruby, even basic Ruby library functionality which is usually implemented in C (for CRuby), Java (JRuby) or C# (IronRuby). The idea to implement as much of a language in the language is often referred to as "Turtles All The Way Down" (after a popular blog post by Avi Bryant, although the expression is older).
+
+Obviously, any parts interfacing with the outside (I/O, Operating System integration) would have to be ported and are specific to the underlying system. Also, unless the underlying runtime can optimize it, some base classes might need to be adapted to the underlying platform to allow for acceptable performance.
+
+The Turtles All the Way Down approach has been used by many systems for a long time, one example being the Squeak Smalltalk, which is very portable. This was again demonstrated, when Dan Ingalls managed to get a Squeak image to run on the JVM (includes a link to a Java Web Start-able version).
+
+Ruby libraries in pure Ruby also open the possibility of a standalone HotRuby in the future. One of the missing pieces is a full Ruby parser - but this is being created by Ryan Davis' in the form of 'ruby_parser', a project to write a Ruby parser in Ruby. Together with a Ruby based compiler that takes a Ruby AST (ruby_parser produces them in ParseTree notation) and returns Ruby 1.9 opcodes, HotRuby could then work stand alone and run Ruby sources directly. (Both parser and compiler would have to be pre-compiled into opcodes, which HotRuby would then load - as soon as this happens the first time, it would be self hosting).
+
+While HotRuby might not be able to run Rails yet - it allows to script objects accessible to JavaScript runtimes, such the ones found in browsers or Flash. It also makes it easy (it's only a 40 KB file) to take a look at the internals of a VM capable of running Ruby 1.9 opcodes.
+
+Rate this Article
+
+Adoption
+
+Style
+
+Author Contacted

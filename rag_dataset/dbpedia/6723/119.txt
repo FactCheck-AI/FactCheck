@@ -1,0 +1,49 @@
+Suspected Chinese cyber criminals have zeroed in on unpatched SonicWall gateways and are infecting the devices with credential-stealing malware that persists through firmware upgrades, according to Mandiant.
+
+The spyware targets the SonicWall Secure Mobile Access (SMA) 100 Series – a gateway device that provides VPN access to remote users.
+
+The networking vendor confirmed the malware campaign in a statement emailed to The Register:
+
+"Working in partnership with Mandiant, the SonicWall Product Security and Incident Response Team (PSIRT) confirmed a persistent threat actor campaign leveraging malware against unpatched SonicWall Secure Mobile Access (SMA) Series 100 appliances. While not tied to a new or specific vulnerability, SonicWall urges organizations to be proactive in updating to the most recent SMA 100 series firmware (10.2.1.7 or later), which includes additional hardening and security controls."
+
+The campaign targeted "an extremely limited number of unpatched SMA 100 series appliances from the 2021 timeframe," the spokesperson added.
+
+Last week's firmware update – which the spokesperson described as a "maintenance release" – included additional hardening such as File Integrity Monitoring (FIM) and anomalous process identification, as well as OpenSSL library updates.
+
+It's unclear whether this malware campaign is related to earlier ransomware infections, which targeted some of these same devices in 2021. Mandiant also assisted SonicWall to address that threat.
+
+"The joint investigation revealed that the devices had known exploited vulnerabilities going back as far as 2019 and were not remediated until 2021," the SonicWall spokesperson confirmed.
+
+"SonicWall cannot conclusively attribute the initial attack vector, nor can we correlate threat activity with high confidence to ransomware attacks in 2021," the spokesperson added. "The investigation, however, revealed that the unpatched devices were vulnerable to known exploited vulnerabilities, including CVE-2021-20016, CVE-2021-20028, CVE-2019-7483 and CVE-2019-7481."
+
+According to Mandiant's assessment, the newly identified campaign uses malware that consists of bash scripts and one Executable and Linkable Form binary that the Google-owned threat hunters identified as a TinyShell backdoor.
+
+"The overall behavior of the suite of malicious bash scripts shows a detailed understanding of the appliance and is well tailored to the system to provide stability and persistence," Mandiant's Daniel Lee, Stephen Eckels and Ben Read observed in a blog post.
+
+Tell me it's China without telling me it's China
+
+Mandiant tracks the threat actor as UNC4540 – UNC in Mandiant's threat-actor naming nomenclature stands for uncategorized group, and opposed to nation-state attackers (APT) and financially-motivated threat groups (FIN).
+
+However, the fact that the malware can successfully compromise managed appliances suggests attackers with "a fair amount of resource and effort," according to Lee, Eckels and Read.
+
+Additionally, this campaign is consistent with Chinese threat actors' pattern of targeting network devices for zero-day exploits, which suggests that a Beijing-backed crew is behind this latest effort, the trio added.
+
+The malware uses a bash script named firewalld that executes a SQL command to steal credentials and execute other components, including the TinyShell backdoor. "The primary purpose of the malware appears to be to steal hashed credentials from all logged in users," the Mandiant team said.
+
+The miscreants also "put significant effort" into ensuring stability and persistence for the malware, the threat hunters added. This includes writing redundant scripts to ensure the malware is deployed, even if the device were to crash.
+
+Plus, a bash script checks every ten seconds for a new firmware upgrade. When it sees one, it copies the file for backup, adds the malware and puts the package back in place, which shows "considerable effort on the part of the attacker to understand the appliance update cycle, then develop and test a method for persistence," the trio wrote.
+
+SonicWall suggests people unplug their end-of-life gateways under 'active attack' by ransomware crims
+
+Pro-China crew ramps up disinfo ahead of US midterms. Not that anyone's falling for it
+
+Pushers of insecure software in Biden's crosshairs
+
+Warning on SolarWinds-like supply-chain attacks: 'They're just getting bigger'
+
+According to Mandiant Consulting CTO Charles Carmakal, the main takeaway from this campaign is that "cyberespionage groups continue to focus on exploiting systems that do not support EDR [endpoint detection and response] solutions."
+
+"They realize many organizations are dependent on EDR solutions to detect and defend against attacks," Carmakal told The Register. "We've seen China and Russia-based threat actors exploit zero-day vulnerabilities and deploy malware across a wide range of technology and security solutions such VPN appliances, hypervisors, load balancers, firewalls, email security products, IOT devices, SAN arrays, etc."
+
+Carmakal also commended SonicWall for the firmware update, which "will better enable organizations to detect compromised devices," and said he hopes "more vendors push out similar code to their devices." ®

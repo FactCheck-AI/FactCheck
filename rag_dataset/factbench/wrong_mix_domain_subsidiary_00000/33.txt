@@ -1,0 +1,371 @@
+The process documented in this article can be used in any Lync 2010 or 2013 environment to setup a centralized provisioning server for managing Polycom SIP phones running Polycom Unified Communications Software (UCS).
+
+This article is not intended to replace or accompany any official Polycom documentation. Instead this process alone can be used to deploy a basic provisioning server in a lab or testing environment when evaluating Polycom SIP phones, and much of the guidance contained reflects a non-production scenario. Also note that some of this guidance differs from instructions found in the official Polycom provisioning guides, most importantly the guidance to use a large number of parameters which no longer need to be defined for Lync interoperability as of the introduction of the Lync Base Profile.
+
+Background
+
+Traditionally Lync Optimized devices (e.g. CX600) receive all of their provisioning information and software update packages directly from a Lync server. Although Qualified devices (e.g. VVX400) do also receive a lot of information in-band from the Lync Server, UCS devices contain a variety of configurable parameters available outside of what the Lync Server can provide itself. When looking to provision any of these out-of-band features, like Paging, or when dealing with device firmware updates then it is required to deploy a centralized server to provide this today.
+
+The provisioning server is not a specific product or solution, it is basically just a centrally-accessible file store which contains certain files that the devices are programmed to look for. The phones will look for specific firmware files to perform an upgrade/downgrade and will download and upload configuration data in XML files.
+
+Polycom UCS devices can utilize a variety of different file server platforms to store and manage both firmware packages and configuration files, no additional third-party software is required. In this article a basic FTP server will be used but the phones also support the TFTP, HTTP, and HTTPS protocols.
+
+When a factory-reset device is first powered on it will check for specific DHCP Options that may be defined on the network which would provide a path to the provisioning server. If this information is found then it will connect to that file service, authenticate with a pre-configured username and password, and then look for one of two specific filenames stored in the root directory. First the device will look for a configuration filename matching its MAC address (e.g. 0004f28062d6.cfg) but if that does not exist then it will revert to loading the default master configuration file provided in the UCS distributable package (e.g. 000000000000.cfg). Regardless of which file is downloaded it will contain a defined parameter which tells the device where to locate firmware packages and what (if any) additional configuration files to look for. By default the firmware packages are stored at the root of the directory and each individual phone model is programmed to look for a specific filename unique to each model (e.g. 3111-46157-001.sip.ld). Additionally the device can also upload files to the directory to store device-side settings (e.g. ringtone) as well as diagnostic and call logs.
+
+Configure Provisioning Server
+
+Specifically Microsoft FTP services in Internet Information Server are used in this example, running on Windows Server 2012 on a dedicated host. Any standard FTP service (e.g. FileZilla, WarFTP) can be used. It is not recommended to use an existing Lync Server also as the FTP server, thus the guidance that a separate Windows host be utilized.
+
+Authentication
+
+Before setting up the file server it is important to understand that the UCS firmware is pre-programmed with a default username and password which is used during authentication to the provisioning server. The default credentials use the same string for both the username and password and are stored in as case-sensitive so if the FTP server uses case-sensitive username and/or password make sure the uppercase and lowercase characters are used correctly. (Traditionally username are not case-sensitive while passwords are, but this may depend on the actual file server product used.)
+
+Username PlcmSpIp Password PlcmSpIp
+
+It can be difficult to discern if some of these characters are an i, L, or a 1. The leading ‘p’ is uppercase, followed by a lowercase ‘L’ ‘c’ ‘m’, then an uppercase ‘s’, lowercase ‘p’, uppercase ‘i’, lowercase ‘p’. The name comes from the string ‘Polycom Soundpoint Ip’.
+
+If using a custom set of user credentials is desired then they can be changed manually on each phone prior to provisioning by accessing the Settings > Advanced > Administration Settings > Network Configuration > Provisioning Server menu.
+
+For this lab environment the Windows Active Directory password policy was customized to disable strong password complexity requirements as the default password does not meet the complexity of the default Windows AD password policy. In a production environment it would not be advisable to alter the password complexity policy simply for this reason, but a different file server platform which is not AD-integrated could be used which may not have this same limitation.
+
+Create a new Active Directory user account (or a local user account in the event that the FTP Server is running on a standalone Windows server).
+
+Name Resolution
+
+To facilitate simple access to the FTP site select a dedicated hostname and configure it for name resolution.
+
+Select a fully qualified domain name for the FTP server (e.g. ucs.schertz.name) and then create a new DNS Alias (CNAME) record in the proper zone pointing the physical server Host (A) record where the FTP service is installed and listening.
+
+FTP Service
+
+Using the directions provided in TechNet to Build an FTP Site on IIS add the FTP Server role, as well as any prerequisite IIS Web Service roles in the event that IIS is not currently installed on the desired server.
+
+Launch Internet Information Services (IIS) Manager (inetmgr.exe) and expand the server object. Right-click Sites and select Add FTP Site.
+
+Enter a name for the new FTP site (e.g. ucs) and then select or create a local path to place the root directory of the site (e.g. c:\inetpub\ucs).
+
+On the Bindings and SSL Settings page disable secure sockets layer by selecting No SSL.
+
+On the Authentication and Information page enable Basic authentication and then select Specified Users in the ‘Allow access to’ drop-down list. Enter the desired user name (e.g. PlcmSpIp) in the field below, and enable both Read and Write permissions.
+
+Because the devices need to be able to upload configuration data as well as download it then both Read and Write permissions are required.
+
+FTP Directory
+
+Now that the FTP service has been prepared the root directory needs to be populated. This is a simple process given that every UCS package released by Polycom always includes the entire set of base files needed, so any version of UCS can be used to first populate the directory.
+
+The desired software package can be downloaded from the Polycom Support site, either directly from the support page for a specific phone model, or from the Software Release Matrix page. Depending on the number of different device models which need to be supported multiple packages may be required, but the first package selected is sufficient to instantiate the directory.
+
+As this article is using a Polycom VVX 400 for the examples then the current desired firmware version is 4.1.4.
+
+From the Polycom support site download the Polycom UC Software 4.1.4 release sig split.zip package. (It is recommended to always download the ‘split’ package, the ‘combined’ packages can be ignored).
+
+Expand the contents of the software package to the root of the defined FTP directory (e.g. c:\inetpub\ucs).
+
+The package contains a number of directories and files but most of these can be ignored when dealing with Lync integration, including the directories which store sample configuration and localization files as well as the image and audio files. The important files are highlighted in the table below.
+
+Name Description 0000000000.cfg Default Master SIP Configuration File *.sip.ld Firmware files for each unique phone model sip.ver Text file which stores the full version number for this package
+
+To insure that the phones have the appropriate rights to the directory add the desired user account (e.g. PlcmSpIp) to the root folder’s Access Control List and grant it Modify permissions.
+
+An additional recommendation is to create dedicated directories to store call and diagnostic logs for each phone. By default they would all be written to the root directory which in larger deployments can lead to a lot of files being stored there, making it more difficult to weed through and manage files configuration files.
+
+Create new folders named calls and logs in the root directory.
+
+Edit the master configuration file (0000000000.cfg) using Notepad or an XML Text Editor of choice and enter the names of the new directories for the LOG_FILE_DIRECTORY and CALL_LISTS_DIRECTORY parameters.
+
+Notice that the APP_FILE_PATH parameter is set to sip.ld by default. This tells the device to look in the root directory for the firmware files. If desired the firmware files can also be moved into a new subdirectory (e.g. \firmware) and then the proper parameter value would be “firmware/sip.ld”. For the purposes of this article, and for most deployments, the firmware files can be left in the default location.
+
+DHCP Configuration
+
+For proper operation of the phones it is required to provide information about the location of critical network resources automatically to the phones via DHCP. In this example Microsoft DHCP Services are currently configured to hand out IP addresses to any network hosts. These options can be defined at either the server or scope level.
+
+Provisioning Server Location
+
+When receiving a dynamic IP address on the network the phone will by default look for the location of a provisioning server by first checking for the existence of DHCP Option 160. In the event that option 160 is not configured then it will fall back to looking for Option 66.
+
+The preferred option 160 is specific to Polycom UCS devices while the secondary option 66 value is commonly shared with other SIP phones as well. Either option can be used with the UCS phones, thus the configuration of the existing network will typically drive the choice of which to utilize. In a lab or green-field environment where no other hosts are leveraging option 66 then this can be used and is commonly pre-defined as an available option on most DHCP servers. If some other devices are already leveraging option 66 then it may be best to utilize option 160 for these phones.
+
+If planning to use option 160 with a DHCP server that does not already have it defined, like Microsoft Windows DHCP, then the option will first need to be created.
+
+Using DHCP Manager highlight the network type object (e.g. IPv4) and then select the Set Predefined Options action.
+
+Click Add to create a new option and then enter a descriptive name (e.g. UCS Boot Server Name). Change the Data Type to String and then enter 160 as the Code value. If desired add a Description and then save the new option.
+
+Configure the Server Options under the same network scope and then select option 160 UCS Boot Server Name. For the data value use the format of <service type>://<fqdn> (e.g. ftp://ucs.schertz.name).
+
+In the event that option 66 is to be used instead of option 160 then it can be defined in a Microsoft DHCP server by simply configuring the pre-defined option.
+
+Using DHCP Manager configure the Server Options under an existing IPv4 scope and then enable option 066 Boot Server Host Name. For the data value use the format of <service type>://<fqdn> (e.g. ftp://ucs.schertz.name).
+
+Time Server Location
+
+Providing the location of a time server on the network is critical to operation of the phones, so if DHCP Option 42 is not already defined then it should be added to the same scope.
+
+In the Server Options for the same scope enable 042 NTP Servers and then enter the IP address of at least one host which provides network time services (e.g. a Windows Active Directory Domain Controller).
+
+Time Offset
+
+Although the time server location will provide the accurate time required to perform authentication and registration processes the device will display the time in GMT by default. To show the correct local time on the phone’s display the standard time offset DHCP parameter can be used.
+
+In the Server Options for the same scope enable 002 Time Offset and then enter the desired offset in seconds as a hexadecimal value (e.g. 0xffffaba0).
+
+To calculate the correct hexadecimal value the Windows Calculator can be used in Programmer mode. The following example is used for the Central Time Zone which is GMT -6.
+
+Enable Programmer Mode (Alt+3) and select Dec and Qword. Multiply the number of seconds in one hour (3600) by the desired offset value (make sure to include the negative sign if the time zone is earlier than GMT).
+
+3600 x -6 = -21600
+
+Select Hex to convert the value to hexadecimal.
+
+FFFF FFFF FFFF ABA0
+
+Select Dword to convert the string from 64 bits to 32 bits.
+
+FFFF ABA0
+
+Insert the 0x prefix and remove the space for the final value which should be used as the data in Microsoft DHCP.
+
+0xFFFFABA0
+
+Microsoft Vendor Class ID
+
+For the purposes of this article it is assumed that the network is not pre-configured to support the Vendor Class DHCP Option 43 or Option 120 as documented in the article Configuring Lync Server for Phone Edition Devices. This option is leveraged by both UCS devices and Lync Phone Edition devices to download an internal, private certification authority (CA) certificate to establish TLS communications with the Lync Server as well as for supporting PIN Authentication. When option 43 is not defined on the network then the CA certificate must be provided by the provisioning server to support standard NTLM authentication with user credentials, but the Lync Server PIN Authentication feature would not be available.
+
+At this point the example network configuration used for this article is simply using options 2, 42, and 160 as shown below.
+
+Validate Configuration
+
+Before moving on with additional customization make sure that the FTP server is discoverable, available and the desired user credentials are working correctly.
+
+Using the Windows Command Prompt use the ftp command to connect to the site using the configured FQDN, username, and password.
+
+The next step is to connect the phone to the network to make sure that the provisioning server is available before customizing any specific behavior on the phones. It is recommended to perform a full factory reset of the device first so that the process in this article can be followed without any problems created by any unknown settings. To reset the phone to factory defaults follow the Factory Reset process at the end of this article. If the phone’s current firmware does not match the version currently stored on the FTP server then the phone will automatically download and install that version after the first time it connects.
+
+Connect the phone to the network and power it on. Once the startup process completes (and the firmware update process if triggered) and the main menu appears navigate to the Settings > Status > Platform > Configuration menu to check the provisioning server status.
+
+If the configuration was successful then the phone should display the correct Boot Server and BootSrv Type options which were provided via DHCP. Because there are no custom settings yet defined then the Config value is blank. The three default configuration containers (SIP, Web, Local) should display zero parameters configured.
+
+As previously mentioned the phones will not only attempt to pull down settings but also upload any local settings to the provisioning server directory. This allows the phones to backup any device-side settings to the central directory by creating two new files on the directory the first time they connect (if the files do not already exist).
+
+To illustrate this process navigate to the Settings > Basic > Ring Type menu and select a different ring (e.g. #10 Beeble). Within a few seconds the device should save this change up to the provisioning server. Viewing the FTP service logs should show the device connect to the FTP site and upload a single file.
+
+2013-05-10 16:12:16 192.168.1.100 SCHERTZ\PlcmSpIp 192.168.1.30 21 STOR 0004f28062d6-phone.cfg 226 0 0 c87c3435-b5d5-45ed-9d16-b1b291df24fc /0004f28062d6-phone.cfg
+
+2013-05-10 16:12:46 192.168.1.100 SCHERTZ\PlcmSpIp 192.168.1.30 21 QUIT – 221 0 0 c87c3435-b5d5-45ed-9d16-b1b291df24fc –
+
+Open the FTP root directory on the server and look for the newly created phone configuration file starting with the MAC address of the device and the suffix -phone. (e.g. 0004f28062d6-phone.cfg).
+
+Open the file in an XML or Text viewer to view the newly defined configuration parameter in the OVERRIDES section.
+
+<?xml version=”1.0″ encoding=”UTF-8″ standalone=”yes”?>
+
+<!– Application SIP PrairieDog 4.1.4.0296 29-Nov-12 02:40 –>
+
+<!– Created 10-05-2013 11:12 –>
+
+<PHONE_CONFIG>
+
+<OVERRIDES np.normal.ringing.calls.tonePattern=”ringer10“/>
+
+</PHONE_CONFIG>
+
+During the initial connection to the FTP server the phone should have also uploaded separate application and boot log files into the defined log directory. (Or at the root of the FTP directory in the event that the CALL_LISTS_DIRECTORY parameter was left undefined). These logs can be used to troubleshoot registration problems or other issues if needed. Be aware that if a separate log directory is defined the phone may initially create these two logs files in the root directory during the first connection, but after pulling down the custom setting will then create new log files in the specified directory. It is safe to delete any orphaned log files in the root directories in this case.
+
+Configuring Global Settings
+
+At this point a basic provisioning server has been established, but nothing has yet been done to facilitate Lync interoperability with the SIP phones. As covered in a previous article the UCS 4.1 software versions provide a Base Profile configuration which can be used to put the device into Lync mode. While this can be set manually on each phone, it is also possible to set this centrally.
+
+The example configuration in this article will show how to centrally provision two phones so that once each is powered on from a factory-reset state they will automatically enable Lync mode, and populate some or all of the user credentials. The Polycom UC Administrator’s Guide covers many of the configurable parameters and can be used as a detailed reference for additional customization.
+
+The general approach is to use a combination of files to provide various settings to the phones in an efficient manner. Any parameters which would be configured on all devices should be defined in a single, shared configuration file (separately from the master configuration file) while device-specific settings would be included in a separate file for each phone. This article will start with using just a single global configuration file and then move on to adding a per-device file to illustrate how either one or both scenarios can be leveraged.
+
+For editing the configuration files it is recommended to use an XML editor as it is easy to make simple formatting mistakes when using a basic text editor which in turn could prevent the phones from importing the data correctly. XML Notepad 2007 from Microsoft is used throughout the examples in this article. (If installing XML Notepad 2007 on Windows Server 2012 make sure to install the .NET Framework 3.5 feature first which includes the prerequisite 2.0 components.)
+
+Master Configuration File
+
+Actual device settings are not defined in the master configuration file, instead this file can be configured to point the phone to additional configuration files which will store the desired settings. The names of these files need to be manually defined in the CONFIG_FILES parameter which supports one or more entries in a comma-separated list.
+
+In the FTP root directory edit the Master Configuration File (000000000000.cfg) and add the device-specific file mask entry following value to the CONFIG_FILE parameter and save the file.
+
+CONFIG_FILES=”shared.cfg”
+
+Shared Configuration File
+
+Now that a shared configuration file has been defined (shared.cfg) the file needs to be created and populated with the desired parameters. Basically any parameter where every phone in the environment needs to receive the same value is a candidate for including in this file. In this example file three things will be addressed that will impact every Polycom UCS phone that is placed on the network.
+
+Most importantly the Base Profile will be set to Lync mode using the following set of parameters. Some of the official Polycom provisioning guides do not cover this base profile approach and instead recommend to include a group of about 30 different parameters for Lync interoperability. All of those settings are pre-programmed into the Lync Base Profile which was introduced in the 4.1.0 release, so there is no longer any need to define all those other settings.
+
+device.set=”1″
+
+device.baseProfile.set=”1″
+
+device.baseProfile=”Lync”
+
+Secondly the root CA certificate is provided to the phone so that it will trust the certificate issued to the Lync Server to allow for secure TLS communications. In the event that the DHCP server is already configured correctly with DHCP Options 43 and 120 then this parameter can be omitted from the configuration file. There is no need to pass a private CA certificate in this manner as UCS will utilize DHCP 43 to locate the Lync Certificate Provisioning service and automatically download the certificate.
+
+sec.TLS.customCaCert.1=”—–BEGIN CERTIFICATE—– MIIDazCCAlOgAwIBAgIQUuNtVsIFbI5GvIJV0CDH3TANBgkqhkiG9w0BAQsFADBI MRQwEgYKC2d5H6ghLGQBGRYEbmFtZTEXMBUGCgmSJomT8ixkARkWB3NjaGVydHox
+
+<<<snipped>>>
+
+w6/GfOTi9Ce/qI7u20OpLZpPmp8HPiZhDPe5WkAe+BdhvmYTrOq6mfq24mfgSysS DPH/HAGcv81DVkOwsNMQrO+lggZAfl7t0BuobPdhvA4ELfF+XIejjoJ2XHueGxIR dfgh8erdcgh28or83/2Bv —–END CERTIFICATE—– “
+
+And finally when DHCP Options 43 and 120 are not defined on the network then PIN Authentication is not available. By default the phone displays the PIN Authentication sign-in screen after the Lync base profile is selected, thus it would be ideal to disable the feature on the phone when not available to prevent a poor user experience. So if DCHP Options 43 and 120 are configured then this setting can also be omitted to utilize PIN Authentication. (Currently only the VVX 300 through 600 models support PIN Auth; any of the SoundPoint or SoundStation devices will ignore this parameter.)
+
+reg.1.auth.usePinCredentials=”0″
+
+To create the customized shared file simply copy the text in the following box and then paste into a new text file.
+
+<?xml version=”1.0″ encoding=”utf-8″ standalone=”yes”?>
+
+<!–Sample Polycom Shared configuration file for UCS–>
+
+<LYNC>
+
+<device device.set=”1” device.baseProfile.set=”1” device.baseProfile=”Lync“/>
+
+<registration reg.1.auth.usePinCredentials=”0” sec.TLS.customCaCert.1=”—PASTE CERTIFICATE HERE—“/>
+
+</LYNC>
+
+Save the text file into the root of the FTP directory (e.g. “c:\inetpub\ucs\shared.cfg”)
+
+To locate the certificate trusted by the environment’s Lync Server follow the directions in the first section entitled Retrieving the CA Certificate Hash in this previous article. Disregard the remainder of that article as it is outdated and applies to older UCS firmware versions (4.0) which pre-date the Lync Base Profile.
+
+Open the certificate file which was exported and saved in the other article and copy the entire contents of the file to the clipboard, including the BEGIN and END strings.
+
+Then open the shared.cfg file in XML Notepad and then paste the contents of the clipboard directly into the sec.TLS.customCert.1 parameter and save the changes to the file.
+
+The completed configuration file should look similar to the following example.
+
+Note that the names used in the XML tags (e.g. LYNC, device, registration) have no special meaning and are only provided as a way to organize groups of parameters for easy reading. Any name could be used, or if desired all parameters could be defined under the primary Lync tag as the file hierarchy is also not important. The phone will simply read in all defined parameters in the file as long as at least one tag is defined. The device configuration file example in the next section will use this approach to illustrate that either format is acceptable.
+
+Test Registration
+
+At this point the phones have enough information to register to Lync Server and it would be possible to simply enter the SIP address and user credentials for a Lync User directly on the phone itself. Now is a good time to validate that this is functional in the environment before moving on to provisioning any additional account registration information.
+
+Reboot the phone by either disconnecting the power temporarily or by selecting the Settings > Advanced > Reboot Phone menu option.
+
+After the device completes rebooting it should have picked up the new configuration options in the shared file which will trigger Lync mode then default to the displaying the Sign In menu.
+
+Using the phone’s keypad or on-screen keyboard enter the SIP Address, Active Directory Domain name, User name, and Password for the desired account. The Domain field can be populated with either the NetBIOS Domain Name (e.g. SCHERTZ) or the DNS Domain Name (e.g. schertz.name). In the User field if the user account’s sAMAccountName and Username are not identical in AD then make sure to use the value that matches the domain name format selected. (For additional details it is suggested to read through the Understanding Active Directory Naming Formats article.)
+
+Once the credentials are entered select the More button and then select the Sign In button. After a few seconds the phone should report a successful registration to Lync Server.
+
+Depending on the configuration of the Lync user’s Line URI field the Line 1 button will either show the extension, full telephone number, or Display Name of the user account.
+
+To review the current configuration status on the phone navigate to the Settings > Status > Platform > Configuration menu to check the provisioning server status.
+
+The Config value should show the name of the shared configuration file as well as the number of parameters imported from each source. The 5 parameters configured in the shared.cfg file are reflected in this screenshot.
+
+Configuring Per-Device Settings
+
+Moving on with the automatic provisioning process for the phones there are two options available for providing credentials to the phone instead of having to enter them manually into the device itself. One approach can be used to send the full set of credentials to the device, including the password, for a zero-touch administration scenario by defining per-line registration parameters. In this scenario the credentials cannot be viewed or managed directly on the device so this is typically intended for devices used in common areas or meetings rooms where the associated AD account can be configured with either no password expiry or the central configuration files can be updated with new password by an administrator.
+
+The alternative approach is to pre-populate all but the password field in the phone’s actual Login Credential store. It is not possible to send the password using this approach but the rest of the credentials can be pre-configured. This would provide a near-complete provisioning process in which the end-user is responsible for entering only their password into the phone to complete the registration process, saving them from having to enter the rest of the information on the phone themselves.
+
+In this section two unique device configuration files will be created for two separate phones. The VVX400 that has been used throughout this article will be configured using the scenario where the Login Credentials are pre-populated, except for the password. This would best match an information worker scenario where a user is assigned their own phone. Additionally a SoundPoint IP 331 will be used to illustrate a completely automated registration process which better suits shared or common area scenarios where the user credentials are centrally managed.
+
+Master Configuration File
+
+Just as before the new device files will need to be defined in the master configuration file so that the phone knows to download it. The CONFIG_FILES parameter supports multiple entries in a comma-separated list and special masks are understood by the software so that devices can locate files only intended that that specific device without having to specify the actual device file name for every phone which would simply not scale well beyond a handful of devices.
+
+In the FTP root directory edit the Master Configuration File (000000000000.cfg) and add the device-specific file mask entry of [MACADDRESS]-lync.cfg value to the existing CONFIG_FILE parameter by using a comma separator.
+
+CONFIG_FILES=”shared.cfg,[MACADDRESS]-lync.cfg”
+
+The string [MACADDRESS] is used in the master configuration file to tell a device to look for a file matching the defined pattern with its MAC address in the name. For example the entry ‘[MACADDRESS]-foo.cfg’ would tell a device with the MAC address of 01-02-03-aa-bb-cc to look specifically for a file named ‘010203aabbcc-foo.cfg’. Although most any name can be chosen the suffixes of -phone and -web are reserved for special files that the phone manages itself. The examples throughout this article will utilize -lync as the suffix for device-specific configuration files.
+
+A suffix is required as the file cannot simply be named with only the MAC address (e.g. 010203aabbcc.cfg) as that filename is reserved for a device-specific master configuration file. That file would need to basically be a duplicate of the generic 000000000000.cfg file but with unique master configuration data specific to a device.
+
+Device Configuration Scenario 1
+
+The following set of parameters will be used for the VVX400 device file and will prep-populate the user’s SIP Address, user name, and domain name. Notice that although the SIP address is stored in a line registration parameter (reg.1.*) the remaining parameters will pre-populate the device’s Login Credentials store (device.logincred.*).
+
+reg.1.address=”vvx400@mslync.net”
+
+device.logincred.domain.set=”1″
+
+device.logincred.domain=”SCHERTZ”
+
+device.logincred.user.set=”1″
+
+device.logincred.user=”vvx400″
+
+To create the device file simply copy the text in the following box and then paste into a new text file.
+
+<?xml version=”1.0″ encoding=”utf-8″ standalone=”yes”?>
+
+<!–UCS Device Configuration file for Lync–>
+
+<LYNC reg.1.address=”vvx400@mslync.net” device.logincred.domain.set=”1” device.logincred.domain=”SCHERTZ” device.logincred.user.set=”1” device.logincred.user=”vvx400“/>
+
+Save the text file into the root of the FTP directory utilizing the desired device’s MAC address in the name (e.g. “c:\inetpub\ucs\0004f28062d6-lync.cfg”)
+
+Open the new file in XML Notepad and then replace the example SIP address and credentials with valid information for the desired Lync user account.
+
+If using the same phone which was manually registered in the previous step then reset the phone to factory defaults again by following the Factory Reset process at the end of this article. This will remove the current user and configuration and then automatically reapply all the settings defined on the FTP server.
+
+Test Registration Scenario 1
+
+After resetting the phone view the current configuration status on the phone by navigating to the Settings > Status > Platform > Configuration menu.
+
+The Config value will now show the names of both the shared configuration file and the device configuration file for this phone. The number of parameters imported from each file is reported as well.
+
+Return to the Home Screen on the phone and select More then Sign In.
+
+The resulting Sign In menu should show the pre-populated user information. Manually enter the password and then select More > Sign In. A successful registration should be reported just as seen in the earlier attempt.
+
+The obvious benefit of this scenario is that the end-user was only required to enter their password which greatly reduces the time and complexity involved in entering a full set of credentials as well as having to understand exactly what to enter in terms of domain names. In the event that the password changes on the AD user account the phone will remain connected to Lync and still be able to register even after rebooting the phone. This is because after the initial registration with user credentials the phone will be issued a client certificate by the Lync Server and then use TLS-DSK for all subsequent authentication attempts. This works even in the absence of DHCP 43/120 options which is only required for PIN Authentication to be used as the initial registration process.
+
+Device Configuration Scenario 2
+
+The following set of parameters will be used for the SoundPoint IP 331 device file to fully provision the entire set of user credentials to a phone and trigger an automatic registration. Using this approach requires that the previously used Login Credential feature of the phone is disabled and the user credentials are stored in the registration parameters for a specific phone line (reg.1.*).
+
+reg.1.auth.useLoginCredentials=”0″
+
+reg.1.address=”spip331@mslync.net”
+
+reg.1.auth.domain=”SCHERTZ”
+
+reg.1.auth.userId=”spip331″
+
+reg.1.auth.password=”Pass123″
+
+To create the first device file simply copy the text in the following box and then paste into a new text file.
+
+<?xml version=”1.0″ encoding=”utf-8″ standalone=”yes”?>
+
+<!–UCS Device Configuration file for Lync–>
+
+<LYNC reg.1.auth.useLoginCredentials=”0” reg.1.address=”spip331@mslync.net” reg.1.auth.domain=”SCHERTZ” reg.1.auth.userId=”spip331” reg.1.auth.password=”Pass123” />
+
+Save the text file into the root of the FTP directory utilizing the desired device’s MAC address in the name (e.g. “c:\inetpub\ucs\0004f2a6af1b-lync.cfg”)
+
+Open the new file in XML Notepad and then replace the example SIP address and credentials with valid information for the desired Lync user account.
+
+If using the same phone which was manually registered in the previous step then reset the phone to factory defaults again by following the Factory Reset process at the end of this article. This will again remove any existing configuration and then automatically reapply all the settings defined on the FTP server.
+
+Test Registration Scenario 2
+
+Because the full set of credentials have been supplied in the line registration parameters then the phone should have automatically registered successfully after resetting.
+
+The main screen should show the Lync user’s phone number indicating that the registration is active. To validate this navigate to the Status > Lines > Line Information menu.
+
+The latest configuration status on the phone can be confirmed by navigating to the Settings > Status > Platform > Configuration menu to verify the provisioning server status.
+
+The SoundPoint IP models do not currently support PIN Authentication so the parameter to disable that feature will not be recognized, resulting in 1 error reported in the shared configuration file.
+
+Managing Firmware Updates
+
+When new firmware versions are published for different Polycom SIP phones the associated package can be downloaded and easily added to the provisioning server’s root directory. Make sure never to simply copy over all the files though as this might overwrite a customized master configuration file and break the integration; only use the firmware files provided in the package.
+
+Open the software release package and extract only the .sip.ld files copying them into the FTP root directory (or wherever the firmware files are stored on the provisioning server if a custom directory was configured).
+
+As long as the firmware file stored on the server is a different version, newer or older, than what the device currently has installed then it will download and update the firmware automatically at the next reboot.
+
+The following table can be used as a reference for the latest recommended versions of each model phone for Lync interoperability. The uncompressed file size of each firmware image is also provided as a way to help identify which release package an individual file might be from.
+
+Device Firmware File 4.1.0i 4.1.2b 4.1.4 SoundPoint IP 321 2345-12360-001.sip.ld 3,793 KB SoundPoint IP 331 2345-12365-001.sip.ld 3,793 KB SoundPoint IP 335 2345-12375-001.sip.ld 3,793 KB SoundPoint IP 450 2345-12450-001.sip.ld 4,452 KB SoundPoint IP 550 2345-12500-001.sip.ld 3,851 KB SoundPoint IP 560 2345-12560-001.sip.ld 3,851 KB SoundPoint IP 650 2345-12600-001.sip.ld 3,851 KB SoundStation IP 5000 3111-30900-001.sip.ld 4,087 KB SoundStation Duo 3111-19000-001.sip.ld 4,846 KB VVX 300 3111-46135-002.sip.ld 50,159 KB VVX 310 3111-46161-001.sip.ld 50,159 KB VVX 400 3111-46157-002.sip.ld 50,159 KB VVX 410 3111-46162-001.sip.ld 50,159 KB VVX 500 3111-44500-001.sip.ld 58,517 KB VVX 600 3111-44600-001.sip.ld 58,517 KB
+
+All of the devices listed above are currently qualified for both Lync 2010 and 2013 environments when running on at least the firmware versions indicated.

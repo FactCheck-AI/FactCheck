@@ -1,0 +1,65 @@
+This article describes how to configure the Interflex Service, to enable integration between Smart ID Identity Manager, Physical Access and the Interflex Service.
+
+Interflex is an Access Control System provided by Interflex Datensysteme GmbH and managed by a GUI and API to interact with Interflex. After integration, all administration of Users, Access Token and Entitlements (besides defining them) should be done in Identity Manager, never in Interflex.
+
+For details on which data can be imported and exported from Interflex, see About import and export to Physical Access.
+
+Prerequisites
+
+The following prerequisites apply:
+
+Physical Access and the Interflex Docker container/service are installed. See Deploy Smart ID.
+
+The Interflex Service is currently using IF-6040 Open API version 12.1.1 to interact with Interflex.
+
+The message queue server must be running.
+
+If MIFARE card technology is used, the PACS MIFARE number must be available as raw data (not encrypted, truncated, or similar).
+
+A working network connection to the connected physical access control systems (PACS) must be in place.
+
+Configure Interflex Service data fields
+
+The Interflex data is configured in the configuration table in the Physical Access database. All configuration is cached when the service starts so any configuration changes will require the service to be restarted in order to take effect.
+
+Configure database
+
+For information about how to connect to a PACS system, see Connect to a PACS system in PACS admin panel.
+
+For information about group: messagingqueue, see Physical Access database - common parameters.
+
+group: general
+
+group: interflex.system
+
+group: interflex.general
+
+These entitlementImportTypes are supported:
+
+group: interflex.export
+
+group: export
+
+Add this configuration to export the fields to Interflex:
+
+The value in the configuration setting is a combination of table_name.value_of_type_column, property_name_of_cardholder. This configuration setting is the mapping between PA3 table field and Interflex cardholder model properties.
+
+Interflex field mapping
+
+The service mainly transfers user data including related access tokens and entitlement assignments. In the service, default fields can be sent and additional fields can be mapped using extra field mappings.
+
+User field mapping
+
+By default, the following data is mapped between the USER table in the Physical Access and the Interflex service:
+
+Access token field mapping
+
+For access token field mapping, the ACCESSTOKEN and ACCESSTOKENIDENTIFIER tables from the Physical Access database are mapped to the Interflex service fields. All details are available under Person Record.
+
+Entitlement assignment field mapping
+
+For entitlement assignment field mapping, the ENTITLEMENTASSIGNMENT table from the Physical Access database is mapped to the Interflex service fields. All details are available under Person Record.
+
+Restart service
+
+Restart the Interflex connector service:

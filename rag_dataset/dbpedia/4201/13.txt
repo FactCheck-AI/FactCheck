@@ -1,0 +1,95 @@
+We often get questions about what it’s like to be a Staff Engineer at Samsara. So, we thought, why not go straight to the source? We conducted a Q&A with two members of our team: Staff Software Engineer Changping Chen and Senior Staff Software Engineer Caglar Iskender.
+
+Read on to learn about Changping and Caglar’s experience at Samsara in their own words.
+
+Can you share a little background about yourself? Tell us about how you came to be a Staff Engineer at Samsara and the kind of work you do currently.
+
+<span style="color:#0384FB; font-weight:bold">Changping:</span> I joined the Backend Infrastructure team at Samsara out of college more than five years ago. I had the opportunity to work on many interesting technical challenges as the company went through a hypergrowth phase. Luckily, I had really smart and patient mentors who taught me all about being a Software Engineer and much more. Two years into my career, one of these challenges created an opportunity to lead a new team to build up our data lake infrastructure. This exposed me to a much larger set of responsibilities, and over time it allowed me to develop the skills needed to operate at the Staff level.
+
+Most recently, I’ve been on the Platform team under the Infrastructure group. We build shared components and services that help our Product Engineering team easily build consistent and integrated products. Examples include frameworks and tooling for building alerts and reports.
+
+<span style="color:#0384FB; font-weight:bold">Caglar:</span> I joined Samsara about eight months ago. I joined Samsara from Amazon, where I was a Principal Engineer in the Alexa Smart Home group. I was one of two Principals—I focused on natural language understanding and a wide range of projects supporting Smart Home engineering teams.
+
+Smart Home as a business domain has a natural affinity and topical overlap with IoT (Internet of Things). Samsara, as a leading provider of connected operations solutions, has the same broad technological space: the scalable and robust ingestion of raw sensor data, along with the engineering capabilities to process this data and turn it into actionable business insights. This problem space is not only a fascinating topic and largely overlaps with my intellectual interests, but also, as applied to physical operations, is somewhat misunderstood and underserved. When the opportunity presented itself, I was very happy to join.
+
+In my current role, I work with several teams working on operational issues, such as reliability, performance, cost, and the like. I am also working with several smaller teams to help them fix deep-rooted problems, be it developing domain-appropriate abstractions/representations, platform-level improvements, or tackling interesting domain-specific issues that come up.
+
+What does your day-to-day look like?
+
+<span style="color:#0384FB; font-weight:bold">Changping:</span> My main responsibility is to set technical directions, uplevel our teams, and ensure project success. So I spend most of my time working with individuals to brainstorm, research, formulate strategies, and do design and code reviews.
+
+On average, I spend half of my time in Zoom meetings and use the rest of the time to respond to Slack and do focus work, such as writing opinions, doing technical research, and reviewing proposals.
+
+A different view is looking at workstreams. I keep a list of priorities for the Platform team and one initiative for the broader Engineering team. We have a few sub-teams covering different product areas. I tend to focus on one or two areas at a time while supporting the rest as needed.
+
+I don’t find much time to write code except to train and demo, typically in pair programming. I believe it’s important for Staff Engineers to stay up-to-date with a certain level of implementation details, so I prioritize time for code reviews to educate myself.
+
+<span style="color:#0384FB; font-weight:bold">Caglar:</span> It is a combination of meeting and focus time. Exact proportions change week over week, but a good approximation is that it is a 50/50 split.
+
+My meetings come in three forms:
+
+A combination of planning/administrative/recruiting/wide-scoped operational and business reviews.
+
+Targeted technical meetings where we deep dive into the specifics of a problem with a group, usually as a design review but also as technical deep dives and working group meetings on a particular topic.
+
+1:1 meetings with management, senior technical ICs, and key contributors on projects that I happen to work on at the time.
+
+My time is approximately evenly distributed between these three meeting forms.
+
+Focus time is split between analysis/reading (both internal and external resources), design, and coding. The exact proportions of each activity are contextual but lean more heavily towards review and design-related activities.
+
+Tell us about a hard technical problem you’ve been working on. How have you approached the work? What are the main challenges?
+
+<span style="color:#0384FB; font-weight:bold">Changping:</span> A core feature that our customers depend on is our reporting capability. This helps them make sense of their vast amount of IoT and operational data. Our reporting framework as it stands today is a collection of components. It provides a lot of leverage but also comes with undesirable trade-offs. One of the main ones is that our current reporting features are isolated by product and provide an inconsistent experience.
+
+Customers want powerful reporting and analytics capabilities that give them visibility into their entire operations across our platform, including multiple product lines. And as Samsara has become more mature, we want to set ourselves up for the long term, which means minimizing redundant work across products and revisiting leaky abstractions that will eventually creep into products.
+
+Therefore, we started an initiative to identify our technical direction going forward. As this will be a multiyear effort at rethinking our current product and architecture, I partnered with the Reports team for six months to develop a long-term roadmap.
+
+The challenges: There are two main challenges. The first is to unify our products to some degree, and find the right common feature set. Doing too much can stifle our ability to deliver unique features, and doing too little may not sufficiently address our product inconsistencies and frictions. We need to find the right balance, which will also evolve in the years ahead.
+
+The second challenge is to define a new shared product experience that gracefully handles scaling limitations. Our customers love our modern, live-updating dashboard, but we’ve learned over time that for our largest customers with a lot of data, it tends to timeout, feel sluggish, or otherwise show too much or too little information. We want to maintain a dynamic experience for customers when we can, and let it gracefully degrade to a more static and prepared view when necessary.
+
+How we approached it: To kickstart the project, our PM and the Platform team did probably a dozen interviews together with Product Engineering teams. We made spreadsheets to categorize existing reports and captured their requirements.
+
+We also documented shortfalls in existing architecture and thought hard about what users and our Product Engineering teams may demand from the architecture in the future. Working backward from that, we debated and narrowed down the requirements to a set of first-class, widely applicable platform features, and designed escape hatches for any inevitable customizations that individual teams may wish to build on top.
+
+For the scaling challenge, recognizing that our system must work for any scale of data that our future customers may require, we started rearchitecting our system to be asynchronous by default, and opportunistically synchronous and live-updating when possible. This allows us to provide a strong reliability guarantee in the most demanding scenario, but still offer a delightful experience in most cases.
+
+With the target feature set and architecture in mind, we worked with our stakeholders in multiple rounds of iterations to sequence our execution plan that delivers values incrementally. With dependencies identified, we can respond to any new signals and rearrange our roadmap accordingly.
+
+<span style="color:#0384FB; font-weight:bold">Caglar:</span> Samsara is the pioneer of the Connected Operations Cloud. At the center of most things Samsara does, we have a highly distributed system with many components and agents contributing to what amounts to a single state. These agents are required to operate independently, sometimes without a reliable network connection. Keeping state available and consistent in such conditions is challenging, and in certain cases impossible. I recently have been working with our teams to improve the handling of internal state under likely failure modes.
+
+This has been a long-known issue. We have an elaborate prioritization process where we take into consideration customer-reported issues, development experience, ongoing costs (including the cost of maintenance), and business requirements. Putting all these together, we decided that we should take the time to fix it now.
+
+The challenges: Correctness in distributed systems is notoriously difficult to achieve even in ideal conditions, such as reliable computing, reliable networking, etc. In this particular problem space, we operate under what could easily be called not-so-ideal conditions for a distributed system, such as extended periods of disconnectivity where the overall system needs to remain operational.
+
+The particular case is complicated because the business domain has a wide range of requirements that are difficult to implement in a distributed system. The requirements are not clearly defined, and create many unique situations that require extensive discussion with multiple stakeholders to determine the correct course of action. In some instances, it may not be possible to achieve the ideal behavior and an alternative solution must be designed that aligns with the requirements. As is typical for all projects at Samsara, this one also requires a solution that is both cost-effective and easy to operate.
+
+How we approached it: It was clear that the solution had to be simple, yet powerful, to accommodate most use cases. The team and I spent many hours discussing the problem in depth. We had several natural alternatives, and systematically subjected our requirements and use cases to them.
+
+In this effort, there were a fairly large number of potential directions and corresponding trade-offs. One that is most interesting to me has been whether to perform computational heavy lifting on the read-path (i.e., when the customer uses the feature) or on the write-path (i.e., when we put together an intermediate representation in preparation for the customer use). This choice exposes interesting trade-offs concerning cost, performance, customer experience, flexibility, development cost, and many other factors.
+
+In your opinion, in what ways is the Engineering organization at Samsara still growing and learning?
+
+<span style="color:#0384FB; font-weight:bold">Changping:</span> I think this is probably similar to what similarly sized companies experience as well. We are learning to operate with a larger team, and at a higher standard.
+
+For example, the Platform team only recently hired our first Technical Program Manager (TPM) to help us drive horizontal initiatives and streamline team processes. We are still learning the role and how to work together effectively.
+
+I believe many of the scaling problems we see today are solved problems. The challenge here is introducing new structures without significantly disrupting or slowing down the organization. It takes time to fine-tune a living machinery to run effectively.
+
+<span style="color:#0384FB; font-weight:bold">Caglar:</span> Samsara has proven itself to be exceptional in finding close-to-ideal engineering solutions given the constraints (product fit, time to market, resources, operations, etc.) in all stages of a company’s development.
+
+That said, this is a young company that is very much in its growth phase. When I take a step back, I observe that we are learning to communicate, decide, and operate independently—yet in the same strategic direction. We used to rely on key individuals to provide guidance, and we are learning that this may not necessarily scale as we are growing as a company.
+
+Another related topic is the importance of abstractions, boundaries, and interfaces. This is important both technically and organizationally. This is one of the things that is somewhat invisible when it’s there and works, but when it is missing it becomes a constant source of pain.
+
+How are you still growing in your career, and why is Samsara the right place for you to have the most impact?
+
+<span style="color:#0384FB; font-weight:bold">Changping:</span> At the Staff level, I believe we get to chart our own path, and we have to own our own careers. There are different types of Staff Engineers, so I know there is a wide range of skill sets that can help me succeed in this role. In practice, I like to find role models and learn to do the job from them.
+
+As a software engineer, it’s been a privilege to personally experience the constant technological advancements in software and consumer markets. I believe Samsara is uniquely positioned to make similar impacts in the world of physical operations underpinning our economy.
+
+<span style="color:#0384FB; font-weight:bold">Caglar:</span> In any technical position, learning and personal growth are fundamental. With everything that has been written on this topic, I don’t think I have too much to add. I do a lot of reading, try to form a real, deep understanding of problems and our solutions, and conduct as much analysis as possible.
+
+It is great to be at a company that has both a software and hardware presence, which opens up unique possibilities in firmware and cloud. I am very excited about the scale of data, computational challenges around processing it efficiently and effectively, and ML/CV (computer vision) opportunities. Finally, it’s inspiring to be in a business environment where there is so much untapped potential in terms of new products and services.

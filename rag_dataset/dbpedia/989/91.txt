@@ -1,0 +1,23 @@
+On many older video game and computer systems, sprites were a hardware feature which would overlay small images onto a larger screen. Although the Atari 7800 had a sprite implementation similar to what is described in the Wikipedia article, it was practically unique in that regard. Most sprite systems used a separate group of circuitry for every sprite they could show on a scan line, including a horizontal position trigger and a shift register or other means to send data sequentially. When the raster scan reached the appropriate place on a line, the circuitry would start shifting out the shape data for the sprite.
+
+Some machines (like the Odyssey2) included within the video chip hardware to hold the shapes of all the sprites on the screen. The Atari 2600 only held 8 bits of shape data for each sprite, and required the processor to load the data in real time anywhere it was supposed to change. The most common pattern, however, was for the video chip to clock sprite data from memory automatically. Typically, the hardware would expect the data to be in a particular format or, in some cases, one of two formats.
+
+On some machines, the number of sprites that can display simultaneously on a frame without CPU intervention equals the number of sprite circuits. Other machines have a small number of sprite circuits, but can display more sprites; as soon as a circuit finishes displaying a sprite, it loads the parameters for the next sprite from memory. The NES fits this pattern.
+
+http://en.wikipedia.org/wiki/Sprite_(computer_graphics)
+
+Though the article doesn't seem to talk about your specific question, now that I look through it thoroughly...
+
+Anyway, it can probably be done either way, but if I ever had to implement a sprite handler I'd probably go with the splitting method (though as stated in another answer, the coordinate-reference method would probably be easier to implement for a simple animation).
+
+You can do both, it depends on the developer. If they are stored as a single big image then you calculate the coordinate of the frame you want and transfer it to the screen, or back screen for double buffered screens.
+
+Or you can precut the large image into separate images, this takes a little more memory but shaves a little time off at run time
+
+There can be multiple sprites in a single image. Perhaps in a single row, or in a grid. They may even have been drawn as a grid, and simply cut out in a single block.
+
+2D consoles like the NES and the DS break up images into a two-level hierarchy. At the bottom is a tileset. A tileset is an indexed collection of 8x8 pixel images. A tileset will be loaded when the level loads, typically into a portion of memory dedicated to graphics.
+
+Sprites and levels are then built on top of that. A sprite for something like a 32x64 pixel character is broken into 4x8 tiles. To define a sprite now, you just need 32 values to identify the indexes of the tiles it uses. Very memory efficient. Different animation frames and sprites can now reuse the same tiles saving tons of memory.
+
+Now for the game to draw a sprite, it just looks up the tiles at each index for the sprite and draws them at the right position on the screen. The console hardware itself usually handles this, which is how you can get surprisingly good graphics on very limited hardware (the original NES had a 1.67 MHz CPU and only 4k of RAM).

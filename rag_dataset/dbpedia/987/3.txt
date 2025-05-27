@@ -1,0 +1,49 @@
+I think you're just getting confused about the terminology:
+
+Image
+
+An image is just a collection of pixels. You're using "sprite" to refer to an image on the disk, but that's just an image file. To use your rocket example, you would load the image like this:
+
+rocket_img = pygame.image.load('rocket.png').convert_alpha()
+
+You can then draw this image anywhere you want with:
+
+screen.blit(rocket_img, (x, y))
+
+Sprite
+
+A sprite in Pygame is an object, with a whole collection of built-in functionality. Sprites have an image as one of their properties, but there are a whole lot more. Plus you can put sprites together in groups to make them easier to update or draw. Sprites have collision functionality built into them. You can add your own properties to track location, velocity, animation, etc.
+
+A simple sprite:
+
+class Rocket(pygame.sprite.Sprite): def __init__(self): pygame.sprite.Sprite.__init__(self) self.image = pygame.image.load('rocket.png').convert_alpha() self.rect = self.image.get_rect() def update(self): self.rect.x += 1
+
+This would be a rocket sprite that you would instantiate by using
+
+rocket = Rocket()
+
+You can draw by using
+
+screen.blit(rocket.image, rocket.rect)
+
+and it moves slowly to the right (if you call update() in the game loop:
+
+rocket.update()
+
+I recommend looking at the Sprite docs - there's lots more you can do with groups to make working with lots of sprites very easy.
+
+http://www.pygame.org/docs/ref/sprite.html
+
+In Pygame "images" generally refer only to image files: importing and exporting them to disk. There is the "Surface" object that is a Python object that holds pixels, and can be used to stamp other surfaces, be transformed (scaled/rotated) , yielding other surfaces and so on.
+
+The main screen itself is a Surface subclass - so when you stamp a Surface with data read from a disk image, using the blit method the image shows up on the screen.
+
+Sprites on the other hand are a base class for objects in your game, and they don't even depend of having attached pixels data with them. Some of the Pygame API expect Sprite objects to have a rect attribute, which denotes the position where it will be rendered on a Surface - and an image attribute. If it is to be used, the sprite.image attribute should hold a surface object - usually read from disk (but could have been programatically drawn).
+
+The main call using the sprite image attribute is the Group.draw() method.
+
+But it is possible to create an entirely different game than an interactive one - one that would be the server side for a MMO game, without anything on the screen, for example, using the Sprite and Group classes, without ever making use of the image attribute on sprites.
+
+Worth reading: https://www.pygame.org/docs/ref/sprite.html
+
+Conversely, you can bypass all the helper logic provided by Sprites and Groups and create a game that will only ever have Surface objects - representing images read from disk. Them you are responsible to track were and when to draw them, without using the elpe rmethods in sprite Groups.

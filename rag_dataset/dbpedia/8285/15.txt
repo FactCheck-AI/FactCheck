@@ -1,0 +1,23 @@
+Hi @Mohamed Rafi N , welcome to Microsoft Q&A forum.
+
+As I understand you want to connect to on-premise MySQL Database through C# application.
+
+Firstly before we make code change I would request you to check to connect to the MySQL Server using MySQL workbench or any other tool and notice the connection string parameters mentioned in your code works.
+
+Now, you are using the SQLClient classes to connect to MySQL Database. You need to install MySQL Client. You can add the NuGet Package by going through:
+
+Tools -> NuGet Package Manager -> Manage NuGet Package for Solution and search for 'MySql.Data.MySqlClient' as shown in below screenshot:
+
+After installing it, please add the reference of it at the top using:
+
+using MySql.Data.MySqlClient;
+
+Then we need to make changes to code as mentioned below:
+
+string connectionString; MySqlConnection cnn; connectionString = "server=localhost;database=test;uid=root;pwd=pwwdtest;"; cnn = new MySqlConnection(connectionString); cnn.Open();
+
+Note the format of connection string and try using it same way.
+
+Please let us know if this works with you else we can discuss further on the same.
+
+----------

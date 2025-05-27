@@ -1,0 +1,61 @@
+Storage administrators can proactively use CA Chorus for Storage Management to review the tape situation if you use CA 1, CA TLMS, or IBM's DFSMSrmm tape management systems. This review includes the amount of scratch tapes needed for a daily cycle and the amount of scratch tapes available for it. A scratch tape is a tape that has scratch status, and it is available for applications to write data on. Consider special tape usage patterns for weekly, monthly, or yearly processing. You can monitor the number of scratch tapes used in each of these periods.
+
+To analyze usage patterns, search the CA 1, CA TLMS, or DFSMSrmm volume records. In the storage engine, tapes are referred to as volumes in the tape management system objects. Use filters to identify the number of volumes you need for your daily cycle and the number available.
+
+Review expired tapes available for setting to scratch status. Tapes can be expired by the tape management system, and are considered available for reuse. If a tape has scratch status, any data it contains can be overwritten. A best practice is to erase data on tapes when they are expired or before you set them to scratch status.
+
+The following example is for customers that have CA TLMS. If you use CA 1 or IBM's DFSMSrmm tape management systems, the process is similar. Instead of using the CA TLMS Volumes object, for CA 1 use the CA 1 Volumes object. For DFSMSrmm, use the DFSMSrmm Volumes object.
+
+Use this procedure to identify the number of scratch tapes needed for your daily cycle and the number of tapes available for scratching.
+
+Follow these steps:
+
+Log in to CA Chorus.
+
+Add the Investigator module to your dashboard from the Module Library, and click Start New Investigation.
+
+The Investigator opens.
+
+Select Storage from the discipline drop-down list.
+
+Expand the Diagnostics & Investigations, Tape Resource Management, Tape Management System, CA TLMS, and Volumes directory in the Storage object tree, and open the CA TLMS Volumes object.
+
+A message is displayed advising you must create a filter.
+
+Create the following filter, and click Search:
+
+Create Date = date Create Time > start_time_of_daily_cycle
+
+Volumes that are created during the specified daily cycle are displayed.
+
+(Optional) Create the following filter to identify tapes scratched on a specific date, and click Search:
+
+Scratch = true Scratch Date = date
+
+(Optional) Create the following filter to identify scratched tapes that are scratched during a specific date range, and click Search:
+
+Scratch Date > date And Scratch Date < date
+
+(Optional) Create the following filter to identify tapes that are created during a specific date range, and click Search:
+
+Create Date > date And Create Date < date
+
+(Optional) Create the following filter to isolate the tapes that are created on a specific day, by a specific application, and click Search:
+
+Create Date = date AND Jobname = job_name
+
+(Optional) Create the following filter to identify the use of different types of tapes, and click Search:
+
+Tape Type = tape_type
+
+Note: Tape types are defined and maintained by your tape administrator.
+
+If your site identifies physical or virtual by the volume name prefix, you can create a similar filter but use the starts with operand. For example, create the following filter:
+
+Volume starts with virtual_tape_prefix
+
+(Optional) Create the following filter to list only scratched tapes within a volume range, and click Search:
+
+Scratch = true And Volume starts with start_of_volume_ID
+
+You have filtered the CA TLMS Volumes object to list tapes created during your daily cycle, tapes scratched on a specific date or during a date range, tapes created by an application, and by tape types, and ranges. These results indicate the number of different types of scratch tapes that you need during a time period.

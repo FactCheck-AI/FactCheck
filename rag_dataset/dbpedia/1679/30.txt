@@ -1,0 +1,43 @@
+Story vs Narrative
+
+While the word story is often used interchangeably with narrative, they have different definitions in the narrative theory[Ref]. Story is the content of a narrative (what is told), consisting of a sequence of events (actions, happenings) in chronological order and existents (characters and settings). Narrative is an expression (how it is told), concerning about how the content is presented to readers (narrative voices, styles, plots). Strictly speaking, we only see the story through narrative and thus it is the narrative that determines our perception of story.
+
+Nonlinear Narrative
+
+A nonlinear narrative is a storytelling technique describing events in a story out of chronological order, such that the relationship among the events does not follow the original causality sequence. For example, a narrative can withhold information to maintain a sense of mystery, to keep tension high, and to keep the audience interested. Eventually, the narrative can flash back to the beginning of the story, releasing the tension. Such nonlinear narrative techniques are widely used in various types of storytelling genres, including literature, theater, movies, graphic novels, as well as hypertexts and other computer-mediated genres such as video games.
+
+Nonlinear Narrative Patterns
+
+According to Gérard Genette's typology [Ref], there are seven categories of the relationships between the temporal order of the events that are being told (story order) and the pseudo-temporal order of the narrative (narrative order).
+
+Events are narrated in chronological order, i.e., there is temporal agreement in the order of the events between story and narrative. A unique order may not be specified as some events can happen simultaneously; they may be arranged in any order, relative to each other. Most movies belong to this category (e.g., natural disaster or folklore movies).
+
+Events are narrated in reverse chronological order. For example, colored scenes in Christopher Nolan’s movie Memento are portrayed backward, while black-and-white scenes are in the original order. Another historical example is Iliad, an ancient Greek epic poem, that begins in the middle of the Trojan War.
+
+Events are narrated that took place earlier than what is being narrated. It is more commonly referred as flashbacks that are used to recount events that occurred in the past to fill in crucial backstory. For instance, flashbacks are a major part of the TV show Lost, portraying what happened in the life of the main characters before they were stranded on the island.
+
+Events are narrated that take place later than what is being narrated. It is more commonly referred as flashforwards that are used to allude to events projected to occur in the future. For example, the film Arrival extensively uses prolepsis to show events that occur in the future
+
+Events from a period are interleaved with those from another period as they are narrated in order, e.g., a narrative alternating between the past and present. The events that are paired must be semantically related, thus resulting in a temporal coordination similar to Syllepsis discussed later. For example, a past event is retrospective of a present event, and in the movie Memento chronological scenes are interleaved with reverse scenes.
+
+Events are grouped based on some criteria (e.g., spatial, temporal, thematic kinship). Thematic groupings are often used in the classical episodic novel where multiple stories are inserted and justified by analogy or contrast. Similar groupings are also found in films like Pulp Fiction and Love Actually that use multiple plotlines.
+
+Achrony is the last category in which events are randomly ordered; thus the relationship between the order in which events are narrated and the order in which they occur is difficult or impossible to establish, possibly due to lack of temporal information available from the narrative.
+
+Others have gone on to further extend this taxonomy to address the temporal irony that prevails in postmodern narratives such as parallel timelines, time forks (e.g., Inception) and time loops (e.g., Interstellar)[Ref]
+
+A story curve provides a succinct visual summary of the order of scenes (events) in the nonlinear narrative of a movie. The events are visualized as points in a 2-dimensional plot according to their order in the narrative (horizontally, left-to-right) and their chronological order in the story (vertically, top-down). As users rearrange scenes into their chronological order, nonlinear narrative patterns become evident through the meandering shape of the story curve that connects scenes in both narrative and story order. A similar visualization has been used by the New York Times Ref to visualize the narration in movie trailers. Our story curves are the first scientific investigation and systematic exploration of this visualization technique. In addition, we encode additional story information such as characters, places, and periods of the day. Characters are represented using different colored curves, which communicate the number of characters in a scene through the thickness of the curve segment. Places are encoded as bands surrounding character curves, while day times are represented using vertical backdrops in the background.
+
+Your browser does not support the video tag.
+
+: A schematic diagram showing how a story curve is constructed from a sequence of events in story and narrative order.
+
+We created story curves for 10 popular nonlinear narrative movies: Memento, Pulp Fiction, Eternal Sunshine of the Spotless Mind, The Usual Suspects, Reservoir Dogs, Annie Hall, 500 Days of Summer, 12 Monkeys, Fight Club, and Prestige. We gathered the movie scripts from a public database Refand manually restored the story order of the scenes in each movie using Story Explorer.
+
+Processing Movie Scripts
+
+We crawled movie scripts from The Internet Movie Script Database (IMSDB). We parsed the scripts extract story data including scenes and character dialogues. Once scene and character information is parsed, our system further extracts semantic metadata from the script. From each scene heading, it retrieves the name of the location, the time of day, and whether the scene is inside/outside. The length of each scene is determined based on the amount of text in the scene. The system also derives the sentiment (negative, positive) of characters based on the sentiment of their dialogs in each scene using TextBlob. We also extract movie data from The Movie Database (TMDb). using the movie title as a query, and merges the movie metadata (e.g., ratings, genres, director, cast, etc.) with the script data. To derive the gender of each character, we use the gender of the actor as the gender of the character.
+
+Rearranging Scenes in Story Order
+
+The original script does contain the story order of the scenes. We used the script reading interface (right) in Story Explorer to reconstruct the arrangement of the scenes in chronological order. We watched the movies, and read synopsis and other resources to figure out the casual order of the scenes. This manual reordering can be demanding especially when lack of temporal information is available.

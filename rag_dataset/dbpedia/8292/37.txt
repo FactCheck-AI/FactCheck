@@ -1,0 +1,241 @@
+The tutorial describes installation steps for Clonezilla Server Edition (SE) on Ubuntu/Debian using a Bash script. Clonezilla is OpenSource Cloning System (OCS) and it is a partition and disk imaging/cloning program. It helps you to do system deployment, bare metal backup and recovery. Two types of Clonezilla are available, Clonezilla live and Clonezilla SE (server edition).
+
+Clonezilla live is suitable for single machine backup and restore. Clonezilla SE is for massive deployment because it can clone many computers simultaneously. Clonezilla saves and restores only used blocks in the hard disk. It decreases time and saves the hard disk space and increases the clone efficiency.
+
+Clonezilla is a part of DRBL (Diskless Remote Boot in Linux) which provides a diskless environment for client machines. Therefore, DRBL server should be to installed and configured prior to Clonezilla.
+
+I have created DRBL deployment script deploy_drbl.sh that helps you to install DRBL and configure server on Ubuntu/Debian occupied with two network interfces. The first NIC connects Clonezilla server to the Internet while the second is used to deploy images to clients. The script downloads and imports DRBL project public key and installs drbl package from repository. Afterwards, the script will run interactive Bash and Perl scripts that come with drbl package in this order:
+
+drblsrv - prepares files for PXE client and generates PXE menu
+
+drblpush - configures DNS, clients' hostname, Ethernet card, collects MAC addresses of clients, configures and starts DHCP server, diskless services and Clonezilla mode, PXE password, grephical/text boot menu, NAT services for clients and firewall rules
+
+dcs - DRBL utility to switch the mode for clients
+
+Deploying DRBL Server
+
+1. Starting Installation Script
+
+The script deploy_drbl.sh must be started with root privileges. Once you login to root account with sudo su command, assign execute privileges to the script.
+
+$ wget https://brezular.com/wp-content/uploads/2016/10/deploy_drbl.sh_.txt
+
+$ sudo su
+
+# chmod +x ./deploy_drbl.sh_.txt
+
+# ./deploy_drbl.sh
+
+Note: The script deploy_drbl.sh requires working connection to the Internet in order to install DRBL server. Your job is to configure correct IP addresses for the both NICs. You also need to configure a default route and add DNS server.
+
+2. DRBL Server Installation
+
+The scripts deploy_drbl.sh automatically starts drblsrv with a parameter -i. The script drbl is responsible for installation of DRBL server. Installation is interactive so you must provide answers for questions - either y or n. If the letter is capital, it is a default choice and you can press Enter or type particular letter to select this choice.
+
+2.1 Installation of Network Images
+
+Picture 1 - Installation of Boot Images via Network
+
+We do not need any boot images so type N.
+
+2.2 Serial Console Output
+
+Picture 2 - Serial Console Output on Client Computer
+
+We do not want to use the serial console output on the client computers so type N.
+
+2.3 Operating System Upgrade
+
+Picture 3 - Operating System Upgrade
+
+We do not want to upgrade our OS thus type N.
+
+2.4 Selection of Kernel Image
+
+Picture 4 - Selecting Kernel Image for Clients
+
+Select the option 2 - Generic kernel image from APT repo.
+
+3. Configure Clonezilla
+
+The scripts deploy_drbl.sh automatically starts a script drblpush with a parameter -i (interactive mode).
+
+3.1 DNS Domain
+
+Picture 5 - DNS Domain
+
+Press Enter key to configure default DNS domain.
+
+3.2 NISP/YP Domain
+
+Picture 6 - NISP/YP Domain
+
+Again, press Enter key to configure default penguinzilla domain name.
+
+3.3 Client Hostname Prefix
+
+Picture 7 - Client Hostname
+
+We want our client to keep default hostname prefix so press Enter.
+
+3.4 Ethernet Ports
+
+Picture 8 - Ethernet Port
+
+They are two detected network interfaces. The interface enp0s3 is used to connect Clonezilla server to the Internet. We will use the interface enp0s8 for DRBL connection. Press Enter to choose the default option enp0s3.
+
+3.5 Collecting MAC Addresses of Clients
+
+Picture 9 - Collecting MAC Addresses of Clients
+
+We do not want to assign the same IP addresses to the clients from DHCP server thus we do not need to collect MAC addresses of the clients. Type N or just press Enter.
+
+3.6 Same IP address for Clients
+
+Picture 10 - Same IP address for Clients
+
+Press Enter to reject the offer to configure the same IP addresses for clients.
+
+3.7 DHCP Server
+
+Picture 11 - DHCP Server
+
+Now we configure a DHCP server running on the interface enp0s8 and providing IP addresses for clients. Enter an initial IP address from the range and the number of clients in your network. Then just confirm the DHCP range with Enter key or type Y.
+
+3.8 Diskless Linux Services
+
+Picture 12 - Diskless Linux Service
+
+We do not need to provide diskless Linux service to clients so type option 2.
+
+3.9 Clonezilla Modes
+
+Picture 13 - Clonezilla Modes
+
+Type 0 to configure full Clonezilla mode.
+
+3.10 Directory for Storing Images
+
+Picture 14 - Directory for Saving Saved Images
+
+Press Enter to configure a default directory /home/partimg/ for storing saved images.
+
+3.11 PXE Linux Password for Clients
+
+Picture 15 - PXE Linux Password for Clients
+
+Type y if you want to configure a password for clients. The chosen password can be changed or disabled anytime by drbl-pxelinux-passwd utility.
+
+3.12 Graphical Background for PXE Menu
+
+Picture 16 - Graphical Background for PXE Menu
+
+Type y if you want to boot your clients with graphical PXE Linux menu.
+
+3.13 NAT Services for Clients
+
+Picture 17 - NAT Services for Clients
+
+We do not need to provide Internet to clients so type n.
+
+3.14 Firewall Rules
+
+Picture 18 - Changing Firewall Rules
+
+Press Enter or type y to let DRBL server to change firewall rules.
+
+4. Start Clonezilla Server
+
+The scripts deploy_drbl.sh automatically starts a script dcs which starts Clonezilla.
+
+4.1 Client Selection
+
+Picture 19 - Selecting Clients
+
+We can either select all clients or an individual client based on its IP or MAC address. Select the first option - All .
+
+4.2 Start Clonezilla Mode
+
+Picture 20 - Starting Clonezilla Mode
+
+Select an option clonezilla-start to start clonezilla mode.
+
+4.3 Beginner Mode
+
+Picture 21 - Beginner Mode
+
+Select an option Beginner which accepts the default options.
+
+4.4 Select-in-Client Clonezilla Mode
+
+Picture 22 - Select-in-Client Clonezilla Mode
+
+Select an option select-in-client. This option allows you to select either to restore or save the image on client.
+
+4.5 Clonezilla Advanced Extra Parameters
+
+Picture 23 - Clonezilla Advanced Extra Parameters
+
+Select an option -y1 default Clonezilla.
+
+4.6 Shutdown Clients
+
+Picture 24 - Shutdown Clients When Cloning is Finished
+
+Select an option -p poweroff. Clients automatically power off once cloning is finished. When dcs script finishes, you can see the following command in your terminal window.
+
+drbl-ocs -b -l en_US.UTF-8 -y1 -p poweroff select_in_client
+
+-b - run program in batch mode, i.e without any prompt
+
+-l - language en-US.UTF-8
+
+-y1 - clonezilla server as restore server
+
+-p - shutdown client when cloning/restoring finishes
+
+select_in_client - client chooses either to clone or restore
+
+You can put the command inside the script /etc/init/clone.conf to start Clonezilla automatically after boot. To clone clients using multicast in order to speed up cloning process, use the following command.
+
+drbl-ocs -b -g auto -e1 auto -e2 -x -r -j2 -sc0 -p poweroff --time-to-wait 30 -l en_US.UTF-8 startdisk multicast_restore core_linux sda
+
+All options are explained here.
+
+5. Troubleshooting
+
+Here are the problems I noticed during writing the tutorial.
+
+5.1 Client Does Not Get IP Address
+
+Check if DHCP service is running with the command:
+
+$ ps -ef | grep dhcpd | grep -v grep
+
+Picture 25 - Checking DHCP Service
+
+If you cannot see the output above, DHCP service is not running. Check the service status with the command:
+
+$ systemctl status isc-dhcp-server
+
+Picture 26 - DHCP Service Disabled and Not Active
+
+We can see that DHCP service is disabled and not active. We can enable it with the command:
+
+$ systemctl enable isc-dhcp-server
+
+Picture 27 - DHCP Service Enabled But Not Active
+
+DHCP service is enabled but not active. Activate the service with the command:
+
+$ systemctl start isc-dhcp-server
+
+Picture 28 - DHCP Service Enabled and Active
+
+You can check DHCP messages in /var/log/syslog file.
+
+Picture 29 - Obtaining IP Address for Client
+
+Obtaining IP address 192.168.112.1 for client with a MAC address 09:00:27:93:43:bb via the interface enp0s3.
+
+End.

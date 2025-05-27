@@ -1,0 +1,49 @@
+What is "Scratch Media"?
+
+Yes, that refers to media that are available for BE to use.
+
+My question is, what do I have to in Backup Exec before I remove that tape from the library?
+
+You shouldn't need to do anything other than wait for the job to finish. When it's done, the tape should be ejected and placed back into its slot in the library. Since BE keeps records of all tapes (and their contents) in its catalog, it will recognize that tape the next time it is placed in the library.
+
+Regarding your second question:
+
+In Backup Exec you can define media sets. These are named 'folders' with defined overwrite protection and append periods. Each backup job is configured to target a specific media set. When these jobs start, the chosen tape is allocated to the media set. Usable tapes that are not allocated should live in the built-in Scratch Media set.
+
+Backup Exec has two Overwrite options to determine which media to use when you create a backup:
+
+Use overwritable media within the media set before using scratch media
+
+Use scratch media before using overwritable media within the media set
+
+The distinction between the two is simple; when it is time to allocate the tape, Backup Exec will either
+
+pick the oldest-allocated tape from the named media set that has passed its overwrite protection period, or pick from Scratch Media if it cannot find any (option 1);
+
+or always pick from Scratch Media if one exists there, and pick the oldest-allocated tape in the named media pool if one does not (option 2)
+
+In addition, Backup Exec specifies three Append options for using existing tapes:
+
+Append to media in the same media set, otherwise overwrite existing media
+
+Append to media in the same media set, otherwise abort
+
+Overwrite existing media
+
+These coerce Backup Exec to write to the end of the same tape, if it can find media in the named media set within the defined append period, otherwise pick a tape to overwrite based on the Overwrite options above.
+
+In your case (how to make a backup to an unused tape, then move that tape offsite), for the simple approach, I would do the following:
+
+Make a media set that has 'do not allow overwrite' and 'do not allow append'
+
+Make a copy of the job that ruins to your regular tape, using the same selection list
+
+Configure that job to use the new media set
+
+Set the Backup Method to 'Copy the Files', so it does not reset the archive bit used in any incremental scheme
+
+Schedule/run the job.
+
+Backup Exec should take one of the overwritable tapes, allocate it to the new media set, write a new backup to it and mark it as non-overwritable. You can then take this offsite.
+
+Alternatively, even simpler, next time a full backup runs, take that tape offsite. Backup Exec will then use the next available tape to make its full backup.

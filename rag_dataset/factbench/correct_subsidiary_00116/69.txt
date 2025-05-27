@@ -1,0 +1,43 @@
+Hi,
+
+The network device will choose the NTP server that provides the best time even if the server has higher stratum than the other servers. This will also apply if the servers are the same stratum, the network device chooses the one that provides the best time. You could have a scenario where a stratum 2 source provides better time than a stratum 1 sources. Assuming your lan has a stratum 1 appliance and a stratum 2 server and you configure your client to use the stratum 2 server and a stratum 1 server out on the Internet, in this case, the client might choose the stratum 2 server over the stratum 1 server out on the Internet. The stratum 2 server on your network provides less latency and jitter than the startum 1 server out on the Internet. NTP considers a range of factors and not just stratum when selecting a source.
+
+Thanks
+
+John
+
+**Please rate posts you find helpful**
+
+Excellent, thanks.
+
+I just wanted to make sure that a network device wouldn't view the list as rigidly hierarchical, moving to the next entry on the list, no matter if any of the sources in the list were providing more trustworthy time.
+
+When viewing the output of "show ntp association" or "show ntp status", can you point out which criteria the device is using to decide which source is more trustworthy?
+
+I would post my output for you to examine, but it's a closed system and I'm not allowed to share.
+
+The Cisco network device does not treat the list strictly hierarchically. If a device has several sources configured from which it can learn ntp time then the device evaluates the multiple sources. If several sources are in close agreement about the time and another device is reporting a different ntp time then that device is considered not trustworthy and would not be used. If there are several sources in close agreement about the time then the network device considers several factors as it chooses which source it will use to establish ntp sync. These factors include what stratum, how much latency in involved in reaching the source, and the variability of the time reported by the source.
+
+I understand that your organizational policy does not allow you to share your output. I hope that we have been able to answer your questions without considering that output.
+
+HTH
+
+Rick
+
+HTH
+
+Rick
+
+Hi,
+
+The "show ntp association detail" command should give you an idea on why a particular server has been selected.
+
+Have a look at the following values: the peer being used and the stratum of that peer, ref ID, poll interval(most stable NTP environment will have poll interval 1024), delay, dispersion, reach (most stable ntp environments will have 377 reach), precision.
+
+Below is an example from cisco documentation. I have highlighted vlaues to look at.
+
+Device> show ntp associations address ref clock st when poll reach delay offset disp ~172.31.32.2 172.31.32.1 5 29 1024 377 4.2 -8.59 1.6 +~192.168.13.33 192.168.1.111 3 69 128 377 4.1 3.48 2.3 *~192.168.13.57 192.168.1.111 3 32 128 377 7.9 11.18 3.6 * master (synced), # master (unsynced), + selected, - candidate, ~ configured
+
+172.31.32.2 configured, insane, invalid, stratum 5 ref ID 172.31.32.1, time AFE252C1.6DBDDFF2 (00:12:01.428 PDT Mon Jul 5 1993) our mode active, peer mode active, our poll intvl 1024, peer poll intvl 64 root delay 137.77 msec, root disp 142.75, reach 376, sync dist 215.363 delay 4.23 msec, offset -8.587 msec, dispersion 1.62 precision 2**19, version 4 assoc ID 1, assoc name 192.168.1.55, assoc in packets 60, assoc out packets 60, assoc error packets 0 org time AFE252E2.3AC0E887 (00:12:34.229 PDT Tue Oct 4 2011) rcv time AFE252E2.3D7E464D (00:12:34.240 PDT Mon Jan 1 1900) xmt time AFE25301.6F83E753 (00:13:05.435 PDT Tue Oct 4 2011) filtdelay = 4.23 4.14 2.41 5.95 2.37 2.33 4.26 4.33 filtoffset = -8.59 -8.82 -9.91 -8.42 -10.51 -10.77 -10.13 -10.11 filterror = 0.50 1.48 2.46 3.43 4.41 5.39 6.36 7.34 192.168.13.33 configured, selected, sane, valid, stratum 3 ref ID 192.168.1.111, time AFE24F0E.14283000 (23:56:14.078 PDT Sun Jul 4 1993) our mode client, peer mode server, our poll intvl 128, peer poll intvl 128 root delay 83.72 msec, root disp 217.77, reach 377, sync dist 264.633 delay 4.07 msec, offset 3.483 msec, dispersion 2.33 precision 2**6, version 3 assoc ID 2, assoc name myserver assoc in packets 0, assoc out packets 0, assoc error packets 0 org time AFE252B9.713E9000 (00:11:53.442 PDT Tue Oct 4 2011) rcv time AFE252B9.7124E14A (00:11:53.441 PDT Mon Jan 1 1900) xmt time AFE252B9.6F625195 (00:11:53.435 PDT Mon Jan 1 1900) filtdelay = 6.47 4.07 3.94 3.86 7.31 7.20 9.52 8.71 filtoffset = 3.63 3.48 3.06 2.82 4.51 4.57 4.28 4.59 filterror = 0.00 1.95 3.91 4.88 5.84 6.82 7.80 8.77 192.168.13.57 configured, our_master, sane, valid, stratum 3 ref ID 192.168.1.111, time AFE252DC.1F2B3000 (00:12:28.121 PDT Mon Jul 5 1993) our mode client, peer mode server, our poll intvl 128, peer poll intvl 128 root delay 125.50 msec, root disp 115.80, reach 377, sync dist 186.157 delay 7.86 msec, offset 11.176 msec, dispersion 3.62 precision 2**6, version 2 assoc ID 2, assoc name myserver assoc in packets 0, assoc out packets 0, assoc error packets 0 org time AFE252DE.77C29000 (00:12:30.467 PDT Tue Oct 4 2011) rcv time AFE252DE.7B2AE40B (00:12:30.481 PDT Mon Jan 1 1900) xmt time AFE252DE.6E6D12E4 (00:12:30.431 PDT Mon Jan 1 1900) filtdelay = 49.21 7.86 8.18 8.80 4.30 4.24 7.58 6.42 filtoffset = 11.30 11.18 11.13 11.28 8.91 9.09 9.27 9.57 filterror = 0.00 1.95 3.91 4.88 5.78 6.76 7.74 8.71
+
+**Please rate posts you find helpful**

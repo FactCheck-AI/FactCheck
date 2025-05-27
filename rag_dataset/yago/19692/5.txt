@@ -1,0 +1,41 @@
+Two stories about the beginning of TeX
+
+Don Knuth is one of the founders of Computer Science, that is CS with capital letters. He has worked in many areas of our field, received perhaps all the awards possible, and is certainly one of the giants of our field.
+
+Today I want to talk about some old and new stories about TeX.
+
+Knuth created TeX in the late 1970’s as his personal typesetting system. The reason he did this is simple: he disliked the job that was done typesetting one of his books. The rest of us would have lived with it, ignored it, or maybe switched publishers. But Knuth decided to follow the rule: if you want something done right, write a program. Okay that is not exactly the statement but is close enough.
+
+We owe Knuth a huge thanks. Today TeX is an invaluable tool that makes our papers and books beautiful.
+
+Two Stories About TeX
+
+Where’s the ? Jeff Ullman moved in the late 1970’s from Princeton University to Stanford University, where he is still. Jeff is famous, famous for many things, but perhaps most for his great collection of textbooks on various areas of computer science. When he moved to Stanford he was using an old typesetting system called TROFF to write his books. It was adequate, the books came out fine, but he wanted to try the then new system that Knuth had just invented—he wanted to think about switching to TeX.
+
+Jeff did the obvious. He got some basic info on TeX from one of Knuth’s students and tried it out. He liked the output and thought he would switch over to TeX. But recall in those days there was no Internet, no email even, so he needed help on how to use TeX. He realized he needed to have a formal definition of the syntax of TeX. The BNF for what is legal TeX would be quite useful he thought. Recall BNF is a nice way to define syntax. Here is the BNF for US postal addresses from Wikipedia:
+
+So Jeff went to see Knuth and asked him for the grammar for TeX. Knuth looked at him and said,
+
+What grammar? There is no BNF, there is no description.
+
+Jeff was shocked. Knuth was famous for his research into the area of formal grammars, he had invented LR parsing in 1965. How could he design a language without any formal grammar? Well he did. The legal inputs to TeX where those strings Knuth’s program accepted—no more no less.
+
+You did what? While I was at Berkeley in the same time period, the late 1970’s, we invited Knuth to visit us as a distinguished visitor. Part of being distinguished, in academia there is no free lunch, he had to give a series of lectures. They could be on whatever he wanted, but he had to give them.
+
+One of the lectures was on the design, implementation, and testing of the first version of TeX. The audience for this, and all his talks, was filled to overflowing. Knuth began to explain how he wrote the first version of TeX. My faculty colleagues began to become more and more uncomfortable as Knuth spoke. The high level version of what he said was:
+
+I sat down and started to type in the entire program in Pascal. After X hours the entire system was entered. Then I tried to compile it all. After fixing a few syntax errors the system compiled. I then tried to typeset a sample piece of TeX. Again after fixing a few errors I got this all to work
+
+My colleagues were seeing and hearing with their own ears and eyes Knuth violate all the rules of software building that they had been teaching their students. Build a specification, then code and debug modules, then create testing sets, and on and on. They could not believe it.
+
+Of course the problem was, and is, that Knuth is brilliant. He is one of the few people in the world that could have built the first TeX this way and got it to work in any finite amount of time. Since there was no specification, there was no BNF, there was no way to tell what was legal or not. While the students heard all the wrong statements from Knuth I think that no lasting damage was done. Everyone realized they were watching a virtuoso performance by a master. It was like Wolfgang Mozart explaining how he wrote concerts—you could listen to what he said, but you could not do it yourself.
+
+Open Problems
+
+I have a TeX open problem. The href package takes and outputs the string as a pointer to the url . I wanted to have this act differently: I want it to output the string and add the footnote numbered with the url , somewhat as Wikipedia does. Of course the next one would use a different number for the footnote.
+
+I tried to do it myself and failed. I then tried using TeX Stack Exchange, got lots of almost solutions, but none actually work yet. People were very nice and helpful, explaining lots of TeX details, but the problem seems to be that the interaction between url’s and footnotes is tricky. Also recall that a url can have very nasty characters in it.
+
+As we go to press—is that the right term?—I just got a solution for my TeX problem. Here it is thanks to Martin Scharrer via TeX Stack Exchange:
+
+Share this:

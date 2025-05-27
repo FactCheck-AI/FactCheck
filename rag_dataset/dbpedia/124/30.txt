@@ -1,0 +1,145 @@
+Definition
+
+cipher
+
+By
+
+Peter Loshin, Former Senior Technology Editor
+
+Linda Rosencrance
+
+What is a cipher?
+
+In cryptology, the discipline concerned with the study of cryptographic algorithms, a cipher is an algorithm for encrypting and decrypting data.
+
+Symmetric key encryption, also called secret key encryption, depends on the use of ciphers, which operate symmetrically. With symmetric encryption algorithms, the same encryption key is applied to data in the same way, whether the objective is to convert plaintext to ciphertext or ciphertext to plaintext. A cipher transforms data by processing the original, plaintext characters or other data into ciphertext. The ciphertext should appear as random data.
+
+Traditionally, ciphers used these two main types of transformation:
+
+Transposition ciphers keep all the original bits of data in a byte but mix their order.
+
+Substitution ciphers replace specific data sequences with other data sequences. For example, one type of substitution would be to transform all bits with a value of 1 to a value of 0, and vice versa.
+
+The data output from either method is called the ciphertext.
+
+Modern ciphers enable private communication in many different networking protocols, including the Transport Layer Security (TLS) protocol and others that offer encryption of network traffic. Many communication technologies, including phones, digital television and ATMs, rely on ciphers to maintain security and privacy.
+
+How do ciphers work?
+
+A cipher uses a system of fixed rules -- an encryption algorithm -- to transform plaintext, a legible message, into ciphertext, an apparently random string of characters. Ciphers can be designed to encrypt or decrypt bits in a stream, known as stream ciphers. Or they can process ciphertext in uniform blocks of a specified number of bits, known as block ciphers.
+
+Modern cipher implementations depend on the algorithm and a secret key, which is used by the encryption algorithm to modify data as it is encrypted. Ciphers that use longer keys, measured in bits, are more effective against brute-force attacks. The longer the key length, the more brute-force attempts are necessary to expose the plaintext. While cipher strength is not always dependent on the length of the key, experts recommend modern ciphers be configured to use keys of at least 128 bits or more, depending on the algorithm and the use case.
+
+A key is an essential part of an encryption algorithm -- so much so that, in real-world ciphering, the key is kept secret, not the algorithm. Strong encryption algorithms are designed so that, even if someone knows the algorithm, it should be impossible to decipher ciphertext without knowing the appropriate key. Consequently, before a cipher can work, both the sender and receiver must have a key or a set of keys.
+
+With symmetric key algorithms, the same key is used for the encryption and decryption of data. Asymmetric key algorithms use public keys and private keys to encrypt and decrypt data.
+
+In asymmetric cryptography, also known as public key cryptography, the keys are large numbers that have been paired together but are not identical (asymmetric). Key pairs include the following:
+
+The public key can be shared with everyone.
+
+The private, or secret key, is kept secret.
+
+Either of the keys can be used to encrypt a message; the opposite key from the one used to encrypt the message is used for decryption.
+
+The private or secret key of the pair is used by the owner of the key pair to decrypt or encrypt data, while the public key is used by anyone who wants to encrypt a message that can be decrypted only by the holder of the private key.
+
+What are ciphers used for?
+
+Symmetric ciphers are most commonly used to secure online communications. They are also incorporated into many different network protocols to be used for exchanges of data. For example, Secure Sockets Layer and TLS use ciphers to encrypt application layer data, especially when used with HTTP Secure (HTTPS).
+
+Virtual private networks that connect remote workers or remote branches to corporate networks use protocols with symmetric key algorithms to protect data communications. Symmetric ciphers protect data privacy in most Wi-Fi networks, online banking and e-commerce services, and mobile telephony.
+
+Some protocols use asymmetric cryptography to encrypt and authenticate endpoints. They also use it to secure the exchange of symmetric keys to encrypt session data. Those protocols include the following:
+
+TLS
+
+HTTPS
+
+Secure Shell
+
+Open Pretty Good Privacy
+
+Secure/Multipurpose Internet Mail Extensions
+
+While public key cryptography is considered more secure than symmetric encryption, it is also more computationally intensive. For performance reasons, protocols often rely on symmetric key algorithms to encrypt session data.
+
+Difference between codes and ciphers
+
+Codes and ciphers are different ways to encrypt a message. A code is a method of changing a message by replacing each word with another word that has a different meaning.
+
+On the other hand, a cipher converts the message using its algorithm to transform the data representing the letters and words in the message. Ciphers are easier to implement and use with computers because algorithms are automated and easily programmed.
+
+Types of ciphers
+
+Ciphers can be characterized in different ways, including the following:
+
+Block ciphers encrypt uniformly sized blocks of data.
+
+Stream ciphers can be applied to streams of data that are often received and sent over a network.
+
+Ciphers can depend on traditional keys used directly to key ciphertext or on elliptical curve cryptography (ECC). When ECC is used with a 160-bit key, it can provide the security of a traditional cipher, like that used in the RSA (Rivest-Shamir-Adleman) cryptosystem using a key of 1,024 bits in length.
+
+Modern-day encryption algorithms are designed to withstand attacks even when the attacker knows what cipher is being used. Historically, ciphers have been less secure against attack because they were used to encipher plaintext by hand and could be more easily analyzed and broken with computer power.
+
+Examples of ciphers
+
+Some well-known historical ciphers include the following:
+
+Caesar. This cipher is attributed to Julius Caesar, who is said to have used it to communicate securely with his generals. It is a simple substitution cipher where each letter in the plaintext is shifted a specific number of places down the alphabet. The shift number said to be used by Caesar was three. Substitution ciphers are often implemented by writing down the plaintext alphabet, with the ciphertext alphabet written above the plaintext letters, shifted by the number those communicating agree to. A shift of three puts the letter D above the plaintext A, E above B and so on. The number of characters shifted is considered a simple form of a key.
+
+Atbash. This cipher is a substitution cipher in which the plaintext alphabet is mapped onto itself but in reverse order. In other words, the plaintext letter A is mapped to ciphertext Z, B is mapped to Y, C to X and so on. Atbash is named after the two first and two last letters in the Hebrew alphabet. It is thought to have been in use for hundreds of years.
+
+Simple substitution. This one has also been used for hundreds of years. It substitutes every plaintext character for a different ciphertext character, resulting in what is effectively a 26-character key. It differs from the Caesar cipher because the enciphering alphabet is completely jumbled, rather than simply shifted a uniform number of places.
+
+Vigenère. This cipher is a form of polyalphabetic substitution, meaning it is based on substitution using multiple substitution alphabets. The Vigenère cipher uses a series of interwoven Caesar ciphers, based on the letters of a keyword. The original text is encrypted using what is known as the Vigenère square or Vigenère table.
+
+Homophonic substitution. This substitution cipher uses several different ciphertext letters to replace single plaintext letters. This type of cipher is typically much more difficult to break than standard substitution ciphers.
+
+These historical ciphers are still relevant because they use different fundamental components of modern ciphers, such as substitution and transposition.
+
+Ciphers can go in and out of fashion, depending on their track records for strength against attacks, as well as the discovery of new attack vectors. Learn about the first steps to using ciphers securely by understanding the basics of symmetric key encryption algorithms.
+
+Continue Reading About cipher
+
+The difference between AES and DES encryption
+
+Format-preserving encryption use cases, benefits, alternative
+
+How does Microsoft BitLocker secure local, cloud resources?
+
+Symmetric vs. asymmetric encryption: Decipher the differences
+
+Cryptography attacks: The ABCs of ciphertext exploits
+
+Related Terms
+
+What is SSH (Secure Shell) and How Does It Work?
+
+SSH (Secure Shell or Secure Socket Shell) is a network protocol that gives users -- particularly systems administrators -- a ... See complete definition
+
+What is the Cybersecurity Information Sharing Act (CISA)?
+
+The Cybersecurity Information Sharing Act (CISA) allows United States government agencies and non-government entities to share ... See complete definition
+
+What is the Driver's Privacy Protection Act (DPPA)?
+
+The Driver's Privacy Protection Act (DPPA) is a United States federal law designed to protect the personally identifiable ... See complete definition
+
+Dig Deeper on Data security and privacy
+
+What is Data Encryption Standard (DES)?
+
+By: Peter Loshin
+
+cryptanalysis
+
+By: TechTarget Contributor
+
+Advanced Encryption Standard (AES)
+
+By: Rahul Awati
+
+encryption
+
+By: Robert Sheldon

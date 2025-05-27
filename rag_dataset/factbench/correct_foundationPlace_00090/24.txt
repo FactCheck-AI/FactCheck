@@ -1,0 +1,85 @@
+By Dimitrios Karamanlidis
+
+To anyone who has even remotely anything to do with CAE, Dassault Systèmes (3DS), SIMULIA, and Abaqus are household names that certainly need no introduction. This year’s annual 3DS SIMULIA Community Conference (SCC) was held in Providence, RI, on May 15-17. The day prior to the official SCC start, a series of advanced seminars running in parallel sessions were offered. These seminars lasted almost the whole day and covered the following topics: a) “Techniques to reliably speed up solving challenging contact problems with new capabilities in Abaqus”, b)”Coupled Multiphysics Simulation in Abaqus to Include Structures, Fluids and Electromagnetic Fields”, c) “Leveraging Isight and the Abaqus Technology Optimization Method (ATOM) for Improved Product Design”, and d) “Coupled Eulerian-Lagrangian and Smoothed Particle Hydrodynamics with Abaqus/Explicit.”
+
+The technical program of the conference itself was highlighted by two key note presentations, namely: “The Role of Realistic Simulation in 3M Innovation” by Anthony B. Ferguson from 3M and “Advanced Engineering Simulation: Allowing Technip to Take it Further” by Jim O’Sullivan from Technip. New features included in Abaqus 6.12, the software’s most recent release, were showcased and demonstrated in general lectures by SIMULIA experts. In addition, a total of 85 technical papers were presented by customers that highlighted the application of SIMULIA analysis and simulation tools in the following technical areas: Aerospace, Civil Engineering, Consumer, Defense, Energy & Power, Life Sciences, Manufacturing, Materials, Shipbuilding, Transportation, and Turbomachinery.
+
+The conference was attended by more than 500 researchers and engineers from all over the world. About two dozen Alliance Partners showcased solutions developed to complement SIMULIA’s simulation solutions. They made their presence felt by way of both exhibition booths and technical papers presented in special sessions under the umbrella of “Complementary Solutions.”
+
+All in all, the almost four days that the conference lasted presented quite a bite of information for a single person to chew on. Hence, instead of trying to provide an all-encompassing account in what follows, we will elaborate on a few select topics only: the advanced seminars on Isight and ATOM, in which I was given the opportunity to participate, and two papers whose authors I had a chance to meet personally and ask questions about their work.
+
+Isight
+
+Isight is a framework software package that provides designers, engineers, and researchers with an open system for integrating design and simulation models, created with various CAD, CAE and other software applications, to automate the execution of hundreds or even thousands of simulations. More specifically, Isight allows the user to logically connect various blocks (“components”) to simulate a desired workflow. (See Figure 1.)
+
+Fig. 1: Typical Isight schematic
+
+The software may be executed either by a single desktop user or, through the help of the SIMULIA Execution Engine (SEE), by multiple users working as a team.
+
+In its simplest form, an Isight schematic may consist of just two blocks (e.g., a geometry/mesh tool and an FEA solver) for the purpose of performing a parametric optimization of a given geometry. (See Figure 2.)
+
+Fig. 2: Two-component Isight schematic
+
+A more complicated schematic may consist of multiple blocks with which the user may perform tasks such as
+
+launch pre- and post-processingtools and routines,
+
+launch batch solver calculations,
+
+launch visualization tools,
+
+exchange input and/or outputparameters between Isight and simulation tools,
+
+check data into or out of datamanagement depositories, and
+
+apply alternative designexploration methods to a simulation process, and so on.
+
+The user has access to all these blocks through a web-based depository. Prominent among these tools are MS Office, Matlab, ANSYS, CATIA, Pro/E, Nastran, and many more. In addition to components, Isight provides the user with “Design Drivers” to facilitate optimization, Design of Experiments (DOE), Monte Carlo simulation, etc. Isight’s ability to manipulate and map parametric data between process steps and automate multiple simulations greatly improves efficiency, reduces manual errors, and accelerates the evaluation of product design alternatives. Reportedly, companies such as AAI Textron and GE were able to leverage Isight to significantly reduce product development cycle times.
+
+ATOM
+
+ATOM (Abaqus Topology Optimization Module) is described by SIMULIA as delivering “powerful solutions for performing topology and shape optimization for single parts and assemblies, while leveraging advanced simulation capabilities such as contact, material nonlinearity, and large deformation.” It is designed to enable engineers to meet the structural requirements of a part assembly while saving time and reducing costs.
+
+When performing shape optimization in a given finite element mesh, nodes on the boundary are relocated so as to achieve a certain design objective (e.g., minimization of von Mises stress). With topology optimization, an initial design is continuously modified by removing material while satisfying certain user specified optimization constraints (e.g., optimization design responses, manufacturing restrictions, symmetry restrictions and material sizing restrictions). In the example shown in Figure 3, the evolutionary steps are displayed for the case of the brake pedal for an automobile whereby an initial design is continuously modified until a desired volume reduction (e.g., 50%) is achieved.
+
+Fig. 3:Topology optimization of an automobile brake pedal performed by ATOM
+
+Because ATOM is seamlessly integrated into the Abaqus/CAE environment, a typical ATOM workflow consists of the following steps: a) set up the Abaqus model, b) set up the optimization task, c) set up the optimization process, d) monitor the run, if so desired, and e) review the results and extract the new topology.
+
+While there are situations where either Isight or ATOM could be used, the two tools are quite different from each other ATOM is designed for nonlinear structural optimization (topology and shape optimization), whereas Isight is used for process automation and design optimization (PIDO). In about 20 conference papers, it was reported that Isight or ATOM was used.
+
+Paper by Lucht
+
+T. Lucht from MAN Diesel & Turbo presented a paper titled “Analysis of High Cycle Fatigue Cracks in the Welds of Large Diesel Engines.” MAN Diesel &Turbo, a wholly owned subsidiary of the German conglomerate MAN SE, is a leader in large two-stroke diesel engines for ships and stationary power plants. (Large in this context refers to units several stories high with an output ranging from 1,200 HP to 132,000 HP).
+
+Fig. 4: Large two-stroke engine
+
+The typical engine lifetime is about 20 years, at an operating rate of 6,000 hours per year at 100 RPM. Hence, in order to avoid very costly downtime to perform repairs each unit must be designed in a manner that prevents the occurrence of fatigue induced cracks during the lifetime of an engine. To that end, simulations were performed using Abaqus and using a feature called XFEM (the X stands for eXtended). In a nutshell, what XFEM does is to combine standard FEM shape functions (typically polynomials) with special functions which capture the stress singularity that is present in the vicinity of the crack tip. That in turn results in a computationally much more efficient way to deal with crack propagation than the standard FEM because it eliminates the need to remesh.
+
+Based on the results of his simulations, the author was able to show that current engine designs would not be able to deliver the above-described performance due to formation of fatigue-induced cracks. He then proceeded to evaluate design alternatives whereby moment compensators (realized by large rotating masses) were installed in the chain drive in order to reduce the occurrence of vibrations in the engine block caused by centrifugal forces. The obtained results for stress intensity factors confirmed that the improved design was safe within the recommended limit curve.
+
+Paper by Liu
+
+X. Liu et al from Veryst Engineering presented a paper on “Realistic Simulation of Golf Ball Impact.” The presentation focused on basically two aspects: a) to provide for an accurate characterization of the ball’s material behavior so that the presence of high strain rates at impact will be captured and b) the creation of a detailed ball geometry representation that specifically includes the ball dimples. Regarding the first issue, the ball was represented as a two-layer composite whereby the outer layer’s behavior was modeled as a standard hyperelastic material whereas for the core two different material models were tried, namely a linear viscoelastic material model (LVE) and an advanced Parallel Network Model (PNM) developed by Veryst as part of their PolyUMOD library.
+
+Fig. 5: Typical golf ball
+
+Concerning the second issue, a very fine mesh was required on the face of the outer layer to model the dimple geometry, which resulted in roughly 160,000 tetrahedral elements. Various dimple patterns were tried, a process that was automated by way of Python-based scripts. By contrast, the spherical core whose geometry is much simpler required just over 27,000 brick/wedge elements. Lastly, the golf club was represented as a grooved steel plate.
+
+Based on the results of his study, the author concluded that to accurately model the impact between club and ball it is imperative to capture the behavior of the core material as accurately as possible. The simulation-based results were contrasted to those obtained from physical experiments and it was shown that the PNM material model did a far better job than the LVE material model.
+
+Dimitrios Karamanlidis, Ph.D., received his education in Germany. His professional career spans more than 30 years as a researcher, teacher and consultant in the general area of CAE. He’s currently a faculty member in the College of Engineering at the University of Rhode Island. He may be contacted via [email protected].
+
+MORE INFO
+
+Dassault Systemes
+
+Abaqus Enhancements
+
+Isight
+
+ATOM
+
+MAN Diesel & Turbo
+
+Veryst Engineering

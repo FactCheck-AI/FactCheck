@@ -1,0 +1,11 @@
+Two online storage services operated by utility hosting provider Joyent have been offline for the last three days, apparently due to corruption problems with the ZFS file system. Strongspace and BingoDisk have been offline since Saturday night (Jan. 12). On Tuesday Joyent CEO David Young said the extended downtime was caused by complex corruption issues with ZFS, a new file system for pooled storage originally developed by Sun Microsystems for its Solaris 10 Operating System.
+
+"We got bit by a massive ZFS bug," Young wrote in an advisory to customers. "That's the long and the short of it. The ZFS corruption got onto/into the backups. The good news is we can unravel the corruption. The bad news, given the fact that Strongspace and BingoDisk ran on a Thumper (aka SunFire X4500), was that we have to use other Thumpers to stage the uncoding of the ZFS mess. Moving so much data around to decode the ZFS corruption has taken time." UPDATE: See our follow-up story for more. Joyent was using an older version of ZFS, and the bug in question was fixed nearly a year ago.
+
+It will likely take more time to sort out the issues and recover user data, Young said.
+
+The X4500 is a Sun storage server running OpenSolaris and ZFS that can store up to 72 terabytes of data. Young said Joyent's "Thumper" was configured for 24 terabytes (48 500 Gig hard drives). The sheer volume of the data has been a factor in the lengthy time needed for the analysis and recovery, he said.
+
+"It's just the laws of physics how quickly we can move bits around between Thumpers," Young wrote. "The good news is we will be able to restore all data. That's the current consensus. The bad news is, while we could bring the server on-line right now, we can't guarantee it would be stable from a ZFS standpoint. We're taking more time to ensure we don't go right back to where we were. A full, technical explanation will be forthcoming once the service is brought back on-line."
+
+Joyent was founded in 2004 to provide on-demand hosted applications built on open source technologies and Ruby on Rails. Its offerings include Accelerator, a "compute cloud" similar to Amazon's EC2 that provides a scalable on-demand infrastructure for running web sites. In 2005 it acquired application hosting provider TextDrive.

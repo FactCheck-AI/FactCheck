@@ -1,0 +1,17 @@
+i want to create/restore an image of a system completely unattended with an clonezilla-live usb-stick. So far the unattended backup/restore works fine. I just plug in the stick, boot up the pc and after the work is done the pc shut down.
+
+Now i need an confirmation that the backup/restore was successfull. For this purpose i want to execute an shell script which copy the log-file into an specific file to a other partition on the usb-stick after the work is done.
+
+I tried to execute the script as postrun-method in the syslinux.cfg but this always led to an error. Furthermore i tried it with drbl-ocs but i'm not sure if i did it right.
+
+here is the shell script i want to execute:
+
+#!/bin/sh ############# /opt/drbl/sbin/ocs-sr -q2 -j2 -z1p -i 4096 -p true savedisk img sda ############# dir=/home/partimag/logs/ time=$(date +"%H-%M-%S") # current time i=$(ls -l $dir | wc -l) # index # create log-directory if it didn't exist if [ ! -e $dir ] then sudo mkdir $dir fi # create new log-directory ( sudo mkdir $dir/$i"_"@$time # copy all log-files to the created directory sudo cp /var/log/* $dir/$i"_"@$time # shut-down the machine sudo shutdown -h now
+
+the first instruction (after the shebang) was my attempt to use the drbl-ocs but i have not really an idea what this is. I believe it's another interpreter which can handle shell scripts too.. Am i right ?
+
+an here is the syslinux.cfg i use:
+
+append initrd=/live/initrd.img boot=live username=user config quiet noswap edd=on nomodeset nodmraid noeject locales=en_US.UTF-8 keyboard-layouts=NONE ocs_prerun="mount /dev/sdb2 /mnt/" ocs_prerun1="mount --bind /mnt/ /home/partimag/" ocs_live_run="/lib/live/mount/medium/syslinux/clonezilla.sh" ocs_live_extra_param="" ocs_live_batch="yes" vga=788 ip= nosplash i915.blacklist=yes radeonhd.blacklist=yes nouveau.blacklist=yes vmwgfx.enable_fbdev=1
+
+please help ! Thanks :)

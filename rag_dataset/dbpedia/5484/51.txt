@@ -1,0 +1,69 @@
+Overview
+
+Removable Media Libraries
+
+Disk Libraries
+
+Overview
+
+Storage policy copies and streams associate logical data entities with physical media. In order to configure storage policies and copies for maximum efficiency, you must understand how the system uses your storage media and the hardware-specific limitations that apply to each media type. For example, you can run multiple operations simultaneously if they are directed to disk media. However, this may cause resource contention if the jobs are directed to a tape library, since a given tape is only available for one operation at a time. The sections that follow describe issues relating to each media type.
+
+Back to Top
+
+Removable Media Libraries
+
+As removable media (tape cartridges and optical disks) can only be accessed by one tape drive (and consequently one operation) at a time, you must plan carefully to avoid resource contention. The sections that follow explain how contention can arise.
+
+Removable Media Groups
+
+A media group is simply one or more related media to which data is written during a data protection operation. There is a one-to-one correspondence between media groups and data streams. Each time a given stream is in use, it transfers data to or from the same media group. Consequently, the data stored by a media group tends to be from the same subclient(s).
+
+Within a media group, only one media receives the data secured by the data protection operation. This media is called the active media. Once the active media reaches capacity, either through one large backup/migration or a series of smaller ones, the MediaAgent gets a new media from a scratch pool, designating it as the active media. While the original active media still contains valid data, it is no longer used for data protection operations; however, it will be used if the data it contains is needed for a data recovery operation. Over time, additional media are cycled through the active state and the media group grows. The size (i.e., the number of tapes) of the media group depends on the retention period of the copy through which the data was backed up/migrated and the quantity of data backed up/migrated to the media during the retention period.
+
+Backup/Migration Series within Removable Media Groups
+
+A removable media group can contain the data of more than one subclient. The data mix, if any, depends on whether the backups/migrations of other subclients are mapped to the same storage policy. Since a storage policy has a primary copy, all data sent to that storage policy is ultimately written to the same set of streams; therefore the same media group(s). When the data secured by two or more subclients are mapped to the same storage policy, the destination media group(s) become a composite of different backup/migration series; one backup/migration series per subclient.
+
+Take a simple example in which the data protection operations of two File System clients, coral and onyx, are associated with the same storage policy, A, which is associated with a tape library. Assume no subclients are declared; hence, each client computer comprises only the default subclient. When data protection operations of these subclients are initiated, the data is written to the same media group in the form of archive files as shown in the following figure. Each data protection operation produces one archive file. Although the data resides on the same media, the data retains the identity of their origins thus preserving their integrity for data restoration/recovery.
+
+In the previous example, the media group comprised two backup/migration series. If additional subclients were associated with the same storage policy, even subclients from different Agents, then the media group would contain one more backup/migration series for each additional subclient.
+
+When you associate subclients with storage policies (and consequently copies), it is important to realize that only one subclient can access a given media at a time. Unless, during a data protection operation, data multiplexing is performed, and these operations of different subclients can run in parallel.
+
+However, regardless of data multiplexing, data recovery operations that need access to multiple backup/migration series on media cannot run simultaneously. In the example above, a restore/recovery of Backup 1 to coral cannot run at the same time as a restore/recovery of Backup 2 to onyx.
+
+Media Contention within Removable Media Groups
+
+When you direct the data protection operations from different subclients to the same storage policy, you increase the likelihood of resource contention for those storage policy copies that are associated with removable media libraries. A media group can support one operation at a time. As a result, data protection or data recovery operations that access the same storage policy at the same time may actually be performed serially. This is particularly true if the corresponding storage policy is configured to provide only one data stream. Removable media contention tends to lessen as the number of configured streams increases. Even so, since a given backup/migration can use any stream, it is possible that the data for different clients could, over time, be written to the same stream, therefore the same tapes. Consequently, removable media contention can arise when backing up/migrating or restoring/recovering data to different clients that share the same storage policy.
+
+Remember, the system does not require you to consolidate the data of different subclients or client computers within the same storage policy. To avoid the effects of media contention, you may want to create additional storage policies.
+
+Scratch Pools
+
+A scratch pool is a repository of new and pruned media. Each storage policy copy that is associated with a media library is also associated with a scratch pool. Removable media cycle through the scratch pool.
+
+When a media group exhausts the capacity of the active media, it marks the media as full and appropriates another from the scratch pool. Over time and in accordance with the associated retention period, data is pruned by the pruning utility. Once all of the data on a given media has been pruned, the system recycles the tape by reassigning it from the media group back to the scratch pool where it can be reused. Of course, if the associated retention period is unlimited, the data never expires; consequently, the media never recycles and the size of the media group continues to grow with each data protection operation.
+
+Drive Pools and Resource Contention
+
+A drive pool is a group of drives within a single tape library that are controlled by a specific MediaAgent. Each storage policy copy that is associated with a tape library is also associated with a drive pool.
+
+To get the most out of your tape libraries, you can allocate the arm changer and drives within a library to different MediaAgents within the CommCell. The system creates a drive pool for all of the drives within a given library that are controlled by a specific MediaAgent.
+
+If you divide control of a library�s drives among multiple MediaAgents, you must take the following into account to avoid resource contention:
+
+When a library�s resources are divided among MediaAgents, jobs running via a particular MediaAgent can only use drives that are attached to that MediaAgent. This means that fewer drives are available and resource contention is more likely than if the library were not shared.
+
+When you configure storage policies, the number of drives in the smallest drive pool associated with any copy of the storage policy determines the maximum number of streams that can be created simultaneously by any copy of the storage policy.
+
+Back to Top
+
+Disk Libraries
+
+For NAS iDataAgents, disk libraries should be used with NDMP Remote Server policies.
+
+Theoretically, there is no limit to the number of streams that can access a disk simultaneously (though if too many simultaneous operations are attempted performance suffers).
+
+Consequently, resource contention is not an issue for a storage policy if all of the storage policy�s copies are associated with disk libraries. Still, all copies of a storage policy must have the same number of streams. If one copy of a storage policy is associated with a disk library while another copy is associated with a media type that places physical limitations on the number of streams supported (e.g., tape), the copy directed to disk is subject to those limitations as well.
+
+For example, assume that we have both a tape library and a disk library attached to a MediaAgent. We want to use tape media for long-term archive storage while using disk media for day-to-day operations. Within the tape library we plan to use one drive pool, which contains five media drives. When we create the storage policy that accesses the drive pool, we must set the maximum number of streams for all copies of the storage policy to five. If we try to run a five-stream database backup and a single stream file system restore/recovery from the disk library simultaneously, resource contention will occur. Although a disk can easily support many more than five streams, the physical limitation of the tape hardware imposes a logical limitation on the disk hardware.

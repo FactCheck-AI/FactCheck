@@ -1,0 +1,117 @@
+The Application APACHE MESOS
+
+Apache Mesos was born as a research project at Berkeley University, California and it's done in the C ++ language. The first presentation was in 2009 under the name of Nexus. But it was not until 2016 that Apache Mesos announced its version 1 in which the unification of containers supporting Docker and APPC was added. The latest stable version is 1.3.0 released in 2017.
+
+What is Apache Mesos?
+
+It is an open-source Cluster administrator based on the Linux kernel, unlike Mesos can run on any platform, be it Linux, Windows or OSX. It also provides applications with APIs for resource management and planning.
+
+It abstracts CPU, memory, storage and other resources from dedicated servers or virtual machines allowing elastic systems that are easy to build and that can be run efficiently, highlighting fault tolerance.
+
+Mesos uses a two-tier scheduling system where it decides how many resources to assign to each Framework and the Framework decides which resources to accept and what tasks to run on those resources. This allows you to get closer to optimization by sharing the cluster between different Frameworks by scaling up to 50,000 nodes.
+
+What is it for?
+
+Mesos is used to run large applications, especially those that handle large volumes of data and it becomes unfeasible to run on a single server. Mesos allows the cluster to be used to run the frameworks on which the application runs, distributing the load among the different servers and thus avoiding overloads, achieving optimal performance. Mesos is commonly used for Java, Python, Scala and R applications.
+
+Mesos is used by Twitter, Apple, PayPal, Atlassian and many other large companies in their data centres.
+
+The core task of Apache Mesos is the scheduling of containers in the cluster. Mesos executes the containers reliably and in a resource-saving manner on the cloud nodes. Rescheduling takes place if necessary, e.g. B. when a resource fails or when alternative, more suitable resources become free. Then the execution of a container is shifted to another resource.
+
+Apache Mesos abstracts the concrete infrastructure to resources such as computing power, network or storage. The user of Mesos only hands over a container for execution. Mesos hides whether this is then executed in a local virtual machine, a private or public IaaS cloud or on classic server racks. Mesos also arranges network connections and storage mounts as required. The aim is to operate several clients and applications in the cluster as easily and effectively as on a local computer so that the available resources can be used as effectively as possible.
+
+Most Popular Frameworks in Moses
+
+· Apache Spark: It is a distributed programming platform that focuses on speed, in Machine Learning it offers calculation times in memory superior to other products. It is usually used in applications written in Java, Scala, R and Python.
+
+· Cassandra: it is a NoSQL database that allows the handling of large volumes of data focusing on linear scalability and availability.
+
+· Akka: is a framework for concurrent, distributed and fault-tolerant programming in the JVM, mainly based on Scala but also supporting Java.
+
+· Apache Kafka - is a message broker that provides a high-performance, unified platform for real-time manipulation of data sources.
+
+Apache Mesos Features
+
+Mesos offers many features that you would expect from a cluster manager, such as:
+
+· Scalability up to 10,000 nodes
+
+· Resource Isolation for Tasks via Linux Containers
+
+· Effective CPU and memory resource planning
+
+· Highly accessible wizard through Apache ZooKeeper
+
+· Web interface for monitoring cluster status
+
+· Linear Scalability you can easily scale linearly up to 10,000 nodes.
+
+· High availability fault-tolerant Master and agent replica using Zookeeper
+
+· Containers: natively supports the use of containers with Docker and Apps.
+
+· Isolated Connections - Uses C groups for isolation of CPU, memory, disk, ports, GPUs, and modules for isolation of custom resources.
+
+· Two levels of Planning: Supports running legacy and cloud-native applications in the same cluster with pluggable scheduling policies.
+
+· APIs: provides HTTP applications for the development of new distributed applications to operate the cluster and monitoring.
+
+· Web UI - Built-in, web user interface, to view cluster status and navigate containers
+
+· Multi-platform: it runs on Linux, OSX, and Windows.
+
+Apache Mesos Architecture
+
+The basic Mesos Architecture consists of having 3 Masters one inactive state and two in standby ready to use if the asset fails, three Zookeepers (quorum) that allow fault tolerance and three Slaves where Frameworks run.
+
+Mesos is based on a Master process that manages the Slave processes, these slaves run on each node of the cluster, and the Frameworks run tasks on the Slaves.
+
+The Master is responsible for sharing resources between Frameworks by offering a list of resources available between multiple Slaves. Decide how many resources to offer to each Framework depending on availability and guided by organizational policies.
+
+The Frameworks that run in Apache Mesos consist of 2 components, a scheduler that registers the resources offered by the Master and an executor launched in the Slave node to run the tasks (tasks) of the Framework. As mentioned previously, the Master determines what resources to offer to each Framework and the Framework planner decides which resources to use from those offered. When the Framework accepts certain resources, it sends Mesos a description of the tasks it wants to run on it.
+
+Slaves provide isolation for the executors of the Framework running on the same Slave using already existing isolation mechanisms of the operating system.
+
+Zookeeper is a centralized system that stores configuration information, providing distributed synchronization and group services. In Mesos, it is used to avoid failures by assigning a new Master when the asset fails.
+
+How Does The Planner Work?
+
+In the image, we see how the process of resource allocation and task execution works.
+
+1. Slave 1 reports to the Master that it has specific resources available, in this case, S1, 4 CPU, 4 GB RAM, then the allocation module indicates that all available resources should be assigned to Framework 1.
+
+2. Resources are offered to Framework 1.
+
+3. Framework 1 sends to the Master the tasks it wants to execute on Slave 1 using for task 1 s1, 2 CPU, 1 GB RAM and for task 2 s1, 2 CPU, 2 GB RAM.
+
+4. In this final step, the Master sends the tasks to the Slave, which is in charge of assigning the appropriate resources to the executor of Framework 1 to execute both tasks.
+
+We can see that it still has 1 CPU and 1 GB free RAM, so the Master will surely offer these resources to Framework 2. The planning process will repeat itself once the tasks finish executing and have free resources.
+
+WHAT HAPPENS WHEN THE MASTER FAILS?
+
+One of the main features of Apache Mesos is fault tolerance, but how does this work?
+
+All Frameworks and Slaves depend on the Master, so it is essential that it be fault-tolerant, for this the Master is designed with a "soft" state, so its internal state can be completely rebuilt based on information provided by the Slaves and the Frameworks.
+
+The only Master status is Active Slaves, Active Frameworks, and Running Tasks. This information is enough to know what resources each Framework is using and to run allocation policies.
+
+To accomplish this, multiple Masters are run in an active-standby configuration using Zookeeper as the leader. When the active Master fails, Zookeeper selects a new Master as active, and the Slaves and planners connect to this new Master cloning its status.
+
+Apache Mesos also reports node and executor failure to the Framework scheduler, which can react to these errors using policies of its choice.
+
+To handle faults in the Mesos planners allows Frameworks to register multiple planners so that when one fails, another is notified to take control.
+
+Apache Mesos License
+
+Mesos is an Apache License 2.0 licensed software, and users are not restricted to use, distribute, modify, or distribute derivative versions of the software.
+
+Apache Mesos Operating Environment
+
+Mesos can be run on various Linux (64bit) and MacOSX (64bit) operating systems. GCC 4.8.1 or Clang 3.5 or higher is required to build Mesos from the source.
+
+Mesos requires Linux kernel 2.6.28 or higher, but Linux kernel 3.10 or higher supports a completely independent process management function. Although there are some restrictions on Windows, Mesos can be run.
+
+Conclusion
+
+In this post, we have seen the concepts of Apache Mesos, now we already know in broad strokes what it is for, how it works and in what situations we should implement a technology of this type. The application can remain unchanged, it doesn't require knowing that it runs on Mesos, and Mesos itself does its work silently and effectively.

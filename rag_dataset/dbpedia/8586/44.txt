@@ -1,0 +1,37 @@
+Tony Williams aka ‘honestpuck’ has built a script to enable tab-completion for autopkg in bash.
+
+This means that you can type
+
+$ autopkg s⇥
+
+(where ⇥ is the tab key) and it will autocomplete to
+
+$ autopkg search
+
+This will also work for recipe names:
+
+$ autopkg run BBEdit⇥⇥ BBEdit.download BBEdit.jss BBEdit.pkg BBEdit.install BBEdit.munki
+
+This is really useful. Auto-completion not only saves on typing, but helps to avoid errors.
+
+Installing autocompletion in your profile
+
+Tony has provided instructions on how to install the script with brew. However, it not hard to install this manually in your .bash_profile or .bashrc. First, clone the github repository on to your system (I keep all projects like this in an un-creatively named ‘Projects’ folder):
+
+$ cd ~/Projects $ git clone https://github.com/Honestpuck/autopkg_complete.git
+
+This will download the project to autopkg_create. The file we need is the autopkg file inside that folder.
+
+Then add the following lines to your .bash_profile or .bashrc:
+
+if [[ -r "$HOME/Projects/autopkg_complete/autopkg" ]]; then source "$HOME/Projects/autopkg_complete/autopkg" fi
+
+You will need to adjust the path if you are using a different location. Basically these lines say: if this file exists and is readable, then read and interpret it as bash source. Since you need to define functions in the context of the shell, you need to `source` the file, rather execute it as script. (When you run the the file as a script, the functions will be defined in the context of the script, and then ‘forgotten’ when the script ends.)
+
+Save your new profile and open a new Terminal window or type
+
+$ source ~/.bash_profile
+
+to update an existing shell.
+
+Thanks again to Tony Williams, this is very useful!

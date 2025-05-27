@@ -1,0 +1,357 @@
+PLoS Comput Biol. 2018 Nov; 14(11): e1006593.
+
+PMCID: PMC6258381
+
+PMID: 30419016
+
+A regularity index for dendrites - local statistics of a neuron's input space
+
+, Conceptualization, Formal analysis, Funding acquisition, Investigation, Methodology, Software, Validation, Writing – original draft, Writing – review & editing,#1,* , Formal analysis, Funding acquisition, Investigation, Methodology, Software, Validation, Writing – review & editing,#2,3 , Funding acquisition, Validation, Writing – review & editing,1 , Funding acquisition, Validation, Writing – review & editing,1 and , Conceptualization, Formal analysis, Funding acquisition, Investigation, Methodology, Software, Supervision, Validation, Writing – original draft, Writing – review & editing2,3,*
+
+Laura Anton-Sanchez
+
+1 Departamento de Inteligencia Artificial, Universidad Politécnica de Madrid, Madrid, Spain
+
+Find articles by Laura Anton-Sanchez
+
+Felix Effenberger
+
+2 Ernst Strüngmann Institute (ESI) for Neuroscience in Cooperation with Max Planck Society, Frankfurt/Main, Germany
+
+3 Frankfurt Institute for Advanced Studies (FIAS), Frankfurt/Main, Germany
+
+Find articles by Felix Effenberger
+
+Concha Bielza
+
+1 Departamento de Inteligencia Artificial, Universidad Politécnica de Madrid, Madrid, Spain
+
+Find articles by Concha Bielza
+
+Pedro Larrañaga
+
+1 Departamento de Inteligencia Artificial, Universidad Politécnica de Madrid, Madrid, Spain
+
+Find articles by Pedro Larrañaga
+
+Hermann Cuntz
+
+2 Ernst Strüngmann Institute (ESI) for Neuroscience in Cooperation with Max Planck Society, Frankfurt/Main, Germany
+
+3 Frankfurt Institute for Advanced Studies (FIAS), Frankfurt/Main, Germany
+
+Find articles by Hermann Cuntz
+
+Abigail Morrison, Editor
+
+1 Departamento de Inteligencia Artificial, Universidad Politécnica de Madrid, Madrid, Spain
+
+2 Ernst Strüngmann Institute (ESI) for Neuroscience in Cooperation with Max Planck Society, Frankfurt/Main, Germany
+
+3 Frankfurt Institute for Advanced Studies (FIAS), Frankfurt/Main, Germany
+
+Research Center Jülich, GERMANY
+
+#Contributed equally.
+
+The authors have declared that no competing interests exist.
+
+Copyright © 2018 Anton-Sanchez et al
+
+This is an open access article distributed under the terms of the Creative Commons Attribution License, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
+
+Associated Data
+
+Supplementary Materials
+
+pcbi.1006593.s001.tif (1.0M)
+
+GUID: 012A1209-20DF-4F2A-8138-6FC3E3AA574A
+
+pcbi.1006593.s002.tif (1.4M)
+
+GUID: 1B13A13E-0B93-4950-BC42-0986B922E5D9
+
+pcbi.1006593.s003.tif (1.7M)
+
+GUID: 0B7DACE8-5B99-4E71-988C-E3CF6A07B7B0
+
+GUID: D06B2E40-D6A9-4124-844C-BC821F5BD96E
+
+pcbi.1006593.s005.tif (1.5M)
+
+GUID: 60562381-F1FA-493D-A433-FAEFFA810F56
+
+GUID: 3D2EDE67-4F3B-4D5D-AF09-11EBC5757AA6
+
+Data Availability Statement
+
+Data are available from www.NeuroMorpho.Org, Version 7.0 (released on 09/01/2016).
+
+Abstract
+
+Neurons collect their inputs from other neurons by sending out arborized dendritic structures. However, the relationship between the shape of dendrites and the precise organization of synaptic inputs in the neural tissue remains unclear. Inputs could be distributed in tight clusters, entirely randomly or else in a regular grid-like manner. Here, we analyze dendritic branching structures using a regularity index R, based on average nearest neighbor distances between branch and termination points, characterizing their spatial distribution. We find that the distributions of these points depend strongly on cell types, indicating possible fundamental differences in synaptic input organization. Moreover, R is independent of cell size and we find that it is only weakly correlated with other branching statistics, suggesting that it might reflect features of dendritic morphology that are not captured by commonly studied branching statistics. We then use morphological models based on optimal wiring principles to study the relation between input distributions and dendritic branching structures. Using our models, we find that branch point distributions correlate more closely with the input distributions while termination points in dendrites are generally spread out more randomly with a close to uniform distribution. We validate these model predictions with connectome data. Finally, we find that in spatial input distributions with increasing regularity, characteristic scaling relationships between branching features are altered significantly. In summary, we conclude that local statistics of input distributions and dendrite morphology depend on each other leading to potentially cell type specific branching features.
+
+Author summary
+
+Dendritic tree structures of nerve cells are built to optimally collect inputs from other cells in the circuit. By looking at how regularly the branch and termination points of dendrites are distributed, we find characteristic differences between cell types that correlate little with other traditional branching statistics and affect their scaling properties. Using computational models based on optimal wiring principles, we then show that termination points of dendrites generally spread more randomly than the inputs that they receive while branch points follow more closely the underlying input organization. Existing connectome data validate these predictions indicating the importance of our findings for large scale neural circuit analysis.
+
+Introduction
+
+The primary function of dendritic trees is to collect inputs from other neurons in the nervous tissue [1,2]. Different cell types play distinct roles in wiring up the brain and are typically visually identifiable by the particular shape of their dendrites [3]. However, so far no branching statistic exists that reliably associates individual morphologies to their specific cell class [4,5], indicating that we have not yet identified the morphological features that are characteristic for the differences in how neurons connect to one another. Theoretical considerations have provided systematic qualitative insight into the question of how dendrite shape relates to specific connectivity. Dendrites are thought to collect their inputs using the shortest amount of cable and minimizing conduction times in the circuit [3,6–9] and they have been proposed to maximize the possible connection repertoire [10]. Of the possible connections that a neuron could make by anatomical proximity only a small, relatively invariable number become functional synapses [11]. But it has generally been proposed that the connection probability between a dendrite and an axon can be determined by the amount of anatomical overlap between the two [12–14]. Furthermore, dendrite shape has been linked to the number of synapses based on the optimal wiring assumptions described above, linking total dendrite length and the number of synapses that determine the morphology [15]. This leads to the question whether specific axonal arrangements or synapse distribution patterns may coincide with specific typical dendritic morphological characteristics [16].
+
+A useful concept to relate dendritic trees with their underlying connectivity comes from extended minimum spanning trees (MSTs) that connect a set of target points while minimizing total cable length and path lengths in the tree toward the root where signals get integrated [6,7]. Such MSTs were shown to produce accurate dendritic morphologies when the corresponding target points were selected adequately [7,15,17,18]. This approach has previously linked the distribution of target points to actual synapse locations, as well as to the number of branch points (BPs) and termination points (TPs) [15]. Here, we study the relationship between local statistics of spatial input distributions and the respective dendritic morphology using MSTs generated on different target point distributions. In order to do this we use a regularity index R that measures the degree of clustering of points in a given volume based on the average nearest neighbor (NN) distance. Specifically, the statistic R is defined as the ratio between the observed mean NN distance of a set of points in a given volume and the expected mean NN distance of the same number of points distributed uniformly in the same volume, i.e. in a setting of complete spatial randomness. Randomly distributed points from a uniform distribution (i.e. samples from a Poisson process) thereby yield a value of R = 1 in the limit. When R > 1, NN distances are on average larger than in a uniform random distribution, meaning that the points are distributed more regularly. When R < 1, NN distances are on average shorter, indicating that the points are more clustered than expected by chance. The measure R has been used in a wide variety of scientific disciplines, such as physics, biology, geography and astronomy [19–22]. In neuroscience, a variant of R was used to describe the regular spacing of ganglion cells in the retina [23–25]. In particular, Cook performed a comparison of measures based on NN distances to study retinal mosaics [26], including R, which they refer to as the dispersion index. The statistic R has also been applied to graph theoretical problems such as minimum spanning trees [27], but to the best of our knowledge it has not yet been considered to characterize neuronal morphology. In the following, we first estimate R for BPs and TPs in real dendrites and then use MST-based morphological models to compare distributions of BPs and TPs with the underlying distribution of target points as a proxy for their corresponding synaptic input distributions.
+
+Results
+
+R values in branch points (BPs) and termination points (TPs) of real dendrites
+
+The value of the statistic R, defined as the quotient of the average nearest neighbor (NN) distance to the one expected from a matching uniform distribution can be obtained for any given set of points in Euclidean space. We first calculated R for the set of BPs and TPs in real dendrites to estimate how regularly the dendrites spread in the circuit ( ). One issue when computing R on finite point clouds that has been given little attention in the literature so far is that a naïve calculation yields a biased result due to boundary effects. This bias is due to the fact that the enclosing volume of the point cloud is usually not known. In the special case of planar convex volumes a bias correction can be performed analytically [28], but these methods are not available for higher-dimensional and non-convex carrier volumes such as the ones occurring in our case. We addressed this issue by developing a Monte Carlo (MC) based approach to estimate for a given volume the reference value for a Poisson process numerically and obtain the value of R without edge effects. This method also provided us with specific confidence intervals for our estimates (see Methods and S1–S4 Figs). We then estimated R for BPs and TPs using our MC based approach, resulting in separate statistics RBP and RTP for the sets of branch and termination points, respectively ( ).
+
+The mean estimated values of R in four three-dimensional (3D) and four two-dimensional (2D) cell types varied widely. For almost all cases we observed a tendency of RTP being slightly larger than RBP. To study whether there were significant differences between the RBP and RTP values of different cell types, and because not all of the necessary assumptions for ANOVA were satisfied, we used the Kruskal-Wallis test and then applied the Mann-Whitney test with the Bonferroni method to adjust the p-values for pair-wise comparisons. Using the Kruskal-Wallis test we found significant differences (p-value < 2.2 × 10−16) in the four tests performed, namely between the RBP values in 3D cells, RTP in 3D cells and the two analogous cases in 2D. In 3D dendrites, the spatial distribution of BPs and TPs was most clustered in motoneurons, followed by hippocampal pyramidal cells, neocortical pyramidal cells, and finally dentate granule cells ( ). Pair-wise comparisons revealed that there was no significant difference between the RBP values of neocortical pyramidal cells and hippocampal pyramidal cells or between RTP values of neocortical pyramidal cells and granule cells. In the case of the four planar cell types ( ), dendritic arborization (da) neurons in the fly larva were well characterized by the clustering of their BPs. We found no significant difference between the RTP values of Lobula Plate tangential cells (TCs) in the fly, cerebellar Purkinje cells and Retinal ganglion cells, a large inhomogeneous group of cell types. Pair-wise comparison also showed no significant difference between the RBP values of Purkinje cells and Retinal ganglion cells. In view of the above results, the only cell types where no differences were detected either in the R values for their branch or termination points were Purkinje cells and Retinal ganglion cells. However, it should be noted that our data set only contained 15 reconstructions of Purkinje cells. The results for Purkinje cells could therefore be dependent on the small number of data in that group. It is important to note that all eight populations in were composed of subgroups with strong differences in their functional role in the nervous system. Moreover, morphologies within the separate subgroups were partly obtained in different species, preparations and developmental ages. To illustrate the effect this can have on the analysis, we dissected fly da neurons and TCs into their respective characteristic subgroups ( ). Da neurons are known to subdivide into morphologically distinct classes (I–IV) and using our statistic R these can be separated into clusters ( ), corresponding to their specific R values. In particular, class III da neurons with their large number of small terminal segments (STSs) exhibited small R values consistent with the clustering of BPs and TPs due to these STSs. On the other hand, sub-classes of TCs (two types of horizontal system cells—HSN and HSE, and three types of vertical system cells—VS2, VS3 and VS4) did not separate into different clusters according to their R values ( ). This was not surprising since TCs were previously characterized in detail using morphological models and shown to have similar inner branch rules even though their spanning areas are easy to distinguish [17]. In all TC classes, TPs were more regularly distributed than BPs and all RTP values were close to 1, indicating configurations close to complete spatial randomness.
+
+We also tested if the average distance to the NN of BPs and TPs of each individual cell corresponds to that of a uniform random pattern. The p-values for the tests were computed using the simulations of Poisson point cloud instances with the observed number of points, generated with our MC based approach. Considering 2D cells, da neurons showed a strong tendency to clustering in both their BPs and TPs: in 97.06% and 79.41% of the cases we rejected that the distribution of BPs and TPs, respectively, was uniform random in favor of a clustered distribution. All 3D cell types, except for dentate granule cells, showed rejection of a random distribution in their BPs with high confidence, in favor of a clustered distribution. In general, only few 2D or 3D cell types hinted to regular BP or TP distributions (see S1 Table for detailed results of all analyzed cell types). The statistic R for BPs and TPs is therefore a useful measure to distinguish between cell classes and characterize the relationship between dendritic tree structure and input architecture. However, it remains to be shown that the use of this local statistic in dendritic morphology is not simply an altered version of another traditional branching statistic. In order to test this and to check whether the input architecture as measured by R is reflected in other branching statistics, we computed the pairwise correlations between R and other commonly used statistics in 3D ( ) and 2D ( ) dendrites. We found that RBP and RTP do not have strong correlations with other typical branching statistics of dendritic trees in both cases. Since RBP and RTP were different in distinct cell types and were weakly correlated with other branching statistics, we postulate that these measures are a useful addition to the collection of branching statistics used to classify dendritic morphology.
+
+Morphological models with a given value of R for synaptic inputs
+
+In order to estimate how clustered or regular distributions of synapse locations co-depend with the clustering of BPs and TPs, we generated morphological models targeting different sets of input points with specified values RInput of their statistic R. This process required a target point cloud generator for specified R values. To obtain a wide range of sets of target points with specific R values and number of target points, we started with a set of points obtained from a uniform random distribution; we then iteratively moved the input points until the point cloud reached a set target R value (see Methods and ). Dendrites were considered as tree structures connecting these target points [7,15].
+
+We computed synthetic branching structures connecting the target points with minimal resources using the extended minimum spanning tree (MST) algorithm [7]. The MST connecting the target points minimizes at the same time both total cable length and the path length from any point along the tree to the root, using a parameter which weighs the two costs via a balancing factor (bf; see Methods). shows planar and 3D sample trees obtained from connecting 100 target points in a 200 μm x 200 μm square and 200 μm x 200 μm x 200 μm cube with different values of RInput, using the extended minimum spanning tree for different values of bf. Tree structures on sets of target points connected with the MST algorithm were previously studied for periglomerular neurons in the olfactory bulb and they were shown to approximate numbers and features of actual synapses [15]. Studying the relationship between target points and MSTs will therefore be informative about the relationship between synapses and dendritic trees.
+
+We generated morphological models on different sets of 2D and 3D target points with specific values of RInput and found that with higher RInput the trees became denser and the branches were more regularly distributed. This can be clearly observed in the 3D sample trees of as RInput increases. As might be expected, more regularly distributed inputs generally resulted in more regular branching structures ( for 3D cases in ). Compared with the input point distributions, BPs and TPs describing the dendritic geometry were more regularly distributed in all cases where RInput < 1 and were slightly less regular than the input point distribution in cases where RInput > 1. Furthermore, the spatial organization of BPs and TPs was clearly different: in line with reconstructions of real dendritic trees, RTP values were consistently closer to 1 while RBP followed RInput more faithfully. We obtained similar relations between RInput, RBP, and RTP for different numbers of points. RBP is therefore most likely a better estimate for the regularity of a neuron’s underlying synaptic input organization. To show that this was also the case in more detailed morphologies we used a morphological model from layer 5 cortical pyramidal cells [7] and obtained similar results in a realistic range of RInput = 0.7 ± 0.1 ( ).
+
+We compared this result with one biological dataset where synapse locations and dendritic reconstructions were available ( ), specifically for the aforementioned adult-born periglomerular neurons of the olfactory bulb [15,29,30]. Interestingly, the results for both actual reconstructions and MSTs constructed on the actual synapse locations were in line with our simulations from this study. These results indicate that RInput could be estimated using RBP whereas termination points in dendrites and MSTs are more randomly distributed, characterized by a value of RTP close to 1. We then compared RInput, RBP, and RTP in two connectome datasets from the fly ( ) [31,32]. Using serial electron microscopy it has increasingly become possible to obtain data of morphological reconstructions and the exact position of synapses between the same cells. Interestingly, we found the predictions from our model to be validated by these two datasets with RBP and RInput values being more similar and RTP being closer to 1. Overall, we believe that constructing synthetic versions of real dendritic trees with more detailed morphological models would be useful for inferring the underlying spatial organization of the synaptic inputs. This will provide invaluable predictions for connectome and large-scale neural circuit analyses.
+
+Apart from the relations between RInput, RBP, and RTP, it is interesting to study the relation of RInput with branching statistics typically used to characterize dendritic trees ( ). As was the case for RBP and RTP in real dendritic tree reconstructions, RInput was weakly correlated with other branching statistics, suggesting that input architecture is not well captured by traditional branching statistics whereas RBP and RTP would be useful measures for this and to classify dendritic morphology accordingly. However, both total length and number of branch points increased reliably with RInput, requiring the minimum spanning tree to use more cable to connect the points that are more widely spread and more branches to reach out to all distributed inputs in space. This correlation clearly affected the scaling behavior that was previously observed between number of inputs and total length as well as between number of inputs and number of branch points [15]. Here, the previously reported 2/3 power between these measures was not affected by RInput, but a clear increase in total length was observed as an offset in the relationship ( ). MST-based dendrites connecting target points with an increased RInput required much more cable length.
+
+Discussion
+
+We have presented here a new branching statistic for dendrites, the regularity index R, which is based on the average nearest neighbor (NN) distance between branch, termination or input points of a given dendritic tree, capturing the regularity of their respective distributions. Specifically, R is defined as the ratio of the observed average NN distance to the one expected in a matching random point cloud. This makes R independent of the absolute scale of the dendritic arbor, but rather captures the clustering characteristic of the branch and termination points and allows for comparison of cells of different sizes. We found that the measure allowed to distinguish dendritic trees from different cell classes for which the local statistics of the spatial input distribution differed. The values of R computed for the sets of branch points (RBP) and termination points (RTP) of reconstructions of real dendritic trees correlated little with most other commonly considered branching statistics, indicating that these measures provide new descriptive power for dendritic trees that was not captured by existing measures.
+
+Using morphological models, we then found that, in the range of observed RBP and RTP values in real cells, overall RBP values were good predictors of the input distribution (RInput) while RTP values were generally closer to 1, implying more randomly distributed termination points in dendritic trees. We also showed that more regular input distributions with higher values of RInput showed increased dendritic total length in the model. An analogous increase in total length was observed in real dendrites with increasing RBP. Input targets can loosely be compared to synaptic inputs for certain cell types such as the periglomerular neurons of the olfactory bulb in [15]. While this indicates a specific link between the input organization and dendritic morphology it by no means implies a causal relation between input locations and resulting dendrite growth. Rather, dendrites and axons organize to implement possible connectivity patterns between neurons and specific dendritic morphology could constrain the space of potential synapses. However, the precise biological processes are not yet known.
+
+On the one hand, the correlation between the synapse distribution and RBP can be a direct consequence of optimal wiring since minimum spanning trees shows the same correlation as real dendrites. But it is not known how the biological growth process leads to such optimal wiring. On the other hand, the precise distribution of branches within the range of optimally wired dendrites can vary substantially and the details of the growth process can lead to these differences in morphology. Increased self-avoidance of branches during dendrite development through molecular mechanisms such as Dscam would for example most likely lead to larger values of R [33]. Increased localized branching due to some accumulation of molecular cues could in the other extreme lead to clustered branches in mature dendrites leading to R values lower than 1. Overall, we expect the proposed measure R to be able to better predict these type of local features of the input organization of given dendritic tree types compared to other existing branching statistics. As more realistic morphological models based on minimum spanning trees become available, as is the case for example for TCs [17] and dentate gyrus granule cells [18], this information can be further refined.
+
+The expected NN distance of a uniform random distribution used for calculating R has traditionally been obtained analytically, assuming infinitely many points in an unbounded volume. Yet, in practice all of our volumes V containing a given point cloud C were finite and bounded resulting in strong biases and edge effects if R is estimated in a naïve way (see Methods). Our approach to remedy these adverse effects was to use Monte Carlo (MC) simulations to predict the expected NN distances of uniform distributions numerically, using instances of Poisson point clouds. This procedure furthermore allowed for the specification of confidence intervals for the estimated values of R (S2–S4 Figs). We found that confidence intervals were mostly dependent on the number of points in the point cloud (decreasing as the number of points increases) and only to a lesser extent on the shape of its supporting volume. For small numbers of points (N < 20), the confidence intervals were large, making the estimated values of R less reliable (S3 Fig). Our MC based approach will be useful in further studies beyond the scope of dendritic morphology since point processes in any type of finite volumes will necessarily exhibit similar important boundary effects.
+
+There are several ways in which the measure R could be generalized. First of all, for simplicity we assumed point clouds with uniform homogeneous densities when computing R. This can be extended to non-homogenous cases by studying local estimates of point densities. This would lead to a localized version of measure R. Secondly, we only considered one nearest neighbor per point. This allows for point clouds with different global clustering behavior to get assigned the same value of R (e.g. a point cloud where all points have the same coordinates and a point cloud where pairs of points have the same coordinates both get assigned a value of R = 0). But the statistic R can easily be extended to consider neighborhoods of higher order, containing the k nearest neighbors for each point, k ≥ 2. Furthermore, other quantities commonly used for the analysis of spatial point patterns such as the cumulative distribution function of the nearest-neighbor distances, known as G function, Ripley’s K function [34] and related quantities can be used. These extensions are subject of future studies. If neighbor distances are used to define simplicial complexes on a given point cloud, and the resulting complexes are examined using methods from algebraic topology, this leads to techniques used in topological data analysis [35]. Related techniques most recently also were proposed as methods to examine dendritic structures [36].
+
+Overall, we presented a new statistic, the regularity index R, for dendrites that allows to relate the morphology of a neuron with the specific connectivity that it implements. It has low correlation with most commonly used statistics of dendritic branching and is extendable in several ways, providing a useful new statistic for the classification of dendritic trees.
+
+Methods
+
+The analysis was performed with the TREES toolbox [7] (www.treestoolbox.org), an open-source software package for MATLAB (Mathworks, Natick, MA). Functions r_mc_tree to calculate R values in existing trees, as well as PP_generator_tree to generate point distributions with given R values were newly implemented and are now available in the TREES toolbox package.
+
+Average nearest neighbor ratio R
+
+The average nearest neighbor (NN) ratio R=r¯0/r¯E compares the observed average NN distance r¯0 between a set of N points with the expected average distance r¯E between nearest neighbors under the assumption of a uniform random distribution (with the same number of points covering the same total area or volume). This approach was first described in [20,37].
+
+R provides a measure of the clustering of the points in a point cloud C. Concretely, the closer the points are to a random (Poisson) distribution, the closer to 1 the value of R becomes (as the values of r¯0 and r¯E are more similar). Values of R less than 1 correspond to clustering (r¯0<r¯E). When all points overlap (R = 0) the most clustered condition is reached. For values of R greater than 1, nearest neighbors are further apart than it would be expected for a random distribution (r¯0>r¯E). In 2D arrangements, the most dispersed situation is the one in which the points are spaced on a triangular lattice, yielding a value of R = 2.1491 [20]. The measure R has the advantage of being easily interpretable. For example, R = 0.5 indicates that nearest neighbors are, on average, half as distant as expected under random conditions (c.f. ). Note though that R only considers pairwise NN distances and e.g. cannot distinguish the case in which all pairwise NN distances are 0 (pairs of points have the same coordinates) from a fully clustered situation (all points of the point cloud have the same coordinates).
+
+Formally, for a finite point cloud C, i.e., a set of N points, the average NN distance is
+
+r¯0=1N∑i=1i≠jNmin{di,j},
+
+where di,j denotes the Euclidean distance between the i-th and the j-th point in C. This is the numerator in the definition of R=r¯0/r¯E. The denominator in R is the expected NN distance r¯E for a Poisson process that can be analytically computed as r¯E=1/2ρ in the 2D case and as r¯E=Γ(4/3)/4πρ/33 in the 3D case, where Γ(∙) is the gamma function and ρ is the point density, i.e., the mean number of points per unit area or volume V. For a uniform random distribution, an unbiased estimator of ρ is ρ^=N/V. Thus, to obtain the point density, an accurate estimate of the supporting volume V of the point cloud C is required.
+
+Computing the supporting volume of a point cloud using α-shapes
+
+In order to estimate R, a volume V supporting a given point cloud C needs to be estimated. The most common way to do this is to use the convex hull of C. Yet, with this choice the supporting volume is overestimated if it is non-convex, which results in incorrect values of R (see for examples S1 Fig). Better estimates of R were obtained using α-shapes. α-shapes were devised to characterize the shapes of point clouds and can be seen as an extension to the notion of a convex hull [38,39]. Formally, to any given finite point cloud C in 2D or 3D Euclidean space a one parameter family of curves or surfaces Sα called α-shapes can be constructed, with α ϵ [0,∞]. By construction, S∞ corresponds to the convex hull and S0 to the point cloud itself. For any finite C, Sα is a finite set and a smallest value α0 exists (called critical value of α) such that Sα0 is connected and contains all points of C. Furthermore a smallest value αk < ∞ exists for which Sαk=S∞. The α-spectrum of C is defined as the monotonically increasing, finite sequence of values (αi)0≤i≤k, 0 ≤ αi < ∞, αi < αi+1 for which each Sαi is a distinct α-shape and the shapes do not change between two consecutive values αi,αi+1. To compute what we call a “tight hull” around a point cloud C we selected the center point αk/2 of the α-spectrum, for which we rounded the index k/2 to the next integer value. Especially for point clouds with non-convex supporting volumes, this yielded much better estimates of the true volume and thus less biased estimates of R. See S1B and S1C Fig for an example of the convex hull compared to the tight hull of point clouds with non-convex support, and the resulting values of R.
+
+Boundary effects and Monte Carlo approximation of R
+
+After estimating a supporting volume V using α-shapes as described in the previous section, naïve calculations of R still yielded biased results due to boundary effects. This is due to points in C for which the distance to the boundary of V was smaller than the average NN distance r¯0 in C. As the calculation of r¯E assumes that balls of radius r¯E surrounding all points are always completely contained in V, R was overestimated. Two proposed techniques correcting for such boundary induced biases are the so-called toroidal edge correction and the border area edge correction. The first one removes boundaries by transforming a (bounded) rectangular study region into a torus by identifying opposing edges. The second one specifies a buffer zone around the boundary of the study region and uses the part remaining in the middle as the new study region. Points in the buffer zone are used only to take measurements of points (NN distances in our case) that are within the new study region and are further discarded. Yet, both techniques have their drawbacks: the toroidal edge correction cannot be used for non-rectangular regions, as is the case of dendrites, and the border area edge correction discards a large number of available points, which makes it inappropriate for many dendrites for which the number of points was not large enough. Moreover, analytical bias corrections were also derived [28], but those require convex planar surface areas as supporting volumes.
+
+Since most dendritic arbors form non-convex areas and volumes (S1A Fig) and many of them do not have a high number of BPs and TPs, instead of computing r¯E analytically from an estimate of the point density and using an edge correction technique, we used a Monte Carlo (MC) simulation approach to estimate r¯E. For a point cloud C consisting of N points contained in a volume V, we first computed r¯0 as the observed mean NN distance in C. We then sampled M = 100 uniform random point clouds within V, each containing N points. Importantly, we scaled each sampled point cloud so that its supporting volume (again computed using α-shapes) matched V. When this process, which we call volume correction, was not performed the estimates of R values were positively biased, especially for small point clouds (S2 Fig). For each of those point clouds we then computed the average NN distance, r¯Ei,i=1,…,M, and obtained an estimate of r¯E as the mean of the r¯Ei,i=1,…,M, values of the simulations. No edge corrections were necessary since all the average NN distances were biased by the same edge effects. To check the correctness and convergence properties of this approach, we generated point clouds with known R values and compared them to the R values estimated from our MC based method (S4 Fig). In each MC iteration we additionally estimated confidence intervals [ci−,ci+] for r¯Ei,i=1,…,M with confidence level 1 − α using 1,000 bootstrap samples. We then obtained the corresponding confidence intervals [c−,c+] for r¯E by computing the sample mean of the set of ci− and ci+,i=1,…,M, to obtain c− and c+, respectively. The confidence interval [c−,c+] for r¯E in turn leads to the statistic R as [r¯0c+,r¯0c−]. Throughout this study we used α = 0.05. We observed that the confidence intervals were mainly influenced by the number N of points in the point cloud and to a much lesser extent by the shape of the supporting volume V. We assessed this by computing confidence intervals both for planar sample configurations with known R value (S2 Fig) in a square area and for the 3D cell classes considered in this work (S3 Fig).
+
+R values for dendrites from NeuroMorpho.Org
+
+To evaluate the measure R on real cells, we obtained a number of reconstructions of dendritic trees from NeuroMorpho.org [40], Version 7.0 (released on 09/01/2016) using the TREES toolbox [7]. Specifically, we chose reconstructions belonging to eight well-known cell classes for our investigations, namely cortical pyramidal cells, hippocampal pyramidal cells, dentate granule cells, motoneurons, retinal ganglion cells, cerebellar Purkinje cells, fly larva dendritic arborization (da) neurons and fly Lobula Plate tangential cells (TCs). The first four classes were 3D cells and the last four classes were 2D. For selecting the reconstructions, we obtained all reconstructions from NeuroMorpho.org that were classified as either having "moderate" or "complete" reconstructions of their dendritic trees and belonged to the control group (to exclude mutant cells). We then grouped all reconstructions by archive and sorted out archives that contained poor reconstructions by manual visual inspection as well as archives containing one cell only. This left us with a number of reconstructions of each cell type, denoted in parentheses in the following list: cortical pyramidal cells (3784), hippocampal pyramidal cells (399), dentate granule cells (154), motoneurons (82), retinal ganglion cells (322), cerebellar Purkinje cells (15), fly da neurons (68), fly TCs (55). After downloading the reconstructions in the SWC format, these were read into and pre-processed using the TREES toolbox. For each reconstruction, this process involved deleting the soma and the axon if present (function delete_tree for the SWC regions 1, 2, 5 and 10) and then re-joining the parts of the tree if the deletion operation yielded several roots (function catx_tree), followed by a final removal of higher order multifurcations (function repair_tree). This process was not necessary for fly TCs that were available with the TREES toolbox [17]. Da neurons were furthermore subdivided into da class I-IV cells and TCs into horizontal system northern (HSN) cells, horizontal system equatorial (HSE) cells, and vertical system (VS2, VS3, and VS4) cells ( ). For each tree we then computed a number of statistics: total dendrite length, number of BPs, mean branch order of BPs and TPs, mean branch angle, mean asymmetry [41], mean path length, R for the set of BPs (RBP), R for the set of TPs (RTP), volume of the convex hull, volume of the tight hull and cable density as total length per volume in the tight hull. The tight hulls as well as their volumes needed for estimating R were computed using α-shapes as described previously (function boundary).
+
+Point pattern generator with target R
+
+In order to study a wide range of different spatial input organizations in the morphological model we implemented a procedure for obtaining point clouds with specified R values. First, we generated a number N of random points within a square or cube. We then iteratively estimated the R value using our MC method and moved each point in the direction of or away from its NN, depending on whether the target R was smaller or greater than the current R, respectively, ( ) until the target R value was reached. The shift was proportional to the difference between the current R value and the target R, i.e., the closer the values of both, the smaller the movements. shows the number of iterations required for our algorithm to reach different values of R, from highly clustered (R = 0.2) to highly regular (R = 1.8) given 1,000 initial points. We obtained very similar results for different numbers of points.
+
+Morphological models connecting points with different R values
+
+Using the point pattern generator described above we generated a large number of point clouds in 2D or 3D spaces. Planar arrangements were fixed to 200 μm x 200 μm and 3D arrangements were set to 200 μm x 200 μm x 200 μm. A large variety of number of points (50–400 points) and R values (0.2–1.8) were computed. We subsequently computed morphological models based on optimal wiring principles that connected these point clouds. Optimal wiring of the underlying point cloud was implemented using a minimum spanning tree as described in [7] using the algorithms available in the TREES toolbox [7,42]. Briefly, optimal wiring minimizes both total cable length and the path length from any point along the tree to the root, using a balancing factor bf to weigh the second cost (that is: total cost = cable length cost + bf ∙ path length cost). For bf = 0 the algorithm only seeks to minimize the total cable length while for large bf it seeks also to minimize the length of the connections from the root to any point. Values of bf greater than 0 and less than 1 represent a mixture of the two objectives that are realistic for real dendrites. As a further constraint, we did not allow multifurcations (more than two daughter branches at each BP) in the computed synthetic trees.
+
+The minimization was achieved via a greedy minimum spanning tree algorithm [43]. We computed synthetic dendritic trees from all the point clouds, connecting the points to a root in the center and using bf values from 0.2 to 0.8. We obtained 100 trees for each individual condition (point density, R and bf value). For each synthetic dendritic tree, RInput of its target points was known (since the inputs were obtained using the point pattern generator), and we estimated R values of its BPs (RBP) and TPs (RTP) in order to study the relation between these measures. In addition, we analyzed the relation between RInput and other branching statistics commonly used to describe dendritic morphology. Specifically, we studied the total length, the number of branching points, the mean path length from the root of BPs and TPs, the mean branching angle, the mean branching order and the mean asymmetry at the branching points of each synthetic dendritic tree. The asymmetry for each branching point was defined as the ratio of v1/(v1 + v2) for v1 < v2, where v1 and v2 are the counts of TPs in each of the two daughter branches. All statistics were computed using the TREES toolbox.
+
+We also considered a possible exclusion zone around the target points due to the physical dimension of synapses that these might represent. This is an optional parameter ε in the PP_generator_tree function, a minimal distance between all points in the resulting point pattern. All morphological models from Figs , and were recalculated with ε = 0.5 μm with very similar results (S5 Fig). The simpler results without considering volume exclusion are shown in the main manuscript. It is worth noting that real neurons grow in a packed tissue and volume exclusion also most likely plays a role in the growth process of the dendritic trees. However, simulating dendrite growth in the packed tissue was outside of the scope of this study.
+
+Morphological model of L5 cortical pyramidal cells
+
+We used a model previously described in Cuntz et al., 2010 [7], to check whether the conclusions for simple abstract morphological models hold for more realistic morphologies. The construction pipeline has been well described previously but was adapted to rearrange the targets for apical, oblique and basal dendrites separately to match a given target RInput using our new PP_generator_tree function. Only then were the targets connected to MSTs as described earlier. Synthetic morphologies (N = 332) were generated for with RInput values from a normal distribution around 0.7 ± 0.1. The numbers were chosen to approximately simulate a distribution of dendritic parameters for cortical pyramidal cells (see ). Sample morphologies were generated with the same initial target point distribution altered to specifically match RInput of 0.6, 0.8 and 1.2 using PP_generator_tree.
+
+Connectome analysis
+
+Data in were obtained from three different datasets and processed in similar ways to obtain adequate values for RInput, RBP, and RTP. The same new TREES toolbox function r_mc_tree was used to calculate the R values separately on the synapse locations, branch points and termination points separately. The olfactory bulb dataset [29,30] was used similarly as previously [15]. The fly medulla dataset was obtained during a Hackathon at Janelia Farm Campus (https://github.com/janelia-flyem/SevenMedullaColumnConnectome) [31]. The fly larva dataset comes from an analysis of neurons of the peripheral nervous system at two larval developmental stages [32]. For the fly connectome datasets very tight hulls (α = 0.9) were used to avoid including lengthy axonal segments without synapses or branch points. Both inputs and outputs were included in the analysis since fly neurites contain both presynaptic and postsynaptic puncta on the same branches.
+
+Supporting information
+
+S1 Fig
+
+Edge and boundary effects on the estimate of R.
+
+A. Example of a non-convex TC dendrite. Magenta shows the hull around BPs and cyan shows the hull around TPs. (Left) Convex hull. (Right) Tight hull. B, C. Examples of the implemented approximation to compute the R measure through a tight hull in 2D for an L-shape with 1,000 points (B), and in 3D for a double L-shape with 3,000 points (C). Expected R and volume V using the correct volume (computed analytically, red), using the convex hull (green) and using the tight hull (blue). Rc is the calculated value using our Monte Carlo (MC) approach within the tight hull to remove the remaining bias.
+
+(TIF)
+
+Click here for additional data file.(1.0M, tif)
+
+S2 Fig
+
+Confidence analysis when estimating R from N points.
+
+Single traces (left) and averages of 10 traces (right) for estimates of R without (top, blue straight lines) and with volume correction (bottom, red straight lines). Dots in all cases indicate the individual simulation results and shaded areas show the confidence intervals in each case. The grey shaded areas show the best possible confidence intervals calculated analytically. Each estimate of R was done with our Monte Carlo based estimator using 100 iterations.
+
+(TIF)
+
+Click here for additional data file.(1.4M, tif)
+
+S3 Fig
+
+Confidence analysis in dendrites of real 3D neurons.
+
+A. Confidence interval length for RBP with respect to number of BPs for 3D cells. Confidence intervals decreased with number of BPs. B. Similar graph for the confidence in the RTP measure. C. Estimated R values for BPs and TPs of 3D cells with confidence intervals. Horizontal axis shows estimated R value for sets of BPs, vertical axis estimated R value for sets of TPs of each cell. Each dot represents one cell, color coded by cell type. Horizontal and vertical whiskers indicate 95% confidence intervals for RBP and RTP, respectively. Diamonds show average values and confidence intervals for each population.
+
+(TIF)
+
+Click here for additional data file.(1.7M, tif)
+
+S4 Fig
+
+R value estimation as a function of number of MC iterations.
+
+Estimated R values via MC for point clouds with known R in a square area with N = 50 points. Dashed lines show the true R values. The mean and standard deviation of 10 estimated R values are shown in green (R = 0.5), red (R = 1) and cyan (R = 1.5). Here we used from 50 to 100 Monte Carlo iterations to obtain each estimated R.
+
+(TIF)
+
+S5 Fig
+
+Morphological models considering volume exclusion.
+
+A. Similar panels as but enforcing a minimum distance of ε = 0.5 μm between targets to reflect more realistic volume exclusion where targets are physical entities that cannot lie directly on top of each other. B. Similar tests for panels from .
+
+(TIF)
+
+Click here for additional data file.(1.5M, tif)
+
+S1 Table
+
+Randomness test for BPs and TPs of real dendrites.
+
+The null hypothesis is uniform Poisson and we test three different alternative hypotheses:
+
+1) R ≠ 1 corresponds to a clustered or regular point pattern.
+
+2) R < 1 corresponds to a clustered point pattern.
+
+3) R > 1 corresponds to a regular point pattern.
+
+The table shows the percentage of cells of each type (for 2D and 3D cells and for BPs and TPs) for which the null hypothesis is rejected (i.e., p-value < 0.05) for each one of the alternative hypotheses (columns 2, 3 and 4, respectively). The p-values are computed using the Monte Carlo simulations of Poisson point cloud instances for each cell.
+
+(DOCX)
+
+Acknowledgments
+
+We are grateful to J. DeFelipe and P. Jedlicka for helpful discussions.
+
+Funding Statement
+
+This work has been partially supported by the Spanish Ministry of Economy and Competitiveness through the Cajal Blue Brain (C080020-09; the Spanish partner of the EPFL’s Blue Brain initiative) and TIN2016-79684-P projects, by the Regional Government of Madrid through the S2013/ICE-2845-CASI-CAM-CM project, by the European Union’s Horizon 2020 Framework Programme for Research and Innovation under Specific Grant Agreement No. 785907 (HBP SGA2), by the German Federal Ministry of Education and Research grant 01GQ1406, and by the German Research Foundation grant CU217/2-1. LA-S acknowledges support from the Spanish MINECO scholarship at the Residencia de Estudiantes and from the UPM grant for the stay in the Ernst Strüngmann Institute (ESI) for Neuroscience. The funders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript.
+
+Data Availability
+
+Data are available from www.NeuroMorpho.Org, Version 7.0 (released on 09/01/2016).
+
+References
+
+1. Chklovskii DB. Synaptic connectivity and neuronal morphology: two sides of the same coin. Neuron. 2004;43: 609–617. 10.1016/j.neuron.2004.08.012 [PubMed] [Google Scholar]
+
+2. Stepanyants A, Chklovskii DB. Neurogeometry and potential synaptic connectivity. Trends Neurosci. 2005;28: 387–394. 10.1016/j.tins.2005.05.006 [PubMed] [Google Scholar]
+
+3. Ramón y Cajal S. Histology of the nervous system of man and vertebrates. translated by Swanson Larry W 1995, Oxford University Press; 1995. [Google Scholar]
+
+4. Torben-Nielsen B, Cuntz H. Introduction to dendritic morphology In: Cuntz H, Remme MWH, Torben-Nielsen B, editors. The Computing Dendrite—From Structure to Function. New York, NY: Springer New York; 2014. pp. 3–22. 10.1007/978-1-4614-8094-5 [Google Scholar]
+
+5. Ascoli GA, Alonso-Nanclares L, Anderson SA, Barrionuevo G, Benavides-Piccione R, Burkhalter A, et al. Petilla terminology: nomenclature of features of GABAergic interneurons of the cerebral cortex. Nat Rev Neurosci. 2008;9: 557–568. 10.1038/nrn2402 [PMC free article] [PubMed] [Google Scholar]
+
+6. Cuntz H, Borst A, Segev I. Optimization principles of dendritic structure. Theor Biol Med Model. 2007;4: 21 10.1186/1742-4682-4-21 [PMC free article] [PubMed] [Google Scholar]
+
+7. Cuntz H, Forstner F, Borst A, Häusser M. One rule to grow them all: a general theory of neuronal branching and its practical application. PLoS Comput Biol. 2010;6: e1000877 10.1371/journal.pcbi.1000877 [PMC free article] [PubMed] [Google Scholar]
+
+8. Wen Q, Chklovskii DB. A cost-benefit analysis of neuronal morphology. J Neurophysiol. 2008;99: 2320–2328. 10.1152/jn.00280.2007 [PubMed] [Google Scholar]
+
+9. Anton-Sanchez L, Bielza C, Benavides-Piccione R, DeFelipe J, Larrañaga P. Dendritic and axonal wiring optimization of cortical GABAergic interneurons. Neuroinformatics. 2016;14: 453–464. 10.1007/s12021-016-9309-6 [PMC free article] [PubMed] [Google Scholar]
+
+10. Wen Q, Stepanyants A, Elston GN, Grosberg AY, Chklovskii DB. Maximization of the connectivity repertoire as a statistical principle governing the shapes of dendritic arbors. PNAS. 2009;106: 12536–12541. 10.1073/pnas.0901530106 [PMC free article] [PubMed] [Google Scholar]
+
+11. Fares T, Stepanyants A. Cooperative synapse formation in the neocortex. PNAS. 2009;106: 16463–16468. 10.1073/pnas.0813265106 [PMC free article] [PubMed] [Google Scholar]
+
+12. Peters A, Payne BR. Numerical relationships between geniculocortical afferents and pyramidal cell modules in cat primary visual cortex. Cereb Cortex. 1993;3: 69–78. Available: http://www.ncbi.nlm.nih.gov/pubmed/8439740 [PubMed] [Google Scholar]
+
+13. Binzegger T, Douglas RJ, Martin KAC. A quantitative map of the circuit of cat primary visual cortex. J Neurosci. 2004;24: 8441–8453. 10.1523/JNEUROSCI.1400-04.2004 [PMC free article] [PubMed] [Google Scholar]
+
+14. Hill SL, Wang Y, Riachi I, Schürmann F, Markram H. Statistical connectivity provides a sufficient foundation for specific functional connectivity in neocortical neural microcircuits. Proc Natl Acad Sci U S A. 2012;109: E2885–94. 10.1073/pnas.1202128109 [PMC free article] [PubMed] [Google Scholar]
+
+15. Cuntz H, Mathy A, Häusser M. A scaling law derived from optimal dendritic wiring. PNAS. 2012;109: 11014–11018. 10.1073/pnas.1200430109 [PMC free article] [PubMed] [Google Scholar]
+
+16. Cuntz H. The dendritic density field of a cortical pyramidal cell. Front Neuroanat. 2012;6: 2 10.3389/fnana.2012.00002 [PMC free article] [PubMed] [Google Scholar]
+
+17. Cuntz H, Forstner F, Haag J, Borst A. The morphological identity of insect dendrites. PLoS Comput Biol. 2008;4: e1000251 10.1371/journal.pcbi.1000251 [PMC free article] [PubMed] [Google Scholar]
+
+18. Beining M, Jungenitz T, Radic T, Deller T, Cuntz H, Jedlicka P, et al. Adult-born dentate granule cells show a critical period of dendritic reorganization and are distinct from developmentally born cells. Brain Struct Funct. Springer Berlin Heidelberg; 2017;222: 1427–1446. 10.1007/s00429-016-1285-y [PubMed] [Google Scholar]
+
+19. Chandrasekhar S. The law of distribution of the nearest neighbor in a random distribution of particles. Reviews of Modern Physics Stochastic Problems in Physics and Astronomy. 1943. pp. 86–87. [Google Scholar]
+
+20. Clark PJ, Evans FC. Distance to nearest neighbor as a measure of spatial relationships in populations. Ecology. 1954;35: 445–453. 10.2307/1931034 [Google Scholar]
+
+21. Bishop MA. Point pattern analysis of eruption points for the Mount Gambier volcanic sub-province: A quantitative geographical approach to the understanding of volcano distribution. Area. 2007;39: 230–241. 10.1111/j.1475-4762.2007.00729.x [Google Scholar]
+
+22. Bishop MA. Point pattern analysis of north polar crescentic dunes, Mars: A geography of dune self-organization. Icarus. 2007;191: 151–157. 10.1016/j.icarus.2007.04.027 [Google Scholar]
+
+23. Wässle H, Riemann HJ. The mosaic of nerve cells in the mammalian retina. Proc R Soc B. 1978;200: 441–461. Available: http://www.ncbi.nlm.nih.gov/pubmed/26058 [PubMed] [Google Scholar]
+
+24. Eglen SJ. Development of regular cellular spacing in the retina: theoretical models. Math Med Biol. 2006;23: 79–99. 10.1093/imammb/dql003 [PubMed] [Google Scholar]
+
+25. Cook JE, Becker DL, Kapila R. Independent mosaics of large inner- and outer-stratified ganglion cells in the goldfish retina. J Comp Neurol. 1992;318: 355–366. 10.1002/cne.903180402 [PubMed] [Google Scholar]
+
+26. Cook JE. Spatial properties of retinal mosaics: an empirical evaluation of some existing measures. Vis Neurosci. 1996;13: 15–30. 10.1017/S0952523800007094 [PubMed] [Google Scholar]
+
+27. Dry M, Preiss K, Wagemans J. Clustering, randomness, and regularity: spatial distributions and human performance on the traveling salesperson problem and minimum spanning tree problem. J Probl Solving. 2012;4: 2 10.7771/1932-6246.1117 [Google Scholar]
+
+28. Ripley BD, Rasson J-P. Finding the edge of a Poisson forest. J Appl Probab. 1977;14: 483–491. 10.1017/S0021900200025729 [Google Scholar]
+
+29. Mizrahi A. Dendritic development and plasticity of adult-born neurons in the mouse olfactory bulb. Nat Neurosci. 2007;10: 444–452. 10.1038/nn1875 [PubMed] [Google Scholar]
+
+30. Livneh Y, Feinstein N, Klein M, Mizrahi A. Sensory input enhances synaptogenesis of adult-born neurons. J Neurosci. 2009;29: 86–97. 10.1523/JNEUROSCI.4105-08.2009 [PMC free article] [PubMed] [Google Scholar]
+
+31. Takemura S, Xu CS, Lu Z, Rivlin PK, Parag T, Olbris DJ, et al. Synaptic circuits and their variations within different columns in the visual system of Drosophila. PNAS. 2015;112: 13711–13716. 10.1073/pnas.1509820112 [PMC free article] [PubMed] [Google Scholar]
+
+32. Gerhard S, Andrade I, Fetter RD, Cardona A, Schneider-Mizell CM. Conserved neural circuit structure across Drosophila larval development revealed by comparative connectomics. Elife. 2017;6: e29089 10.7554/eLife.29089 [PMC free article] [PubMed] [Google Scholar]
+
+33. Hattori D, Millard SS, Wojtowicz WM, Zipursky SL. Dscam-mediated cell recognition regulates neural circuit formation. Annu Rev Cell Dev Biol. 2008;24: 597–620. 10.1146/annurev.cellbio.24.110707.175250 [PMC free article] [PubMed] [Google Scholar]
+
+34. Ripley BD. Modelling Spatial Patterns. J R Stat Soc. 1977;39: 172–212. [Google Scholar]
+
+35. Carlsson G. Topology and data. Bull Am Math Soc. 2009;46: 255–308. 10.1090/S0273-0979-09-01249-X [Google Scholar]
+
+36. Kanari L, Dłotko P, Scolamiero M, Levi R, Shillcock J, Hess K, et al. A Topological Representation of Branching Neuronal Morphologies. Neuroinformatics. Neuroinformatics; 2018;16: 3–13. 10.1007/s12021-017-9341-1 [PMC free article] [PubMed] [Google Scholar]
+
+37. Hertz P. Über den gegenseitigen durchschnittlichen Abstand von Punkten, die mit bekannter mittlerer Dichte im Raume angeordnet sind. Math Ann. 1909;67: 387–398. 10.1007/BF01450410 [Google Scholar]
+
+38. Edelsbrunner H, Kirkpatrick D, Seidel R. On the shape of a set of points in the plane. IEEE Trans Inf Theory. 1983;29: 551–559. 10.1109/TIT.1983.1056714 [Google Scholar]
+
+39. Edelsbrunner H, Mücke EP. Three-dimensional alpha shapes. ACM Trans Graph. 1994;13: 43–72. 10.1145/174462.156635 [Google Scholar]
+
+40. Ascoli GA, Donohue DE, Halavi M. NeuroMorpho.Org: a central resource for neuronal morphologies. J Neurosci. 2007;27: 9247–9251. 10.1523/JNEUROSCI.2055-07.2007 [PMC free article] [PubMed] [Google Scholar]
+
+41. Van Pelt J, Uylings HBM, Verwer RWH, Pentney RJ, Woldenberg MJ. Tree asymmetry—A sensitive and practical measure for binary topological trees. Bull Math Biol. 1992;54: 759–784. 10.1016/S0092-8240(05)80142-9 [PubMed] [Google Scholar]
+
+42. Cuntz H, Forstner F, Borst A, Häusser M. The TREES toolbox—probing the basis of axonal and dendritic branching. Neuroinformatics. 2011;9: 91–96. 10.1007/s12021-010-9093-7 [PMC free article] [PubMed] [Google Scholar]
+
+43. Prim RC. Shortest connection networks and some generalizations. Bell Syst Tech J. 1957;36: 1389–1401. Available: http://www.alcatel-lucent.com/bstj/vol36-1957/articles/bstj36-6-1389.pdf [Google Scholar]
+
+Articles from PLOS Computational Biology are provided here courtesy of PLOS

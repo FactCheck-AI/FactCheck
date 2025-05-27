@@ -1,0 +1,101 @@
+Curtis Knight, Isak Savo, and Taj Morton are the lead maintainers and developers of autopackage, a set of tools designed to let developers build and distribute distribution-neutral installation packages. In this interview, they share their vision of the project and where Linux packaging in general is going.
+
+Linux.com: How and when did the autopackage project begin? What does the current project team look like?
+
+Isak: Autopackage began in 2002, when Mike Hearn decided he wanted to make Linux easier to use. Hongli Lai and Curtis joined the team in the first year, while I joined somewhere around 2004, and so did Taj Morton. The current team is mostly Curtis, Taj, and I, with occasional contributions from other people on the project mailing list. Geographically, we are spread apart. I live in Sweden, Taj on the west coast of the US, and Curtis on the east coast.
+
+LC: Many open source developers work on FOSS projects in their free time. Does that hold true for you as well?
+
+Isak: Yes, I work on autopackage in my spare time. I recently graduated from university with an M.Sc. in Computer Engineering, and am now working in the R&D department of ABB Sweden, where I am a software developer and researcher.
+
+Curtis: Not enough hours in the day for me! I work as a mechanical engineer and support mechanical, electrical, and hydraulic system design focused on the construction equipment industry.
+
+Taj: I am currently in my last year of secondary school.
+
+LC: How would you articulate the major goals of the autopackage project? Was developing a package management framework like the Windows click-click-install systems an objective?
+
+Isak: I don’t think our goal ever was to create an InstallShield/MSI for Linux. It is just that the UI for autopackage is simple, familiar, and fairly straightforward to implement. The objective of autopackage is, and has always been, to make software installation on Linux easier.
+
+Besides, I think that the autopackage UI is more user-friendly than the average Windows installer. Mike Hearn, who started the project, had a vision of what software installation will look like in the future.
+
+Curtis: Intuitive use is a goal, but a comparison with other existing installation methods may not be useful. We have a few firsts to our credit. For instance, using a Web browser to initiate an install session was not a popular feature until we rolled it out in autopackage. There are, however, a couple of installation systems using that hook now.
+
+LC: Autopackage makes desktop users’ life easier. Does it also have something to offer to system admins and developers?
+
+Isak: Autopackage certainly helps developers, since it lets them create a single package that works for many users. This is especially valuable for developers of smaller projects that do not have the manpower or the community support to create packages for every distribution out there.
+
+Curtis: There are no specific advantages for admins, but we made sure we did not inhibit that use case. If a graphical front end is not available, an admin can run packages remotely by invoking the terminal console front end.
+
+LC: What major projects are now available for download as autopackages? Will we see any significant additions to the list in the near future?
+
+Taj: Inkscape is probably the largest project that uses and supports our project. Most of our users come from smaller projects that aren’t distributed or packaged by distributions. By using autopackage, they only need to create one package instead of many for different distributions. Also, they can make it easier for their users to install their software.
+
+Isak: aMSN instant messaging is another big project that uses autopackage. Twenty-five percent of all traffic to autopackage.org originates from aMSN’s Web site. Abiword is another major project using autopackage. On the commercial side, we have Xara Extreme as well as a Dutch tax program benefiting from our project.
+
+Curtis: Smart Technologies, which supplies interactive whiteboards, uses autopackage for remote client software delivery.
+
+LC:An article we published last year talks about your project’s struggle for acceptance — in particular, the slow growth in the number of applications available as autopackages. How do you react to that?
+
+Isak: It is a bit sad obviously, and we had hoped we would get better acceptance. Looking back, maybe, we were a bit naive on that front. What keeps us motivated now is the positive feedback we get from the existing user base. This feedback is mostly from users installing packages, but sometimes also from developers providing autopackages of their software.
+
+LC: To a great extent, autopackage aims to address the complexities that the multiplicity of Linux distributions poses to the common user. Do you think that the variety of choice in this case hinders the wider adoption of Linux?
+
+Isak: Maybe, yes. I think the most fundamental issue blocking adoption is simply the fact that Linux is different from Windows. Also, Linux has a history of bad hardware support, and this pain point isn’t fully resolved yet. Recent backing by hardware vendors such as Dell and Hewlett-Packard selling computers with Linux pre-installed, as well as the open sourcing of ATI’s graphics drivers and specifications, will certainly help in that area.
+
+And, of course, one thing that often shows up as an issue is software installation on Linux. Windows or Macintosh users are used to visiting a Web site, reading about a particular software package and then downloading it without hassles. Through autopackage, we provide that functionality.
+
+Curtis: Autopackage can reduce the complexity of software installation on Linux, but it also has the potential to add to the Linux distribution landscape. Autopackage seeks to share the effort on packaging user-facing software, and can make a new distribution happen quickly. The developers of the flavour-in-making would just need to focus on the core system software, while using autopackages to supply user software. The result will be distributions that are highly focused and quick to create, without compromising on upstream user software.
+
+LC: Do you think Linux has really arrived as a desktop platform? What other issues (besides too many distros) do you think affect the reach of Linux as a desktop OS?
+
+Taj: The biggest issue here is still the lack of a standard Linux platform like a Windows or a Mac OS. A Linux platform is something we have discussed in the past, but never had the development firepower or community support to follow through. By platform, we mean a standard set of libraries with stable ABIs providing a guaranteed set of APIs. Then, application maintainers and independent software vendors (ISV) could simply say, “We rely on Desktop Linux Platform 1.3,” and know that with v1.3, all the libraries that their applications need will be available.
+
+To a certain extent, distros provide this platform, but unfortunately, the differences between them (and even the different versions of the same distro) are so great that they keep any “standard platform” from being created. Backward compatibility is crucial for commercial ISVs, but most Linux distros do not guarantee this.
+
+LC: Why was the autopackage project released under the LGPL instead of the GPL?
+
+Isak: I am not a lawyer, and was not with the autopackage project when the licensing decision was taken. I assume that the LGPL was adopted to make sure that non-free software would be able to use the autopackage framework.
+
+Not everything autopackage is under the LGPL. We have licensed the tools that we provide under the GPL, and use the LGPL for the necessary support code that is part of each package. Some code is even released in the public domain, with no copyright claims at all. All this is to give as many developers as possible the opportunity to use autopackage, regardless of their chosen licensing model. However, all through, we do make an effort to ensure that the “freeness” of autopackage is preserved.
+
+LC: Of late, a considerable debate has raged over some security issues surrounding the project. Critics have pointed out that autopackages, much like shar files, are simply executable shell archives, and share similar vulnerabilities. Do you think these concerns are valid?
+
+Isak: It all boils down to trust. Ask yourself why you wouldn’t trust a package provided by a software vendor, when at the same time you do trust the actual program provided by that vendor.
+
+What few people seem to realize is that distribution packages such as . deb or .rpm contain shell script code that is executed during installation, and as such, they could also be called executable shell archives. If someone wanted to create a malicious package, it would be equally easy to do so regardless of the end package format. So no, I don’t think these concerns are valid.
+
+LC: Also, there have been apprehensions that since autopackages install to the /usr directory by default, they may conflict with a distro’s usual way of installing applications, creating problems for support teams in the end.
+
+Isak: Yes, that is one of the key issues we get criticized about. Our goal is to give the best possible integration with the system in question, and that means putting stuff under /usr. Many applications do not work when installed in, say, /usr/local, and we have tried to persuade distributions to change that. There has been recent activity on the mailing list of Damjan Jovanovic, and things may start moving in this direction soon.
+
+Damjan has talked directly with upstream projects like pkg-config and fontconfig, and has been posting updates about his progress on our wiki. If it turns out that distributions will begin to fully support /usr/local, we can start changing the default /usr to avoid conflict.
+
+Curtis: Part of the issue is that other installers do not check before clobbering files. Additionally, you would not necessarily install the same software using two different systems. The main system installer can always reinstall its package in case of problems, so that system software can be restored.
+
+LC: What is your opinion of similar projects like klik and Zero Install?
+
+Taj: Both of these projects address the same problem in different ways. Klik uses an approach similar to AppFolders, which is used by Mac OS. We have discussed the pros and cons of this approach. Klik’s packages come from Debian-compiled binaries.
+
+Isak: The upside of converting already existing packages is that you can get a lot of installers really quickly. The downside is that the final binaries have a smaller chance of actually working on user systems, since they have been compiled for a specific distribution. While some may consider this an acceptable tradeoff, others may not.
+
+ZeroInstall is really interesting because it tries to eliminate the actual installation step. The user just decides to run a program; if the system doesn’t have it, ZeroInstall automatically downloads and installs it before it is started. I have not tried it so I can’t say how well it works, but I like the idea.
+
+LC: What are the open source technologies and platforms that you think will make it big in the coming years? If you were to name one technology that a budding developer should master, what would it be?
+
+Isak: I am not sure if they constitute a technology, but I definitely see integration and communication as key areas. I’m talking about application-to-application communication (through DBus, for instance), as well as application-to-Web communication (integration with Web applications).
+
+Taj: Again, although it is not really a technology, I think that new developers should learn about the importance of keeping their library APIs and ABIs stable. Another key thing is changing the developer mindset that distros compile software. It is the software maintainers who are the most knowledgeable about how their software should be compiled and built, so they should be handling the packaging bit.
+
+LC: Where do you see the autopackage project heading two years down the line?
+
+Taj: I hope to see acceptance for autopackage grow, both in terms of the number of projects using it for distribution, as well as the distros recognizing it. Also, I hope that in two years’ time autopackage will see much more commercial usage from companies, as they port their applications to Linux and need an easy-to-use method of having their applications deployed.
+
+As far as Linux in general is concerned, I would like to see much more focus on compatibility between distros and libraries. This would definitely help Linux gain a footing in the desktop space by providing a stable platform for which programmers and companies can develop applications.
+
+Isak: I absolutely share Taj’s hopes, but realistically speaking, I doubt we’ll see any support or endorsements from major distributions. Personally, I’ve begun focusing on making autopackage easier to use for new developers. I hope to do this by improving the tools that are used to create autopackages. My vision is to have a complete GUI where everything pertaining to packaging can be done. I’ve also thought along the lines of integrating package creation into existing IDEs, such as Anjuta, KDevelop, and Monodevelop. However, all these are just loose ideas as of now.
+
+Curtis: As packaging and integration become more standardized, I see autopackage being updated to use those standard calls. This is already happening with xdg-utils and XDG_* environment variables being included in all recent distribution updates. I would look for new software, either community or commercial, that has not existed on Linux to be rolled out first as autopackages.
+
+Overall, the issues of distributing binary executables — for instance, symbol management, library sonames to API versioning, and removing application prefixing — have been shown to be useful to packagers. Certain features from system installers, such as package searching and update, are on the anvil as well.
+
+Hopefully, these ideas will help the Linux platform to surge forward, even if autopackage does not win as wide an acceptance as we hope it will.

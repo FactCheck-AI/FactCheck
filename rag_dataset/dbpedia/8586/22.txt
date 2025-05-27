@@ -1,0 +1,33 @@
+I'm new to Python and am currently converting a bash script I've created into Python, due to reaching a point where bash was simply not the correct tool for the job.
+
+I'm trying to read a file, iterate through each line in the file and then pass each line as a variable to the Popen command.
+
+from subprocess import Popen, PIPE lr = open(customoverridefile) for line in lr.readlines(): # print(line, end='') proc = Popen('autopkg repo-update {}'.format(line), stdout=PIPE, stderr=PIPE, shell=True) (out, err) = proc.communicate() print(out)
+
+The result of this code is:
+
+b'' b'' b'' b'' b'' b'' Process finished with exit code 0
+
+I can't figure out how to pass the line variable to the autopkg repo-update <line> command in Popen. I left the commented out print (line, end='') in there because I am able to iterate through the file and simply print its contents.
+
+Edit (for clarity): So my question is - how do I pipe in the variable line throughout the loop so that the command runs and the output is shown in terminal?
+
+UPDATE:
+
+I figured it out, thanks to help from the comments here. Each line was being appended with a UNIX line return \n - I resolved this by adding universal_newlines=True into my Popen command:
+
+lr = open(overridesfile) for line in lr.readlines(): proc = Popen('autopkg make-override {}'.format(line), stdout=PIPE, stderr=PIPE, shell=True, universal_newlines=True) (out, err) = proc.communicate() print(out, err, end='')
+
+Thanks for the tips & help - glad this wasn't nearly as complicated as I was beginning to expect!
+
+FINAL UPDATE:
+
+I found a solution that formatted the items exactly as I needed. When using the code above, the items would output (and weren't being processed correctly) as such:
+
+['list item 1', 'list item 2', 'list item 3', ...]
+
+I discovered that I couldn't use this, however I found my solution in this StackOverflow post.
+
+with open(overridesfile, 'r') as f: for line in f: overrideslist = line print(overrideslist, end='')
+
+Again, hope this helps somebody in the future. Cheers!

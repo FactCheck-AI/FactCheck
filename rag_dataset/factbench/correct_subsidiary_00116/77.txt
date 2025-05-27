@@ -1,0 +1,61 @@
+I will deploy ntp in my network and I need provide ntp server redundancy for clients.
+
+I will have two 7600 as stratum 1 device. But in cisco document,it said "Servers that provide synchronization to a sizeable population of clients normally operate as a group of three or more mutually redundant servers, each operating with three or more stratum 1 or stratum 2 servers in client/server modes, as well as all other members of the group in symmetric modes."
+
+So can I implement ntp server redundancy for clients with two startum 1 devices .
+
+thanks!
+
+I believe that the documentation was describing best practice for implementing NTP with a group of 3 mutually redundant servers. You certainly can implement NTP in a redundant operation with 2 servers.
+
+The advantage of having 3 servers is that if one of the servers time becomes inaccurate it is easy to recognize this and to determine who is correct (the two servers that agree) and who is in error (the one by itself). If you implement NTP with two servers and one becomes inaccurate it will be obvious that someone must be wrong but will be difficult to determine which one should be authoritative.
+
+You describe the 7600 as stratum 1 servers. How are these routers learning time?
+
+HTH
+
+Rick
+
+HTH
+
+Rick
+
+Rick,
+
+thanks for your reply.
+
+I config the 7600 as stratum 1 servers by set ntp master 1 because I don't know how to access external ntp source.
+
+If I implement NTP in a redundant operation with 2 servers, how can client get correct time ? Do I need config 'prefer' for the client or client can know which server time is correct via the algorithm?
+
+So if I can't access external ntp source,how to config the two 7600s as stratum 1 servers? I mean how to config the two 7600s as time source for other ntp client. In cisco document,it said I can't config ntp master 1 on two or more router because it can't sync with each other.
+
+In ntp best practise, http://www.cisco.com/en/US/tech/tk869/tk769/technologies_white_paper09186a0080117070.shtml#highstratum
+
+dl-1 Layer 3 distribution devices config these:
+
+ntp server
+
+ntp server
+
+ntp peer
+
+*dl-2 is another Layer 3 distribution devices .
+
+What is advantages for config ntp server and ntp peer simultaneous ？
+
+thanks for your help!
+
+If the 7600s have connectivity to the public Internet then there are many NTP servers available to the public to use. A Google search should give you an extensive list of alternatives. If the 7600s do not have connectivity to the public Internet then configuring ntp master will work ok.
+
+If you have 2 servers and each client is configured with ntp server for each 7600 the client will try to talk to both servers and will pick one to sync with. If you want to arrange which server the client prefers then you should configure prefer. If you do not configure prefer then the algorithm will choose which server to use.
+
+When you configure ntp peer the router will attempt to learn time from the configured device and will also offer its time to the configured device. So they can help each other out if one loses its time. When you configure ntp server the device will attempt to learn time from the configured device but will not offer time to the configured device. So I believe it would be appropriate for the 7600 to have ntp peer pointing to the other 7600 and for the client to have 2 ntp server pointing to both of the 7600.
+
+HTH
+
+Rick
+
+HTH
+
+Rick

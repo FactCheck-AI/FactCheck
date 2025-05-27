@@ -1,0 +1,39 @@
+Sky Italia is one of Europe’s leading media and entertainment companies and the largest pay TV provider in Italy. One of the biggest draws to the service is “X-Factor,” the award-winning TV music competition. A key part of the show is that the home viewing audience votes for their favorite performers, with the results tabulated and shared during live broadcasts. Given that viewer interactivity is the foundation of the experience, the technology driving the voting platform is mission-critical.
+
+For 12 years, Sky Italia had outsourced its voting platform to a third party, which delivered a solution that was robust, well-tested, and reliable, but was a black box. So, given the criticality of voting for the TV show, in 2021, the team behind it began to explore the idea of taking the voting platform in-house to improve performance, lower costs, and re-architect it for use cases beyond “X-Factor.” The massive audience and social media echo would put Sky Italia’s voting platform under the spotlight, so the new platform had to deliver robust performance, fault tolerance, and low latency.
+
+“We wanted to have a more generic platform, focused enough for ‘X-Factor’ but extensible enough to handle other use cases,” said Nicola Cremaschini, Principal Technical Architect of Digital Properties, Sky Italia. “In addition, in 2022, the TV show introduced temporary rankings on stage with the audience in near-real time. We had a very short time to get our platform ready to support ‘X-Factor’ live events.”
+
+With Amazon Web Services (AWS) managed services, Sky Italia was able to re-platform in just six months. It launched for the first episode of “X-Factor” season 2022, handling millions of votes per session while adhering to competition rules and providing near-real time ranking. Best of all, it delivered better performance and reduced costs by 84 percent compared to the previous single-purpose outsourced “X-Factor” voting platform.
+
+What the voting platform needed to handle
+
+Each season Sky Italia delivers seven live “X-Factor” shows, one per week. Each includes three voting sessions. Votes start when the host from the live stage opens the session, and viewers from home can vote for their favorite performers before they even sing. Viewers can vote up to 10 times during the live show. The voting platform has to identify which votes are coming from each device.
+
+For the 2022 season of “X-Factor,” Sky Italia introduced near real-time results sharing, in which the host shares the temporary ranking onstage with the audience while voting is still in progress, beside opening and closing results onstage as usual. This meant the platform also had to open and close the voting system in near real-time. Closed sessions are checked live by a notary who documents the voting results, with vote accuracy and quick responsiveness top priorities.
+
+The new voting solution also needed to support three existing channels— the “X-Factor” websites, mobile apps (Android and iOs), and Decoder and Glass. Voters needed to be able to use the authentication service leveraged on Amazon Cognito for support in social logins and via the Sky Ad login. It was also essential that the voting platform kept the interface the same as it was when it was designed 12 years ago, as the API was essentially fixed due to the massive task that would have been required to change set-top boxes across the country.
+
+Under the hood
+
+To support the architecture of the new voting platform Sky Italia uses AWS Fargate to manage underlying infrastructure and Containers to host the voting application, AWS Lambda to run code for applications without provisioning or managing servers, Amazon SQS for managed message queuing, Amazon Kinesis Data Streams to stream data coming into the vote services as events in Sky’s ranking system, and Amazon DynamoDB to deliver single-digit millisecond performance at scale.
+
+Trial by fire
+
+After getting approval of their proposed new voting platform architecture in May 2022, Cremaschini and his team set to work with an exceedingly tight deadline, aiming to go live for the first episode of the new season in October. They drove a series of pre-season tests with the goal of doubling the best-ever “X-Factor” live performance, which was 10M votes, set in 2020.
+
+Cremaschini said, “For the first live show, we had to be sure that the platform wouldn’t crash under the votes of real traffic. In July, we performed a huge amount of vote tests and did even better than our goal. We reached 60 million votes in about 10 minutes, which averaged 75,000 votes per second.”
+
+The focus of the tests was anticipating the special “X-Factor” voting session called Tilt, where two contestants have 10 minutes to present their talent. All voting happens in that time period, so the sessions go from zero to thousands of votes per second at the start and end of the session.
+
+But, as Cremaschini discovered, “The value of time is relative. Sixty seconds was a very good result for aggregating millions of votes, but for a live TV show, it’s an eternity. It’s absolutely not acceptable. Between the season’s first and second episodes, we had to fine-tune the configuration of services involved in ranking aggregation to reduce the time required to aggregate the last votes.”
+
+Not only did the team reduce the vote aggregation delay from 60 seconds to less than 10. Over the course of the first season, they also made platform adjustments to align information between the back office and email sent for final ranking, enable back-office ranking updates with auto-refresh capabilities, adjust near-real-time dashboards and filter for ranking visualization, tune the API for cost optimizations, and optimize API performance to reduce latency. Considering that “X-Factor” is a live weekly show, every improvement had to be performed, tested, and certified in three to four working days.
+
+Mission accomplished
+
+The new AWS-powered voting platform delivered the results it needed to, enabling 18 polls across all live sessions (standard and Tilt), facilitating 20M votes overall across the seven live sessions, and handling 5.7M total votes over the final live session. The platform realized a performance of 400K votes/minute at peak. Additionally, analyzing the data captured by the voting platform provided insights that helped the show adjust and build on its success, such as 47-50 percent of votes come from Decoder, 47-50 percent from the mobile app, less than 3 percent from the website, and that users tend to run out of votes sooner than expected.
+
+The performance boost, ease of setup/tear-down, and cost savings made the project an overwhelming success. “By insourcing and re-architecting the platform to managed services, we reduced our costs by 84 percent,” said Cremaschini. “We love AWS for that! Our latency is very good under a huge load (142ms latency at p95 under ~56k votes/second and ~100k RPS). We were able to support near real-time ranking for the first time. That wasn’t possible without AWS. And, before insourcing, we needed days to set up our platform. With the adoption of AWS-managed services, we were able to evolve architecture between episodes with zero operations required to handle the platform. That makes it easy for us to quickly evolve the platform for other use cases.”
+
+“It’s exactly what we set out to do,” he concluded.

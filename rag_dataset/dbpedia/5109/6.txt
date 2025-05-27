@@ -1,0 +1,1817 @@
+kind string
+
+Identifies the API resource's type. The value will be youtube#video. etag etag
+
+The Etag of this resource. id string
+
+The ID that YouTube uses to uniquely identify the video. snippet object
+
+The snippet object contains basic details about the video, such as its title, description, and category. snippet.publishedAt datetime
+
+The date and time that the video was published. Note that this time might be different than the time that the video was uploaded. For example, if a video is uploaded as a private video and then made public at a later time, this property will specify the time that the video was made public.
+
+There are a couple of special cases:
+
+If a video is uploaded as a private video and the video metadata is retrieved by the channel owner, then the property value specifies the date and time that the video was uploaded.
+
+If a video is uploaded as an unlisted video, the property value also specifies the date and time that the video was uploaded. In this case, anyone who knows the video's unique video ID can retrieve the video metadata.
+
+The value is specified in ISO 8601 format. snippet.channelId string
+
+The ID that YouTube uses to uniquely identify the channel that the video was uploaded to. snippet.title string
+
+The video's title. The property value has a maximum length of 100 characters and may contain all valid UTF-8 characters except < and >. You must set a value for this property if you call the videos.update method and are updating the snippet part of a video resource. snippet.description string
+
+The video's description. The property value has a maximum length of 5000 bytes and may contain all valid UTF-8 characters except < and >. snippet.thumbnails object
+
+A map of thumbnail images associated with the video. For each object in the map, the key is the name of the thumbnail image, and the value is an object that contains other information about the thumbnail. snippet.thumbnails.(key) object
+
+Valid key values are:
+
+default – The default thumbnail image. The default thumbnail for a video – or a resource that refers to a video, such as a playlist item or search result – is 120px wide and 90px tall. The default thumbnail for a channel is 88px wide and 88px tall.
+
+medium – A higher resolution version of the thumbnail image. For a video (or a resource that refers to a video), this image is 320px wide and 180px tall. For a channel, this image is 240px wide and 240px tall.
+
+high – A high resolution version of the thumbnail image. For a video (or a resource that refers to a video), this image is 480px wide and 360px tall. For a channel, this image is 800px wide and 800px tall.
+
+standard – An even higher resolution version of the thumbnail image than the high resolution image. This image is available for some videos and other resources that refer to videos, like playlist items or search results. This image is 640px wide and 480px tall.
+
+maxres – The highest resolution version of the thumbnail image. This image size is available for some videos and other resources that refer to videos, like playlist items or search results. This image is 1280px wide and 720px tall.
+
+snippet.thumbnails.(key).url string
+
+The image's URL. snippet.thumbnails.(key).width unsigned integer
+
+The image's width. snippet.thumbnails.(key).height unsigned integer
+
+The image's height. snippet.channelTitle string
+
+Channel title for the channel that the video belongs to. snippet.categoryId string
+
+The YouTube video category associated with the video. You must set a value for this property if you call the videos.update method and are updating the snippet part of a video resource. snippet.liveBroadcastContent string
+
+Indicates if the video is an upcoming/active live broadcast. Or it's "none" if the video is not an upcoming/active live broadcast.
+
+Valid values for this property are:
+
+live
+
+none
+
+upcoming
+
+snippet.defaultLanguage string
+
+The language of the text in the video resource's snippet.title and snippet.description properties. snippet.localized object
+
+The snippet.localized object contains either a localized title and description for the video or the title in the default language for the video's metadata.
+
+Localized text is returned in the resource snippet if the videos.list request used the hl parameter to specify a language for which localized text should be returned and localized text is available in that language.
+
+Metadata for the default language is returned if an hl parameter value is not specified or a value is specified but localized metadata is not available for the specified language.
+
+The property contains a read-only value. Use the localizations object to add, update, or delete localized titles. snippet.localized.title string
+
+The localized video title. snippet.localized.description string
+
+The localized video description. snippet.defaultAudioLanguage string
+
+The default_audio_language property specifies the language spoken in the video's default audio track. contentDetails object
+
+The contentDetails object contains information about the video content, including the length of the video and an indication of whether captions are available for the video. contentDetails.duration string
+
+The length of the video. The property value is an ISO 8601 duration. For example, for a video that is at least one minute long and less than one hour long, the duration is in the format PT#M#S, in which the letters PT indicate that the value specifies a period of time, and the letters M and S refer to length in minutes and seconds, respectively. The # characters preceding the M and S letters are both integers that specify the number of minutes (or seconds) of the video. For example, a value of PT15M33S indicates that the video is 15 minutes and 33 seconds long.
+
+If the video is at least one hour long, the duration is in the format PT#H#M#S, in which the # preceding the letter H specifies the length of the video in hours and all of the other details are the same as described above. If the video is at least one day long, the letters P and T are separated, and the value's format is P#DT#H#M#S. Please refer to the ISO 8601 specification for complete details. contentDetails.dimension string
+
+Indicates whether the video is available in 3D or in 2D. contentDetails.definition string
+
+Indicates whether the video is available in high definition (HD) or only in standard definition.
+
+Valid values for this property are:
+
+hd
+
+sd
+
+contentDetails.caption string
+
+Indicates whether captions are available for the video.
+
+Valid values for this property are:
+
+false
+
+true
+
+contentDetails.licensedContent boolean
+
+Indicates whether the video represents licensed content, which means that the content was uploaded to a channel linked to a YouTube content partner and then claimed by that partner. contentDetails.regionRestriction object
+
+The regionRestriction object contains information about the countries where a video is (or is not) viewable. The object will contain either the contentDetails.regionRestriction.allowed property or the contentDetails.regionRestriction.blocked property. contentDetails.regionRestriction.allowed[] list
+
+A list of region codes that identify countries where the video is viewable. If this property is present and a country is not listed in its value, then the video is blocked from appearing in that country. If this property is present and contains an empty list, the video is blocked in all countries. contentDetails.regionRestriction.blocked[] list
+
+A list of region codes that identify countries where the video is blocked. If this property is present and a country is not listed in its value, then the video is viewable in that country. If this property is present and contains an empty list, the video is viewable in all countries. contentDetails.contentRating object
+
+Specifies the ratings that the video received under various rating schemes. contentDetails.contentRating.acbRating string
+
+The video's Australian Classification Board (ACB) or Australian Communications and Media Authority (ACMA) rating. ACMA ratings are used to classify children's television programming.
+
+Valid values for this property are:
+
+acbC – Programs that have been given a C classification by the Australian Communications and Media Authority. These programs are intended for children (other than preschool children) who are younger than 14 years of age.
+
+acbE – E
+
+acbG – G
+
+acbM – M
+
+acbMa15plus – MA15+
+
+acbP – Programs that have been given a P classification by the Australian Communications and Media Authority. These programs are intended for preschool children.
+
+acbPg – PG
+
+acbR18plus – R18+
+
+acbUnrated
+
+contentDetails.contentRating.agcomRating string
+
+The video's rating from Italy's Autorità per le Garanzie nelle Comunicazioni (AGCOM).
+
+Valid values for this property are:
+
+agcomT – T
+
+agcomUnrated
+
+agcomVm14 – VM14
+
+agcomVm18 – VM18
+
+contentDetails.contentRating.anatelRating string
+
+The video's Anatel (Asociación Nacional de Televisión) rating for Chilean television.
+
+Valid values for this property are:
+
+anatelA – A
+
+anatelF – F
+
+anatelI – I
+
+anatelI10 – I-10
+
+anatelI12 – I-12
+
+anatelI7 – I-7
+
+anatelR – R
+
+anatelUnrated
+
+contentDetails.contentRating.bbfcRating string
+
+The video's British Board of Film Classification (BBFC) rating.
+
+Valid values for this property are:
+
+bbfc12 – 12
+
+bbfc12a – 12A
+
+bbfc15 – 15
+
+bbfc18 – 18
+
+bbfcPg – PG
+
+bbfcR18 – R18
+
+bbfcU – U
+
+bbfcUnrated
+
+contentDetails.contentRating.bfvcRating string
+
+The video's rating from Thailand's Board of Film and Video Censors.
+
+Valid values for this property are:
+
+bfvc13 – 13
+
+bfvc15 – 15
+
+bfvc18 – 18
+
+bfvc20 – 20
+
+bfvcB – B
+
+bfvcE – E
+
+bfvcG – G
+
+bfvcUnrated
+
+contentDetails.contentRating.bmukkRating string
+
+The video's rating from the Austrian Board of Media Classification (Bundesministerium für Unterricht, Kunst und Kultur).
+
+Valid values for this property are:
+
+bmukk10 – 10+
+
+bmukk12 – 12+
+
+bmukk14 – 14+
+
+bmukk16 – 16+
+
+bmukk6 – 6+
+
+bmukk8 – 8+
+
+bmukkAa – Unrestricted
+
+bmukkUnrated
+
+contentDetails.contentRating.catvRating string
+
+Rating system for Canadian TV - Canadian TV Classification System The video's rating from the Canadian Radio-Television and Telecommunications Commission (CRTC) for Canadian English-language broadcasts. For more information, see the Canadian Broadcast Standards Council website.
+
+Valid values for this property are:
+
+catv14plus – 14+
+
+catv18plus – 18+
+
+catvC – C
+
+catvC8 – C8
+
+catvG – G
+
+catvPg – PG
+
+catvUnrated
+
+contentDetails.contentRating.catvfrRating string
+
+The video's rating from the Canadian Radio-Television and Telecommunications Commission (CRTC) for Canadian French-language broadcasts. For more information, see the Canadian Broadcast Standards Council website.
+
+Valid values for this property are:
+
+catvfr13plus – 13+
+
+catvfr16plus – 16+
+
+catvfr18plus – 18+
+
+catvfr8plus – 8+
+
+catvfrG – G
+
+catvfrUnrated
+
+contentDetails.contentRating.cbfcRating string
+
+The video's Central Board of Film Certification (CBFC - India) rating.
+
+Valid values for this property are:
+
+cbfcA – A
+
+cbfcS – S
+
+cbfcU – U
+
+cbfcUnrated
+
+cbfcUA – U/A
+
+cbfcUA7plus – U/A
+
+cbfcUA13plus – U/A
+
+cbfcUA16plus – U/A
+
+contentDetails.contentRating.cccRating string
+
+The video's Consejo de Calificación Cinematográfica (Chile) rating.
+
+Valid values for this property are:
+
+ccc14 – 14+
+
+ccc18 – 18+
+
+ccc18s – 18+ - contenido pornográfico
+
+ccc18v – 18+ - contenido excesivamente violento
+
+ccc6 – 6+ - Inconveniente para menores de 7 años
+
+cccTe – Todo espectador
+
+cccUnrated
+
+contentDetails.contentRating.cceRating string
+
+The video's rating from Portugal's Comissão de Classificação de Espect´culos.
+
+Valid values for this property are:
+
+cceM12 – 12
+
+cceM14 – 14
+
+cceM16 – 16
+
+cceM18 – 18
+
+cceM4 – 4
+
+cceM6 – 6
+
+cceUnrated
+
+contentDetails.contentRating.chfilmRating string
+
+The video's rating in Switzerland.
+
+Valid values for this property are:
+
+chfilm0 – 0
+
+chfilm12 – 12
+
+chfilm16 – 16
+
+chfilm18 – 18
+
+chfilm6 – 6
+
+chfilmUnrated
+
+contentDetails.contentRating.chvrsRating string
+
+The video's Canadian Home Video Rating System (CHVRS) rating.
+
+Valid values for this property are:
+
+chvrs14a – 14A
+
+chvrs18a – 18A
+
+chvrsE – E
+
+chvrsG – G
+
+chvrsPg – PG
+
+chvrsR – R
+
+chvrsUnrated
+
+contentDetails.contentRating.cicfRating string
+
+The video's rating from the Commission de Contrôle des Films (Belgium).
+
+Valid values for this property are:
+
+cicfE – E
+
+cicfKntEna – KNT/ENA
+
+cicfKtEa – KT/EA
+
+cicfUnrated
+
+contentDetails.contentRating.cnaRating string
+
+The video's rating from Romania's CONSILIUL NATIONAL AL AUDIOVIZUALULUI (CNA).
+
+Valid values for this property are:
+
+cna12 – 12
+
+cna15 – 15
+
+cna18 – 18
+
+cna18plus – 18+
+
+cnaAp – AP
+
+cnaUnrated
+
+contentDetails.contentRating.cncRating string
+
+Rating system in France - Commission de classification cinematographique
+
+Valid values for this property are:
+
+cnc10 – 10
+
+cnc12 – 12
+
+cnc16 – 16
+
+cnc18 – 18
+
+cncE – E
+
+cncT – T
+
+cncUnrated
+
+contentDetails.contentRating.csaRating string
+
+The video's rating from France's Conseil supérieur de l?audiovisuel, which rates broadcast content.
+
+Valid values for this property are:
+
+csa10 – 10
+
+csa12 – 12
+
+csa16 – 16
+
+csa18 – 18
+
+csaInterdiction – Interdiction
+
+csaT – T
+
+csaUnrated
+
+contentDetails.contentRating.cscfRating string
+
+The video's rating from Luxembourg's Commission de surveillance de la classification des films (CSCF).
+
+Valid values for this property are:
+
+cscf12 – 12
+
+cscf16 – 16
+
+cscf18 – 18
+
+cscf6 – 6
+
+cscf9 – 9
+
+cscfA – A
+
+cscfAl – AL
+
+cscfUnrated
+
+contentDetails.contentRating.czfilmRating string
+
+The video's rating in the Czech Republic.
+
+Valid values for this property are:
+
+czfilm12 – 12
+
+czfilm14 – 14
+
+czfilm18 – 18
+
+czfilmU – U
+
+czfilmUnrated
+
+contentDetails.contentRating.djctqRating string
+
+The video's Departamento de Justiça, Classificação, Qualificação e Títulos (DJCQT - Brazil) rating.
+
+Valid values for this property are:
+
+djctq10 – 10
+
+djctq12 – 12
+
+djctq14 – 14
+
+djctq16 – 16
+
+djctq18 – 18
+
+djctqL – L
+
+djctqUnrated
+
+contentDetails.contentRating.djctqRatingReasons[] list
+
+Reasons that explain why the video received its DJCQT (Brazil) rating. contentDetails.contentRating.ecbmctRating string
+
+Rating system in Turkey - Evaluation and Classification Board of the Ministry of Culture and Tourism
+
+Valid values for this property are:
+
+ecbmct13a – 13A
+
+ecbmct13plus – 13+
+
+ecbmct15a – 15A
+
+ecbmct15plus – 15+
+
+ecbmct18plus – 18+
+
+ecbmct7a – 7A
+
+ecbmct7plus – 7+
+
+ecbmctG – G
+
+ecbmctUnrated
+
+ecbmct6a – 6A
+
+ecbmct6plus – 6+
+
+ecbmct10a – 10A
+
+ecbmct10plus – 10+
+
+ecbmct16plus – 16+
+
+contentDetails.contentRating.eefilmRating string
+
+The video's rating in Estonia.
+
+Valid values for this property are:
+
+eefilmK12 – K-12
+
+eefilmK14 – K-14
+
+eefilmK16 – K-16
+
+eefilmK6 – K-6
+
+eefilmL – L
+
+eefilmMs12 – MS-12
+
+eefilmMs6 – MS-6
+
+eefilmPere – Pere
+
+eefilmUnrated
+
+contentDetails.contentRating.egfilmRating string
+
+The video's rating in Egypt.
+
+Valid values for this property are:
+
+egfilm18 – 18
+
+egfilmBn – BN
+
+egfilmGn – GN
+
+egfilmUnrated
+
+contentDetails.contentRating.eirinRating string
+
+The video's Eirin (映倫) rating. Eirin is the Japanese rating system.
+
+Valid values for this property are:
+
+eirinG – G
+
+eirinPg12 – PG-12
+
+eirinR15plus – R15+
+
+eirinR18plus – R18+
+
+eirinUnrated
+
+contentDetails.contentRating.fcbmRating string
+
+The video's rating from Malaysia's Film Censorship Board.
+
+Valid values for this property are:
+
+fcbm13 – 13
+
+fcbm16 – 16
+
+fcbm18 – 18
+
+fcbm18pa – 18PA
+
+fcbm18pl – 18PL
+
+fcbm18sg – 18SG
+
+fcbm18sx – 18SX
+
+fcbmP12 – P12
+
+fcbmP13 – P13
+
+fcbmPg13 – PG13
+
+fcbmU – U
+
+fcbmUnrated
+
+contentDetails.contentRating.fcoRating string
+
+The video's rating from Hong Kong's Office for Film, Newspaper and Article Administration.
+
+Valid values for this property are:
+
+fcoI – I
+
+fcoIi – II
+
+fcoIia – IIA
+
+fcoIib – IIB
+
+fcoIii – III
+
+fcoUnrated
+
+contentDetails.contentRating.fmocRating string
+
+This property has been deprecated as of November 2, 2015. Use the contentDetails.contentRating.cncRating property instead.
+
+The video's Centre national du cinéma et de l'image animé (French Ministry of Culture) rating.
+
+Valid values for this property are:
+
+fmoc10 – 10
+
+fmoc12 – 12
+
+fmoc16 – 16
+
+fmoc18 – 18
+
+fmocE – E
+
+fmocU – U
+
+fmocUnrated
+
+contentDetails.contentRating.fpbRating string
+
+The video's rating from South Africa's Film and Publication Board.
+
+Valid values for this property are:
+
+fpb10 – 10
+
+fpb1012Pg – 10-12PG
+
+fpb13 – 13
+
+fpb16 – 16
+
+fpb18 – 18
+
+fpb79Pg – 7-9PG
+
+fpbA – A
+
+fpbPg – PG
+
+fpbUnrated
+
+fpbX18 – X18
+
+fpbXx – XX
+
+contentDetails.contentRating.fpbRatingReasons[] list
+
+Reasons that explain why the video received its FPB (South Africa) rating. contentDetails.contentRating.fskRating string
+
+The video's Freiwillige Selbstkontrolle der Filmwirtschaft (FSK - Germany) rating.
+
+Valid values for this property are:
+
+fsk0 – FSK 0
+
+fsk12 – FSK 12
+
+fsk16 – FSK 16
+
+fsk18 – FSK 18
+
+fsk6 – FSK 6
+
+fskUnrated
+
+contentDetails.contentRating.grfilmRating string
+
+The video's rating in Greece.
+
+Valid values for this property are:
+
+grfilmE – E
+
+grfilmK – K
+
+grfilmK12 – K-12
+
+grfilmK13 – K-13
+
+grfilmK15 – K-15
+
+grfilmK17 – K-17
+
+grfilmK18 – K-18
+
+grfilmUnrated
+
+contentDetails.contentRating.icaaRating string
+
+The video's Instituto de la Cinematografía y de las Artes Audiovisuales (ICAA - Spain) rating.
+
+Valid values for this property are:
+
+icaa12 – 12
+
+icaa13 – 13
+
+icaa16 – 16
+
+icaa18 – 18
+
+icaa7 – 7
+
+icaaApta – APTA
+
+icaaUnrated
+
+icaaX – X
+
+contentDetails.contentRating.ifcoRating string
+
+The video's Irish Film Classification Office (IFCO - Ireland) rating. See the IFCO website for more information.
+
+Valid values for this property are:
+
+ifco12 – 12
+
+ifco12a – 12A
+
+ifco15 – 15
+
+ifco15a – 15A
+
+ifco16 – 16
+
+ifco18 – 18
+
+ifcoG – G
+
+ifcoPg – PG
+
+ifcoUnrated
+
+contentDetails.contentRating.ilfilmRating string
+
+The video's rating in Israel.
+
+Valid values for this property are:
+
+ilfilm12 – 12
+
+ilfilm16 – 16
+
+ilfilm18 – 18
+
+ilfilmAa – AA
+
+ilfilmUnrated
+
+contentDetails.contentRating.incaaRating string
+
+The video's INCAA (Instituto Nacional de Cine y Artes Audiovisuales - Argentina) rating.
+
+Valid values for this property are:
+
+incaaAtp – ATP (Apta para todo publico)
+
+incaaC – X (Solo apta para mayores de 18 años, de exhibición condicionada)
+
+incaaSam13 – 13 (Solo apta para mayores de 13 años)
+
+incaaSam16 – 16 (Solo apta para mayores de 16 años)
+
+incaaSam18 – 18 (Solo apta para mayores de 18 años)
+
+incaaUnrated
+
+contentDetails.contentRating.kfcbRating string
+
+The video's rating from the Kenya Film Classification Board.
+
+Valid values for this property are:
+
+kfcb16plus – 16
+
+kfcbG – GE
+
+kfcbPg – PG
+
+kfcbR – 18
+
+kfcbUnrated
+
+contentDetails.contentRating.kijkwijzerRating string
+
+voor de Classificatie van Audiovisuele Media (Netherlands).
+
+Valid values for this property are:
+
+kijkwijzer12 – 12
+
+kijkwijzer14 – 14
+
+kijkwijzer16 – 16
+
+kijkwijzer18 – 18
+
+kijkwijzer6 – 6
+
+kijkwijzer9 – 9
+
+kijkwijzerAl – AL
+
+kijkwijzerUnrated
+
+contentDetails.contentRating.kmrbRating string
+
+The video's Korea Media Rating Board (영상물등급위원회) rating. The KMRB rates videos in South Korea.
+
+Valid values for this property are:
+
+kmrb12plus – 12세 이상 관람가
+
+kmrb15plus – 15세 이상 관람가
+
+kmrbAll – 전체관람가
+
+kmrbR – 청소년 관람불가
+
+kmrbTeenr
+
+kmrbUnrated
+
+contentDetails.contentRating.lsfRating string
+
+The video's rating from Indonesia's Lembaga Sensor Film.
+
+Valid values for this property are:
+
+lsf13 – 13
+
+lsf17 – 17
+
+lsf21 – 21
+
+lsfA – A
+
+lsfBo – BO
+
+lsfD – D
+
+lsfR – R
+
+lsfSu – SU
+
+lsfUnrated
+
+contentDetails.contentRating.mccaaRating string
+
+The video's rating from Malta's Film Age-Classification Board.
+
+Valid values for this property are:
+
+mccaa12 – 12
+
+mccaa12a – 12A
+
+mccaa14 – 14 - this rating was removed from the new classification structure introduced in 2013.
+
+mccaa15 – 15
+
+mccaa16 – 16 - this rating was removed from the new classification structure introduced in 2013.
+
+mccaa18 – 18
+
+mccaaPg – PG
+
+mccaaU – U
+
+mccaaUnrated
+
+contentDetails.contentRating.mccypRating string
+
+The video's rating from the Danish Film Institute's (Det Danske Filminstitut) Media Council for Children and Young People.
+
+Valid values for this property are:
+
+mccyp11 – 11
+
+mccyp15 – 15
+
+mccyp7 – 7
+
+mccypA – A
+
+mccypUnrated
+
+contentDetails.contentRating.mcstRating string
+
+The video's rating system for Vietnam - MCST
+
+Valid values for this property are:
+
+mcst0 – 0
+
+mcst16plus – 16+
+
+mcstC13 – C13
+
+mcstC16 – C16
+
+mcstC18 – C18
+
+mcstP – P
+
+mcstUnrated
+
+mcstT13 – T13
+
+mcstT16 – T16
+
+mcstT18 – T18
+
+mcstK – K
+
+contentDetails.contentRating.mdaRating string
+
+The video's rating from Singapore's Media Development Authority (MDA) and, specifically, it's Board of Film Censors (BFC).
+
+Valid values for this property are:
+
+mdaG – G
+
+mdaM18 – M18
+
+mdaNc16 – NC16
+
+mdaPg – PG
+
+mdaPg13 – PG13
+
+mdaR21 – R21
+
+mdaUnrated
+
+contentDetails.contentRating.medietilsynetRating string
+
+The video's rating from Medietilsynet, the Norwegian Media Authority.
+
+Valid values for this property are:
+
+medietilsynet11 – 11
+
+medietilsynet12 – 12
+
+medietilsynet15 – 15
+
+medietilsynet18 – 18
+
+medietilsynet6 – 6
+
+medietilsynet7 – 7
+
+medietilsynet9 – 9
+
+medietilsynetA – A
+
+medietilsynetUnrated
+
+contentDetails.contentRating.mekuRating string
+
+The video's rating from Finland's Kansallinen Audiovisuaalinen Instituutti (National Audiovisual Institute).
+
+Valid values for this property are:
+
+meku12 – 12
+
+meku16 – 16
+
+meku18 – 18
+
+meku7 – 7
+
+mekuS – S
+
+mekuUnrated
+
+contentDetails.contentRating.mibacRating string
+
+The video's rating from the Ministero dei Beni e delle Attività Culturali e del Turismo (Italy).
+
+Valid values for this property are:
+
+mibacT
+
+mibacUnrated
+
+mibacVap
+
+mibacVm6
+
+mibacVm12
+
+mibacVm14
+
+mibacVm18
+
+contentDetails.contentRating.mocRating string
+
+The video's Ministerio de Cultura (Colombia) rating.
+
+Valid values for this property are:
+
+moc12 – 12
+
+moc15 – 15
+
+moc18 – 18
+
+moc7 – 7
+
+mocBanned – Banned
+
+mocE – E
+
+mocT – T
+
+mocUnrated
+
+mocX – X
+
+contentDetails.contentRating.moctwRating string
+
+The video's rating from Taiwan's Ministry of Culture (文化部).
+
+Valid values for this property are:
+
+moctwG – G
+
+moctwP – P
+
+moctwPg – PG
+
+moctwR – R
+
+moctwR12 – R-12
+
+moctwR15 – R-15
+
+moctwUnrated
+
+contentDetails.contentRating.mpaaRating string
+
+The video's Motion Picture Association of America (MPAA) rating.
+
+Valid values for this property are:
+
+mpaaG – G
+
+mpaaNc17 – NC-17
+
+mpaaPg – PG
+
+mpaaPg13 – PG-13
+
+mpaaR – R
+
+mpaaUnrated
+
+contentDetails.contentRating.mpaatRating string
+
+The Motion Picture Association of America's rating for movie trailers and preview.
+
+Valid values for this property are:
+
+mpaatGb – GB (Green Band - Approved for all audiences)
+
+mpaatRb – RB (Red Band - Recommended for ages 17+)
+
+contentDetails.contentRating.mtrcbRating string
+
+The video's rating from the Movie and Television Review and Classification Board (Philippines).
+
+Valid values for this property are:
+
+mtrcbG – G
+
+mtrcbPg – PG
+
+mtrcbR13 – R-13
+
+mtrcbR16 – R-16
+
+mtrcbR18 – R-18
+
+mtrcbUnrated
+
+mtrcbX – X
+
+contentDetails.contentRating.nbcRating string
+
+The video's rating from the Maldives National Bureau of Classification.
+
+Valid values for this property are:
+
+nbc12plus – 12+
+
+nbc15plus – 15+
+
+nbc18plus – 18+
+
+nbc18plusr – 18+R
+
+nbcG – G
+
+nbcPg – PG
+
+nbcPu – PU
+
+nbcUnrated
+
+contentDetails.contentRating.nfrcRating string
+
+The video's rating from the Bulgarian National Film Center.
+
+Valid values for this property are:
+
+nfrcA – A
+
+nfrcB – B
+
+nfrcC – C
+
+nfrcD – D
+
+nfrcUnrated
+
+nfrcX – X
+
+contentDetails.contentRating.nfvcbRating string
+
+The video's rating from Nigeria's National Film and Video Censors Board.
+
+Valid values for this property are:
+
+nfvcb12 – 12
+
+nfvcb12a – 12A
+
+nfvcb15 – 15
+
+nfvcb18 – 18
+
+nfvcbG – G
+
+nfvcbPg – PG
+
+nfvcbRe – RE
+
+nfvcbUnrated
+
+contentDetails.contentRating.nkclvRating string
+
+The video's rating from the Nacionãlais Kino centrs (National Film Centre of Latvia).
+
+Valid values for this property are:
+
+nkclv12plus – 12+
+
+nkclv18plus – 18+
+
+nkclv7plus – 7+
+
+nkclvU – U
+
+nkclvUnrated
+
+contentDetails.contentRating.oflcRating string
+
+The video's Office of Film and Literature Classification (OFLC - New Zealand) rating.
+
+Valid values for this property are:
+
+oflcG – G
+
+oflcM – M
+
+oflcPg – PG
+
+oflcR13 – R13
+
+oflcR15 – R15
+
+oflcR16 – R16
+
+oflcR18 – R18
+
+oflcRp13 – RP13
+
+oflcRp16 – RP16
+
+oflcUnrated
+
+contentDetails.contentRating.pefilmRating string
+
+The video's rating in Peru.
+
+Valid values for this property are:
+
+pefilm14 – 14
+
+pefilm18 – 18
+
+pefilmPg – PG
+
+pefilmPt – PT
+
+pefilmUnrated
+
+contentDetails.contentRating.resorteviolenciaRating string
+
+The video's rating in Venezuela.
+
+Valid values for this property are:
+
+resorteviolenciaA – A
+
+resorteviolenciaB – B
+
+resorteviolenciaC – C
+
+resorteviolenciaD – D
+
+resorteviolenciaE – E
+
+resorteviolenciaUnrated
+
+contentDetails.contentRating.rtcRating string
+
+The video's General Directorate of Radio, Television and Cinematography (Mexico) rating.
+
+Valid values for this property are:
+
+rtcA – A
+
+rtcAa – AA
+
+rtcB – B
+
+rtcB15 – B15
+
+rtcC – C
+
+rtcD – D
+
+rtcUnrated
+
+contentDetails.contentRating.rteRating string
+
+The video's rating from Ireland's Raidió Teilifís Éireann.
+
+Valid values for this property are:
+
+rteCh – CH
+
+rteGa – GA
+
+rteMa – MA
+
+rtePs – PS
+
+rteUnrated
+
+contentDetails.contentRating.russiaRating string
+
+The video's National Film Registry of the Russian Federation (MKRF - Russia) rating.
+
+Valid values for this property are:
+
+russia0 – 0+
+
+russia12 – 12+
+
+russia16 – 16+
+
+russia18 – 18+
+
+russia6 – 6+
+
+russiaUnrated
+
+contentDetails.contentRating.skfilmRating string
+
+The video's rating in Slovakia.
+
+Valid values for this property are:
+
+skfilmG – G
+
+skfilmP2 – P2
+
+skfilmP5 – P5
+
+skfilmP8 – P8
+
+skfilmUnrated
+
+contentDetails.contentRating.smaisRating string
+
+The video's rating in Iceland.
+
+Valid values for this property are:
+
+smais12 – 12
+
+smais14 – 14
+
+smais16 – 16
+
+smais18 – 18
+
+smais7 – 7
+
+smaisL – L
+
+smaisUnrated
+
+contentDetails.contentRating.smsaRating string
+
+The video's rating from Statens medieråd (Sweden's National Media Council).
+
+Valid values for this property are:
+
+smsa11 – 11
+
+smsa15 – 15
+
+smsa7 – 7
+
+smsaA – All ages
+
+smsaUnrated
+
+contentDetails.contentRating.tvpgRating string
+
+The video's TV Parental Guidelines (TVPG) rating.
+
+Valid values for this property are:
+
+tvpgG – TV-G
+
+tvpgMa – TV-MA
+
+tvpgPg – TV-PG
+
+tvpgUnrated
+
+tvpgY – TV-Y
+
+tvpgY7 – TV-Y7
+
+tvpgY7Fv – TV-Y7-FV
+
+pg14 – TV-14
+
+contentDetails.contentRating.ytRating string
+
+A rating that YouTube uses to identify age-restricted content.
+
+Valid values for this property are:
+
+ytAgeRestricted
+
+contentDetails.projection string
+
+Specifies the projection format of the video.
+
+Valid values for this property are:
+
+360
+
+rectangular
+
+contentDetails.hasCustomThumbnail boolean
+
+Indicates whether the video uploader has provided a custom thumbnail image for the video. This property is only visible to the video uploader. status object
+
+The status object contains information about the video's uploading, processing, and privacy statuses. status.uploadStatus string
+
+The status of the uploaded video.
+
+Valid values for this property are:
+
+deleted
+
+failed
+
+processed
+
+rejected
+
+uploaded
+
+status.failureReason string
+
+This value explains why a video failed to upload. This property is only present if the uploadStatus property indicates that the upload failed.
+
+Valid values for this property are:
+
+codec
+
+conversion
+
+emptyFile
+
+invalidFile
+
+tooSmall
+
+uploadAborted
+
+status.rejectionReason string
+
+This value explains why YouTube rejected an uploaded video. This property is only present if the uploadStatus property indicates that the upload was rejected.
+
+Valid values for this property are:
+
+claim
+
+copyright
+
+duplicate
+
+inappropriate
+
+legal
+
+length
+
+termsOfUse
+
+trademark
+
+uploaderAccountClosed
+
+uploaderAccountSuspended
+
+status.privacyStatus string
+
+The video's privacy status.
+
+Valid values for this property are:
+
+private
+
+public
+
+unlisted
+
+status.publishAt datetime
+
+The date and time when the video is scheduled to publish. It can be set only if the privacy status of the video is private. The value is specified in ISO 8601 format. Note the following two additional points about this property's behavior:
+
+If you set this property's value when calling the videos.update method, you must also set the status.privacyStatus property value to private even if the video is already private.
+
+If your request schedules a video to be published at some time in the past, the video will be published right away. As such, the effect of setting the status.publishAt property to a past date and time is the same as of changing the video's privacyStatus from private to public.
+
+status.license string
+
+The video's license.
+
+Valid values for this property are:
+
+creativeCommon
+
+youtube
+
+status.embeddable boolean
+
+This value indicates whether the video can be embedded on another website. status.publicStatsViewable boolean
+
+This value indicates whether the extended video statistics on the video's watch page are publicly viewable. By default, those statistics are viewable, and statistics like a video's viewcount and ratings will still be publicly visible even if this property's value is set to false. status.madeForKids boolean
+
+This value indicates whether the video is designated as child-directed, and it contains the current "made for kids" status of the video. For example, the status might be determined based on the value of the selfDeclaredMadeForKids property. See the YouTube Help Center for more information about setting the audience for your channel, videos, or broadcasts. status.selfDeclaredMadeForKids boolean
+
+In a videos.insert or videos.update request, this property allows the channel owner to designate the video as being child-directed. In a videos.list request, the property value is only returned if the channel owner authorized the API request. statistics object
+
+The statistics object contains statistics about the video. statistics.viewCount unsigned long
+
+The number of times the video has been viewed. statistics.likeCount unsigned long
+
+The number of users who have indicated that they liked the video. statistics.dislikeCount unsigned long
+
+Note: The statistics.dislikeCount property was made private as of December 13, 2021. This means that the property is included in an API response only if the API request was authenticated by the video owner. See the revision history for more information.
+
+The number of users who have indicated that they disliked the video. statistics.favoriteCount unsigned long
+
+Note: This property has been deprecated. The deprecation is effective as of August 28, 2015. The property's value is now always set to 0. player object
+
+The player object contains information that you would use to play the video in an embedded player. player.embedHtml string
+
+An <iframe> tag that embeds a player that plays the video.
+
+If the API request to retrieve the resource specifies a value for the maxHeight and/or maxWidth parameters, the size of the embedded player is scaled to satisfy the maxHeight and/or maxWidth requirements.
+
+If the video's aspect ratio is unknown, the embedded player defaults to a 4:3 format.
+
+player.embedHeight long
+
+The height of the embedded player returned in the player.embedHtml property. This property is only returned if the request specified a value for the maxHeight and/or maxWidth parameters and the video's aspect ratio is known. player.embedWidth long
+
+The width of the embedded player returned in the player.embedHtml property. This property is only returned if the request specified a value for the maxHeight and/or maxWidth parameters and the video's aspect ratio is known. topicDetails object
+
+The topicDetails object encapsulates information about topics associated with the video.
+
+Important: See the definitions of the topicDetails.relevantTopicIds[] and topicDetails.topicIds[] properties as well as the revision history for more details about upcoming changes related to topic IDs. topicDetails.topicIds[] list
+
+Important: This property has been deprecated as of November 10, 2016. The API no longer returns values for this property, and any topics associated with a video are now returned by the topicDetails.relevantTopicIds[] property value. topicDetails.relevantTopicIds[] list
+
+A list of topic IDs that are relevant to the video.
+
+This property has been deprecated as of November 10, 2016. It will be supported until November 10, 2017.
+
+Important: Due to the deprecation of Freebase and the Freebase API, topic IDs started working differently as of February 27, 2017. At that time, YouTube started returning a small set of curated topic IDs.
+
+See topic IDs supported as of February 15, 2017
+
+Topics Music topics /m/04rlf Music (parent topic) /m/02mscn Christian music /m/0ggq0m Classical music /m/01lyv Country /m/02lkt Electronic music /m/0glt670 Hip hop music /m/05rwpb Independent music /m/03_d0 Jazz /m/028sqc Music of Asia /m/0g293 Music of Latin America /m/064t9 Pop music /m/06cqb Reggae /m/06j6l Rhythm and blues /m/06by7 Rock music /m/0gywn Soul music Gaming topics /m/0bzvm2 Gaming (parent topic) /m/025zzc Action game /m/02ntfj Action-adventure game /m/0b1vjn Casual game /m/02hygl Music video game /m/04q1x3q Puzzle video game /m/01sjng Racing video game /m/0403l3g Role-playing video game /m/021bp2 Simulation video game /m/022dc6 Sports game /m/03hf_rm Strategy video game Sports topics /m/06ntj Sports (parent topic) /m/0jm_ American football /m/018jz Baseball /m/018w8 Basketball /m/01cgz Boxing /m/09xp_ Cricket /m/02vx4 Football /m/037hz Golf /m/03tmr Ice hockey /m/01h7lh Mixed martial arts /m/0410tth Motorsport /m/07bs0 Tennis /m/07_53 Volleyball Entertainment topics /m/02jjt Entertainment (parent topic) /m/09kqc Humor /m/02vxn Movies /m/05qjc Performing arts /m/066wd Professional wrestling /m/0f2f9 TV shows Lifestyle topics /m/019_rr Lifestyle (parent topic) /m/032tl Fashion /m/027x7n Fitness /m/02wbm Food /m/03glg Hobby /m/068hy Pets /m/041xxh Physical attractiveness [Beauty] /m/07c1v Technology /m/07bxq Tourism /m/07yv9 Vehicles Society topics /m/098wr Society (parent topic) /m/09s1f Business /m/0kt51 Health /m/01h6rj Military /m/05qt0 Politics /m/06bvp Religion Other topics /m/01k8wb Knowledge
+
+topicDetails.topicCategories[] list
+
+A list of Wikipedia URLs that provide a high-level description of the video's content. recordingDetails object
+
+The recordingDetails object encapsulates information about the location, date and address where the video was recorded. recordingDetails.locationDescription string
+
+This property has been deprecated as of June 1, 2017. Please see the deprecation announcement for more details.
+
+The text description of the location where the video was recorded. recordingDetails.location object
+
+The geolocation information associated with the video. Note that the child property values identify the location that the video owner wants to associate with the video. The value is editable, searchable on public videos, and might be displayed to users for public videos. recordingDetails.location.latitude double
+
+This property has been deprecated as of June 1, 2017. Please see the deprecation announcement for more details.
+
+Latitude in degrees. recordingDetails.location.longitude double
+
+This property has been deprecated as of June 1, 2017. Please see the deprecation announcement for more details.
+
+Longitude in degrees. recordingDetails.location.altitude double
+
+This property has been deprecated as of July 9, 2018. Please see the deprecation announcement for more details.
+
+Altitude above the reference ellipsoid, in meters. fileDetails object
+
+The fileDetails object encapsulates information about the video file that was uploaded to YouTube, including the file's resolution, duration, audio and video codecs, stream bitrates, and more. This data can only be retrieved by the video owner.
+
+The fileDetails object will only be returned if the processingDetails.fileAvailability property has a value of available. fileDetails.fileName string
+
+The uploaded file's name. This field is present whether a video file or another type of file was uploaded. fileDetails.fileSize unsigned long
+
+The uploaded file's size in bytes. This field is present whether a video file or another type of file was uploaded. fileDetails.fileType string
+
+The uploaded file's type as detected by YouTube's video processing engine. Currently, YouTube only processes video files, but this field is present whether a video file or another type of file was uploaded.
+
+Valid values for this property are:
+
+archive – The file is an archive file, such as a .zip archive.
+
+audio – The file is a known audio file type, such as an .mp3 file.
+
+document – The file is a document or text file, such as a MS Word document.
+
+image – The file is an image file, such as a .jpeg image.
+
+other – The file is another non-video file type.
+
+project – The file is a video project file, such as a Microsoft Windows Movie Maker project, that does not contain actual video data.
+
+video – The file is a known video file type, such as an .mp4 file.
+
+fileDetails.container string
+
+The uploaded video file's container format. fileDetails.videoStreams[] list
+
+A list of video streams contained in the uploaded video file. Each item in the list contains detailed metadata about a video stream. fileDetails.videoStreams[].widthPixels unsigned integer
+
+The encoded video content's width in pixels. You can calculate the video's encoding aspect ratio as width_pixels / height_pixels. fileDetails.videoStreams[].heightPixels unsigned integer
+
+The encoded video content's height in pixels. fileDetails.videoStreams[].frameRateFps double
+
+The video stream's frame rate, in frames per second. fileDetails.videoStreams[].aspectRatio double
+
+The video content's display aspect ratio, which specifies the aspect ratio in which the video should be displayed. fileDetails.videoStreams[].codec string
+
+The video codec that the stream uses. fileDetails.videoStreams[].bitrateBps unsigned long
+
+The video stream's bitrate, in bits per second. fileDetails.videoStreams[].rotation string
+
+The amount that YouTube needs to rotate the original source content to properly display the video.
+
+Valid values for this property are:
+
+clockwise – The video needs to be rotated 90 degrees clockwise.
+
+counterClockwise – The video needs to be rotated 90 degrees counter-clockwise.
+
+none – The video does not need to be rotated.
+
+other – The video needs to be rotated in some other, non-trivial way.
+
+upsideDown – The video needs to be rotated upside down.
+
+fileDetails.videoStreams[].vendor string
+
+A value that uniquely identifies a video vendor. Typically, the value is a four-letter vendor code. fileDetails.audioStreams[] list
+
+A list of audio streams contained in the uploaded video file. Each item in the list contains detailed metadata about an audio stream. fileDetails.audioStreams[].vendor string
+
+A value that uniquely identifies a video vendor. Typically, the value is a four-letter vendor code. fileDetails.durationMs unsigned long
+
+The length of the uploaded video in milliseconds. fileDetails.bitrateBps unsigned long
+
+The uploaded video file's combined (video and audio) bitrate in bits per second. fileDetails.creationTime string
+
+The date and time when the uploaded video file was created. The value is specified in ISO 8601 format. Currently, the following ISO 8601 formats are supported:
+
+Date only: YYYY-MM-DD
+
+Naive time: YYYY-MM-DDTHH:MM:SS
+
+Time with timezone: YYYY-MM-DDTHH:MM:SS+HH:MM
+
+processingDetails object
+
+The processingDetails object encapsulates information about YouTube's progress in processing the uploaded video file. The properties in the object identify the current processing status and an estimate of the time remaining until YouTube finishes processing the video. This part also indicates whether different types of data or content, such as file details or thumbnail images, are available for the video.
+
+The processingProgress object is designed to be polled so that the video uploaded can track the progress that YouTube has made in processing the uploaded video file. This data can only be retrieved by the video owner. processingDetails.processingStatus string
+
+The video's processing status. This value indicates whether YouTube was able to process the video or if the video is still being processed.
+
+Valid values for this property are:
+
+failed – Video processing has failed. See ProcessingFailureReason.
+
+processing – Video is currently being processed. See ProcessingProgress.
+
+succeeded – Video has been successfully processed.
+
+terminated – Processing information is no longer available.
+
+processingDetails.processingProgress object
+
+The processingProgress object contains information about the progress YouTube has made in processing the video. The values are really only relevant if the video's processing status is processing. processingDetails.processingProgress.partsTotal unsigned long
+
+An estimate of the total number of parts that need to be processed for the video. The number may be updated with more precise estimates while YouTube processes the video. processingDetails.processingProgress.partsProcessed unsigned long
+
+The number of parts of the video that YouTube has already processed. You can estimate the percentage of the video that YouTube has already processed by calculating:
+
+100 * parts_processed / parts_total
+
+Note that since the estimated number of parts could increase without a corresponding increase in the number of parts that have already been processed, it is possible that the calculated progress could periodically decrease while YouTube processes a video. processingDetails.processingProgress.timeLeftMs unsigned long
+
+An estimate of the amount of time, in millseconds, that YouTube needs to finish processing the video. processingDetails.processingFailureReason string
+
+The reason that YouTube failed to process the video. This property will only have a value if the processingStatus property's value is failed.
+
+Valid values for this property are:
+
+other – Some other processing component has failed.
+
+streamingFailed – Video could not be sent to streamers.
+
+transcodeFailed – Content transcoding has failed.
+
+uploadFailed – File delivery has failed.
+
+processingDetails.fileDetailsAvailability string
+
+This value indicates whether file details are available for the uploaded video. You can retrieve a video's file details by requesting the fileDetails part in your videos.list() request. processingDetails.processingIssuesAvailability string
+
+This value indicates whether the video processing engine has generated suggestions that might improve YouTube's ability to process the the video, warnings that explain video processing problems, or errors that cause video processing problems. You can retrieve these suggestions by requesting the suggestions part in your videos.list() request. processingDetails.editorSuggestionsAvailability string
+
+This value indicates whether video editing suggestions, which might improve video quality or the playback experience, are available for the video. You can retrieve these suggestions by requesting the suggestions part in your videos.list() request. processingDetails.thumbnailsAvailability string
+
+This value indicates whether thumbnail images have been generated for the video. suggestions object
+
+The suggestions object encapsulates suggestions that identify opportunities to improve the video quality or the metadata for the uploaded video. This data can only be retrieved by the video owner.
+
+The suggestions object will only be returned if the processingDetails.tagSuggestionsAvailability property or the processingDetails.editorSuggestionsAvailability property has a value of available. suggestions.processingErrors[] list
+
+A list of errors that will prevent YouTube from successfully processing the uploaded video. These errors indicate that, regardless of the video's current processing status, eventually, that status will almost certainly be failed.
+
+Valid values for this property are:
+
+archiveFile – An archive file (e.g., a ZIP archive).
+
+audioFile – File contains audio only (e.g., an MP3 file).
+
+docFile – Document or text file (e.g., MS Word document).
+
+imageFile – Image file (e.g., a JPEG image).
+
+notAVideoFile – Other non-video file.
+
+projectFile – Movie project file (e.g., Microsoft Windows Movie Maker project).
+
+suggestions.processingWarnings[] list
+
+A list of reasons why YouTube may have difficulty transcoding the uploaded video or that might result in an erroneous transcoding. These warnings are generated before YouTube actually processes the uploaded video file. In addition, they identify issues that do not necessarily indicate that video processing will fail but that still might cause problems such as sync issues, video artifacts, or a missing audio track.
+
+Valid values for this property are:
+
+hasEditlist – Edit lists are not currently supported.
+
+inconsistentResolution – Conflicting container and stream resolutions.
+
+problematicAudioCodec – Audio codec that is known to cause problems was used.
+
+problematicVideoCodec – Video codec that is known to cause problems was used.
+
+unknownAudioCodec – Unrecognized audio codec, transcoding is likely to fail.
+
+unknownContainer – Unrecognized file format, transcoding is likely to fail.
+
+unknownVideoCodec – Unrecognized video codec, transcoding is likely to fail.
+
+suggestions.processingHints[] list
+
+A list of suggestions that may improve YouTube's ability to process the video.
+
+Valid values for this property are:
+
+nonStreamableMov – The MP4 file is not streamable, this will slow down the processing.
+
+sendBestQualityVideo – Probably a better quality version of the video exists.
+
+suggestions.editorSuggestions[] list
+
+A list of video editing operations that might improve the video quality or playback experience of the uploaded video.
+
+Valid values for this property are:
+
+audioQuietAudioSwap – The audio track appears silent and could be swapped with a better quality one.
+
+videoAutoLevels – Picture brightness levels seem off and could be corrected.
+
+videoCrop – Margins (mattes) detected around the picture could be cropped.
+
+videoStabilize – The video appears shaky and could be stabilized.
+
+liveStreamingDetails object
+
+The liveStreamingDetails object contains metadata about a live video broadcast. The object will only be present in a video resource if the video is an upcoming, live, or completed live broadcast. liveStreamingDetails.actualStartTime datetime
+
+The time that the broadcast actually started. The value is specified in ISO 8601 format. This value will not be available until the broadcast begins. liveStreamingDetails.actualEndTime datetime
+
+The time that the broadcast actually ended. The value is specified in ISO 8601 format. This value will not be available until the broadcast is over. liveStreamingDetails.scheduledStartTime datetime
+
+The time that the broadcast is scheduled to begin. The value is specified in ISO 8601 format. liveStreamingDetails.scheduledEndTime datetime
+
+The time that the broadcast is scheduled to end. The value is specified in ISO 8601 format. If the value is empty or the property is not present, then the broadcast is scheduled to continue indefinitely. liveStreamingDetails.concurrentViewers unsigned long
+
+The number of viewers currently watching the broadcast. The property and its value will be present if the broadcast has current viewers and the broadcast owner has not hidden the viewcount for the video. Note that YouTube stops tracking the number of concurrent viewers for a broadcast when the broadcast ends. So, this property would not identify the number of viewers watching an archived video of a live broadcast that already ended.
+
+The concurrent viewer counts that the YouTube Data API returns might differ from the processed, despammed concurrent viewer counts available through YouTube Analytics. Learn more about live streaming metrics in the YouTube Help Center.
+
+liveStreamingDetails.activeLiveChatId string
+
+The ID of the currently active live chat attached to this video. This field is filled only if the video is a currently live broadcast that has live chat. Once the broadcast transitions to complete this field will be removed and the live chat closed down. For persistent broadcasts that live chat id will no longer be tied to this video but rather to the new video being displayed at the persistent page. localizations object
+
+The localizations object contains translations of the video's metadata. localizations.(key) object
+
+The language of the localized text associated with the key value. The value is a string that contains a BCP-47 language code. localizations.(key).title string
+
+The localized video title.

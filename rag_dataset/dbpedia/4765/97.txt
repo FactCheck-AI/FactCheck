@@ -1,0 +1,119 @@
+Definition
+
+checksum
+
+By
+
+Kinza Yasar, Technical Writer
+
+Laura Fitzgibbons
+
+What is a checksum?
+
+A checksum is a value that represents the number of bits in a transmission message and is used by IT professionals to detect high-level errors within data transmissions. Prior to transmission, every piece of data or file can be assigned a checksum value after running a cryptographic hash function. The term checksum is also sometimes called hash sum or hash value.
+
+Checksums work by giving the party on the receiving end information about the transmission to ensure that the full range of data is delivered. The checksum value itself is typically a long string of letters and numbers that act as a sort of fingerprint for a file or set of files to indicate the number of bits included in the transmission.
+
+If the checksum value the user calculates is even slightly different from the checksum value of the original file, it can alert all parties in the transmission that the file was corrupted or tampered with by a third party, such as in the case of malware. From there, the receiver can investigate what went wrong or try downloading the file again.
+
+The common protocols used to determine checksum numbers are Transmission Control Protocol (TCP) and User Datagram Protocol (UDP). TCP is typically more reliable for tracking transmitted packets of data, but UDP may be beneficial to avoid slowing down transmission time.
+
+What can cause an inconsistent checksum number?
+
+While checksum values that don't match can signal something went wrong during transmission, a few factors can cause this to happen, such as the following:
+
+an interruption in the internet or network connection;
+
+storage or space issues, including problems with the hard drive;
+
+a corrupted disk or corrupted file; and
+
+a third party interfering with the transfer of data.
+
+Common types of checksum algorithms
+
+There are multiple cryptographic hash functions that programmers can use to generate checksum values. A few common ones are the following:
+
+Secure Hash Algorithm (SHA) 0. This hash function was the first of its kind but was withdrawn shortly after its creation in 1993.
+
+SHA-1. As of 2010, this hash function is no longer considered secure.
+
+SHA-2 (SHA-224, SHA-256, SHA-384, SHA-512). This family of hash functions relies on the size of the file and numbers to create a checksum value. The resulting checksums are vulnerable to length extension attacks, which involve a hacker reconstructing the internal state of a file by learning its hash digest.
+
+Message Digest 5 (MD5). The MD5 hash function creates a checksum value, but each file won't necessarily have a unique number. So, it's open to vulnerabilities if a hacker swaps out a file with the same checksum value.
+
+How to check a MD5 checksum
+
+To verify that a file hasn't been tampered with, the MD5 hash of that file should be verified. Also, when installing drivers for patches, it's important to ensure that the downloaded files are complete.
+
+The MD5 hash is a cryptographic checksum that can be checked on either a PC or laptop. It can also be verified on different operating systems, such as Microsoft Windows, Linux and Apple macOS.
+
+Verifying an MD5 checksum on Windows
+
+Open Windows PowerShell or the command line by clicking on the Windows button on the Start menu.
+
+Once on the command prompt, type cmd in the search box, and press Enter. Alternatively, press the Windows button and R, type cmd, and press Enter.
+
+Go to the folder that contains the file whose MD5 checksum needs to be verified by typing cd followed by the path to the folder that the file resides in. Alternatively, the required folder can be dragged and dropped from Windows Explorer to insert the path.
+
+Type certutil -hashfile <file> MD5. Replace <file> with the file name.
+
+Press Enter.
+
+The result of the checksum can be compared and verified with the expected results.
+
+Verifying the MD5 checksum on a Mac
+
+Open Terminal.
+
+Navigate to the folder that contains the file whose MD5 checksum needs verification. Alternatively, for direct route, Terminal can be open right at a folder from Finder.
+
+Type md5 <file>, and replace <file> with the file name. Alternatively, the file can also be dragged and dropped into the Terminal window after typing md5.
+
+Press Enter.
+
+When planning content migrations, it's imperative to ensure that files aren't corrupted during the move. Discover how to check and verify the integrity of files.
+
+Continue Reading About checksum
+
+How to use a public key and private key in digital signatures
+
+Symmetric vs. asymmetric encryption: What's the difference?
+
+Weighing double key encryption challenges, payoffs
+
+Electronic signature best practices to build in to your workflow
+
+Finding checksum values in Windows 10
+
+Related Terms
+
+What is SSH (Secure Shell) and How Does It Work?
+
+SSH (Secure Shell or Secure Socket Shell) is a network protocol that gives users -- particularly systems administrators -- a ... See complete definition
+
+What is the Cybersecurity Information Sharing Act (CISA)?
+
+The Cybersecurity Information Sharing Act (CISA) allows United States government agencies and non-government entities to share ... See complete definition
+
+What is the Driver's Privacy Protection Act (DPPA)?
+
+The Driver's Privacy Protection Act (DPPA) is a United States federal law designed to protect the personally identifiable ... See complete definition
+
+Dig Deeper on Data security and privacy
+
+What is bit rot?
+
+By: Rahul Awati
+
+hashing
+
+By: Kinza Yasar
+
+message authentication code (MAC)
+
+By: Robert Sheldon
+
+Symmetric vs. asymmetric encryption: What's the difference?
+
+By: Michael Cobb

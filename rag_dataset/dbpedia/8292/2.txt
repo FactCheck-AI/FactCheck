@@ -1,0 +1,287 @@
+Intro [^]
+
+In order to create Clonezilla-SysRescCD, I wrote create-clonezilla-sysresccd.
+
+create-clonezilla-sysresccd is a BASH shell script that will help you join these popular linux live CDs. The original CDs have to be downloaded beforehand, and stored as ISO files. All the features of the original ISO/CDs are present in the new multi-boot CD.
+
+The script copies all files from both ISOs to a temporary folder, integrates a new isolinux configuration file and creates a new ISO file that can be burnt to CD.
+
+Isolinux is a so called CD boot manager, that is controled by a configuration file called isolinux.cfg. The current implementation - based on Clonezilla Live - displays a list of boot options to the user. create-clonezilla-sysresccd provides two "sample" cfg files, to set the visible items of the boot options list:
+
+isolinux-full.cfg
+
+This file contains all the features present in the original CDs
+
+isolinux-minimal.cfg
+
+Contains only these list items that are enough to utilize a Backup-Restore system
+
+This means that the remaining features are invisible to the user, but they still exist in the CD.
+
+Important
+
+Do NOT change these two files. They will be overwritten with every program update, to provide new features. Instead use them as templates for your profiles.
+
+Quick creation of the CD [^]
+
+Open /root/.clonezilla-sysresccd/profiles.conf in a text editor and:
+
+Add the lines
+
+profile[2]=Multi-boot
+
+sysCDP[2]=/location/of/your/systemrescuecd.iso
+
+cloneCDP[2]=/location/of/your/clonezilla-live.iso
+
+if sysCDP[2] is already defined (profile 2 already exists), just use the first available number. This goes for every entry in this section.
+
+If you want to create the full CD, add the line
+
+cfgFileP[2]=/root/.clonezilla-sysresccd/isolinux-full.cfg
+
+or else add the line
+
+cfgFileP[2]=/root/.clonezilla-sysresccd/isolinux-minimal.cfg
+
+If you want to use a customized splash screen, create a 640x480 32-bit png image file (for example splash-screen.png) providing your logo, personal page, email address etc., and add the line
+
+splashP[2]=/location/of/your/splash-screen.png
+
+or use the default by adding
+
+splashP[2]=/root/.clonezilla-sysresccd/default-ocswp.png
+
+Add any other variable in the file to suit your needs
+
+When you are done, create your CD by executing form console:
+
+create-clonezilla-sysresccd -p 2
+
+Note
+
+The CD you will create following this procedure will lack the customization I have done. If you wanted to have it, you would have to follow the procedure introduced in the page Custom CDs.
+
+Command line parameters [^]
+
+The program's command line parameters are the following:
+
+s show profiles and let user select profile to use
+
+Profiles will be explained later in section Using profiles p[number] use profile number
+
+Profiles will be explained later in section Using profiles f copy files only. Don't create ISO file and don't
+
+burn anything on CD
+
+This is useful if you want to do some heavy customization
+
+Both ISOs are copied in folder /root/tmp/clonezilla-sysresccd nf don't copy files. Use files existing in folder
+
+"/root/tmp/clonezilla-sysresccd".
+
+*** Caution: Dangerous!!! ***
+
+This will create (and optionally burn) an ISO file using files
+
+found in folder /root/tmp/clonezilla-sysresccd
+
+Caution: The program does not check in any way the files in the
+
+given folder. It's up to you to provide a valid bootable CD /
+
+isolinux configuration i only create ISO file. Don't burn anything on CD b A user defined and written BASH script to be
+
+executed just before mastering the CD
+
+This script could be used to automate alteration, addition or
+
+removal of files from the fianl CD x[script] execute [script] before creating the ISO file v print version and exit h print this screen and exit
+
+Configuration file [^]
+
+The program's configuration file is /root/.clonezilla-sysresccd/clonezilla-sysresccd.conf. There you can define all the working parameters for a CD creating session.
+
+The contents of the original /root/.clonezilla-sysresccd/clonezilla-sysresccd.conf are the following:
+
+# Location of the latest SystemRescueCD ISO file
+
+sysCD=/all-users/liveCDs/systemrescuecd-x86-0.3.7.iso
+
+# Location of the latest Clonezilla Live ISO file
+
+cloneCD=/all-users/liveCDs/clonezilla-live-1.0.3-18.iso
+
+# Location of the new isolinux/isolinux.cfg file
+
+# Change it at your own risk!!!
+
+cfgFile=/root/.clonezilla-sysresccd/isolinux-minimal.cfg
+
+# Splash screen to use
+
+# It must be a valid 640x480 32-bit png image
+
+splash=/root/.clonezilla-sysresccd/default-ocswp.png
+
+# The output name of the program (ISO file) is:
+
+# clonezilla-sysresccd-"$outName"-"$version".iso
+
+# A good outName would be your name eg. 'spiros'
+
+# So the ISO file would be named:
+
+# clonezilla-sysresccd-spiros-"$version".iso
+
+outName=''
+
+# The name of a BASH script that will be executed
+
+# just before mastering the CD, (actually just
+
+# before the "splash screen" message is displayed
+
+# to the user
+
+exScript=''
+
+# CD info section
+
+# Specifies a text string that will be written into the volume
+
+# header. This should describe the preparer of the CD-ROM,
+
+# usually with a mailing address and phone number. There is space
+
+# on the disc for 128 characters of information.
+
+preparerID='Spiros Georgaras <sng@hellug.gr>'
+
+# Specifies a text string that will be written into the volume
+
+# header. This should describe the publisher of the CD-ROM,
+
+# usually with a mailing address and phone number. There is space
+
+# on the disc for 128 characters of information.
+
+publisher='Spiros Georgaras <sng@hellug.gr>'
+
+# Specifies the volume ID (volume name or label) to be written into
+
+# the master block. There is space on the disc for 32 characters of
+
+# information. Note that if you assign a volume ID, this is the name
+
+# that will be used as the mount point used by the Solaris volume
+
+# management system and the name that is assigned to the disc on a
+
+# Microsoft Win32 or Apple Mac platform.
+
+volLabel='Linux Backup Multi Boot CD'
+
+If any of these parameters are left blank, the user will be asked to insert it by hand.
+
+Using profiles [^]
+
+create-clonezilla-sysresccd can use profiles to make it easy to use preedited cfg files, user data etc. The profiles are defined in file /root/.clonezilla-sysresccd/profiles.conf. create-clonezilla-sysresccd comes with two predefined profile, called Full and Backup/Restore.
+
+The contents of the original /root/.clonezilla-sysresccd/profiles.conf are the following:
+
+profile[0]=Full
+
+profile[1]='Backup/Restore'
+
+sysCDP[0]=/all-users/liveCDs/systemrescuecd-x86-0.3.7.iso
+
+sysCDP[1]=/all-users/liveCDs/systemrescuecd-x86-0.3.7.iso
+
+cloneCDP[0]=/all-users/liveCDs/clonezilla-live-1.0.3-18.iso
+
+cloneCDP[1]=/all-users/liveCDs/clonezilla-live-1.0.3-18.iso
+
+cfgFileP[0]=/root/.clonezilla-sysresccd/isolinux-full.cfg
+
+cfgFileP[1]=/root/.clonezilla-sysresccd/isolinux-minimal.cfg
+
+splashP[0]=''
+
+splashP[1]=''
+
+outNameP[0]='full'
+
+outNameP[1]=''
+
+exScriptP[0]=''
+
+exScriptP[1]=''
+
+preparerIDP[0]='Spiros Georgaras <sng@hellug.gr>'
+
+preparerIDP[1]='Spiros Georgaras <sng@hellug.gr>'
+
+publisherP[0]='Spiros Georgaras <sng@hellug.gr>'
+
+publisherP[1]='Spiros Georgaras <sng@hellug.gr>'
+
+volLabelP[0]='Linux Rescue CD'
+
+volLabelP[1]='Linux Backup CD'
+
+As you can see, a profile can define all the working parameters for a CD creating session. If any of these parameters are left blank, the corresponding value from the configuration file will be used. If this is blank too, the user will be asked to insert it by hand.
+
+In order to use profile No 1, you should execute the command:
+
+create-clonezilla-sysresccd -p 1
+
+In order to see the active profiles and select one to use, you should execute the command:
+
+create-clonezilla-sysresccd -s
+
+Using splash screens [^]
+
+create-clonezilla-sysresccd can use a splash screen, an image with your logo and contact data. The default splash screen is file /root/.clonezilla-sysresccd/default-ocswp.png, a 640x480 32-bit png image.
+
+You can use your own splash screen by setting it in file:
+
+/root/.clonezilla-sysresccd/clonezilla-sysresccd.conf, variable splash
+
+or
+
+/root/.clonezilla-sysresccd/profiles.conf, variable splashP[x]
+
+Then you use profile number x to create your CD
+
+Customization [^]
+
+Apart from editing the isolinux.cfg file, the user can also remove or add a floppy disk image to the CD.
+
+Floppy disk images are present in the /bootdisk folder on the CD, which corresponds to the /root/tmp/clonezilla-sysresccd/bootdisk folder, while creating the ISO file. Copying a floppy disk image file in this folder and adding an entry to the cfg file, is all one has to do to add extra features to the CD.
+
+Example 1 [^]
+
+Suppose you want to add a floppy disk image (myfloppy.img) to the final CD. You execute the program, and when prompted to copy additional files, you copy the image file in the /root/tmp/clonezilla-sysresccd/bootdisk folder. Then you open the cfg file you will use and copy/paste a floppy image entry. Finally you edit the pasted entry so that it will use your new floppy image.
+
+To do that you can use the FreeDOS list entry, and convert it as it shows in the array below.
+
+Then you get back to the program, press ENTER, and the new ISO file will contain your new floppy image.
+
+In order to remove the FreeDOS floppy image from the final CD, all you have to do is delete the file freedos.img from folder /root/tmp/clonezilla-sysresccd/bootdisk, and the corresponding entry form the cfg file.
+
+One could even try to integrate one more rescue CD (say Damn Small Linux), if skillful enough.
+
+A final thing you might want to do is add html files to provide help to the user.
+
+Example 2 [^]
+
+An interesting feature is that the default entry of the boot list can be set, so that is gets activated after the time interval defined has elapsed. I usually set booting from the first hard disk as default, to avoid accidental booting of one of the distros (in case the CD has been forgotten in the drive).
+
+You can achieve this by changing this entry.
+
+Example 3 [^]
+
+One more thing you can do is add "empty" entries in the boot list, that will be displayed as separators for the other entries. This way a grouping of similar entries is possible.
+
+Using again as template the FreeDOS entry, the changes to be done appear in the following table.

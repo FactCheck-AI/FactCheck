@@ -1,0 +1,209 @@
+Cameron Purdy is probably best known for Oracle Coherence (previously Tangosol), a coherent distributed in-memory cache and data grid. Since leaving Oracle, he has been working on Ecstasy - a language and runtime designed specifically for the serverless cloud.
+
+Ecstasy is still in the early stages of its lifecycle, but it's fair to say that it is an attempt to take lessons learned from programming languages like Java, and modern deployment practices (and the challenges stemming from those), and to use that context to create a new language and environment that is ambitious and forward-looking.
+
+InfoQ: What is the current state? What are you most focused on solving right now?
+
+Cameron Purdy: The state is still very much R&D. We're working on completing the core library, finishing two different database implementations on top of the OODB API, and we're now starting to design and build the actual dynamic runtime.
+
+There's that old saying: "You only get one chance to make a good first impression". When a developer picks up Ecstasy, we want them to pick it up because they are ready for it ... but not before it's ready for them! We really don't want to waste anyone's time, so we're careful to explain that this isn't ready for real world usage. Not just yet.
+
+There are people already using it, but they're using it to play, or they're using it as they contribute to it. So, that's still a pretty small number, and it should be a small number at this point. We're in a very technical stage right now -- it's a lot of fun, and there's a lot to learn, but it's extremely challenging work. (And if you know anyone who would enjoy building an adaptive profile-based native compiler on top of LLVM, we could definitely use the help!)
+
+InfoQ: What does the team look like?
+
+Purdy: Our team is small. Mostly people from Java and Oracle and Tangosol days. Gene Gleyzer, one of my co-founders from Tangosol, has been working full time with me almost since the beginning, others are contributing while still working their corporate jobs, and we've been fortunate to attract a stream of interns and volunteers. We use the Apache license and the Apache contributor agreements for all of the language work, so it's very business friendly. And we have a number of SaaS companies investing some of their own R&D resources, to gauge whether this is a potential long-term strategic fit for where they want to take their own businesses. (Hint: It is.)
+
+To date, the Ecstasy runtime is only a proof-of-concept, which has allowed us to efficiently hash out the remaining necessary design decisions before building the native compiler. The proof of concept was implemented as an interpreter, which is painful because the language and its byte code were designed explicitly for compilation, and it's not at all conducive to being interpreted. Fortunately, that implementation has been stable since it was initially created, and is consuming only a few hours per week to maintain it. It's a workhorse for our R&D, but it's not suitable for production use.
+
+The language itself is implemented and largely stable, and feature complete. Most of the work today is on the core library, which is itself written in Ecstasy, and which is unsurprisingly named the "ecstasy" library. We also have developers working on a number of the standard (but optional) libraries, such as JSON, web, and NoSQL databases.
+
+The big R&D project in the pipeline is the design and implementation of the native runtime, including the big topics of memory management, threading, profiling and adaptive compilation, debugging, and so on. This is probably a six month project just to get to a "hello world", because the architecture has to be solid enough to carry us for at least 20 years or so. And probably another year or two on top of that before it's ready for production usage.
+
+InfoQ: How did the project start?
+
+Purdy: So the first thing to understand is that we did not set out to build a new language. Sure, it's a lot of fun, but it really wasn't the goal for our startup, and this language and the runtime isn't our "product".
+
+Our initial goal was to find a way to be able to run ten thousand applications on a single commodity server. Seriously, ten thousand. We're not talking 100 or 150 ... we're talking two or three orders of magnitude higher than what people are able to do today.
+
+And to be able to do that, you really have to be able to understand your execution boundaries. These boundaries can't be OS process boundaries; they can't be VM boundaries; they can't be Linux container boundaries. They have got to be some form of lightweight software boundaries, and the only way to accomplish that is to explicitly design for it up front.
+
+Security, for example, is one of those things that you can't just "add" to a design; it needs to be baked in. The same it true for scalability -- you don't "add" scalability to a system; you design it in from the beginning. These are capabilities that either get baked into the design, or they don't exist.
+
+Density is one of these capabilities as well. An application may need tens of gigabytes of memory to do some major processing for a few seconds, but then an instant later, it may need almost no memory at all. Having to allocate resources based on the sum of the maximum peak size of each deployment is a huge waste, but that is how software is developed and deployed today! And having each deployment hog all of its theoretical maximum set of resources for as long as it is deployed is just an enormous waste! Imagine how much electricity we could save if we didn't have millions of simple CRUD apps out there on Amazon holding onto 8 or 16 gigs of memory each, just in case!
+
+InfoQ: How does that map to modern architectures focused on concurrency?
+
+Purdy: Good question. As an industry, we got spoiled by the steadily increasing processor megahertz and gigahertz speeds, that were almost like clockwork. Suddenly, about 15 years ago, we got stuck with the same speed, while the core count suddenly started going up instead, from 1 to 2 to 4 to, what are we at now, 128 hardware threads on a high-end commodity server chip, right?
+
+So with Ecstasy, we wanted to be able to use all of those hardware threads, and to do so efficiently. The big thing that makes core scaling inefficient today is that most languages just have one big pile of memory (e.g. a "heap") where everything goes, no matter what is being changed versus being read-only, and particularly when there's data being changed by multiple threads, potentially in a concurrent manner.
+
+Ecstasy does not expose hardware or operating system threads; it uses a fundamentally simpler approach to concurrency and memory safety, designed to reduce errors and also to allow the runtime to dynamically optimize concurrency based on runtime profiling data. This design directly supports our density and manageability requirements.
+
+We took some cues from Erlang, and from the Actor Model (which itself was at least partially inspired by Smalltalk). Specifically, we created a memory model based on the Actor Model, in which each actor has its own, separate area of memory that it owns and manages. And only that one actor can modify that memory.
+
+We call these actors, "services". A service is a single-threaded actor that "owns" some area of memory, and uses a fiber-based execution model. Each service is thus a bounded domain of mutability, but a service also represents an asynchronous boundary, which allows these actors (these services) to be the building block of concurrent execution.
+
+ENTER ; variable scope begin EXIT ; variable scope end GUARD #handlers:(TYPE, STRING, addr) ; try { (+ catch type, var name, handler address) (implicit ENTER) GUARD_E addr ; } ... // ("E"=) end guarded block with a jump (implicit EXIT) CATCH ; begin an exception handler (implicit ENTER and VAR_IN for exception) CATCH_E addr ; ("E"=) end an exception handler with a jump (implicit EXIT) GUARDALL addr ; try { (+ "finally" address (implicit ENTER, also intercepts boundary-crossing-jumps and returns) FINALLY ; begin a "finally" handler (implicit EXIT/ENTER and VAR_I of type "Exception?") FINALLY_E ; ("E"=) end a "finally" handler (implicit EXIT) THROW rvalue ; raise exception
+
+(From the list of XVM byte codes.)
+
+So what I'm showing you here, this isn't the VM design, but this is the instruction set. The byte code. We designed a hierarchically nestable containerized software model, abstracted away from the underlying operating system and hardware, and secure by design, yet without actually paying all the typical costs of virtualization to do that.
+
+To accomplish this, the byte code itself is completely neutered. It can't do I/O. It can't make native calls. There is no "foreign function interface", if you will. This is a true sandbox model, and no amount of digging will find the bottom of the sandbox itself, because the sandbox is not visible from within the sandbox. It's a lot like our own universe, which certainly seems infinite from where we're sitting.
+
+But it's also designed for dynamic optimization. Not just low level code optimizations, but also runtime profile-guided optimizations for concurrent execution, for managing contention, for scheduling, and for reducing an application's memory footprint.
+
+InfoQ: As you're currently bootstrapping from the JVM - what features that have influenced Ecstasy? The ones that seem most obvious are:
+
+Register machine
+
+Class verification
+
+Module graph
+
+Purdy: So I've been using Java since '96, and C++ before that. Java has been an amazing technical success, and has fostered a great community. There are certainly a lot of ideas that we came up with as the result of various experiences working in Java, C#, and C++, as well as any other language we've ever seen or used.
+
+The reason for adopting the register machine model is that it allowed all of the instructions in our Ecstasy intermediate representation (XVM IR, aka byte code) to be built to easily consume any combination of intrinsics, constants, and variables. Constants and variables are pretty well understood. An intrinsic is some special thing that is just known to be available; for example, in Ecstasy, the current service that a fiber is running within is known as this:service, which is kind of like calling Thread.currentThread() in Java.
+
+Anyway, intrinsics, constants, and variables make up what we call R-Values, which basically means "things that you can use as a value". You know, like what you can pass to a function call, or store in a property, or a value that you can add to another value. Similarly, when you go to store something, it gets stored in an L-Value, which is most commonly a variable or a property of an object. So an instruction may say "store this constant in that property", or "copy the value from that property X to this variable Y". In each case, the R-Value and L-Value is identified (encoded) as a single integer, and even though Ecstasy is a 64-bit instruction set (i.e. that integer is a 64-bit value), we encode it using a variable-length encoding, which usually means that most of these 64-bit value use only a single byte! Furthermore, this also reduces the number of instructions, and ensures that the resulting code is packed very tightly. So the register based machine model is focused on simplicity and compactness. Sure, it's cool, but it doesn't magically solve some hard computer science problem, and it doesn't magically make things faster in and of itself.
+
+Class verification is something that Java emphasized very early on, and it's a brilliantly strong concept. It's built on a notion of provable correctness (for some set of rules that defines the correct structure of a class and its relationships), and it helps to eliminate entire swaths of potential problems and errors down the road. We have taken the concept quite a bit further, by introducing an explicit link time concept: Code is not discovered and loaded piece-meal in a lazy fashion as it is in Java, but rather it is loaded all at once: All code that exists in a type system is loaded together, and verified together, and once it has been verified, that code and the entire type system that it is a part of becomes immutable. In other words, a type system is formed by transitively closing over an entire graph of types. And once that type system is formed, it can be used to create a new Ecstasy software container, within which that code will execute.
+
+InfoQ: What's different? My understanding is that there isn't really any dynamic class loading. So the type system within a service is known ahead of time?
+
+Purdy: We don't have Java's accidental type loading. Java classes are all immutable -- once they're loaded by a class loader, they're set in stone. But at any line of code, at any point in time, Java can discover "accidentally" that it needs to load yet another class. Like a blind person walking along, and suddenly discovering something in the path. So at that point, the VM needs to perform a class loading operation, and it has to reach a "safe point" to do so. For example, the class being loaded could invalidate code optimizations that another thread is currently taking advantage of. So, every time a class gets loaded, it's a complete stop-the-world event.
+
+By splitting out a separate linking step, we can completely avoid this type of problem. And it allows for optimizations to be more aggressive, because the type system is fully known. The "surprise!" factor is gone.
+
+InfoQ: So in order to do any kind of equivalent of dynamic class loading, the way you would do that would be to spin up a service and actually have the service instantiate the type system, which corresponds to that class graph that, in Java, you'd load dynamically?
+
+Exactly. You'd create a new Ecstasy container, and in doing so, it would form that new type system, loading all of the necessary code. When the linking is done, the code is ready to be run. Furthermore, this linking process can be done in advance, and its results -- which will be native code when we get the native compiler done -- can be stored off for later use, so going from "not running" to "running" will eventually be as fast as loading a native dynamically-linked library.
+
+Loading new code means instantiating a new container object. And that container object is, not surprisingly, just another Ecstasy service object. You can always think of an Ecstasy service as a being a hosted virtual machine that has only one vCPU -- one core. It can run any number of fibers on that core, but it can only run one fiber at a time. This dramatically simplifies multi-threaded programming, by largely getting rid of the primitive concept of user-managed threads all whacking away at one giant, shared-mutable, global state.
+
+I mentioned earlier that density was a fundamental goal of this design, and you can probably start to see that each application could be run in its own Ecstasy container. And even if an application loaded new code on the fly, and even if that code was malicious, it still could not damage anything outside of that application's own container, because from inside the container, there is no "outside the container".
+
+Services break down the global-ness of state into regions of state, within which the state can be modified, but only by that service! So each service is a domain of mutability. This is a key concept that is very Erlang-ish. In Erlang, these are called processes, but we call them services. We expect that a single operating system process could host thousands of containers, and millions of services.
+
+Any time that a call is made into a service, execution moves from the calling service, which is one "zone" of mutable state, to another service, which is another "zone" of mutable state. You can think of this as message passing, but the exact implementation isn't important, and we intend to support several approaches that can be dynamically selected by the runtime on a case-by-case basis, allowing the runtime to optimize asynchronous and concurrent execution based on actual runtime profiling data.
+
+So when you hold onto a reference to a service object, you are actually (at least conceptually) holding onto a proxy into that service. Any request, any call, is performed by that service within its own mutable domain. Using this approach, we eliminated the horror show of memory barriers, synchronization, and so on. It also means that you can talk from one running thing to another just by using normal method invocation, instead of queuing and waiting and all of that complexity.
+
+InfoQ: You've mentioned the type system, and how it corresponds to containers. What else do we need to know about the type system?
+
+The type system is dramatically different than anything that we've ever worked with or seen before, but we designed it to feel extremely familiar to anyone who knows any of the C family of languages, including C++, Java, and C#. It is an object type system, but it's not built on top of primitive types. Instead, it's "turtles the whole way down" -- even chars, ints, bits, and booleans are objects, that are composed of other objects!
+
+This made boot-strapping the type system and the runtime a big challenge; fortunately, we solved this problem already. And getting the rest of the type system details ironed out was a prerequisite to even beginning our native compiler project. I could go on all day about the type system, but just to list a few important items that make it special: We fixed the age-old "null" problem, we added immutability as a first-class concept, we fully reified generic types, and we incorporated a module system into the core design of the language.
+
+For OO developers, we support virtual properties, virtual mixins, conditional mixins, funky interfaces, virtual "new", and virtual child classes. There's type auto-narrowing, and a very clever mix of automatic type co-variance and contra-variance that makes that whole "type variance" complexity almost disappear. Functions and tuples are first class citizens in the language, with support for multiple (and named) returns, optional (and named) parameters, lambdas, partial and complete argument binding, and currying.
+
+It may sounds like a long list of features, but we never think of these things as "features"; these just happen to be the exact right set of capabilities for this particular language, fitting together beautifully, and forming a coherent whole, which we call Ecstasy. We consciously chopped a lot of nice ideas out of Ecstasy, because they were nice in other languages but weren't part of the coherent picture that is Ecstasy.
+
+InfoQ: How does this compare to Clojure's model - of a def being local to a thread and inter-thread memory co-ordination via software transactional memory? i.e. single-threaded execution context as mutability boundary. How would a genuine threaded execution capability work? Could you forsee something like an Ecstasy proxy object being injected with something else (e.g. Java) providing the actual compute?
+
+Purdy: I've talked with Rich about the transactional memory in the past, and he did try -- many years ago! -- to convince me to use STM as our memory model. I tried it, but in the end, it didn't fit into that picture that I'm describing. I think the concept works well in Clojure, because he's painting a very specific, compelling picture that he envisioned, and that capability is inherent to it. Part of his picture is universal immutability, and persistent data structures (structures that return a new reference on each change).
+
+But I'd like to think that there are more values that Rich and I share, than there are differences in our designs. The differences are pragmatic, because a design must fit together as a whole. While Ecstasy has first class functions, and first class immutability, it is not a functional language in the same sense that Clojure is; Ecstasy is rather an Object Oriented language that happens to have very good functional capabilities that fit well into its Object Oriented design.
+
+InfoQ: So no dynamic classloading - a type system is within a service, and is immutable and known up front. Does this make AOT & related things easier?
+
+Purdy: So, we have a couple of models that we're exploring but we think they will support both ahead of time (AOT) and just in time (JIT), as well as adaptive compilation. So it's going to depend on the target.
+
+For example, we probably won't put adaptive runtime compilation into, say, a phone. But what do plan to do is to build the profile information gathering for adaptive compilation into the generated code for those devices -- but just the gathering of the statistics! Then, if the application user opts in, the device will upload that profile information periodically. This is similar to how Java Flight Recorder does its collection -- constantly running a very low overhead statistics collection, even when the data is not being used.
+
+That profiling information would then be uploaded periodically, and then automatically aggregated periodically and used to create new optimized builds of the same application. So basically, it's like a slow motion HotSpot compiler, benefiting all users of that application, and automatically improving performance over time.
+
+On the other hand, in the server environment, you'll likely want to create the compiled image ahead of time (at link time), but it can also be adaptively optimizing as it runs. On the server, this makes a lot more sense for a lot of reasons, including the larger set of resources available, and also because of the shocking performance improvements you can get both from on-the-fly optimizations.
+
+InfoQ: Is the VM model essentially the same as the Java model? Is there actually an interpreter for this intermediate representation? Or is it always going to be compiled into native code?
+
+Purdy: I would like to be able to say that it will always be compiled into native code. Although, there are technical considerations that may force us, like the Hotspot JVM has done, to maintain an interpreter as a de-optimization fall-back. Obviously, we would rather not do that, because it adds complexity, but if it ends up being the right technical choice, then we will grudgingly do it.
+
+The issue, basically, that you end up with is a code size issue. For code that's basically never used, or bulky, your emitted native code can be significantly larger than the interpreted byte code. And if you're doing type-specific optimizations, such as "when this method happens to get called with this specific sub-class", you can end up with a lot of native code in a hurry.
+
+There are other differences related to how we organize the results of compilation. In Ecstasy, all of the compiled structures are hierarchically nested, such as packages and classes and inner classes and properties and methods and so on. The result is that we don't need to use a file per class; instead, we use a file for the entire module, which is somewhat analogous to a JAR, I suppose.
+
+A module can even include (embed) other modules inside that same file. One big benefit of this design is that everything in that file shares a single constant pool. As a result, the entire module's set of constants is deduped in one place, automatically compressing the module fairly dramatically, just by reducing the number of times that the same constant strings and other values get stored.
+
+I've written Java assemblers and disassemblers, incremental compilers, and so on. If the constant pool changes, then everything -- including methods completely unrelated to the change -- has to be disassembled, then the change gets made to the pool, and then everything has to be reassembled. This is because there are pointers from the byte code directly into the global constant pool! Changes to the constant pool get hard-wired into the byte codes themselves.
+
+We didn't want to repeat this mistake in Ecstasy, so each method is compiled with a local constant pool, which acts as a compressed translation table to the shared constant pool, allowing us to rewrite the shared constant pool without having to disassemble and reassemble all of the code in the file. This is basically the same trick that operating systems use for dynamically linking libraries, by having a table of pointers in the library that need to get patched when it gets loaded.
+
+InfoQ: How does GC work? Slab allocation within a service? Deterministic GC on service exit?
+
+Purdy: Remember, containers are hierarchical, and services exist within containers, and mutable data does not escape a service. So memory is also hierarchically managed, with each container having a dedicated area for efficiently sharing immutable data across services (and even sub-containers) that are within its boundaries. Each service has its own memory, that it manages. And each fiber will have its own slab. Data that escapes a fiber's slab may get compacted into a new slab, or may move to the service's heap, or may move to the container's immutable object area, depending on how the object is being used (or is likely to be used, based on runtime profile data).
+
+There is no "stop the world", but services will probably stop and collect their own garbage. It's really nice that killing a fiber is just killing its slab, and killing a service or a container is pretty easy since it's almost completely self-contained. This allows a pretty fast bloom of memory utilization, followed by an almost immediate collapse of that space if the container is idle and gets swapped out.
+
+InfoQ: Can you explain the packed integer approach in more detail? Are there really sufficient performance benefits to the packed integer approach? Any data you can share? What about other novel data types? E.g. Dec64 vs floating point?
+
+Purdy: This is a pretty technical question, but I'm glad to talk about it. The problem isn't performance; it's size. We don't want to evaluate each and every use of each and every index and pointer to argue out whether we can make do with 16 bits or 32 bits or 64 bits or whatever, only to find out in 10 years that we screwed up and should have made it smaller or larger. So everything in the XVM design is 64 bit. That's the simple answer.
+
+It allows us to store massive amounts of 64-bit values in a compiled .xtc file, while almost all of those values only uses 8 bits to encode its information. The compression is significant, and it helps to alleviate concerns over the sizes of files. It also makes it easier to move things around the network, whether it's compiled code or serialized data.
+
+But the really big win is that we just don't have to worry about it anymore. We support up to 2-to-the-64th methods within a class, and up to 2-to-the-64th classes within a package, and up to 2-to-the-64th instructions in a method, and so on. It's a huge psychological win.
+
+(You can see the reference implementation for the format explained and implemented for reading and writing integer values.)
+
+InfoQ: What is the status of the native implementation? What's the choice of implementation language for it? Rust? WASM?
+
+Purdy: The goal is to use LLVM as the compiler backend, with as much of the native compiler as possible written in Ecstasy itself. There will be an extensive amount that will have to be written in C++ or possibly Rust to bootstrap the adaptive runtime and some low level types from the "ecstasy" module.
+
+This is an area of ongoing design and prototyping, and we haven't yet settled on the perfect balance. I'm going to guess, based on previous experience, that we're going to get it wrong a few times before we figure out the ideal approach. But we've factored that iterative learning process into our efforts and our roadmap, and we're trying to structure the project so that even the mistakes will end up being useful.
+
+InfoQ: Will there be a language or runtime specification? Do you forsee multiple different implementations of Ecstasy?
+
+Purdy: Yes, there will be both a language and runtime specification. Some of it is already published in wiki form on the Github project site.
+
+But we don't foresee multiple different implementations. We do expect branches, for mobile versus server and so on, but they're all likely to share a common, open source root.
+
+And remember, this is all Apache 2.0, so the license issues that plagued some other languages, compilers, and runtimes simply don't apply here.
+
+InfoQ: What about language syntax. What's with those curly braces? Does Ecstasy have an enforced style?
+
+Purdy: You must be asking about our habit in our source code of putting the opening curly brace on its own line. I will be so grateful if that turns out to be the only issue that people have with Ecstasy!
+
+For us, readability of code is king. That means that optical balance is important. Eyes should see symmetry whenever possible, because good symmetry in code completely disappears, leaving only the important details behind.
+
+But we also require curly braces in places that C or Java don't. For example, this code example is a syntax error; the body of an if or while statement must be enclosed in a "statement block", i.e. inside curly braces:
+
+while x = foo ;
+
+So people with a strong aversion to curly braces will probably not like the Ecstasy syntax. On the other hand, people who appreciate structure and consistency will love it.
+
+InfoQ: Let's talk about the project roadmap. At what stages do you think there will be something that ordinary devs can make use of? If you were a gambling man, when do you think the first serious production deployments of Ecstasy applications will occur? Do you anticipate that those deployments will require the native runtime, or will teams be able to deploy on the JVM-hosted variants?
+
+Purdy: Anyone starting an entire software ecosystem from scratch has to be assumed to be a gambler. That goes without saying. But risk aversion has never been a strong suit here.
+
+We're not trying to be risky, though; not at all. This change in software is going to happen, with or without us, and we'd rather be at the front of that wave than chasing it later.
+
+So at this point, we're optimistic, but we're also realistic, and there's still a mountain of work between us and production usage of Ecstasy. On the other hand, we intend to be the first production users of it, and we're already busy designing and building a product using it. So by the time that we get the courage to tell others that it's ok to use it, we will have already been using it in production ourselves for some time.
+
+There's an old phrase for this in the software industry, "eating your own dogfood", but I really hate that phrase in this case, because this is more like "eating our own filet mignon, wrapped in bacon, cooked in duck fat, and topped with Maine lobster, washed down with a bottle of Chateau Lafite Rothschild 1982". It's our menu; why would we put "dog food" on it?
+
+InfoQ: The type system sounds interesting. Is it single-rooted? Is a sound type system a goal? Is it decideable? What about type inference - I've heard you refer to it as using "perfect inference"? What does that mean? Is this something similar to Hindley–Milner type inference?
+
+Purdy: The type system feels a lot like Java and C# to use. But it's both far sharper, in terms of its correctness, and yet far less pointy bits, in terms of its usability. To be fair, we had decades of using Java and C# to use as a starting point in understanding what works well and what to avoid. They're brilliant languages, and we learned all that we could from them.
+
+The type system is single rooted in a sense: There is an interface named Object that every object does implement, which is very similar to the Java and C# type system having a base class called Object. It's an interface, not a class, which is a small improvement, but not a big deal.
+
+Remember, too, that everything is an object. For example, Null is an object. Booleans are objects. Ints are objects. Every bit is an object.
+
+This is a bit different than any language that I've used; the type system is literally boot-strapped on top of itself ... the original meaning of "pulling oneself up by one's boot-straps". It's pretty cool.
+
+Our compiler type inference is bidirectional and diminishingly oscillating. In other words, type information flows down the AST as compilation occurs, but unknown types can be resolved in both directions, going back and forth (up and down the tree) in a narrowing pattern as the exact type is honed in on. I recently saw a new paper and a complicated looking article that describe a very similar approach, so it seems that we were on the right track.
+
+While the goals are obviously inspired by Hindley–Milner, I think our approach is fairly well advanced on from that, including support for generic types, bi-directionality, and so on.
+
+InfoQ: Anything else that you'd like our readers to know?
+
+Purdy: I'm not very good at summarizing to a few items, because I like to ramble on. But if I have to boil it down to three things, it would be these:
+
+First, we're excited by how beautifully this project is coming together, and how well the design has worked in practice. It really is a work of art, and a joie de vivre. Developers contributing to Ecstasy tell us on our weekly calls that they hate switching back to their day jobs with their corporate languages -- even though those languages are solid and good. The language and runtime design have come together beautifully, but ...
+
+We still have more work in front of us than behind us, and we're always looking for developers who are interested in helping to create the future of the software industry. This is challenging work, but it's also a boatload of fun. Unless you don't like boats, in which case it's a clown-car full of fun. Unless you are terrified of clowns, in which case we'll go with kittens. Cute, soft, cuddly, lovable kittens.
+
+At the same time, we're not yet ready for developers to build production applications in Ecstasy. It is coming, I promise! But please, be patient. We don't want to frustrate you by having you try a version before it's ready.
+
+About the Interviewee

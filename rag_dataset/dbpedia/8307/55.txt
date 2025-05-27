@@ -1,0 +1,275 @@
+With the increase in the flow of raw data and the need for analysis, the concept of unsupervised learning became popular over time. It is used to draw insights from datasets consisting of input data without labeled target values. Before we start discussing hierarchical clustering in Python and applying the algorithm on various datasets, let us revisit the clustering’s basic idea.
+
+Clustering mainly deals with the classification of raw data. It comprises grouping different data points together, which are most similar to each other. These groups are called clusters, which are formed based on the similarity or clustering metric defined.
+
+Introduction
+
+Hierarchical clustering deals with data in the form of a tree or a well-defined hierarchy. The process involves dealing with two clusters at a time. The algorithm relies on a similarity or distance matrix for computational decisions. Meaning, which two clusters to merge or how to divide a cluster into two. With these two options in mind, we have two types of hierarchical clustering. If you are a beginner and interested to learn more about data science, check out our data science courses from top universities.
+
+One of the algorithm’s critical aspects is the similarity matrix (also known as proximity matrix), as the whole algorithm proceeds based on it. There are many proximity methods which are discussed further along in the article.
+
+Types
+
+Hierarchical clustering has two types:
+
+Agglomerative clustering
+
+Divisive clustering
+
+The types are per the fundamental functionality: the way of developing hierarchy. Agglomerative is a bottom-up hierarchy generator, whereas divisive is a top-down hierarchy generator.
+
+Agglomerative takes all points as individual clusters and then merges them on each iteration, two at a time. Divisive starts by assuming the entire data as one cluster and divides it until all points become individual clusters.
+
+The result is a set of nested clusters that can be perceived as a hierarchical tree. The best way to view it is to convert the set structure into a dendrogram to view the hierarchy.
+
+The following gives a simple example of a dendrogram versus the cluster representation:
+
+Source
+
+Here, the clustering may work either way, but the result will be a collection of clusters. The data points 1, 2, 3, 4, 5, and 6 are clustered into two at a time. And the hierarchy formation can be seen in the left figure, which deals with the dendrogram of the same. The same analysis would help in understanding the decision of clusters.
+
+Deciding the number of clusters
+
+One of the most useful features of this algorithm is that you may extract as many clusters as you want once the algorithm terminates. It is quite different from the K-means algorithm. In K-means, we need to pass the no-of-clusters hyperparameter. It means that once the algorithm completes computation, we would have that many clusters. But, if we need more clusters later, we cannot tune that easily. The only option would be to change the parameter and train the model again.
+
+Whereas, when it comes to the hierarchical clustering, you can set the number of clusters later. You can take two clusters at the end. If not satisfied, you may take the five clusters formed at the penultimate or higher-level step. It depends on you. Hence, once trained, you do not need to retrain the model to get more or fewer clusters. It can be accomplished by simply cutting the dendrogram at the level you desire.
+
+As we have the concepts down, let us discuss the working of hierarchical clustering in Python.
+
+For the experiment, we are going to use the sci-kit learn library for the clustering algorithms. We would also use the cluster.dendrogram module from SciPy to visualize and understand the “cutting” process for limiting the number of clusters.
+
+import numpy as np
+
+X = np.array([[3,5],
+
+[12,9],
+
+[13,17],
+
+[14,14],
+
+[60,52],
+
+[55,63],
+
+[69,59],])
+
+It would look something like this on a plot:
+
+Well, we do see that we have two definitive clusters, at the top and bottom corners. Let us see if the algorithm can figure it out or not.
+
+We would be using the AgglomerativeClustering function from the sklearn.clustering module.
+
+from sklearn.cluster import AgglomerativeClustering
+
+cluster = AgglomerativeClustering(n_clusters=2, affinity=’euclidean’, linkage=’ward’)
+
+cluster.fit_predict(X)
+
+Here, we do specify the clusters, which is not a hyperparameter. However, we just pass it to make the prediction classes clear. We would use the fit_predict function to train as well as predict the classes over X.
+
+It is important to note that agglomerative clustering is more used than divisive as it is simpler to execute. The idea of merging clusters based on proximity matrices does seem easier than to divide a cluster into two via some mechanism.
+
+Read: Scikit-learn in Python: Features, Prerequisites, Pros & Cons
+
+To clearly understand what happened above, look at the steps involved in the algorithm:
+
+Working of the algorithm
+
+Here are the steps to execute the agglomerative clustering:
+
+Define each data point as a cluster
+
+Calculate the initial proximity metric
+
+Merge two clusters which are the “closest” or similar based on the metric
+
+Revise the proximity metric and repeat the third step until a single cluster remains.
+
+So, here the only thing remaining to understand is the impact of different proximity methods. As you know, mainly, there are four types of proximity methods in hierarchical clustering. This is also known as Inter-cluster similarity.
+
+The methods (or linkage, as defined in code) include:
+
+MIN or Single linkage
+
+MAX or Complete linkage
+
+Average linkage
+
+Centroid linkage
+
+Exclusive functions of objective functions
+
+The results of the same can be easily visualized by applying the linkage option while creating the dendrograms.
+
+Explore our Popular Data Science Certifications
+
+To visualize the output of the model, we just need a small code snippet as follows:
+
+plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap=’winter’)
+
+As you can see, there are two different clusters on the opposite corners. You may as well play around with cluster numbers and see different results. The whole thing can be driven by cutting dendrograms. To understand that, let us write a small snippet for the visualization of dendrograms creation.
+
+We are going to use dendrogram and linkage functions from the scipy.cluster.hierarchy module. Here, we define the linkage that we want to use. We need to pass that object to the dendrogram function to generate the hierarchy.
+
+from scipy.cluster.hierarchy import dendrogram, linkage
+
+linked = linkage(X, ‘complete’)
+
+labelList = range(1, 8)
+
+plt.figure(figsize=(10, 7))
+
+dendrogram(linked,
+
+orientation=’top’,
+
+labels=labelList,
+
+distance_sort=’descending’,
+
+show_leaf_counts=True)
+
+plt.show()
+
+Read our popular Data Science Articles
+
+Here, you can visualize how the clusters are formed on each iteration. So, you can cut the dendrogram on any level that you want, and you would end up with that many clusters. Hence, due to this hierarchy creation, you may vary the number of clusters after just one run through the algorithm and data. It is what gives hierarchical clustering an edge upon other algorithms like K-means.
+
+Now, let us look at how to use hierarchical clustering in Python on a commonly used dataset: IRIS. We would be reading the dataset from a local csv. and just have a glance at how the dataset looks and what we need to classify.
+
+import numpy as np
+
+import pandas as pd
+
+import matplotlib.pyplot as plt
+
+%matplotlib inline
+
+data = pd.read_csv(‘iris.csv’)
+
+data.head()
+
+As you can see, the target variable is the ‘variety’ class. This is in string format which needs to be converted into numbers, as the model requires encoded labels. To do this, we would be using the label encoder from sklearn’s preprocessing library. A simple fit and transform to convert them into numbers.
+
+Top Data Science Skills to Learn
+
+from sklearn import preprocessing
+
+le = preprocessing.LabelEncoder()
+
+le.fit(data[‘variety’])
+
+data[‘variety’] = le.transform(data[‘variety’])
+
+Now, if we create a dendrogram on this, we find various iterations and maps. This is how it looks with a single linkage. If we use the same code and run it with complete or centroid linkage, the dendrograms would differ a bit. The logic remains the same, but different linkages would definitely affect the order of the merger of clusters.
+
+from scipy.cluster.hierarchy import dendrogram, linkage
+
+linked = linkage(data, ‘ward’)
+
+plt.figure(figsize=(10, 7))
+
+dendrogram(linked)
+
+plt.show()
+
+Now, applying clustering on the dataset, we would use two different linkages, and you would clearly see what difference it really has while defining the clusters. As we already have seen from the label encoder that we have 3 different classes, so we may apply 3 clusters at first.
+
+from sklearn.cluster import AgglomerativeClustering
+
+cluster = AgglomerativeClustering(n_clusters=3, affinity=’euclidean’, linkage=’complete’)
+
+cluster.fit_predict(data)
+
+plt.figure(figsize=(10, 7))
+
+plt.scatter(data[‘sepal.length’], data[‘petal.length’], c=cluster.labels_)
+
+As you can see from the figure above, in the 3-cluster classification, the linkages show visible changes in prediction. Look at the ward linkage first. It correctly predicts the labels by keeping the above cluster defined, even though there is a small mix up of values in the two clusters. But, when we see the complete linkage, it breaks down the cluster and misclassified some of the values.
+
+As we know in the proximity methods, the complete linkage does tend to break the larger clusters, as we can see above. The ward’s method or the single linkage method is less vulnerable to these issues. This was for the simple datasets. Let us see how the algorithm suffers and is affected by some noisy datasets.
+
+One such dataset is the Pulsar prediction dataset or HTRU2 dataset. The dataset is larger, as it contains about 18,000 samples. If seen with an ML perspective, the dataset is fairly regular size, or even lower. But, comparatively, it is heavier than the IRIS dataset. The need for implementation on a varied dataset is to analyze the performance of hierarchical clustering in Python. To clearly understand the ways and perks of implementations,
+
+pulsar_data = pd.read_csv(‘pulsar_stars.csv’)
+
+pulsar_data.head()
+
+we would need to normalize the dataset so that it doesn’t get biased due to extreme values.
+
+from sklearn.preprocessing import normalize
+
+pulsar_data = normalize(pulsar_data)
+
+We would be using the standard code, but this time, we are timing both computations.
+
+%%time
+
+from scipy.cluster.hierarchy import dendrogram, linkage
+
+linked = linkage(pulsar_data, ‘ward’)
+
+plt.figure(figsize=(10, 7))
+
+dendrogram(linked)
+
+plt.show()
+
+The timing for generating a dendrogram on the IRIS dataset was 6 seconds. The timing for generating a dendrogram on HTRU2 dataset was 13min 54 seconds. But, this is nothing compared to the change in predictions due to different linkages, which you observe in the model trained with the HTRU2 dataset.
+
+Let us follow the same procedure as we did before. This time we would make predictions on every linkage.
+
+The following figure shows the predictions of clustering with each linkage:
+
+cluster = AgglomerativeClustering(n_clusters=2, affinity=’euclidean’, linkage=’average’) #as well as complete,ward and single
+
+cluster.fit_predict(pulsar_data)
+
+plt.figure(figsize=(10, 7))
+
+plt.scatter(pulsar_data[:,1], pulsar_data[:,7], c=cluster.labels_)
+
+Yes, it is indeed surprising how much the predictions differ from each other. This shows the importance of the proximity matrix in hierarchical clustering.
+
+As you can see, the single linkage takes in almost all the points as the minimum distance between two clusters defines the proximity metric. This makes it vulnerable to noisy data. If we see the complete linkage, it definitely splits the data into two clusters, but it may have broken the large cluster just due to its proximity.
+
+The average-linkage is a trade-off between the two. It is less affected by noise, but it still may break large clusters, but with a lesser probability. And, it does handle the classification better.
+
+Objective functions like the ward’s method are sometimes used for initializing other clustering methods like K-means. This method, just like the average-linkage, has a trade-off between the single and complete-linkage methods. Objective functions like the ward’s method are mainly used in customized solutions to lessen the probability of misclassification. And, we do see it performing well.
+
+Learn: Cluster Analysis in Data Mining: Applications, Methods & Requirements
+
+upGrad’s Exclusive Data Science Webinar for you –
+
+How upGrad helps for your Data Science Career?
+
+Time and Space Complexity
+
+Just to give an understanding, consider the way the proximity metric is defined and calculated. The proximity metric requires to store the distance between every pair of clusters inside the data map. It makes for space complexity: O(n2). It is a large number. To put it in perspective, imagine we have 1,000,000 points. That will take the space requirements to 1012 points. Taking a rough and heavy average by approximating the size of one point as a byte, we get the data size at 1TB. And this needs to be stored in RAM, not on the hard drive.
+
+Second, comes the time complexity. For the need of scanning the proximity matrix at every iteration and considering that we take n steps, we get the complexity as O(n3). It is computationally expensive, especially on big datasets.
+
+It may be possible to bring it down to O(n2logn), but, it still is too expensive compared to other clustering algorithms, like K-means. If you want to learn more on analyzing the space and time complexity of algorithms and optimizing the cost functions, you may head down to upGrad’s Programs in Data Science and Machine Learning.
+
+Limitations
+
+We have already discussed the first limitation: Space and time complexity. It is obvious that hierarchical clustering is not favourable in the case of big datasets. Even if time complexity is managed with faster computational machines, the space complexity is too high. Especially when we load it in the RAM. And, the issue of speed increases even more when we are implementing the hierarchical clustering in Python.Python is slow, and if big tasks are concerned, it will definitely suffer.
+
+Secondly, there is no optimized technique with proximity. If we see each has multiple problems and limitations, this makes the internal mechanism of the algorithm unoptimized.
+
+When we look at the clustering decisions, they are not retractable. Meaning- once the clustering has been applied for a definite iteration, it will not be changed in further iterations till termination. So, if due to structural inaccuracies, the algorithm, at any point, chooses wrong clusters to combine or split, it is irrevocable.
+
+If we look closely at the algorithm, we do not have a clear objective function that is being minimized. In other algorithms, there is a definite function that we try to optimize. For example, in K-means we have a clear cost function which we minimize, which is not the case with hierarchical clustering.
+
+Check out: Top 9 Data Science Algorithms Every Data Scientist Should Know
+
+Conclusion
+
+Even though there are certain limitations when it comes to large datasets, this type of clustering algorithm is appealing while dealing with small to medium scale datasets. The hierarchical clustering algorithm in Python has not seen much development in architecture or schema due to its alarming need for time and space complexity.
+
+And, it is true that right now, the time is of Big Data. It means we do require algorithms that scale better. But, still, in cases when we are not sure of the number of clusters, or we need to refine the analysis efficiently, hierarchical clustering in Python can be a satisfactory choice.
+
+With this, you now know how to implement hierarchical clustering in Python.
+
+For understanding more such algorithms and applications of methods in Machine Learning and Data Science, do have a look at the course offerings by upGrad. We have cumulative programs for any of the career paths that you want to follow.

@@ -1,0 +1,19 @@
+This is a handy Netbackup command line command that I use to list scratch pool media.
+
+You can get a brief listing of scratch media by running the following command. This command will generate a list that can be redirected to a text file that could serve as a report or as input to a program to recall scratch tapes from offsite storage. I make a few changes to the command line and use the output to recall scratch tapes from Iron Mountain.
+
+/usr/openv/volmgr/bin/vmquery -b -pn Scratch
+
+Since I like to use this command to request media from Iron Mountain I tack on the following commands to massage the data and generate an output file which I can then upload on the Iron Mountain securesync website.
+
+|grep -i none |awk ‘{print $1″L3″}’
+
+Therefore the final command (which is best put in a script) looks like the following:
+
+/usr/openv/volmgr/bin/vmquery -b -pn Scratch |grep -i none |awk ‘{print $1″L3″}’ > //filename
+
+The awk command insures that only the first column, which is the media ID, is included since that is all the data that Iron Mountain needs. Since most of our media is LTO3 and the barcode includes “L3” at the end I tack that on to the media ID since that is the way Iron Mountain is looking for the tapes.
+
+The grep commands removes the heading from the output and excludes any tapes that are currently loaded in the tape library. I exclude the tapes in the library because of course I don’t want to request media that I already have in the tape library.
+
+Sometimes I wind-up requesting tapes I already have lying around but for just these couple tapes I can delete them before sending the final request to Iron Mountain.

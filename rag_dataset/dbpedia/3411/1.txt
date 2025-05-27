@@ -1,0 +1,65 @@
+LisaacFile:Lisaac logo.pngParadigm object-oriented prototype-basedAppeared in 2003Designed by Benoît SonntagDeveloper Benoît Sonntag & Jérôme BoutetStable release 0.13.1 (Specification) (February 17, 2008)Typing discipline static typingMajor implementations LisaacInfluenced by Smalltalk, Self, EiffelWebsite www.lisaac.org
+
+Lisaac is the first compiled object-oriented programming language based on prototype concepts, with system programming facilities and design by contract.
+
+Lisaac's developers admired both Self's flexibility and dynamic inheritance, and Eiffel's static typing and design by contract features. Seeking to combine these two apparently contradictory feature sets, Lisaac was created.
+
+Lisaac was designed as the language in which the Isaac operating system would be programmed.
+
+The Lisaac compiler produces optimized ANSI C code, which can then be compiled on every architecture with an appropriate C compiler which makes Lisaac a real multi-platform language. Compiling results show that it is possible to obtain executables from a high-level prototype-based language that are as fast as C programs[1][2].
+
+Despite being strongly typed, there is no difference between code and data.
+
+Features
+
+Communication protection mechanisms
+
+Hardware facilities
+
+System interrupt support
+
+Driver memory mapping
+
+Despite being compiled, all objects retain their dynamic abilities
+
+Basic syntax
+
+Lisaac is case sensitive. Keywords are capitalized (Section, Header, Public, …), type identifiers are written in upper case letters (INTEGER, BOOLEAN, OBJECT, …), and identifiers denoting variables and slots are written in lower case letters. Objects are composed of slots, which can be data or code. The ':' symbol is used to declare types. Slot names are prefixed with a '+' or '-' symbol to indicate whether the slot is local to an object or shared between objects.
+
+Parentheses are used to delimit lists of semicolon separated statements. Statement lists may have zero, one or more return values. The ':=' symbol is used to bind a slot to a statement or statement list that is executed at the loading/initialization of an object. The '<-' symbol is used to bind a slot to a statement list that is executed on the call of the slot.
+
+Dynamic inheritance
+
+The parent of each object is just a slot that can be assigned as required in the code, for instance:
+
+Section Header - name := DECOD_MPEG2_TO_SCREEN; Section Inherit - videoparent : OBJECT <- ( + result : OBJECT; typ .when 1 then { result := WINDOW;} .when 2 then { result := VIDEO_VGA;} .when 3 then { result := VIDEO_TVOUT;}; result ) Section Public - typ : INTEGER; - decode_stream <- ( putimage decode_to_bitmap; )
+
+Operator redefining
+
+In Lisaac, an operator is a slot and can be redefined. For example overloading the + operator for a NUMERIC object:
+
+- '+' Left 80 other:SELF :SELF <- Self - -other;
+
+Or for a matrix:
+
+- '+' Left 80 other:SELF :SELF <- ( + result : SELF; result := SELF.create count; 1.to tab.count do { i : INTEGER; result.put (item i+other.item i) to i; }; result )
+
+Genericity
+
+Generic objects are supported, for instance:
+
+ARRAY(E), DICTIONARY(KEY,VALUE)
+
+Contract programming
+
+Contract programming using Z notation is provided.
+
+Official website
+
+Wiki (mostly in French)
+
+Lisaac on GNA (moved to Alioth)
+
+Lisaac on Alioth
+
+Notes and references

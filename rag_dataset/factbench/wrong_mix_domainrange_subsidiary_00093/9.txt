@@ -1,0 +1,249 @@
+1. Apache Storm 0.9 basic training Michael G. Noll, Verisign mnoll@verisign.com / @miguno July 2014
+
+2. Storm? • Part 1: Introducing Storm • “Why should I stay awake for the full duration of this workshop?” • Part 2: Storm core concepts • Topologies, tuples, spouts, bolts, groupings, parallelism • Part 3: Operating Storm • Architecture, hardware specs, deploying, monitoring • Part 4: Developing Storm apps • Bolts and topologies, Kafka integration, testing, serialization, example apps, P&S tuning • Part 5: Playing with Storm using Wirbelsturm • Wrapping up Verisign Public 2
+
+3. NOT covered in this workshop (too little time) • Storm Trident • High-level abstraction on top of Storm, which intermixes high throughput and stateful stream processing with low latency distributed querying. Verisign Public • Joins, aggregations, grouping, functions, filters. • Adds primitives for doing stateful, incremental processing on top of any database or persistence store. • Has consistent, exactly-once semantics. • Processes a stream as small batches of messages • (cf. Spark Streaming) • Storm DRPC • Parallelizes the computation of really intense functions on the fly. • Input is a stream of function arguments, and output is a stream of the results for each of those function calls. 3
+
+4. Part 1: Introducing Storm Verisign Public 4
+
+5. Overview of Part 1: Introducing Storm • Storm? • Storm adoption and use cases in the wild • Storm in a nutshell • Motivation behind Storm Verisign Public 5
+
+6. Storm? • “Distributed and fault-tolerant real-time computation” • http://storm.incubator.apache.org/ • Originated at BackType/Twitter, open sourced in late 2011 • Implemented in Clojure, some Java • 12 core committers, plus ~ 70 contributors Verisign Public 6 https://github.com/apache/incubator-storm/#committers https://github.com/apache/incubator-storm/graphs/contributors
+
+7. Storm adoption and use cases • Twitter: personalization, search, revenue optimization, … Verisign Public • 200 nodes, 30 topos, 50B msg/day, avg latency <50ms, Jun 2013 • Yahoo: user events, content feeds, and application logs • 320 nodes (YARN), 130k msg/s, June 2013 • Spotify: recommendation, ads, monitoring, … • v0.8.0, 22 nodes, 15+ topos, 200k msg/s, Mar 2014 • Alibaba, Cisco, Flickr, PARC, WeatherChannel, … • Netflix is looking at Storm and Samza, too. 7 https://github.com/nathanmarz/storm/wiki/Powered-By
+
+8. “A Storm in a Nutshell” Verisign Public 8
+
+9. Engineers can solve tricky problems …as long as we have the right tools. Verisign Public 9
+
+10. Verisign Public
+
+11. Verisign Public
+
+12. Verisign Public But without shooting ourselves in the foot.
+
+13. The Motivation of Storm Verisign Public 13
+
+14. “Show me your code and conceal your data structures, and I shall continue to be mystified. Show me your data structures, and I won't usually need your code; it'll be obvious.” -- Eric S. Raymond, The Cathedral and the Bazaar Verisign Public
+
+16. Verisign Public WordCount example (1.1.1.1, “foo.com”) (2.2.2.2, “bar.net”) (3.3.3.3, “foo.com”) (4.4.4.4, “foo.com”) (5.5.5.5, “bar.net”) DNS queries ( (“foo.com”, 3) (“bar.net”, 2) ) Top queried domains ?
+
+17. Verisign Public FFuunnccttiioonnasl Programming
+
+18. Verisign Public ( (1.1.1.1, “foo.com”) (2.2.2.2, “bar.net”) (3.3.3.3, “foo.com”) (4.4.4.4, “foo.com”) (5.5.5.5, “bar.net”) ) DNS queries (“foo.com”, “bar.net”, “foo.com”, “foo.com”, “bar.net”) {“bar.net” -> 2, “foo.com” -> 3} ( (“foo.com”, 3) (“bar.net”, 2) ) f g h
+
+19. Verisign Public h(g(f(data)))  λ-calculus
+
+20. Verisign Public λ here
+
+21. Clojure • Is a dialect of Lisp that targets the JVM (and JavaScript) Verisign Public • clojure-1.5.1.jar
+
+22. Verisign Public Wait a minute – LISP?? (me? (kidding (you (are)))) Yeah, those parentheses are annoying. At first. Think: Like Python’s significant whitespace.
+
+23. Clojure • Is a dialect of Lisp that targets the JVM (and JavaScript) Verisign Public • clojure-1.5.1.jar • "Dynamic, compiled programming language" • Predominantly functional programming • Many interesting characteristics and value propositions for software development, notably for concurrent applications • Storm’s core is implemented in Clojure • And you will see why they match so well.
+
+24. Verisign Public Previous WordCount example in Clojure h g f (sort-by val > (frequencies (map second queries))) Alternative, left-to-right syntax with ->>: (->> queries (map second) frequencies (sort-by val >)) $ cat input.txt | awk | sort # kinda
+
+25. Verisign Public Clojure REPL user> queries (("1.1.1.1" "foo.com") ("2.2.2.2" "bar.net") ("3.3.3.3" "foo.com") ("4.4.4.4" "foo.com") ("5.5.5.5" "bar.net")) user> (map second queries) ("foo.com" "bar.net" "foo.com" "foo.com" "bar.net") user> (frequencies (map second queries)) {"bar.net" 2, "foo.com" 3} user> (sort-by val > (frequencies (map second queries))) (["foo.com" 3] ["bar.net" 2])
+
+26. Verisign Public Scaling up Clojure, Java, <your-pick> can turn the previous code into a multi-threaded app that utilizes all cores on your server.
+
+27. But what if even a very big machine is not Verisign Public enough for your Internet-scale app?
+
+28. Verisign Public And remember.
+
+30. Part 2: Storm core concepts Verisign Public 30
+
+31. Overview of Part 2: Storm core concepts • A first look • Topology • Data model • Spouts and bolts • Groupings • Parallelism Verisign Public 31
+
+32. A first look Verisign Public 32 Storm is distributed FP-like processing of data streams. Same idea, many machines. (but there’s more of course)
+
+33. Overview of Part 2: Storm core concepts • A first look • Topology • Data model • Spouts and bolts • Groupings • Parallelism Verisign Public 33
+
+34. Verisign Public A topology in Storm wires data and functions via a DAG. Executes on many machines like a MR job in Hadoop.
+
+36. Topology Verisign Public Spout 1 Spout 2 data
+
+37. Verisign Public Bolt 2 Spout 2 Bolt 3 Bolt 4 Spout 1 Bolt 1 data functions Topology
+
+38. Verisign Public Bolt 2 Spout 2 Bolt 3 Bolt 4 Spout 1 Bolt 1 data functions DAG Topology
+
+39. Relation of topologies to FP Verisign Public Bolt 2 Bolt 4 Spout 1 Bolt 1 data f g h Spout 2 Bolt 3
+
+40. Relation of topologies to FP Verisign Public Bolt 2 Bolt 4 Spout 1 Bolt 1 data f g h DAG: h( f(data), g ( d a t a ) )
+
+41. Previous WordCount example in Storm (high-level) Verisign Public (->> queries (map second) frequencies (sort-by val >) ) queries f g h Spout Bolt 1 Bolt 2 Bolt 3 Remember?
+
+42. Overview of Part 2: Storm core concepts • A first look • Topology • Data model • Spouts and bolts • Groupings • Parallelism Verisign Public 42
+
+43. Verisign Public Tuple = datum containing 1+ fields (1.1.1.1, “foo.com”) Values can be of any type such as Java primitive types, String, byte[]. Custom objects should provide their own Kryo serializer though. Stream = unbounded sequence of tuples ... (1.1.1.1, “foo.com”) (2.2.2.2, “bar.net”) (3.3.3.3, “foo.com”) ... Data model http://storm.incubator.apache.org/documentation/Concepts.html
+
+44. Overview of Part 2: Storm core concepts • A first look • Topology • Data model • Spouts and bolts • Groupings • Parallelism Verisign Public 44
+
+45. Spouts and bolts Spout = source of data streams Bolt = consumes 1+ streams and potentially produces new streams Verisign Public Spout 1 Bolt 1 Can be “unreliable” (fire-and-forget) or “reliable” (can replay failed tuples). Example: Connect to the Twitter API and emit a stream of decoded URLs. Spout 1 Bolt 1 Bolt 2 Can do anything from running functions, filter tuples, joins, talk to DB, etc. Complex stream transformations often require multiple steps and thus multiple bolts. http://storm.incubator.apache.org/documentation/Concepts.html
+
+46. Overview of Part 2: Storm core concepts • A first look • Topology • Data model • Spouts and bolts • Groupings • Parallelism Verisign Public 46
+
+47. Stream groupings control the data flow in the DAG Bolt C  Shuffle grouping = random; typically used to distribute load evenly to downstream bolts  Fields grouping = GROUP BY field(s)  All grouping = replicates stream across all the bolt’s tasks; use with care  Global grouping = stream goes to a single one of the bolt’s tasks; don’t overwhelm the target bolt!  Direct grouping = producer of the tuple decides which task of the consumer will receive the tuple  LocalOrShuffle = If the target bolt has one or more tasks in the same worker process, tuples will Verisign Public be shuffled to just those in-process tasks. Otherwise, same as normal shuffle.  Custom groupings are possible, too. Bolt B Spout Bolt A
+
+48. Overview of Part 2: Storm core concepts • A first look • Topology • Data model • Spouts and bolts • Groupings • Parallelism – worker, executors, tasks Verisign Public 48
+
+49. Worker processes vs. Executors vs. Tasks Verisign Public Invariant: #threads ≤ #tasks A worker process is either idle or being used by a single topology, and it is never shared across topologies. The same applies to its child executors and tasks. http://storm.incubator.apache.org/documentation/Understanding-the-parallelism-of-a-Storm-topology.html
+
+50. Example of a running topology Verisign Public
+
+51. Code to configure this topology Verisign Public
+
+52. Part 3: Operating Storm Verisign Public 52
+
+53. Overview of Part 3: Operating Storm • Storm architecture • Storm hardware specs • Deploying Storm • Monitoring Storm Verisign Public • Storm topologies • Storm itself • ZooKeeper • Ops-related references 53
+
+54. Verisign Public Supervisor Supervisor Storm architecture 54 Hadoop v1 Storm JobTracker Nimbus (only 1)  distributes code around cluster  assigns tasks to machines/supervisors  failure monitoring  is fail-fast and stateless (you can “kill -9” it) TaskTracker Supervisor (many)  listens for work assigned to its machine  starts and stops worker processes as necessary based on Nimbus  is fail-fast and stateless (you can “kill -9” it)  shuts down worker processes with “kill -9”, too MR job Topology  processes messages forever (or until you kill it)  a running topology consists of many worker processes spread across many machines Nimbus ZooKeeper ZooKeeper ZooKeeper Supervisor Supervisor Supervisor
+
+55. Storm architecture Verisign Public 55
+
+56. Storm architecture: ZooKeeper • Storm requires ZooKeeper Verisign Public • 0.9.2+ uses ZK 3.4.5 • Storm typically puts less load on ZK than Kafka (but ZK is still a bottleneck), but caution: often you have many more Storm nodes than Kafka nodes • ZooKeeper • NOT used for message passing, which is done via Netty in 0.9 • Used for coordination purposes, and to store state and statistics • Register + discover Supervisors, detect failed nodes, … • Example: To add a new Supervisor node, just start it. • This allows Storm’s components to be stateless. “kill -9” away! • Example: Supervisors/Nimbus can be restarted without affecting running topologies. • Used for heartbeats • Workers heartbeat the status of child executor threads to Nimbus via ZK. • Supervisor processes heartbeat their own status to Nimbus via ZK. • Stores recent task errors (deleted on topology shutdown) 56
+
+57. Storm architecture: fault tolerance • What happens when Nimbus dies (master node)? Verisign Public • If Nimbus is run under process supervision as recommended (e.g. via supervisord), it will restart like nothing happened. • While Nimbus is down: • Existing topologies will continue to run, but you cannot submit new topologies. • Running worker processes will not be affected. Also, Supervisors will restart their (local) workers if needed. However, failed tasks will not be reassigned to other machines, as this is the responsibility of Nimbus. • What happens when a Supervisor dies (slave node)? • If Supervisor run under process supervision as recommended (e.g. via supervisord), will restart like nothing happened. • Running worker processes will not be affected. • What happens when a worker process dies? • It's parent Supervisor will restart it. If it continuously fails on startup and is unable to heartbeat to Nimbus, Nimbus will reassign the worker to another machine. 57
+
+58. Storm hardware specs • ZooKeeper Verisign Public • Preferably use dedicated machines because ZK is a bottleneck for Storm • 1 ZK instance per machine • Using VMs may work in some situations. Keep in mind other VMs or processes running on the shared host machine may impact ZK performance, particularly if they cause I/O load. (source) • I/O is a bottleneck for ZooKeeper • Put ZK storage on its own disk device • SSD’s dramatically improve performance • Normally, ZK will sync to disk on every write, and that causes two seeks (1x for the data, 1x for the data log). This may add up significantly when all the workers are heartbeating to ZK. (source) • Monitor I/O load on the ZK nodes • Preferably run ZK ensembles with nodes >= 3 in production environments so that you can tolerate the failure of 1 ZK server (incl. e.g. maintenance) 58
+
+59. Storm hardware specs • Nimbus aka master node Verisign Public • Comparatively little load on Nimbus, so a medium-sized machine suffices • EC2 example: m1.xlarge @ $0.27/hour • Check monitoring stats to see if the machine can keep up 59
+
+60. Storm hardware specs • Storm Supervisor aka slave nodes Verisign Public • Exact specs depend on anticipated usage – e.g. CPU heavy, I/O heavy, … • CPU heavy: e.g. machine learning • CPU light: e.g. rolling windows, pre-aggregation (here: get more RAM) • CPU cores • More is usually better – the more you have the more threads you can support (i.e. parallelism). And Storm potentially uses a lot of threads. • Memory • Highly specific to actual use case • Considerations: #workers (= JVMs) per node? Are you caching and/or holding in-memory state? • Network: 1GigE • Use bonded NICs or 10GigE if needed • EC2 examples: c1.xlarge @ $0.36/hour, c3.2xlarges @ $0.42/hour 60
+
+61. Deploying Storm • Puppet module Verisign Public • https://github.com/miguno/puppet-storm • Hiera-compatible, rspec tests, Travis CI setup (e.g. to test against multiple versions of Puppet and Ruby, Puppet style checker/lint, etc.) • RPM packaging script for RHEL 6 • https://github.com/miguno/wirbelsturm-rpm-storm • Digitally signed by yum@michael-noll.com • RPM is built on a Wirbelsturm-managed build server • See later slides on Wirbelsturm for 1-click off-the-shelf cluster setups. 61
+
+62. Deploying Storm • Hiera example for a Storm slave node Verisign Public 62
+
+63. Operating Storm • Typical operations tasks include: Verisign Public • Monitoring topologies for P&S (“Don’t let our pipes blow up!”) • Tackling P&S in Storm is a joint Ops-Dev effort. • Adding or removing slave nodes, i.e. nodes that run Supervisors • Apps management: new topologies, swapping topologies, … • See Ops-related references at the end of this part 63
+
+64. Storm security • Original design was not created with security in mind. • Security features are now being added, e.g. from Yahoo!’s fork. • State of security in Storm 0.9.x: Verisign Public • No authentication, no authorization. • No encryption of data in transit, i.e. between workers. • No access restrictions on data stored in ZooKeeper. • Arbitrary user code can be run on nodes if Nimbus’ Thrift port is not locked down. • This list goes on. • Further details plus recommendations on hardening Storm: • https://github.com/apache/incubator-storm/blob/master/SECURITY.md 64
+
+65. Monitoring Storm Verisign Public 65
+
+66. Monitoring Storm • Storm UI • Use standard monitoring tools such as Graphite & friends Verisign Public • Graphite • https://github.com/miguno/puppet-graphite • Java API, also used by Kafka: http://metrics.codahale.com/ • Consider Storm's built-in metrics feature • Collect logging files into a central place • Logstash/Kibana and friends • Helps with troubleshooting, debugging, etc. – notably if you can correlate logging data with numeric metrics 66
+
+67. Monitoring Storm • Built-in Storm UI, listens on 8080/tcp by default • Storm REST API (new since in 0.9.2) Verisign Public • https://github.com/apache/incubator-storm/blob/master/STORM-UI-REST-API.md • Third-party tools • https://github.com/otoolep/stormkafkamon 67
+
+68. Monitoring Storm topologies • Wait – why does the Storm UI report seemingly incorrect numbers? Verisign Public • Storm samples incoming tuples when computing statistics in order to increase performance. • Sample rate is configured via topology.stats.sample.rate. • 0.05 is the default value • Here, Storm will pick a random event of the next 20 events in which to increase the metric count by 20. So if you have 20 tasks for that bolt, your stats could be off by +/- 380. • 1.00 forces Storm to count everything exactly • This gives you accurate numbers at the cost of a big performance hit. For testing purposes however this is acceptable and often quite helpful. 68
+
+69. Monitoring ZooKeeper • Ensemble (= cluster) availability Verisign Public • LinkedIn run 5-node ensembles = tolerates 2 dead • Twitter run 13-node ensembles = tolerates 6 dead • Latency of requests • Metric target is 0 ms when using SSD’s in ZooKeeper machines. • Why? Because SSD’s are so fast they typically bring down latency below ZK’s metric granularity (which is per-ms). • Outstanding requests • Metric target is 0. • Why? Because ZK processes all incoming requests serially. Non-zero values mean that requests are backing up. 69
+
+70. Ops-related references • Storm documentation Verisign Public • http://storm.incubator.apache.org/documentation/Home.html • Storm FAQ • http://storm.incubator.apache.org/documentation/FAQ.html • Storm CLI • http://storm.incubator.apache.org/documentation/Command-line-client.html • Storm fault-tolerance • http://storm.incubator.apache.org/documentation/Fault-tolerance.html • Storm metrics • http://storm.incubator.apache.org/documentation/Metrics.html • http://www.michael-noll.com/blog/2013/11/06/sending-metrics-from-storm-to-graphite/ • Storm tutorials • http://storm.incubator.apache.org/documentation/Tutorial.html • http://www.michael-noll.com/tutorials/running-multi-node-storm-cluster/ 70
+
+71. Part 4: Developing Storm apps Verisign Public 71
+
+72. Overview of Part 4: Developing Storm apps • Hello, Storm! • Creating a bolt • Creating a topology • Running a topology • Integrating Storm and Kafka • Testing Storm topologies • Serialization in Storm (Avro, Kryo) • Example Storm apps • P&S tuning Verisign Public 72
+
+73. A trivial “Hello, Storm” topology Verisign Public Spout Bolt “emit random number < 100” “multiply by 2” (74) (148)
+
+74. Code Verisign Public Spout Bolt
+
+75. Code Verisign Public Topology config – for running on your local laptop
+
+76. Code Verisign Public Topology config – for running on a production Storm cluster
+
+77. Creating a spout • Won’t cover implementing a spout in this workshop. • This is because you typically use an existing spout (Kafka spout, Redis spout, etc). But you will definitely implement your own bolts. Verisign Public 77
+
+78. Creating a bolt • Storm is polyglot – but in this workshop we focus on JVM languages. • Two main options for JVM users: Verisign Public • Implement the IRichBolt or IBasicBolt interfaces • Extend the BaseRichBolt or BaseBasicBolt abstract classes • BaseRichBolt • You must – and are able to – manually ack() an incoming tuple. • Can be used to delay acking a tuple, e.g. for algorithms that need to work across multiple incoming tuples. • BaseBasicBolt • Auto-acks the incoming tuple at the end of its execute() method. • These bolts are typically simple functions or filters. 78
+
+79. Extending BaseRichBolt • Let’s re-use our previous example bolt. Verisign Public 79
+
+80. Extending BaseRichBolt • execute() is the heart of the bolt. • This is where you will focus most of your attention when implementing your bolt or when trying to understand somebody else’s bolt. Verisign Public 80
+
+81. Extending BaseRichBolt • prepare() acts as a “second constructor” for the bolt’s class. • Because of Storm’s distributed execution model and serialization, prepare() is often needed to fully initialize the bolt on the target JVM. Verisign Public 81
+
+82. Extending BaseRichBolt • declareOutputFields() tells downstream bolts about this bolt’s output. What you declare must match what you actually emit(). Verisign Public • You will use this information in downstream bolts to “extract” the data from the emitted tuples. • If your bolt only performs side effects (e.g. talk to a DB) but does not emit an actual tuple, override this method with an empty {} method. 82
+
+83. Common spout/bolt gotchas • NotSerializableException at run-time of your topology Verisign Public • Typically you will run into this because your bolt has fields (instance or class members) that are not serializable. This recursively applies to each field. • The root cause is Storm’s distributed execution model and serialization: Storm code will be shipped – first serialized and then deserialized – to a different machine/JVM, and then executed. (see docs for details) • How to fix? • Solution 1: Make the culprit class serializable, if possible. • Solution 2: Register a custom Kryo serializer for the class. • Solution 3a (Java): Make the field transient. If needed, initialize it in prepare(). • Solution 3b (Scala): Make the field @transient lazy val (Scala). If needed, turn it into a var and initialize it in in prepare(). • For example, the var/prepare() approach may be needed if you use the factory pattern to create a specific type of a collaborator within a bolt. Factories come in handy to make the code testable. See AvroKafkaSinkBolt in kafka-storm-starter for such a case. 83
+
+84. Common spout/bolt gotchas • Tick tuples are configured per-component, i.e. per bolt Verisign Public • Idiomatic approach to trigger periodic activities in your bolts: “Every 10s do XYZ.” • Don't configure them per-topology as this will throw a RuntimeException. • Tick tuples are not 100% guaranteed to arrive in time • They are sent to a bolt just like any other tuples, and will enter the same queues and buffers. Congestion, for example, may cause tick tuples to arrive too late. • Across different bolts, tick tuples are not guaranteed to arrive at the same time, even if the bolts are configured to use the same tick tuple frequency. • Currently, tick tuples for the same bolt will arrive at the same time at the bolt's various task instances. However, this property is not guaranteed for the future. 84 http://www.michael-noll.com/blog/2013/01/18/implementing-real-time-trending-topics-in-storm/
+
+85. Common spout/bolt gotchas • When using tick tuples, forgetting to handle them "in a special way" Verisign Public • Trying to run your normal business logic on tick tuples – e.g. extracting a certain data field – will usually only work for normal tuples but fail for a tick tuple. • When using tick tuples, forgetting to ack() them • Tick tuples must be acked like any other tuple. 85 http://www.michael-noll.com/blog/2013/01/18/implementing-real-time-trending-topics-in-storm/
+
+86. Common spout/bolt gotchas • Outputcollector#emit() can only be called from the "original" thread that runs a bolt Verisign Public • You can start additional threads in your bolt, but only the bolt's own thread may call emit() on the collector to write output tuples. If you try to emit tuples from any of the other threads, Storm will throw a NullPointerException. • If you need the additional-threads pattern, use e.g. a thread-safe queue to communicate between the threads and to collect [pun intended] the output tuples across threads. • This limitation is only relevant for output tuples, i.e. output that you want to send within the Storm framework to downstream consumer bolts. • If you want to write data to (say) Kafka instead – think of this as a side effect of your bolt – then you don't need the emit() anyways and can thus write the side-effect output in any way you want, and from any thread. 86
+
+87. Creating a topology • When creating a topology you’re essentially defining the DAG – that is, which spouts and bolts to use, and how they interconnect. Verisign Public • TopologyBuilder#setSpout() and TopologyBuilder#setBolt() • Groupings between spouts and bolts, e.g. shuffleGrouping() 87
+
+88. Creating a topology • You must specify the initial parallelism of the topology. Verisign Public • Crucial for P&S but no rule of thumb. We talk about tuning later. • You must understand concepts such as workers/executors/tasks. • Only some aspects of parallelism can be changed later, i.e. at run-time. • You can change the #executors (threads). • You cannot change #tasks, which remains static during the topology’s lifetime. 88
+
+89. Creating a topology • You submit a topology either to a “local” cluster or to a real cluster. Verisign Public • LocalCluster#submitTopology • StormSubmitter#submitTopology() and #submitTopologyWithProgressBar() • In your code you may want to use both approaches, e.g. to facilitate local testing. • Notes • A StormTopology is a static, serializable Thrift data structure. It contains instructions that tell Storm how to deploy and run the topology in a cluster. • The StormTopology object will be serialized, including all the components in the topology's DAG. See later slides on serialization. • Only when the topology is deployed (and serialized in the process) and initialized (i.e. prepare() and other life cycle methods are called on components such as bolts) does it perform any actual message processing. 89
+
+90. Running a topology • To run a topology you must first package your code into a “fat jar”. Verisign Public • You must includes all your code’s dependencies but: • Exclude the Storm dependency itself, as the Storm cluster will provide this. • Sbt: "org.apache.storm" % "storm-core" % "0.9.2-incubating" % "provided" • Maven: <scope>provided</scope> • Gradle with gradle-fatjar-plugin: compile '...', { ext { fatJarExclude = true } } • Note: You may need to tweak your build script so that your local tests do include the Storm dependency. See e.g. assembly.sbt in kafka-storm-starter for an example. • A topology is run via the storm jar command. • Will connects to Nimbus, upload your jar, and run the topology. • Use any machine that can run "storm jar" and talk to Nimbus' Thrift port. • You can pass additional JVM options via $STORM_JAR_JVM_OPTS. 90 $ storm jar all-my-code.jar com.miguno.MyTopology arg1 arg2
+
+91. Alright, my topology runs – now what? • The topology will run forever or until you kill it. • Check the status of your topology Verisign Public • Storm UI (default: 8080/tcp) • Storm CLI, e.g. storm [list | kill | rebalance | deactivate | ...] • Storm REST API • FYI: • Storm will guarantee that no data is lost, even if machines go down and messages are dropped (as long as you don’t disable this feature). • Storm will automatically restart failed tasks, and even re-assign tasks to different machines if e.g. a machine dies. • See Storm docs for further details. 91
+
+92. Integrating Storm and Kafka Verisign Public 92
+
+93. Reading from Kafka • Use the official Kafka spout that ships in Storm 0.9.2 Verisign Public • https://github.com/apache/incubator-storm/tree/master/external/storm-kafka • Compatible with Kafka 0.8, available on Maven Central • Based on wurstmeister's spout, now part of Storm https://github.com/wurstmeister/storm-kafka-0.8-plus • Alternatives to official Kafka spout • NFI: https://github.com/HolmesNL/kafka-spout • A detailed comparison is beyond the scope of this workshop, but: • Official Kafka spout uses Kafka’s Simple Consumer API, NFI uses High-level API. • Official spout can read from multiple topics, NFI can’t. • Official spout's replay-failed-tuples functionality is better than NFI’s. 93 "org.apache.storm" % "storm-kafka" % "0.9.2-incubating"
+
+94. Reading from Kafka • Spout configuration via KafkaConfig • In the following example: Verisign Public • Connect to the target Kafka cluster via the ZK ensemble at zookeeper1:2181. • We want to read from the Kafka topic “my-kafka-input-topic”, which has 10 partitions. • By default, the spout stores its own state incl. Kafka offsets in the Storm cluster's ZK. • Can be changed by setting the field SpoutConfig.zkServers. See source, no docs yet. • Full example at KafkaStormSpec in kafka-storm-starter 94
+
+95. Writing to Kafka • Use a normal Kafka producer in your bolt, no special magic needed • Base setup: Verisign Public • Serialize the desired output data in the way you need, e.g. via Avro. • Write to Kafka, typically in your bolt’s emit() method. • If you are not emitting any Storm tuples, i.e. if you write to Kafka only, make sure you override declareOutputFields() with an empty {} method • Full example at AvroKafkaSinkBolt in kafka-storm-starter 95
+
+96. Testing Storm topologies Verisign Public 96
+
+97. Testing Storm topologies • Won’t have the time to cover testing in this workshop. • Some hints: Verisign Public • Unit-test your individual classes like usual, e.g. bolts • When integration testing, use in-memory instances of Storm and ZK • Try Storm’s built-in testing API (cf. kafka-storm-starter below) • Test-drive topologies in virtual Storm clusters via Wirbelsturm • Starting points: • storm-core test suite • https://github.com/apache/incubator-storm/tree/master/storm-core/test/ • storm-kafka test suite • https://github.com/apache/incubator-storm/tree/master/external/storm-kafka/src/test • kafka-storm-starter tests related to Storm • https://github.com/miguno/kafka-storm-starter/ 97
+
+98. Serialization in Storm Verisign Public 98
+
+99. Serialization in Storm • Required because Storm processes data across JVMs and machines • When/where/how serialization happens is often critical for P&S tuning • Storm uses Kryo for serialization, falls back on Java serialization Verisign Public • By default, Storm can serialize primitive types, strings, byte arrays, ArrayList, HashMap, HashSet, and the Clojure collection types. • Anything else needs a custom Kryo serializer, which must be “registered” with Storm. • Storm falls back on Java serialization if needed. But this serialization is slow. • Tip: Disable topology.fall.back.on.java.serialization to spot missing serializers. • Examples in kafka-storm-starter, all of which make use of Twitter Bijection/Chill • AvroScheme[T] – enable automatic Avro-decoding in Kafka spout • AvroDecoderBolt[T] – decode Avro data in a bolt • AvroKafkaSinkBolt[T] – encode Avro data in a bolt • TweetAvroKryoDecorator – a custom Kryo serializer • KafkaStormSpec – shows how to register a custom Kryo serializer • More details at Storm serialization 99
+
+100. Example Storm apps Verisign Public 100
+
+101. storm-starter • storm-starter is part of core Storm project since 0.9.2 • https://github.com/apache/incubator-storm/tree/master/examples/storm-starter • Since 0.9.2 also published to Maven Central = you can re-use its spouts/bolts Verisign Public 101 $ git clone https://github.com/apache/incubator-storm.git $ cd incubator-storm/ $ mvn clean install -DskipTests=true # build Storm locally $ cd examples/storm-starter # go to storm-starter (Must have Maven 3.x and JDK installed.)
+
+102. storm-starter: RollingTopWords Verisign Public 102 $ mvn compile exec:java -Dstorm.topology=storm.starter.RollingTopWords • Will run a topology that implements trending topics. • http://www.michael-noll.com/blog/2013/01/18/implementing-real-time-trending-topics-in-storm/
+
+103. Behind the scenes of RollingTopWords Verisign Public 103 http://www.michael-noll.com/blog/2013/01/18/implementing-real-time-trending-topics-in-storm/
+
+104. kafka-storm-starter • Written by yours truly • https://github.com/miguno/kafka-storm-starter Verisign Public 104 $ git clone https://github.com/miguno/kafka-storm-starter $ cd kafka-storm-starter # Now ready for mayhem! (Must have JDK 7 installed.)
+
+105. kafka-storm-starter: run the test suite Verisign Public 105 $ ./sbt test • Will run unit tests plus end-to-end tests of Kafka, Storm, and Kafka- Storm integration.
+
+106. kafka-storm-starter: run the KafkaStormDemo app Verisign Public 106 $ ./sbt run • Starts in-memory instances of ZooKeeper, Kafka, and Storm. Then runs a Storm topology that reads from Kafka.
+
+107. Storm related code in kafka-storm-starter • AvroDecoderBolt[T] Verisign Public • https://github.com/miguno/kafka-storm-starter/ blob/develop/src/main/scala/com/miguno/kafkastorm/storm/AvroDe coderBolt.scala • AvroScheme[T] • https://github.com/miguno/kafka-storm-starter/ blob/develop/src/main/scala/com/miguno/kafkastorm/storm/AvroSc heme.scala • AvroKafkaSinkBolt[T] • https://github.com/miguno/kafka-storm-starter/ blob/develop/src/main/scala/com/miguno/kafkastorm/storm/AvroKa fkaSinkBolt.scala • StormSpec: test-drives Storm topologies • https://github.com/miguno/kafka-storm-starter/ blob/develop/src/test/scala/com/miguno/kafkastorm/integration/Stor mSpec.scala 107
+
+108. Storm performance tuning Verisign Public 108
+
+109. Storm performance tuning • Unfortunately, no silver bullet and no free lunch. Witchcraft? • And what is “the best” performance in the first place? Verisign Public • Some users require a low latency, and are willing to let most of the cluster sit idle as long they can process a new event quickly once it happens. • Other users are willing to sacrifice latency for minimizing the hardware footprint to save $$$. And so on. • P&S tuning depends very much on the actual use cases • Hardware specs, data volume/velocity/…, etc. • Which means in practice: • What works with sampled data may not work with production-scale data. • What works for topology A may not work for topology B. • What works for team A may not work for team B. • Tip: Be careful when adopting other people’s recommendations if you don’t fully understand what’s being tuned, why, and in which context. 109
+
+110. General considerations • Test + measure: use Storm UI, Graphite & friends • Understand your topology’s DAG on a macro level Verisign Public • Where and how data flows, its volume, joins/splits, etc. • Trivial example: Shoveling 1Gbps into a “singleton” bolt = WHOOPS • Understand … on a micro level • How your data flows between machines, workers, executors, tasks. • Where and when serialization happens. • Which queues and buffers your data will hit. • We talk about this in detail in the next slides! • Best performance optimization is often to stop doing something. • Example: If you can cut out (de-)serialization and sending tuples to another process, even over the loopback device, then that is potentially a big win. 110 http://www.slideshare.net/ptgoetz/scaling-storm-hadoop-summit-2014 http://www.slideshare.net/JamesSirota/cisco-opensoc
+
+111. How to approach P&S tuning • Optimize locally before trying to optimize globally Verisign Public • Tune individual spouts/bolts before tuning entire topology. • Write simple data generator spouts and no-op bolts to facilitate this. • Even small things count at scale • A simple string operation can slowdown throughput when processing 1M tuples/s • Turn knobs slowly, one at a time • A common advice when fiddling with a complex system. • Add your own knobs • It helps to make as many things configurable as possible. • Error handling is critical • Poorly handled errors can lead to topology failure, data loss or data duplication. • Particularly important when interfacing Storm with other systems such as Kafka. 111 http://www.slideshare.net/ptgoetz/scaling-storm-hadoop-summit-2014 http://www.slideshare.net/JamesSirota/cisco-opensoc
+
+112. Some rules of thumb, for guidance • CPU-bound topology? Verisign Public • Try to spread and parallelize the load across cores (think: workers). • Local cores: may incur serialization/deserialization costs, see later slides. • Remote cores: will incur serialization/deserialization costs, plus network I/O and additional Storm coordination work. • Network I/O bound topology? • Collocate your cores, e.g. try to perform more logical operations per bolt. • Breaks single responsibility principle (SRP) in favor of performance. • But what if topology is CPU-bound and I/O-bound and …? • It becomes very tricky when parts of your topology are CPU-bound, other parts are I/O bound, and other parts are constrained by memory (which has it's own limitations). • Grab a lot of coffee, and good luck! 112
+
+113. Internal message buffers of Storm (as of 0.9.1) Update August 2014: This setup may have changed due to recent P&S work in STORM-297. http://www.michael-noll.com/blog/2013/06/21/understanding-storm-internal-message-buffers/ Verisign Public
+
+114. Communication within a Storm cluster • Intra-worker communication: LMAX Disruptor <<< awesome library! • Between local threads within the same worker process (JVM), e.g. between local tasks/executors of same topology • Flow is: emit() -> executor A’s send buffer -> executor B’s receive buffer. • Does not hit the parent worker’s transfer buffer. Does not incur serialization because it’s in the same JVM. • Inter-worker communication: Netty in Storm 0.9+, ZeroMQ in 0.8 • Different JVMs/workers on same machine Verisign Public • emit() -> exec send buffer -> worker A’s transfer queue -> local socket -> worker B’s recv queue -> exec recv buffer • Different machines. • Same as above, but uses a network socket and thus also hits the NIC. Incurs additional latency because of network. • Inter-worker communication incurs serialization overhead (passes JVM boundaries), cf. Storm serialization with Kryo • Inter-topology communication: • Nothing built into Storm – up to you! Common choices are a messaging system such as Kafka or Redis, an RDBMS or NOSQL database, etc. • Inter-topology communication incurs serialization overhead, details depend on your setup 114
+
+115. Tuning internal message buffers • Start with the following settings if you think the defaults aren’t adequate • Helpful references Verisign Public • Storm default configuration (defaults.yaml) • Tuning and Productionization of Storm, by Nathan Marz • Notes on Storm+Trident Tuning, by Philip Kromer • Understanding the Internal Message Buffers of Storm, by /me 115 Config Default Tuning guess Notes topology.receiver.buffer.size 8 8 topology.transfer.buffer.size 1,024 32 Batches of messages topology.executor.receive.buffer.size 1,024 16,384 Batches of messages topology.executor.send.buffer.size 1,024 16,384 Individual messages
+
+116. JVM garbage collection and RAM • Garbage collection woes Verisign Public • If you are GC’ing too much and failing a lot of tuples (which may be in part due to GCs) it is possible that you are out of memory. • Try to increase the JVM heap size (-Xmx) that is allocated for each worker. • Try the G1 garbage collector in JDK7u4 and later. • But: A larger JVM heap size is not always better. • When the JVM will eventually garbage-collect, the GC pause may take much longer for larger heaps. • Example: A GC pause will also temporarily stop those threads in Storm that perform the heartbeating. So GC pauses can potentially make Storm think that workers have died, which will trigger “recovery” actions etc. This can cause cascading effects. 116
+
+117. Rate-limiting topologies • topology.max.spout.pending Verisign Public • Max number of tuples that can be pending on a single spout task at once. “Pending” means the tuple has either failed or has not been acked yet. • Typically, increasing max pending tuples will increase the throughput of your topology. But in some cases decreasing the value may be required to increase throughput. • Caveats: • This setting has no effect for unreliable spouts, which don't tag their tuples with a message id. • For Trident, maxSpoutPending refers to the number of pipelined batches of tuples. • Recommended to not setting this parameter very high for Trident topologies (start testing with ~ 10). • Primarily used a) to throttle your spouts and b) to make sure your spouts don't emit more than your topology can handle. • If the complete latency of your topology is increasing then your tuples are getting backed up (bottlenecked) somewhere downstream in the topology. • If some tasks run into “OOM: GC overhead limit exceeded” exception, then typically your upstream spouts/bolts are outpacing your downstream bolts. • Apart from throttling your spouts with this setting you can of course also try to increase the topology’s parallelism (maybe you actually need to combine the two). 117
+
+118. Acking strategies • topology.acker.executors Verisign Public • Determines the number of executor threads (or tasks?) that will track tuple trees and detect when a tuple has been fully processed. • Disabling acking trades reliability for performance. • If you want to enable acking and thus guaranteed message processing • Rule of thumb: 1 acker/worker (which is also the default in Storm 0.9) • If you want to disable acking and thus guaranteed message processing • Set value to 0. Here, Storm will immediately ack tuples as soon as they come off the spout, effectively disabling acking and thus reliability. • Note that there are two additional ways to fine-tune acking behavior, and notably to disable acking: 1. Turn off acking for an individual spout by omitting a message id in the SpoutOutputCollector.emit() method. 2. If you don't care if a particular subset of tuples is failed to be processed downstream in the topology, you can emit them as unanchored tuples. Since they're not anchored to any spout tuples, they won't cause any spout tuples to fail if they aren't acked. 118
+
+119. Miscellaneous • A worker process is never shared across topologies. Verisign Public • If you have Storm configured to run only a single worker on a machine, then you can’t run multiple topologies on that machine. • Spare worker capacity can’t be used by other topos. All the worker’s child executors and tasks will only ever be used to run code for a single topology. • All executors/tasks on a worker run in the same JVM. • In some cases – e.g. a localOrShuffleGrouping() – this improves performance. • In other cases this can cause issues. • If a task crashes the JVM/worker or causes the JVM to run out of memory, then all other tasks/executors of the worker die, too. • Some applications may malfunction if they co-exist as multiple instances in the same JVM, e.g. when relying on static variables. 119
+
+120. Miscellaneous • Consider the use of Trident to increase throughput Verisign Public • Trident inherently operates on batches of tuples. • Drawback is typically a higher latency. • Trident is not covered in this workshop.  • Experiment with batching messages/tuples manually • Keep in mind that here a failed tuple actually corresponds to multiple data records. • For instance, if a batch “tuple” fails and gets replayed, all the batched data records will be replayed, which may lead to data duplication. • If you don’t like the idea of manual batching, try Trident! 120
+
+121. When using Storm with Kafka • Storm’s parallelism is controlled by Kafka’s “parallelism” Verisign Public • Set Kafka spout’s parallelism to #partitions of source topic. • Other key parameters that determine performance • KafkaConfig.fetchSizeBytes (default: 1 MB) • KafkaConfig.bufferSizeBytes (default: 1 MB) 121
+
+122. TL;DR: Start with this, then measure/improve/repeat • 1 worker / machine / topology Verisign Public • Minimize unnecessary network transfer • 1 acker / worker • This is also the default in Storm 0.9 • CPU-bound use cases: • 1 executor thread / CPU core, to optimize thread and CPU usage • I/O-bound use cases: • 10-100 executor threads / CPU core 122 http://www.slideshare.net/ptgoetz/scaling-storm-hadoop-summit-2014
+
+123. Part 5: Playing with Storm using Wirbelsturm 1-click Storm deployments Verisign Public 123
+
+124. Deploying Storm via Wirbelsturm • Written by yours truly • https://github.com/miguno/wirbelsturm Verisign Public 124 $ git clone https://github.com/miguno/wirbelsturm.git $ cd wirbelsturm $ ./bootstrap $ vagrant up zookeeper1 nimbus1 supervisor1 supervisor2 (Must have Vagrant 1.6.1+ and VirtualBox 4.3+ installed.)
+
+125. Deploying Storm via Wirbelsturm • By default, the Storm UI runs on nimbus1 at: Verisign Public • http://localhost:28080/ • You can build and run a topology: • Beyond the scope of this workshop. • Use e.g. an Ansible playbook to submit topologies to make this task simple, easy, and fun. 125
+
+126. What can I do with Wirbelsturm? • Get a first impression of Storm • Test-drive your topologies • Test failure handling Verisign Public • Stop/kill Nimbus, check what happens to Supervisors. • Stop/kill ZooKeeper instances, check what happens to topology. • Use as sandbox environment to test/validate deployments • “What will actually happen when I deactivate this topology?” • “Will my Hiera changes actually work?” • Reproduce production issues, share results with Dev • Also helpful when reporting back to Storm project and mailing lists. • Any further cool ideas?  126
+
+127. Wrapping up Verisign Public 127
+
+128. Where to go from here • A few Storm books are already available. • Storm documentation Verisign Public • http://storm.incubator.apache.org/documentation/Home.html • storm-kafka • https://github.com/apache/incubator-storm/tree/master/external/storm-kafka • Mailing lists • http://storm.incubator.apache.org/community.html • Code examples • https://github.com/apache/incubator-storm/tree/master/examples/storm-starter • https://github.com/miguno/kafka-storm-starter/ • Related work aka tools that are similar to Storm – try them, too! • Spark Streaming • See comparison Apache Storm vs. Apache Spark Streaming, by P. Taylor Goetz (Storm committer) 128

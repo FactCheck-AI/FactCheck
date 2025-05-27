@@ -1,0 +1,623 @@
+1. Introduction
+
+Parameterizations of atmospheric boundary layer (ABL) turbulence in global weather and climate prediction models must skillfully handle many different turbulence regimes. Many ABL parameterizations have been developed using extensive measurements of boundary layers over land across the diurnal and seasonal cycle in diverse weather regimes.
+
+However, most of the earth’s surface is covered by ocean. Marine boundary layers play an important role not only for surface fluxes, but also in global cloudiness and the earth’s radiation balance. Stratocumulus-capped boundary layers (SCBLs) in particular have three important characteristics that distinguish them from typical boundary layers over land. First, internal diabatic heating processes such as cloud-top radiative cooling, phase change, and precipitation–evaporation are often important. Second, cloud-top radiative cooling promotes sharp inversions capping a turbulent layer, and the boundary layer structure is tightly tied to the rate of turbulent entrainment across these inversions. Third, they are often are “decoupled,” with multiple turbulent layers sometimes dynamically connected by cumulus convection.
+
+The ABL turbulence parameterizations in many climate and weather forecast models were not designed to handle all of these complications. For instance, consider the Community Atmosphere Model, version 3 (CAM3; Collins et al. 2006), a major climate model on which we have focused our parameterization development efforts. The CAM3 uses the Holtslag and Boville (1993) parameterization, hereafter called the HB scheme. The HB scheme is a nonlocal diffusivity (K)-profile scheme, optimized for simulation of dry convective and nocturnal boundary layers over land. A bulk dry Richardson number is used to diagnose ABL boundary layer depth, which sets the top of the K profile and hence implicitly determines the entrainment rate. The HB scheme calculates the intensity and vertical structure of boundary layer turbulence assuming that it is forced exclusively from the surface by the surface buoyancy flux and friction velocity. Other CAM3 parameterizations also play an important role in turbulent transports. CAM3, like most global models, treats elevated turbulent layers quite differently than surface-connected turbulence, using a simple dry first-order closure scheme. The CAM3 also has a shallow cumulus parameterization (Hack 1994) that often plays an integral role in vertical mixing in SCBLs because it can respond to moist instability.
+
+Some turbulence closure parameterizations (e.g., Burk and Thompson 1989; Gayno 1994) consider the effect of saturation on stratification using moist-conserved variables. These schemes are sufficiently generally formulated to handle the radiative driving and decoupled structure that often typifies SCBLs. However, they diffuse the capping inversion atop an SCBL over several model levels, and therefore require sub-100-m vertical resolution to adequately simulate a stratocumulus layer. In addition, entrainment processes in these schemes are sensitive to grid resolution and choice of turbulence length scale and generally have been inadequately compared with SCBL observations.
+
+In the past decade, several turbulence parameterizations have been proposed to better simulate SCBLs by addressing the above issues. Grenier and Bretherton (2001, hereafter GB01) discussed how a second-order turbulence closure scheme based on moist-conserved variables can simulate a sharp capping inversion in a single grid layer using an explicit entrainment closure tuned to simulate both surface-forced dry convective boundary layers (DCBLs) and SCBLs. Bretherton et al. (2004) and McCaa and Bretherton (2004) showed this approach gave improved simulations of subtropical stratocumulus climatology over the eastern Pacific Ocean using this approach in a mesoscale model. Lock et al. (2000) proposed a K-profile ABL scheme including an explicit entrainment closure and separate K profiles associated with surface forcings and cloud-top radiative forcing, and Martin et al. (2000) showed how this scheme improved cloud-topped boundary layer simulation in the Hadley Centre global model. A hybrid new eddy-diffusion mass-flux parameterization that was initially developed for the simulation of DCBLs (e.g., Siebesma et al. 2007) is also being extended to improve parameterizations of cloud-topped boundary layers in the European Centre for Medium-Range Weather Forecasts operational global model (Koehler 2005).
+
+Because the moist physical parameterizations within a global model are tightly interlocked, an improved ABL scheme does not by itself guarantee an improved simulation of cloud-topped marine boundary layers and may require adjustments to perform well in a new model. Hence, it is also valuable to report on the implementation and performance of new moist turbulence schemes within major climate models. In this paper, we introduce the University of Washington Moist Turbulence (UWMT) parameterization, which is broadly derived from the “restricted inversion” scheme of GB01 but modified in several ways to improve its performance in a climate simulation model such as CAM3. We then compare its performance to the HB scheme within a single-column version of the CAM3 for several diverse idealized cases. In a companion paper (Park and Bretherton 2009) we report on CAM3 global simulations in which UWMT is combined with a new shallow cumulus parameterization derived from Bretherton et al. (2004).
+
+2. UWMT formulation and implementation
+
+The UWMT scheme retains the following characteristic features of the GB01 parameterization:
+
+Use of moist-conserved variables. For UWMT these are chosen to be total specific humidity qt = qυ + ql + qi and liquid–ice static energy sl = cpT + gz − Lql − (L + Lf)qi. Here qυ, l, and i are the specific humidity in the vapor, liquid, and ice phases; T is temperature; z is height; g is gravity; cp is the isobaric specific heat of dry air; and L and Lf are the latent heats of vaporization and freezing.
+
+Downgradient diffusion of momentum and conserved scalars within the interior of turbulent layers, with diffusivities based on a calculation of local turbulent kinetic energy (TKE) e. The philosophy is that nonlocal scalar transport, while demonstrably present in convective layers, does not have important quantitative impacts on the scalar profiles within these layers, since they tend to be fairly well mixed.
+
+Using an explicit entrainment closure to diagnose an effective “entrainment diffusivity” at the edge of convective layers (CLs), defined as turbulent layers containing a statically unstable core region.
+
+Based on the need to use a long time step of 20–60 min, and the desire to treat elevated turbulent layers in the same way as surface-based turbulent layers to better handle phenomena such as decoupling, two important changes have been made to GB01:
+
+TKE is diagnosed, rather than being prognosed, by neglecting TKE storage and parameterizing the terms in the resulting local TKE production–transport–dissipation balance. TKE transport (assumed to occur only in CLs) is parameterized using a relaxation of the local TKE to the CL-mean TKE rather than through vertical TKE diffusion.
+
+An arbitrary number of turbulent layers are allowed in each column, based on a diagnosis of the thermodynamic sounding. Each turbulent layer includes a contiguous set of grid layers and their bounding interfaces. Some turbulent layers are convective and the others support stably stratified turbulence. Surface-based and elevated turbulent layers are treated similarly. Each CL entrains at its top and, if elevated, at its base.
+
+In the remainder of this section, we mathematically describe UWMT and its numerical implementation in CAM. We start by introducing our notation and indexing conventions for discretized equations, continue with the flux-gradient relationship, then discuss parameterization of the TKE equation in moist-conserved variables, the diagnosis and classification of turbulent layers in each sounding, the treatment of stably stratified turbulent layers, and, last, the treatment of entrainment and convective layers.
+
+a. Notation and indexing
+
+Figure 1 shows our indexing conventions and an example of the turbulent layer structure that might be produced by UWMT in the bottom part of a typical grid column. In CAM, prognostic variables (including all thermodynamic variables) are specified at the midpoints of discrete vertical grid layers, separated by interfaces at which fluxes between grid layers are computed. Following CAM convention, grid layers are indexed downward from 1 (the top model level) to N, the number of model layers. This is opposite to GB01 and Park and Bretherton (2009). The interface below layer k − 1 and above layer k is indexed k − 1/2. The surface interface N + 1/2 will also be denoted by the superscript/subscript “surf”. Superscripts will be used to denote these indices in discretized equations.
+
+For convective layers, additional notation is needed. We let kt − 1/2 and kb − 1/2 denote the indices of the top and bottom entrainment interfaces. Thus the grid layers kt ≤ k ≤ kb − 1 lie within the CL. Angle brackets will denote a mass-weighted average across the depth of the CL. If we need to refer to an arbitrary (i.e., top or bottom) entrainment interface, we will use the superscript E. To specialize to the top (bottom) entrainment interface, we would take E = kt − 1/2 (E = kb − 1/2).
+
+We will use the operator Δk to denote an upward difference across layer k, and Δk−1/2 to denote a difference across interface k − 1/2. Thus Δkz = zk−1/2 − zk+1/2 is the depth of grid layer k and is the mixing ratio jump across the CL top entrainment interface. Here ΔE will denote a jump across an arbitrary entrainment interface of the CL, and Δ with no superscript will be broadly used to denote a difference, for example, Δt is the time step.
+
+b. Downgradient diffusion flux parameterization
+
+UWMT uses downgradient diffusion to represent all turbulence. Turbulent fluxes of linearly mixing variables χ (u, υ, sl and qt), calculated at the interfaces between model layers, are written as Given e and a turbulent master length scale l, the eddy diffusivity and viscosity have the form It is important to note that l is a TKE dissipation length scale, not a vertical mixing length scale. The vertical diffusivity is proportional to the “stability-corrected” length scale lSh,m. In stable stratification, l is better thought of as a typical horizontal eddy scale than a vertical eddy scale. We follow the Mellor and Yamada (1982) approach to turbulence parameterization, in which the horizontally averaged TKE dissipation rate D is parameterized as This equation allows empirical calculation of the appropriate dissipation length scale l = b1D/e3/2 from vertical profiles of e and D derived from a numerical large-eddy simulation (LES).
+
+The dashed lines in Fig. 2 show vertical profiles of l derived in this way from LES simulations of three boundary layer cases described in section 3, which include a dry convective, a stably stratified, and a nocturnal stratocumulus-capped boundary layer. The length scale is nondimensionalized by dividing by the LES-derived boundary layer depth h.
+
+Following GB01, UWMT uses a Blackadar (1962) turbulent master length scale Thus l is approximately l∞ except in a surface turbulent layer near the ground, where it asymptotes to the height z multiplied by the von Kármán constant κ = 0.4 to match surface layer similarity theory. On physical grounds, the asymptotic length scale l∞ is chosen proportional to the turbulent layer thickness h. GB01 chose the proportionality constant η = 0.085. We used the LES simulations to refine the choice of η as follows: where RiCL is a bulk Richardson number for a convective turbulent layer (which includes at least some sublayer of unstable stratification) given in (D1) of appendix A and derived from the mean stability and shear profiles. Thus, η is twice as large as assumed by GB01 in strongly convective turbulent layers (with highly negative RiCL) and is the same as assumed by GB01 in neutral and stably stratified turbulent layers.
+
+Figure 2 plots the resulting UWMT-predicted length scale profiles (solid), calculated with the LES-predicted boundary layer depth h, for comparison with the LES-derived l profiles. For both the dry and nocturnal Sc-capped convective boundary layer cases, the UWMT length scale is too small in the lower part of the boundary layer. This points to a shortcoming of the Mellor and Yamada (1982) theory of turbulence in the surface layer, which predicts that l approaches κz near the surface. We retain this limiting behavior because it is necessary to match Monin–Obhukov theory. However, in the LES, the TKE near the surface is almost entirely in horizontal motions, and the horizontal eddy scale and the corresponding TKE dissipation scale remain comparable to h almost all the way to the surface.
+
+The choice of η strongly affects the length scale in the upper part of the boundary layer. Clearly, the three cases (or even just the two convective cases) cannot be fit by exactly the same η, motivating the choice (6). We chose η = 0.17 for the convective limit using the stratocumulus case, rather than the smaller value of about 0.12 implied by LES of the dry convective case, in part to compensate for a slight underestimation of e in UWMT simulations of the dry convective boundary layer (see section 3).
+
+The nondimensional stability functions Sh,m are specified following Galperin et al. (1988): These are expressed in terms of a nondimensional stability ratio Gh = −N 2l2/(2e) (where N 2 is the squared moist buoyancy frequency) and constants α1 = 0.5562, α2 = −4.3640, α3 = −34.6764, α4 = −6.1272, and α5 = 0.6986. Following Galperin et al. (1988), we restrict Gh < 0.0233. This is a theoretical realizability condition to keep shear production positive in homogeneous, sheared, unstably stratified turbulence. The true upper bound of Gh in unstable stratification is −1/α3 = 0.0288, where the stability functions become infinite; our upper bound keeps Sh < 3.64 [compared to a neutral (Gh = 0) value Sh = 0.70]. Like the α coefficients, this upper bound has been rounded from exact expressions derived from a set of master coefficients taken from Mellor and Yamada (1982) from laboratory experiments on turbulent flows. UWMT results and numerical stability are not sensitive to minor changes in these coefficients—similar results for our single-column cases are obtained if they are rounded to three instead of four decimal places.
+
+At each time step, UWMT diagnoses all convective layers and stably stratified turbulent layers within each grid column. CLs, which by definition include at least one interface at which there is buoyancy production of turbulence, are assumed to transport TKE between model layers and entrain at their bounding interfaces. We use an entrainment closure (section 2f) rather than the TKE equation to specify vertical fluxes at these “entrainment interfaces,” since the balance of terms in the TKE equation in the interior of a CL is quite different than at its edges. If this closure predicts an entrainment velocity we at an interface E, the implied diffusivities are An elevated CL entrains through its base (E = kb − 1/2) as well as its top (E = kt − 1/2). In stably stratified turbulent layers, entrainment and vertical TKE transport are assumed to be negligible.
+
+c. Modeling the TKE equation
+
+UWMT is based on modeling the terms of the horizontal-mean TKE equation: where B is buoyancy flux, Ps is shear production, D [already specified in (3)] is dissipation, and Te is convergence of the sum of turbulent TKE transport and pressure work. By default, all variables are functions of time t, height z, and horizontal position. Note that, following convention, buoyancy flux is here defined as a kinematic flux (i.e., without multiplying by density), while other fluxes in this paper do include the density factor.
+
+We neglect the TKE storage (which is rarely a dominant term in this balance) and parameterize the terms in the resulting production–transport–dissipation balance.
+
+Following Mellor and Yamada (1982), the buoyancy flux and shear production are calculated by parameterizing needed fluxes using downgradient diffusion (2): is the squared vertical shear, b′ denotes a buoyancy perturbation, and N 2 is diagnosed from vertical gradients of the conserved variables sl and qt and the cloud fraction σ: The thermodynamic coefficients chs and cqs describe the contribution of the two conserved variable gradients to N 2 in saturated air and similarly for chu and cqu in unsaturated air. Following Eq. (3.15) of Schubert et al. (1979), chs = αβ, chu = α, cqs = Lα, and cqu = −αcpδ. Here α = g/sυ, δ = 0.608, and β = [1 + γϵ (1 + δ)]/[1 + γ] ≈ 0.5, where ϵ = cpT/L and γ = (L/cp)∂q*/∂T. The interfacial virtual static energy sυ is computed as the average from the two adjacent layer midpoints.
+
+To ensure consistency of the parameterized turbulence, radiation and microphysics, the cloud fraction σk is assumed to be an external input calculated by the host model at layer midpoints k. The buoyancy frequency in (13) is generally calculated at interfaces k − 1/2, so we must also specify interfacial cloud fraction: Within typical turbulent layers, in which cloud fraction is increasing with height, this is just an arithmetic average. However, at the top entrainment interface of a stratocumulus layer, σk > 0 but typically σk−1 = 0. Then (16) will give a “dry” stability consistent with the sυl jump used in our entrainment closure (22).
+
+This approach implicitly neglects horizontal correlations between vertical velocity and saturation state, which are critical in cumulus convection. Unlike in “unified” parameterizations of moist turbulence and cumulus convection (e.g., Lappen and Randall 2001; Golaz et al. 2002), the tacit assumption is that such “moist up, dry down” turbulence can adequately be handled by a separate cumulus parameterization rather than UWMT. This assumption is empirically supported by LES of decoupling of stratocumulus-capped mixed layers (e.g., Wyant et al. 1997; Stevens 2000; Lewellen and Lewellen 2004), which suggest sharp transitions between cumulus convection and layer turbulence. They show that when a conditionally unstable layer forms with saturated updrafts and unsaturated downdrafts, it tends to have a cumulus-like character with cloud fraction less than 10%, even if it is a fairly thin transition zone between subcloud and in-cloud mixed layers with updraft fractions close to 50%.
+
+Although splitting the layer turbulence and cumulus parameterizations may be empirically reasonable, it is fundamentally somewhat arbitrary and requires careful attention to allow smooth transitions between the two processes (e.g., Bretherton et al. 2004). A fuller treatment of this issue involves the cumulus parameterization even more than the turbulence parameterization, so it will be left for the companion paper. Here we note only that UWMT has been designed with this transitioning problem in mind. In particular, UWMT can naturally decouple a turbulent layer when it develops negative buoyancy fluxes in its interior, setting the stage for a cumulus parameterization to activate. However, during decoupling transitions, we often observe a period in which the grid column oscillates every other time step between coupled and decoupled states.
+
+d. Diagnosis of turbulent layers
+
+The first step in UWMT is to make a preliminary diagnosis of the vertical extent and stability characteristics of all turbulent layers in a model grid column, based on the moist gradient Richardson number Ri = N 2/S2 calculated at each flux interface.
+
+A contiguous set of interfaces with 0 < Ri < Ric = 0.19 is diagnosed as a stably stratified turbulent layer (STL). In an STL, turbulent transport and storage of TKE are neglected and UWMT reduces to a conventional first-order closure from which the above Ric naturally follows (see section 2e).
+
+A contiguous set of interfaces with negative Ri is identified as a convective-layer “core.” Each CL is extended upward and downward from its core into any adjacent layers of sufficiently weak stable stratification. If this results in a CL being extended into an adjacent CL, the two CLs are merged. The CL extension-merging procedure is described in appendix A.
+
+Because the gradient Richardson number goes to zero as the surface is approached, the surface interface must be part of a turbulent layer. Surface heat, moisture, and momentum fluxes are assumed to be externally specified by the host model. The surface buoyancy flux Bsurf is derived from these by analogy to (13). The surface interface is classified as convective or stably stratified turbulent depending on the sign of Bsurf.
+
+Figure 1 shows an example of the turbulent layer structure that might be produced by UWMT at the bottom of a typical tropospheric column.
+
+e. Stably stratified turbulent layers
+
+In stably stratified turbulent layers, TKE transport and storage are both neglected and (9) simplifies to Substituting (7) into (17) we obtain which can be rearranged into a quadratic for the unknown Gh, For Ri > Ricrit = 0.19, there is no physically realizable solution Gh, and the interface is assumed to be nonturbulent. For Ri < Ricrit, this polynomial has two real roots, but only the larger one is realizable. For unstable stratification, the smaller root lies outside the allowable range of Gh; for stable stratification it corresponds to negative TKE. Figure 3a shows the dependence of the UWMT stability functions Sh and Sm on Ri assuming TKE production–dissipation balance. They decrease rapidly as Ri increases and the turbulence becomes more horizontally flattened. The curves are extended in the unstable regime Ri < 0 for later application to convective layers.
+
+Figure 3b shows the corresponding UWMT “Smagorinsky factors” Fh and Fm, defined such that These are related to the stability functions as follows: and similarly (with Sh replaced by Sm) for Fm.
+
+Under stable conditions, these are very similar to Smagorinsky functions derived from the Monin–Obhukov stability functions used in CAM3 for surface flux computation over the ocean. The most significant difference is that the turbulent Prandtl number is unity for the CAM Monin–Obhukov stability functions but somewhat less than one for the UWMT stability functions; which of these choices is more realistic is still controversial. Under more unstable conditions, the UWMT Smagorinsky functions increasingly exceed their Monin–Obhukov counterparts and , producing more well-mixed CLs.
+
+The CAM3 free-tropospheric turbulent diffusivities are also assumed to have the form (20), using a Blackadar turbulence length scale (4) with l∞ = 30 m. Their Smagorinsky factors are They are smaller than the UWMT Smagorinsky functions in strongly unstable conditions. More important, they have no cutoff Ri in stable conditions, so there is always background mixing in the default CAM3. UWMT does not allow any background mixing for Ri > Ric.
+
+Beyond the difference in stability functions and length scales, the UWMT scheme also differs from the CAM free-tropospheric turbulent mixing by using a Richardson number that accounts for partial or complete saturation of the turbulent layer.
+
+f. Entrainment closure
+
+At the top and bottom interfaces of each CL, we use the Nicholls and Turton (1986) w* entrainment closure: is the convective velocity, and zt = zkt−1/2 and zb = zkb−1/2 are the heights of the top and bottom interfaces. Recall that ΔE denotes a jump across the entrainment interface, defined as the difference between the grid values above and below the interface. The liquid virtual static energy svl = sl(1 + 0.608qt) is a moist-conserved variable that is convenient for buoyancy calculations because it is equal to the virtual static energy in unsaturated air. Lastly, A is a nondimensional entrainment efficiency, which is affected by evaporative cooling of mixtures of cloud-top and above-inversion air. At the CL top, this cooling promotes the sinking of these mixtures into the CL, enhancing entrainment. At the base, the cooled mixtures tend to sink away from the CL, so entrainment is not enhanced. Thus we take To match the entrainment in a dry convective boundary layer, a1 = 0.2. Following GB01, the evaporative enhancement is parameterized as As explained in GB01, the sυl jump is between the top CL grid layer (with layer index kt) and the lowest layer (index kt − 2), which is entirely composed of above-cloud air. Nicholls and Turton suggested on the basis of a small set of aircraft observations that the evaporative enhancement factor a2 = 60, but observations of Stevens et al. (2003) and Caldwell et al. (2005) are more consistent with a2 = 10 − 30. We take a2 = 15 as in GB01. Were sedimentation effects on entrainment included in the manner suggested in Bretherton et al. (2007), one should increase a2 somewhat to compensate.
+
+We also experimented several years ago with the TKE closure employed by GB01, in which w* and the CL layer depth are replaced by e1/2 and the turbulent length scale l at the CL top, with appropriate rescaling of the entrainment efficiency constants. This approach, although theoretically attractive, appeared more susceptible than the w* closure to the development of unstable large-amplitude wind oscillations in early global long time step CAM integrations with UWMT, often triggering only after months of integration. These oscillations arose because the surface drag was computed in CAM based on winds computed by the land and ocean surface schemes prior to the turbulence scheme. This allowed the drag and the updated wind could be in the same direction, feeding energy into the oscillation. This problem also arose with the w* closure if the lowest grid level was extremely close to the surface or the coupling time step for surface stresses was lengthened. It has since been satisfactorily addressed by adding an implicit component to the surface drag. Hence we plan to try the TKE entrainment closure again in the near future, perhaps with more encouraging results.
+
+g. TKE transport and solution method in convective layers
+
+The transport source term is only included in convective layers, where it is modeled in a novel way as a relaxation to the turbulent-layer-mean TKE 〈e〉: where ae is a nondimensional TKE relaxation rate in units of inverse eddy turnover time scale e1/2/l. For a stably stratified turbulent layer, we assume ae = 0 (no TKE transport). For a CL, we empirically choose ae = 1, based on comparison of LES-based TKE and transport source profiles for a dry convective boundary layer. In both convective boundary layer test cases shown in section 3 (dry convective and nocturnal stratocumulus cases), we will show this gives a reasonable match to the transport source profile for both convective boundary layers considered.
+
+Were Te the true turbulent TKE transport source (which is the convergence of the sum of a vertical TKE flux and pressure work), and if pressure work losses due to gravity waves radiated away from the CL are negligible, then Te would average to zero over the CL: Our TKE transport parameterization (26) is chosen for tractability but only approximately satisfies this constraint. The constraint could be exactly satisfied with slight additional complication by replacing TKE in 〈e〉 by an unknown eCL whose value is chosen to force 〈Te〉 = 0. The value of eCL can be determined iteratively by using a starting guess of 〈e〉, calculating the resulting profile of e, and then using (27) to deduce a new guess at eCL that would make 〈Te〉 = 0 with this e profile. This refinement was not implemented in time for inclusion in the results shown in this paper. It is expected to have a minor impact on both the results shown here and on global simulations with UWMT. This is because TKE is only a diagnostic quantity in this parameterization that does not get stored between time steps, so no accumulation of error results from not exactly conserving TKE.
+
+Substituting the representations (3), (11), (10), and (26) into the TKE equation, and neglecting TKE storage, we obtain which we rearrange into the form are the buoyancy and shear forcing determined from the thermodynamic sounding.
+
+We assume the stability functions are uniform over each CL. We use CL-average stability functions because the arguments used by Mellor and Yamada (1982) and Galperin et al. (1988) to derive the stability functions apply over the typical vertical scale of a turbulent eddy, which is the layer depth in a CL but is smaller in a stable ABL. This helps prevent premature decoupling or overstratification of CLs across internal grid interfaces with weak buoyancy production.
+
+The bulk stability functions are calculated based on (19), as in a stably stratified turbulent layer, but using a bulk Richardson number RiCL defined in (D1). The Ri < 0 pieces of the curves in Fig. 3a show the CL-average stability functions. They increase substantially as RiCL becomes more negative. For RiCL < −44.5, the allowed upper bound Gh = 0.0233 is exceeded and the stability functions assume their maximum values Shmax = 3.64 and Smmax = 2.76, both roughly 5 times as large as their counterparts for neutral stratification. Another reasonable way to calculate bulk stability functions would be to calculate the stability functions from the local Ri at each level using (19) and then to average these across the CL.
+
+We vertically average (28) over the layer, noting the TKE transport term proportional to ae averages to zero, to obtain an equation for 〈e〉: All terms on the right-hand side of this equation can be evaluated from the mean thermodynamic and shear profiles. Given 〈e〉, the TKE profile is diagnosed from (28).
+
+The discretization of (31) is described in appendix D. There are two complications that must be dealt with first. The first, addressed in appendix B, is that the vertical averaging includes contributions from entrainment interfaces and also from any internal interfaces of the CL. These two types of contributions must be handled differently. At the internal interfaces, Wb and Ws can be evaluated from the vertical profile gradients. However, for a coarsely resolved CL, a significant fraction of their TKE production may occur in the half layers adjacent to entrainment interfaces. At the entrainment interfaces, the buoyancy flux and shear production must be calculated from the entrainment rate.
+
+The second complication, addressed in appendix C, is that the buoyancy flux profile can be affected by cloud-top longwave cooling. Longwave cooling is frequently concentrated in the top 50 m or less of a cloud layer, a thickness much narrower than the vertical grid spacing. In appendix C, we derive a correction to the buoyancy flux at the CL top entrainment interface that accounts for this subgrid structure of the radiative cooling profile. Once this is done, we can add the entrainment and radiative contributions to the CL-integrated buoyancy production. We also allow for the possibility of radiatively forced convective layers that may be only one grid layer thick, with no interior interfaces with N 2 < 0.
+
+h. Use of UWMT with long time steps
+
+Given a diffusivity profile Kd(z) and an input state x* updated to include all processes except diffusion, UWMT updates the diffused variables x using an implicit backward-Euler scheme: subject to specified surface fluxes . For momenta, the surface boundary condition is specified in terms of a given drag coefficient Cd* = τ*/(ρsurfU*) (where U* is the input lowest-level wind speed and τ* is the magnitude of the input surface drag), rather than a given surface drag, to enhance numerical stability with a long time step and thin surface grid layer. An additional term QTKE, the TKE dissipational heating rate, is added to the updated sl to maintain energy conservation (Boville and Bretherton 2003).
+
+We can symbolically solve (32): where D is a linear operator that corresponds to a single time step of diffusion with diffusivity profile Kd(z) acting on the profile x*(z). In UWMT, the diffusivity profile is diagnosed from the state x; symbolically we will write this K[x](z). For a fully implicit solution to the diffusion equation, we should use the final state and take Kd = K[x(t + Δt)]. However, this would make (33) into a nonlinear system of equations for x(t + Δt) with no explicit solution. Thus, we need a strategy for adequately approximating K[x(t + Δt)].
+
+One approach is to use K[x*], as is typically done in first-order turbulence closure schemes. This suffices when the diffusivities are functions of local gradients only but is inadequate for UWMT when a long time step is used. This is because in convective layers, the entrainment diffusivities and even the vertical extent of the layers depend nonlocally on the profiles across the entire CL. In particular, tendencies due to diabatic processes such as radiation acting over a long time step can dramatically destabilize the input profiles x* to the moist turbulence scheme. This can result in unrealistically large buoyancy production and too much entrainment in CLs. To address this problem, we use an iterative predictor–corrector approach to recalculate the diffusivities based on an better approximation to the postdiffusion state, as illustrated in the flowchart shown in Fig. 4.
+
+Each iteration m = 1, 2, … , Nturb begins with a guess xd at the postdiffusion state x(t + Δt) and a guess Kd at the associated diffusivities. For the first iteration m = 1, we take xd = x* and Kd = K(t) (the diffusivity profile from the previous time step). UWMT is applied to xd, using the diffusivity profile Kd to help calculate the buoyancy production, convective velocity, and entrainment rate in CLs. This yields new provisional diffusivities K(xd). Rather than using these as is, we obtain better convergence of our iteration by using an empirically chosen linear combination of these profiles with the previous guess: The choice λ = 0.5 optimizes the convergence of this iteration for our single-column cases. We use Kd(z) to obtain a new postdiffusion state xd using (33). The updated diffusivity and state are used as the inputs for the next iteration m + 1. This iteration usually (but not always) converges for typical thermodynamic profiles. The results presented here and in our companion paper use Nturb = 5 iterations. An acceptably converged climatology in global simulations requires 3 iterations.
+
+i. Condensate diffusion
+
+UWMT, like most other turbulent mixing parameterizations, is designed to transport linearly mixing and adiabatically conserved scalars. The total humidity qt, which is the sum of specific humidity, cloud liquid, and cloud ice, is such a conserved variable. Its individual components are not, but they are mixed by the CAM3 turbulence schemes as if they were conserved scalars. This has some undesirable side effects. For instance, consider a warm stratocumulus-capped mixed layer in which there is strong vertical diffusion. If cloud liquid water is mixed like a conserved scalar, it will be nearly vertically homogenized over the boundary layer by the vertical diffusion in a typical CAM3 time step. The proper moist adiabatic liquid water profile will not be restored until the stratiform microphysics subroutine. In particular, in CAM3, the cloud fraction profile used for radiation is computed before the stratiform microphysics and is contaminated by the liquid water diffusion. This contributes to overestimation of boundary layer cloud liquid water in the lowest model grid level.
+
+To help mitigate this problem when using UWMT in CAM, we diffuse qt, sl, and advected chemical species, but we do not diffuse cloud liquid or ice. Furthermore, we recalculate the cloud fraction after applying the stratiform microphysics for use in radiation calculations.
+
+In CAM3, the profiles of precipitating water and ice are diagnosed at each time step from the instantaneous condensate and cloud fraction profiles, without consideration of turbulent mixing. Thus we need not consider how to diffuse precipitating water and ice, and we do not include them as part of qt or sl.
+
+j. Tunable parameters in UWMT
+
+Almost all parameters in UWMT are narrowly constrained either from theory or from single-column tests such as those in the next section. The most uncertain parameter, and the only parameter we recommend using for climate model tuning, is the evaporative enhancement factor a2. The range 15 < a2 < 30 is most plausible based on observations and single-column modeling, but an extended range 10 < a2 < 100 is defensible, especially if needed to compensate for biases due to vertical underresolution or imperfect parameterizations of cloud microphysics and subgrid horizontal cloud variability.
+
+3. Single-column tests
+
+To illustrate the performance of UWMT and compare it with the current turbulent mixing schemes in CAM, we show single-column simulations of three diverse boundary layer cases that have been used in past intercomparison studies. These include an unsheared dry convective boundary layer, a moderately stable dry nocturnal boundary layer, and a nocturnal stratocumulus-capped boundary layer. These cases have been chosen because they are fundamental, well documented, and they minimize the importance of model physical parameterizations other than moist turbulence. The UWMT parameterizations were mainly designed to improve model performance for cloud-topped boundary layers such as the stratocumulus case, but any turbulence parameterization must function satisfactorily under the whole range of atmospheric conditions, including those sampled by the other two cases. In each case, we compare the schemes both at a case-dependent high space and time resolution for which discretization errors are small, and at a 30-level vertical resolution and 1200-s time step typical of those used in a global climate simulation.
+
+These cases should be considered necessary (but of course not sufficient) validation tests for boundary layer parameterizations. Thus it is appropriate to use these cases for parameterization improvement as well as testing, and we will point out a few changes to both the UWMT and CAM turbulence schemes that were made in response to shortcomings uncovered by using these cases. There is a danger of overtuning given the small number of good available cases. Hence, one must also check that such changes actually improve (or at least do not degrade) overall global model skill. In this spirit, all UMWT or CAM3.5 single-column results (except for explicitly labeled sensitivity tests) use a model version with identical physical parameterizations to those used in the global simulations of Park and Bretherton (2009).
+
+A single-column version of CAM3.5 (SCAM; Hack and Pedretti 2000) was used for all simulations. SCAM uses an Eulerian vertical advection scheme coupled to a leapfrog time-differencing scheme. This is one of three choices of advection scheme available in CAM. For this choice, the 1200-s time step typically used for global simulations actually translates into a 2400-s time step for the physical parameterizations. Unfortunately, the finite-volume advection scheme currently being used as the default in CAM3.5 global simulations (usually with a physics time step of 1800 s) is not implemented in SCAM. Thus, we cannot make SCAM a perfect analog to the global CAM3.5 model used in the companion paper. Nevertheless, our experience with CAM3 has been that the Eulerian and finite-volume advection scheme configurations give similar global simulations of boundary layer depth and cloud properties, suggesting that SCAM can still be a valuable tool for improving our global simulations.
+
+“CAM3” simulations use the default CAM3.5 physics, including HB, the free-tropospheric turbulent mixing scheme, and the Hack shallow convection scheme (which plays an important role in the maintenance of stratocumulus in the default CAM). In CAM University of Washington (UW) simulations (CAMUW), the UWMT scheme replaces HB and the free-tropospheric turbulent mixing scheme, while the Hack scheme is replaced by the University of Washington shallow cumulus parameterization (UWShCu) discussed by Park and Bretherton (2009). The latter scheme does not activate for any simulations presented here. Some sensitivity tests to modifications of these two configurations are also considered.
+
+Earlier single-column versions of CAM3 and CAMUW were part of nonprecipitating and precipitating nocturnal stratocumulus intercomparisons (Zhu et al. 2005; Wyant et al. 2007) of the Global Energy and Water Cycle Experiment (GEWEX) Cloud System Study (GCSS) Boundary Layer Cloud Working Group, based on observations from the Second Dynamics and Chemistry of Marine Stratocumulus Experiment (DYCOMS2; Stevens et al. 2005), and a mixed-phase stratocumulus intercomparison based on observations from the Microphysics of Arctic Clouds Experiment (Klein et al. 2009). The version of UWMT described here differs somewhat from that used for the first GCSS DYCOMS2 nocturnal stratocumulus comparison, and in any case little detail was presented in that paper, so we will present results from that case here.
+
+In the companion paper by Park and Bretherton (2009), we present global CAMUW simulations with UWMT and UWShCu. Zhu et al. (2007) presented an application of an earlier version of these parameterizations to the sensitivity of a preliminary version of CAM3 to greenhouse gas and SST perturbations. Hannay et al. (2009) have evaluated CAMUW and CAM3 by comparing short-range global forecasts with observations at a location in the southeast Pacific stratocumulus regime.
+
+a. Dry convective ABL
+
+A basic test of any ABL parameterization is its skill in simulating a dry convective boundary layer heated from below that is entraining into an overlying stable layer. An important aspect of this case to simulate is the ratio of the downward buoyancy flux at the boundary layer top to the upward buoyancy flux at the surface. Both observations and LES imply that this ratio is approximately 0.2. Another important feature of this case that an ABL parameterization should reproduce is that the boundary layer should be well mixed above the surface layer. In the upper half of the boundary layer, LES show a very slightly “countergradient” stable stratification, which cannot be replicated by an downgradient eddy-diffusion parameterization such as UWMT. This shortcoming is not necessarily critical, because it involves only a small perturbation to the basic neutrally stratified structure of the DCBL. A future version of UWMT will include a nonlocal transport contribution to scalar fluxes.
+
+For our simulation, we use an initial potential temperature profile θ = 288 K + (3 K km−1)z. We specify a surface heat flux Hs = 300 W m−2 (corresponding to a surface buoyancy flux Bs = 8 × 10−3 m2 s−3), a surface pressure of 1000 hPa, and no moisture, radiative cooling, or mean horizontal or vertical motion. We first discuss high-resolution 80-level (L80) simulations with 300-s time steps. Further increases in height or time resolution have little impact on these simulations. We will then discuss operational resolution (L30, 1200-s time step) results. We compare our single-column DCBL results with an identically forced simulations using version 6.4 of the System for Atmospheric Modeling (SAM) LES. The SAM is described in Khairoutdinov and Randall (2003) and was kindly provided to us by Dr. Marat Khairoutdinov of Stony Brook University. The SAM simulations of the DCBL in this paper were performed by Dr. Peter Blossey of the University of Washington.
+
+Figure 5a shows L80 θ profiles after 5 and 9 h with CAM3, CAMUW, and the LES. Because the simulations evolve rapidly, the LES results are a 5-min average and the CAM results show a single time step. The two simulations and the LES produce almost identical boundary layer depth evolution. Each parameterization has imperfections that tend to slightly retard the ABL growth. Because it is purely downgradient, the UWMT scheme produces a small superadiabatic stratification that delays the warming of the CBL top and the growth of the CBL. On the other hand, the buoyancy flux profiles at 5 h (Fig. 5b) show that the HB scheme produces too little downward entrainment buoyancy flux at the ABL top. The corresponding UWMT buoyancy flux profiles show the desired surface to entrainment heat flux ratio of −0.2. This figure also shows the breakdown of the HB buoyancy flux into its downgradient and nonlocal contributions, emphasizing that, in the HB scheme, the nonlocal contribution dominates except in the lowest 20% of the ABL.
+
+Operational resolution simulations with 30 vertical levels and a 1200-s time step (Fig. 6) give very similar results for CAMUW but slightly worsen the results for CAM3, for which the entrainment flux and boundary layer deepening are reduced. The resolution sensitivity of CAM3 comes from HB’s diagnosis of the inversion height between grid levels via a bulk Richardson number threshold (Vogelezang and Holtslag 1996). The top of the diffusivity profile is scaled with this height. The resulting diffusivity at the next grid interface down implicitly determines the entrainment rate. This approach will lead to some downward heat flux at the ABL top, but may not be accurate when the entrainment zone is poorly resolved.
+
+Since UWMT is a TKE-based approach, the simulated TKE profiles and TKE budget terms should also be realistic. LESs are a good standard for comparison, because they have been shown to robustly reproduce the principal features and statistics of observed DCBLs without significant dependence on their transport or subgrid-scale turbulence algorithms (e.g., Nieuwstadt et al. 1992). Figure 7a compares the LES and CAMUW L80 and L30 TKE profiles at 5 h, nondimensionalized by dividing by the square of the convective velocity w*. For a DCBL of depth zi, w* = (Bszi)1/3. The sharp inversion assumed in UWMT has been accentuated by not plotting a line interpolating between the nonzero inversion TKE and the zero TKE at the next flux interface above.
+
+Above 0.1zi, the CAMUW TKE profiles are quite similar to each other. They also have a similar shape to that of the LES, but are about 20% too weak. In the surface layer below 0.1zi, the LES has extensive TKE in horizontal eddy motions not captured by the UWMT scheme, but we see little evidence that this is affecting the vertical mixing appreciably.
+
+Figures 7b–d show the three important terms in the TKE budget at 5 h. The TKE production by buoyancy flux was already discussed. The efficient vertical mixing constrains it to have a linear profile between the specified surface value and the entrainment flux, so the L30, L80, and LES simulations all show rather similar profiles. The TKE transport source in both CAMUW simulations has the right shape compared to LES, but with a low bias above 0.15zi and a high bias below this level. This is probably the main cause of the TKE underestimate above 0.1zi by CAMUW. One can also see that, as expected, the UWMT relaxational transport source does not vertically integrate exactly to zero. The TKE dissipation has the same vertical structure in both CAMUW simulations as in LES, but is somewhat weaker above 0.15zi to compensate for the weaker transport source. Results are also shown with halved nondimensional TKE relaxation rate ae in the TKE transport source. This produces excessive vertical gradients of TKE within the boundary layer and too strong a transport sink in the lower half of the boundary layer, suggesting that our choice ae = 1 is close to optimal. Overall, the CAMUW TKE profile and budget terms are in reasonable agreement with the LES for the DCBL, especially considering that the TKE is only used indirectly to scale vertical mixing coefficients.
+
+Figure 8 shows the CAMUW and CAM3 eddy diffusivity profiles Kh, nondimensionalized by dividing by w*zi. For the UWMT scheme, the entrainment interface has a much smaller diffusivity (derived from the predicted entrainment rate) than the interfaces below. The UWMT scheme produces a larger Kh above the surface layer than HB. This is especially true in the upper half of the ABL, where the enhanced CAMUW diffusivity, like the CAM3 nonlocal flux, helps keep θ nearly well mixed.
+
+b. Idealized stable ABL
+
+For testing ABL parameterization for a stable boundary layer, we use the first GEWEX Atmospheric Boundary Layer Study intercomparison case (GABLS1; Beare et al. 2006; Cuxart et al. 2006). This is another idealized case, but results from several LES models run at sufficiently high resolution were quite similar, so we use their ensemble-mean profiles (Beare et al. 2006) as a standard for comparison.
+
+In this case, there is again no moisture or atmospheric radiative cooling. The initial potential temperature profile is linear with height with a gradient of 0.01 K m−1 above a mixed layer extending up to 100 m. We specify a vertically uniform geostrophic wind of 10 m s−1, a surface roughness z0 = 0.1 m, and the surface is cooled at a constant rate of 0.25 K h−1 from an initial potential temperature of 265 K. This induces a stable shear-driven boundary layer, which cools during the 9 h of simulation.
+
+Our GABLS1 high-resolution simulations used a time step of 10 s and 175 vertical levels (L175). In this configuration, the standard 30 levels were supplemented by 145 additional levels below 1500 m, to obtain a vertical grid spacing of slightly under 10 m throughout the stable boundary layer.
+
+Figure 9 compares L175 CAMUW and CAM3-simulated θ, velocity, diffusivity, and flux profiles after 8–9 h, by which point the boundary layer depth and surface fluxes have reached a nearly steady state (Beare et al. 2006; Cuxart et al. 2006). The CAMUW L175 simulation agrees very well with the LES mean. The CAM3 L175 simulation gives too deep a boundary layer. Sensitivity tests revealed that this is primarily due to the CAM3 free-tropospheric mixing scheme. Figure 9 therefore also shows results from a simulation CAM3ml1, which is identical to CAM3 except with the free-tropospheric mixing length reduced from 30 m to 1 m (a suggestion made by Bert Holtslag), which cuts the free-tropospheric turbulent diffusivity by a factor of 900. These results match the LES results nearly as well as CAMUW, though with a slight overestimate of the low-level jet in u. The CAMUW and CAM3ml1 simulated heat diffusivity, heat and momentum flux profiles all agree very well with the LES simulations. This is in contrast to some single-column models (SCMs) participating in the GABLS1 intercomparison, which overestimated the magnitudes of the heat flux and the surface stress even at high resolution (Cuxart et al. 2006). The excessive free-tropospheric mixing in CAM3 leads to much higher turbulent diffusivities at all levels, causing considerably stronger surface heat flux, winds, and wind stress.
+
+Figure 10 shows corresponding results for the operational L30 resolution and 1200 s time step. There are only 1–2 grid points within the boundary layer, so the vertical profiles are very poorly resolved. The more fundamental goal at such resolution is to achieve accurate surface fluxes that properly couple the surface with the atmosphere. The simulated L30 surface heat flux and stress, which can be read off Fig. 10, are remarkably accurate for CAM3ml1, slightly underestimated for CAMUW, and slightly overestimated in CAM3.
+
+Figure 11a compares the hour 8–9 TKE profiles from the CAMUW with LES. At both resolutions, the CAMUW overestimates the TKE above 0.2zi by about a factor of 2. The corresponding TKE budget is dominated by dissipation (Fig. 11b) compensated by shear production (not shown). Both of these profiles show similar biases as with the TKE profile. The minor buoyancy sink of TKE (not shown) has a similar linear profile in CAMUW as in LES.
+
+We conclude that both CAMUW and CAM3ml1 perform quite well on this weakly stable dry boundary layer case, even at current coarse operational vertical resolution. CAM3 overmixes at low and especially at high resolution, producing overly strong surface heat and momentum fluxes.
+
+Dr. Matthew Wyant of the University of Washington and the first author have also performed single-column CAM L30 simulations using a yearlong forcing and analysis dataset from the Surface Heat Budget of the Arctic (SHEBA) experiment (Beesley et al. 2000), focusing on clear periods in January 1998 with highly stable boundary layers. Three-day simulations with the CAMUW and CAM3 initialized from the observed profiles for selected January days performed very similarly for these cases, with a nearly identical evolution of near-surface air temperature evolution (not shown). We attribute this insensitivity to strong radiative control of the surface and ABL temperature in these cases.
+
+c. Nocturnal stratocumulus
+
+The UWMT parameterization was primarily designed to improve the simulation of marine stratocumulus-topped boundary layers in CAM. The default CAM3 with 26 vertical levels already has a reasonable simulation of the annual-mean top-of-atmosphere shortwave and longwave cloud radiative effect over the subtropical stratocumulus regions (Wyant et al. 2006). However, stratocumulus layers in CAM3 have been found to be significantly too shallow, with frequent surface fog where this is not observed (Wyant et al. 2006). Furthermore, the low-cloud climatology of CAM3 has been found to be very sensitive to vertical resolution. This has frustrated efforts to increase the vertical resolution of CAM3 in the lower troposphere to obtain better boundary layer and chemical transport simulation worldwide.
+
+In this section, we compare CAMUW with CAM3 for a nocturnal nonprecipitating stratocumulus case. In the UWMT entrainment closure, the moist entrainment enhancement parameter a2 is not tightly constrained by observations. Hence, in addition to the default a2 = 15, the plots present CAMUW results with a2 = 30.
+
+The GCSS DYCOMS2 Research Flight 1 (RF01) intercomparison was chosen because there are good airborne observations of the mean fields, entrainment rate, and turbulence statistics that have been compared with an extensive suite of LES (Stevens et al. 2005) and single-column models (Zhu et al. 2005). The case specifications are given by Stevens et al. (2005) and only key aspects will be summarized here. The initial thermodynamic profile consists of a mixed layer up to a height of 800 m with an LCL at 600 m, topped by a sharp 7-K inversion and above that a radiatively enhanced stable layer. Surface fluxes, a mean horizontal mass divergence, and a vertically uniform geostrophic wind are specified. An idealized radiative flux profile is used; it is tied to the liquid water paths above and below the considered level and is chosen to match the aircraft observations for this case. The simulation is specified to have no precipitation. Statistics are compared over the fourth hour of simulation, after model startup transients have settled down.
+
+As a group, the LES tended to produce cloud layers that were too thin. However, a subset of LES with the highest liquid water paths tended to agree well with the other observed mean fields and turbulence statistics. The gray regions in the plots shown in this section indicate the range of values across this LES master ensemble, which with some caution we regard as a surrogate for observations. The single-column results exhibited an even wider range of behaviors than the LES (Zhu et al. 2005).
+
+Figure 12 compares selected profiles averaged over hours 3–4 from CAMUW and CAM3 high-resolution 150-level (L150) simulations with 10-m vertical resolution and a 60-s time step, and from the LES master ensemble. Overall, CAMUW produces a superior simulation of this case compared to CAM3.
+
+Figures 12a,b show profiles of the moist-conserved variables, liquid water potential temperature θl and total water qt. CAMUW maintains θl and qt profiles in the ABL that are similarly well mixed as the LES ensemble but marginally cooler and moister. The liquid water path (LWP) is 78 g m−2 compared to the observed 60 g m−2. These anomalies are established during the start-up of the simulation; during hour 3–4, the CAMUW entrainment rate, as calculated as a residual from a water budget of the boundary layer, is 4.1 mm s−1—very close to the LES and observed value of roughly 4 mm s−1. Doubling the moist entrainment parameter a2 to 30 (which increases the entrainment efficiency) decreases LWP by 15%. It is noteworthy that increasing a2 does not significantly increase the equilibrium entrainment rate but instead decreases the cloud thickness. Zhu et al. (2005) similarly found that for this case, there were much larger differences between the hours 3 and 4 LWP of GCSS SCMs than there were differences in entrainment rate. Essentially, the entrainment rate rapidly adjusts until the cloud base and cloud top are changing at the same pace. This equilibrium entrainment rate mainly depends on the divergence, inversion height, and inversion jumps. The resulting cloud thickness must adjust so that the parameterized turbulence generates this amount of entrainment; different turbulence parameterizations require wildly different LWPs to accomplish this. However, in general the consequence is that a more efficient entrainment parameterization will favor a thinner cloud with fairly little change in entrainment rate, as seen in Fig. 12.
+
+CAM3 is even moister below cloud base and has a much lower hour 3–4 entrainment rate of 1.9 mm s−1. It shows a spurious notch of lower θl and a more muted notch in qt just below the inversion. These biases correspond to θ, rather than θl, being vertically well mixed in CAM3. As a result of these entrainment and thermodynamic biases, CAM3 overestimates the hour 3–4 peak liquid water content (ql) by a factor of 2. Its LWP of 138 g m−2 is nearly a factor of 3 larger than observed.
+
+In the layer between 600 m and the inversion, the cloud fraction is nearly one for both simulations, and ql increases adiabatically with height. Between 600 and 400 m, the cloud fraction tails off quadratically to zero, reflecting the relation between cloud fraction and relative humidity specified in CAM. As also noted by Zhu et al. (2005), CAM3 also exhibits a long ql tail that unphysically extends well down into the layer of zero cloud fraction. This is promoted by the choice to separately diffuse ql and specific humidity qυ in CAM3. In the stratocumulus layer, there is strong vertical diffusion of ql, which the stratiform microphysics struggles to remove. Because CAMUW does not diffuse ql, it does not have this bias. The small ql spike at 400 m is due to a quirk in the CAM stratiform condensation scheme when the cloud fraction falls below 0.01.
+
+The 3–4-h mean velocity profiles from CAMUW and the LES (Figs. 12d,e) have similar vertical shapes, though there is a 0.5 m s−1 bias of the CAMUW V velocity component throughout the ABL. Zhu et al. (2005) suggested that this bias, also evident in other SCMs (Zhu et al. 2005) is a transient resulting from the different spinup between SCMs and the LES, which decreases later into the simulation. The CAM3 velocity profiles have noticeably larger internal gradients within the ABL than the LES.
+
+Last, the qt flux profiles (Fig. 12f) from CAMUW and the LES are almost identical. With a2 = 30 (higher entrainment efficiency), there is marginally more entrainment drying at the inversion. CAM3 has yet less entrainment drying. This figure also shows that CAM3 produces no cumulus qt fluxes at this high resolution, indicating that CAM3’s shallow convection scheme does not activate.
+
+Figure 13 shows corresponding operational resolution L30 simulations with a 1200-s time step. Now there is only one grid point within the stratocumulus layer, but the CAMUW biases remain generally similar to the high-resolution simulations. The CAMUW simulation is again marginally cool and moist, with an hour 3–4 entrainment rate of 3.8 mm s−1 that is slightly reduced from L150. The inversion qt flux is correspondingly slightly lower than for L150. While reduced entrainment should favor increased LWP, the L30 LWP is instead reduced to 59 g m−2, which is comparable to observations. As shown in Fig. 10 of Zhu et al. (2005), the 25% LWP discrepancy between high- and low-resolution simulations is better than most other tested SCMs. It arises because the stratocumulus layer is severely underresolved (only one grid layer thick) in the low-resolution simulations, which severely tests the discretizations for buoyancy forcing and prognosis of liquid water.
+
+The CAM3 simulation is much more highly resolution dependent. At L30, the entrainment rate is doubled to 3.8 mm s−1 compared to L150, the moisture bias is nearly gone, the θl bias is reversed, and the LWP is only 10 g m−2. The reason for this profound change is that, at L30, the Hack shallow cumulus scheme becomes active in the stratocumulus layer, causing entrainment and removing liquid water from the cloud layer. At the top internal interface and at the inversion, the cumulus flux of qt dominates the flux from the boundary layer scheme (Fig. 13f).
+
+Figure 14 shows the hour 3–4 buoyancy flux and TKE profiles for the CAMUW L150 and L30 simulations. The L150 simulation resolves the LES-simulated peak in buoyancy flux within the stratocumulus layer but overestimates the buoyancy flux lower in the cloud layer and below cloud base. This suggests underentrainment, but the L150 and LES entrainment rates closely agree, so the story is not clear. The L150 TKE profile is in good agreement with the LES.
+
+The L30 simulation does not resolve the stratocumulus layer well enough to capture the in-cloud buoyancy forcing and also misses the subcloud minimum. In addition, the L30 simulation also does not resolve the cloud-top buoyancy flux minimum seen in the LES because it cannot resolve the cloud-top longwave cooling profile. Instead, the L30 buoyancy flux at the cloud-top interface includes a radiative and an entrainment contribution. The combined errors in the buoyancy flux profile cancel, such that the CL-integrated buoyancy forcing agrees well with the LES. The L30 TKE profile has the right magnitude but underestimates the variation of TKE between the cloud and subcloud layers because it does not resolve the vertical structure of the buoyancy forcing.
+
+Last, Fig. 15 compares the UWMT hour 3–4 TKE transport source and dissipation for the nocturnal stratocumulus case with LES. These two terms, together with the buoyancy flux, dominate the TKE budget; shear production (not shown) is a minor contributor except right near the surface. In all simulations, the dissipation is fairly uniform with height, and the agreement between UWMT and LES is quite reasonable. The TKE transport source in UWMT best matches the LES for the L80 a2 = 30 simulation, which has the best buoyancy flux profile. This reflects the role of transport in spreading the TKE from regions of strong buoyant and shear production to those with less TKE production; only from a simulation with an accurate profile of TKE production can we also hope to get a reasonable profile of the TKE transport source.
+
+4. Conclusions
+
+We have presented the new University of Washington Moist Turbulence scheme and its implementation in the National Center for Atmospheric Research (NCAR) Community Atmosphere Model. The scheme is derived from GB01 but has been modified to improve its numerical stability and performance with the long time steps used in climate models. A goal was to provide a practical treatment of marine stratocumulus-topped boundary layers that is more physically realistic than in the current CAM.
+
+Key features of the scheme include the use of moist-conserved variables, an explicit entrainment closure for convective layers, use of TKE as a diagnostic rather than a prognostic variable, a new formulation of TKE transport as a relaxation to layer-mean TKE that is efficient when used with long model time steps, and unified treatment of all turbulent layers in each atmospheric column. In contrast to UWMT, the default turbulence parameterizations in the CAM are based on dry thermodynamics and tie the strength of turbulence to surface fluxes alone.
+
+The scheme was compared with the default turbulence parameterizations in the CAM using three single-column modeling cases. Both schemes performed comparably well on the first case, a dry convective boundary layer, both at operational and high resolution, though with different error characteristics, For the second case, the GABLS stable boundary layer, the UWMT scheme run with 10-m vertical resolution agrees very well with high-resolution LES simulations and gives a surprisingly good simulation at operational resolution, when there is only one grid level within the boundary layer. The default CAM produces too deep a stable boundary layer. However, if the free-tropospheric mixing length in CAM is cut from 30 to 1 m, very good results are obtained, both at 10 m and operational resolution. The third case, a GCSS nocturnal stratocumulus case, was much better simulated by the new UWMT scheme than the default CAM. The default CAM, unlike UWMT, showed strong sensitivity to the vertical resolution, with the shallow convection scheme activating at low resolution and greatly reducing the simulated mean cloud liquid water path.
+
+Global simulations presented in the companion paper by Park and Bretherton (2009) show that the impact of the UWMT scheme on global CAM simulations is positive but modest. Often, subtle and unintended interactions between physical parameterizations control the climate errors in global simulations, and it is not clear which of many possible further refinements of UWMT would actually improve the global results. However, we do plan to implement and test some technical improvements to UWMT. For example, modification of the stability functions under highly stable stratification (e.g., following Sukoriansky et al. 2005) could improve stable boundary layer performance. A more continuous transition between stable and convective turbulent layers might improve simulation of boundary layer decoupling. Addition of a nonlocal mixing term in the flux–gradient relationship might improve the vertical temperature structure in convective boundary layers.
+
+UWMT has achieved its principal goal—to provide a skilful general turbulence parameterization for CAM with a physically justifiable treatment of marine stratocumulus. Like most physical parameterizations, UWMT is a work in progress and will benefit from further critical evaluation using a combination of single-column case studies, climate bias evaluation, and implementation in a regional model in which it can be run and evaluated in weather forecasting mode.
+
+Acknowledgments
+
+The authors gratefully acknowledge support from NASA Grant NNG05GA19G and DOE Grant DE-FG02-05ER63959. Thanks to Jim McCaa and Ping Zhu for developing earlier versions of this scheme and in implementing it in CAM, and to John Truesdale for helping us with SCAM. We thank Phil Rasch, Bert Holtslag, Matt Wyant, and three anonymous reviewers for useful comments that helped shape this paper.
+
+REFERENCES
+
+Beare, R. J., and Coauthors, 2006: An intercomparison of large-eddy simulations of the stable boundary layer. Bound.-Layer Meteor., 118 , 247–272.
+
+Beare, R. J., and Coauthors, 2006: An intercomparison of large-eddy simulations of the stable boundary layer.Bound.-Layer Meteor., 118, 247–272.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Beesley, T. A., C. S.Bretherton, C.Jakob, E.L Andreas, J. M.Intrieri, and T. A.Uttal, 2000: A comparison of the ECMWF forecast model with observations at Surface Heat Budget of the Arctic Ocean (SHEBA) ice camp. J. Geophys. Res., 105 , 12337–12349.
+
+Beesley, T. A., C. S.Bretherton, C.Jakob, E.L Andreas, J. M.Intrieri, and T. A.Uttal, 2000: A comparison of the ECMWF forecast model with observations at Surface Heat Budget of the Arctic Ocean (SHEBA) ice camp.J. Geophys. Res., 105, 12337–12349.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Blackadar, A. K., 1962: The vertical distribution of wind and turbulent exchange in a neutral atmosphere. J. Geophys. Res., 67 , 3095–3102.
+
+Blackadar, A. K., 1962: The vertical distribution of wind and turbulent exchange in a neutral atmosphere.J. Geophys. Res., 67, 3095–3102.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Boville, B. O., and C. S.Bretherton, 2003: Heating and dissipation in the NCAR Community Atmosphere Model. J. Climate, 16 , 3877–3887.
+
+Boville, B. O., and C. S.Bretherton, 2003: Heating and dissipation in the NCAR Community Atmosphere Model.J. Climate, 16, 3877–3887.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Bretherton, C. S., J. R.McCaa, and H.Grenier, 2004: A new parameterization for shallow cumulus convection and its application to marine subtropical cloud-topped boundary layers. Part I: Description and 1D results. Mon. Wea. Rev., 132 , 864–882.
+
+Bretherton, C. S., J. R.McCaa, and H.Grenier, 2004: A new parameterization for shallow cumulus convection and its application to marine subtropical cloud-topped boundary layers. Part I: Description and 1D results.Mon. Wea. Rev., 132, 864–882.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Bretherton, C. S., P. N.Blossey, and J.Uchida, 2007: Cloud droplet sedimentation, entrainment efficiency, and subtropical stratocumulus albedo. Geophys. Res. Lett., 34 , L03813. .
+
+Bretherton, C. S., P. N.Blossey, and J.Uchida, 2007: Cloud droplet sedimentation, entrainment efficiency, and subtropical stratocumulus albedo.Geophys. Res. Lett., 34, L03813. doi:10.1029/2006GL027648.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Burk, S. D., and W. T.Thompson, 1989: A vertically nested regional numerical weather prediction model with second-order closure physics. Mon. Wea. Rev., 117 , 2306–2324.
+
+Burk, S. D., and W. T.Thompson, 1989: A vertically nested regional numerical weather prediction model with second-order closure physics.Mon. Wea. Rev., 117, 2306–2324.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Caldwell, P., C. S.Bretherton, and R.Wood, 2005: Mixed-layer budget analysis of the diurnal cycle of entrainment in southeast Pacific stratocumulus. J. Atmos. Sci., 62 , 3775–3791.
+
+Caldwell, P., C. S.Bretherton, and R.Wood, 2005: Mixed-layer budget analysis of the diurnal cycle of entrainment in southeast Pacific stratocumulus.J. Atmos. Sci., 62, 3775–3791.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Collins, W. D., and Coauthors, 2006: The formulation and atmospheric simulation of the Community Atmosphere Model Version 3 (CAM3). J. Climate, 19 , 2144–2161.
+
+Collins, W. D., and Coauthors, 2006: The formulation and atmospheric simulation of the Community Atmosphere Model Version 3 (CAM3).J. Climate, 19, 2144–2161.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Cuxart, J., and Coauthors, 2006: Single-column model intercomparison for a stably stratified atmospheric boundary layer. Bound.-Layer Meteor., 118 , 273–303.
+
+Cuxart, J., and Coauthors, 2006: Single-column model intercomparison for a stably stratified atmospheric boundary layer.Bound.-Layer Meteor., 118, 273–303.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Galperin, B., L. H.Kantha, S.Hassid, and A.Rosati, 1988: A quasi-equilibrium turbulent energy model for geophysical flows. J. Atmos. Sci., 45 , 55–62.
+
+Galperin, B., L. H.Kantha, S.Hassid, and A.Rosati, 1988: A quasi-equilibrium turbulent energy model for geophysical flows.J. Atmos. Sci., 45, 55–62.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Gayno, G. A., 1994: .
+
+Golaz, J-C., V. E.Larson, and W. R.Cotton, 2002: A PDF-based model for boundary layer clouds. Part I: Method and model description. J. Atmos. Sci., 59 , 3540–3551.
+
+Golaz, J-C., V. E.Larson, and W. R.Cotton, 2002: A PDF-based model for boundary layer clouds. Part I: Method and model description.J. Atmos. Sci., 59, 3540–3551.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Grenier, H., and C. S.Bretherton, 2001: A moist PBL parameterization for large-scale models and its application to subtropical cloud-topped marine boundary layers. Mon. Wea. Rev., 129 , 357–377.
+
+Grenier, H., and C. S.Bretherton, 2001: A moist PBL parameterization for large-scale models and its application to subtropical cloud-topped marine boundary layers.Mon. Wea. Rev., 129, 357–377.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Hack, J. J., 1994: Parameterization of moist convection in the National Center for Atmospheric Research Community Climate Model (CCM2). J. Geophys. Res., 99 , 5551–5568.
+
+Hack, J. J., 1994: Parameterization of moist convection in the National Center for Atmospheric Research Community Climate Model (CCM2).J. Geophys. Res., 99, 5551–5568.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Hack, J. J., and J. A.Pedretti, 2000: Assessment of solution uncertainties in single-column modeling frameworks. J. Climate, 13 , 352–365.
+
+Hack, J. J., and J. A.Pedretti, 2000: Assessment of solution uncertainties in single-column modeling frameworks.J. Climate, 13, 352–365.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Hannay, C., D. L.Williamson, J. J.Hack, J. T.Kiehl, J. G.Olson, S. A.Klein, C. S.Bretherton, and M.Koehler, 2009: Evaluation of forecasted southeast Pacific stratocumulus in the NCAR, GFDL, and ECMWF. J. Climate, .
+
+Hannay, C., D. L.Williamson, J. J.Hack, J. T.Kiehl, J. G.Olson, S. A.Klein, C. S.Bretherton, and M.Koehler, 2009: Evaluation of forecasted southeast Pacific stratocumulus in the NCAR, GFDL, and ECMWF.J. Climate, in press.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Holtslag, A. A. M., and B. A.Boville, 1993: Local versus nonlocal boundary layer diffusion in a global climate model. J. Climate, 6 , 1825–1842.
+
+Holtslag, A. A. M., and B. A.Boville, 1993: Local versus nonlocal boundary layer diffusion in a global climate model.J. Climate, 6, 1825–1842.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Khairoutdinov, M. F., and D. A.Randall, 2003: Cloud resolving modeling of the ARM Summer 1997 IOP: Model formulation, results, uncertainties, and sensitivities. J. Atmos. Sci., 60 , 607–625.
+
+Khairoutdinov, M. F., and D. A.Randall, 2003: Cloud resolving modeling of the ARM Summer 1997 IOP: Model formulation, results, uncertainties, and sensitivities.J. Atmos. Sci., 60, 607–625.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Klein, S. A., and Coauthors, 2009: Intercomparison of model simulations of mixed-phase clouds observed during the ARM Mixed-Phase Arctic Cloud Experiment. Part I: Single layer cloud. Quart. J. Roy. Meteor. Soc., .
+
+Klein, S. A., and Coauthors, 2009: Intercomparison of model simulations of mixed-phase clouds observed during the ARM Mixed-Phase Arctic Cloud Experiment. Part I: Single layer cloud.Quart. J. Roy. Meteor. Soc., in press.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Köhler, M., 2005: Improved prediction of boundary layer clouds. .
+
+Köhler, M., 2005: Improved prediction of boundary layer clouds.ECMWF Newsletter, No. 104, ECMWF, Reading, United Kingdom, 18–22. [Available online at http://www.ecmwf.int/publications/newsletters/].)| false
+
+Search Google Scholar
+
+Export Citation
+
+Lappen, C-L., and D. A.Randall, 2001: Toward a unified parameterization of the boundary layer and moist convection. Part I: A new type of mass-flux model. J. Atmos. Sci., 58 , 2021–2036.
+
+Lappen, C-L., and D. A.Randall, 2001: Toward a unified parameterization of the boundary layer and moist convection. Part I: A new type of mass-flux model.J. Atmos. Sci., 58, 2021–2036.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Lewellen, D. C., and W. S.Lewellen, 2004: Buoyancy flux modeling for cloudy boundary layers. J. Atmos. Sci., 61 , 1147–1160.
+
+Lewellen, D. C., and W. S.Lewellen, 2004: Buoyancy flux modeling for cloudy boundary layers.J. Atmos. Sci., 61, 1147–1160.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Lock, A. P., A. R.Brown, M. R.Bush, G. M.Martin, and R. N. B.Smith, 2000: A new boundary layer mixing scheme. Part I: Scheme description and single-column model tests. Mon. Wea. Rev., 128 , 3187–3199.
+
+Lock, A. P., A. R.Brown, M. R.Bush, G. M.Martin, and R. N. B.Smith, 2000: A new boundary layer mixing scheme. Part I: Scheme description and single-column model tests.Mon. Wea. Rev., 128, 3187–3199.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Martin, G. M., M. R.Bush, A. R.Brown, A. P.Lock, and R. N. B.Smith, 2000: A new boundary layer mixing scheme. Part II: Tests in climate and mesoscale models. Mon. Wea. Rev., 128 , 3200–3217.
+
+Martin, G. M., M. R.Bush, A. R.Brown, A. P.Lock, and R. N. B.Smith, 2000: A new boundary layer mixing scheme. Part II: Tests in climate and mesoscale models.Mon. Wea. Rev., 128, 3200–3217.)| false
+
+Search Google Scholar
+
+Export Citation
+
+McCaa, J. R., and C. S.Bretherton, 2004: A new parameterization for shallow cumulus convection and its application to marine subtropical cloud-topped boundary layers. Part II: Regional simulations of marine boundary layer clouds. Mon. Wea. Rev., 132 , 883–896.
+
+McCaa, J. R., and C. S.Bretherton, 2004: A new parameterization for shallow cumulus convection and its application to marine subtropical cloud-topped boundary layers. Part II: Regional simulations of marine boundary layer clouds.Mon. Wea. Rev., 132, 883–896.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Mellor, G., and T.Yamada, 1982: Development of a turbulence closure model for geophysical fluid problems. Rev. Geophys. Space Phys., 26 , 851–875.
+
+Mellor, G., and T.Yamada, 1982: Development of a turbulence closure model for geophysical fluid problems.Rev. Geophys. Space Phys., 26, 851–875.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Nicholls, S., and J. D.Turton, 1986: An observational study of the structure of stratiform cloud sheets: Part II. Entrainment. Quart. J. Roy. Meteor. Soc., 112 , 461–480.
+
+Nicholls, S., and J. D.Turton, 1986: An observational study of the structure of stratiform cloud sheets: Part II. Entrainment.Quart. J. Roy. Meteor. Soc., 112, 461–480.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Nieuwstadt, F. T. M., P. J.Mason, C-H.Moeng, and U.Schumann, 1992: Large-eddy simulation of the convective boundary layer: A comparison of four computer codes. .
+
+Nieuwstadt, F. T. M., P. J.Mason, C-H.Moeng, and U.Schumann, 1992: Large-eddy simulation of the convective boundary layer: A comparison of four computer codes.Turbulent Shear Flows 8: Selected Papers from the Eighth International Symposium on Turbulent Shear Flows, F. Durst et al., Eds., Springer-Verlag, 343–367.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Park, S., and C. S.Bretherton, 2009: The University of Washington shallow convection scheme and moist turbulence schemes and their impact on climate simulations with the Community Atmosphere Model. J. Climate, 22 , 3449–3469.
+
+Park, S., and C. S.Bretherton, 2009: The University of Washington shallow convection scheme and moist turbulence schemes and their impact on climate simulations with the Community Atmosphere Model.J. Climate, 22, 3449–3469.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Schubert, W. H., J. S.Wakefield, E. J.Steiner, and S. K.Cox, 1979: Marine stratocumulus convection. Part I: Governing equations and horizontally homogeneous solutions. J. Atmos. Sci., 36 , 1286–1307.
+
+Schubert, W. H., J. S.Wakefield, E. J.Steiner, and S. K.Cox, 1979: Marine stratocumulus convection. Part I: Governing equations and horizontally homogeneous solutions.J. Atmos. Sci., 36, 1286–1307.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Siebesma, A. P., P. M. M.Soares, and J.Teixeira, 2007: A combined eddy-diffusivity mass-flux approach for the convective boundary layer. J. Atmos. Sci., 64 , 1230–1248.
+
+Siebesma, A. P., P. M. M.Soares, and J.Teixeira, 2007: A combined eddy-diffusivity mass-flux approach for the convective boundary layer.J. Atmos. Sci., 64, 1230–1248.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Stephens, G. L., 1978: Radiation profiles in extended water clouds. II: Parameterization schemes. J. Atmos. Sci., 35 , 2123–2132.
+
+Stephens, G. L., 1978: Radiation profiles in extended water clouds. II: Parameterization schemes.J. Atmos. Sci., 35, 2123–2132.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Stevens, B., 2000: Cloud transitions and decoupling in shear-free stratocumulus-topped boundary layers. Geophys. Res. Lett., 27 , 2557–2560.
+
+Stevens, B., 2000: Cloud transitions and decoupling in shear-free stratocumulus-topped boundary layers.Geophys. Res. Lett., 27, 2557–2560.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Stevens, B., and Coauthors, 2003: On entrainment rates in nocturnal marine stratocumulus. Quart. J. Roy. Meteor. Soc., 129 , 3469–3493.
+
+Stevens, B., and Coauthors, 2003: On entrainment rates in nocturnal marine stratocumulus.Quart. J. Roy. Meteor. Soc., 129, 3469–3493.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Stevens, B., and Coauthors, 2005: Evaluation of large-eddy simulations via observations of nocturnal marine stratocumulus. Mon. Wea. Rev., 133 , 1443–1462.
+
+Stevens, B., and Coauthors, 2005: Evaluation of large-eddy simulations via observations of nocturnal marine stratocumulus.Mon. Wea. Rev., 133, 1443–1462.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Sukoriansky, S., B.Galperin, and V.Perov, 2005: Application of a new spectral model of stratified turbulence to the atmospheric boundary layer over sea ice. Bound.-Layer Meteor., 117 , 231–257.
+
+Sukoriansky, S., B.Galperin, and V.Perov, 2005: Application of a new spectral model of stratified turbulence to the atmospheric boundary layer over sea ice.Bound.-Layer Meteor., 117, 231–257.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Vogelezang, D. H. P., and A. A. M.Holtslag, 1996: Evaluation and model impacts of alternative boundary-layer height formulations. Bound.-Layer Meteor., 81 , 245–269.
+
+Vogelezang, D. H. P., and A. A. M.Holtslag, 1996: Evaluation and model impacts of alternative boundary-layer height formulations.Bound.-Layer Meteor., 81, 245–269.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Wyant, M. C., C. S.Bretherton, H. A.Rand, and D. E.Stevens, 1997: Numerical simulations and a conceptual model of the subtropical marine stratocumulus to trade cumulus transition. J. Atmos. Sci., 54 , 168–192.
+
+Wyant, M. C., C. S.Bretherton, H. A.Rand, and D. E.Stevens, 1997: Numerical simulations and a conceptual model of the subtropical marine stratocumulus to trade cumulus transition.J. Atmos. Sci., 54, 168–192.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Wyant, M. C., C. S.Bretherton, J. T.Bacmeister, J. T.Kiehl, I. M.Held, M.Zhao, S. A.Klein, and B. J.Soden, 2006: A comparison of low-latitude cloud properties and their response to climate change in three AGCMs sorted into regimes using mid-tropospheric vertical velocity. Climate Dyn., 27 , 261–279.
+
+Wyant, M. C., C. S.Bretherton, J. T.Bacmeister, J. T.Kiehl, I. M.Held, M.Zhao, S. A.Klein, and B. J.Soden, 2006: A comparison of low-latitude cloud properties and their response to climate change in three AGCMs sorted into regimes using mid-tropospheric vertical velocity.Climate Dyn., 27, 261–279.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Wyant, M. C., and Coauthors, 2007: A single-column model intercomparison of a heavily drizzling stratocumulus-topped boundary layer. J. Geophys. Res., 112 , D24204. .
+
+Wyant, M. C., and Coauthors, 2007: A single-column model intercomparison of a heavily drizzling stratocumulus-topped boundary layer.J. Geophys. Res., 112, D24204. doi:10.1029/2007JD008536.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Zhu, P., and Coauthors, 2005: Intercomparison and interpretation of single-column model simulations of a nocturnal stratocumulus-topped marine boundary layer. Mon. Wea. Rev., 133 , 2741–2758.
+
+Zhu, P., and Coauthors, 2005: Intercomparison and interpretation of single-column model simulations of a nocturnal stratocumulus-topped marine boundary layer.Mon. Wea. Rev., 133, 2741–2758.)| false
+
+Search Google Scholar
+
+Export Citation
+
+Zhu, P., J. J.Hack, J. T.Kiehl, and C. S.Bretherton, 2007: Climate sensitivity of tropical and subtropical marine low cloud amount to ENSO and global warming due to doubled CO2. J. Geophys. Res., 112 , D17108. .
+
+Zhu, P., J. J.Hack, J. T.Kiehl, and C. S.Bretherton, 2007: Climate sensitivity of tropical and subtropical marine low cloud amount to ENSO and global warming due to doubled CO2.J. Geophys. Res., 112, D17108. doi:10.1029/2006JD008174.)| false
+
+Search Google Scholar
+
+Export Citation
+
+APPENDIX A
+
+CL Solution
+
+Convective-layer extension-merging procedure
+
+Starting from the bottom of each grid column, each CL in the column is extended from its core unstably stratified interfaces, first upward as far as possible, then downward as far as possible. An interface K − 1/2 adjacent to the CL is incorporated into the CL if the following criterion is satisfied: The angle brackets with a subscript int denote a pressure-weighted average over all interfaces (including the surface interface) internal to the CL. This average includes the new test interface to ensure that extension of a thin CL into an adjacent thick layer does not lead to negative CL-mean buoyancy production. The value rcrit = 0.04 is chosen to be consistent with a dry convective boundary layer in which downgradient diffusion is used for the fluxes and the entrainment buoyancy flux is −0.2 of the surface buoyancy flux. The first interface above (below) the CL that fails this criterion will be the top (bottom) entrainment interface for that CL.
+
+This incorporation may result in the merging of overlying or underlying CLs into the CL being extended. Our incorporation test guarantees that if an interface is unstably stratified it will be incorporated. Thus, if we incorporate any of the interior of a CL, we will incorporate or “merge” all of it.
+
+APPENDIX B
+
+Entrainment Closure Implementation
+
+For each CL, the top entrainment rate wet and (for an elevated CL) the base entrainment rate web can be diagnosed in terms of the CL convective velocity w* using (22): where the coefficients cet and ceb are easily computed from the thermodynamic profiles. The convective velocity is computed using a trapezoidal discretization of (22) between the CL top and base interfaces kt − 1/2 and kb − 1/2: At the interior interfaces, we compute B = −Kh,oldN 2, where Kh,old is the diffusivity from the previous call to UWMT. At the surface interface, if present, B+ is the known surface buoyancy flux. The buoyancy flux just below the top entrainment interface is computed from the unknown entrainment rate, the thermodynamic jumps, and a contribution Brad from cloud-top longwave radiative cooling discussed in the next section and given by (C7): For elevated CLs, an analogous procedure (but without Brad) is used to specify the basal interface contribution B+kb−1/2 in terms of web. Substituting these boundary contributions into (B2), and substituting for wet and web using (B1), we solve for w*3 and then the entrainment rates. To avoid instability, the entrainment contribution is not allowed to increase w*3 by more than a factor of 2.
+
+APPENDIX C
+
+Cloud-Top Longwave Cooling
+
+Radiative cooling is frequently concentrated in the top 50 m or less of a cloud layer, a thickness that may be much narrower than the vertical grid spacing. This cooling can help drive convection though buoyancy production of TKE, for instance, at the top of a stratocumulus cloud layer. If the radiative cooling profile is poorly resolved, the buoyancy flux profile is correspondingly poorly resolved, which can lead to substantial errors in the predicted TKE and entrainment rate. This section derives a radiative correction Brad added to the buoyancy flux just below the entrainment interface to reduce these errors in the top grid layer of a CL.
+
+The strategy is as follows. This grid layer is characterized by a single midpoint value of the conserved variables slkt and qtkt. Hence, as in mixed-layer modeling, the tendencies of sl and qt must be uniform with height across the grid cell. Given the shape of the radiative flux profile, this allows us to deduce a corresponding subgrid correction to the shape of the buoyancy flux profile. The correction will be significant only if the radiative cooling is strongly dependent on height within the grid cell.
+
+The sl tendency is the convergence of the sum of turbulent, radiative, and precipitation-driven sl fluxes. Each of these fluxes is computed at grid interfaces. Within the grid layer, each flux can be broken into a component that varies linearly in z between its interfacial values and a nonlinear residual, which we will hereafter denote with a hat. Our goal is to calculate the impact of these nonlinear residuals on the layer-integrated buoyancy production.
+
+To keep the sl tendency vertically uniform across the grid layer, the sum of these fluxes must vary linearly with height across the grid layer; that is, the sum of their three nonlinear residuals must be zero. We do not have adequate information to construct a subgrid profile of the precipitation-driven flux, so we neglect its nonlinear residual (if cloud droplet sedimentation were considered, its contribution could be included through such a residual). Hence, the nonlinear residual subgrid sl flux profile due to turbulence must balance that due to radiation, A similar argument applied to qt implies that the nonlinear residual turbulent qt flux must balance that due to precipitation, which we again neglect. Hence By analogy with (13), the buoyancy flux is ch/ρ times the turbulent sl flux, plus cq/ρ times the turbulent qt flux. Subtracting the linear components from both sides, This equation reflects a rapid increase of buoyancy flux with depth into the cloud-top grid layer [ B̂(z)>0 ] due to subgrid radiative flux divergence at the cloud top [ F̂r(z)<0 ].
+
+The grid-layer integrated subgrid contribution to the buoyancy production is accounted for in UWMT by adding a correction Brad to the buoyancy flux at the top entrainment interface, and thereafter treating the buoyancy flux profile as varying linearly with height between its interfacial values: From (C3), the required correction can thus be calculated from the subgrid residual radiative flux profile: Only the correction Brad associated with cloud-top longwave cooling is considered, as shortwave warming is usually distributed too broadly to require a significant correction. We consider only cloud tops, since cloud bases and their radiative heating profiles tend to be more diffuse. We do not consider cloud below the top grid layer of the CL, because even a small amount of turbulence will ensure that cloud fraction increases with height, inhibiting concentrated cloud radiative cooling in lower layers.
+
+The solid curve in Fig. C1a shows an idealized net longwave flux profile Frl(z) in such a grid layer. It has the form Here τ(z) is longwave optical depth down into the cloud layer. The cloud layer is assumed to have uniform optical properties, so τ(z) increases linearly with depth into the cloud layer, starting at zero at the cloud-top height zkt−1/2 and increasing to some value τkt at the base interface zkt+1/2 of the grid layer.
+
+Following Stephens (1978), the grid-layer cloud optical depth is chosen proportional to the liquid water path in layer kt. Ice clouds are currently assumed to have tops too diffuse for the buoyancy production correction to be significant, although a generalization of this approach to ice clouds would be feasible.
+
+From the longwave flux profile (C5), we subtract the part varying linearly between the top and bottom interfaces to get the nonlinear residual F̂rl(z). Substituting this into (C4), we deduce after some algebra that The final polynomial approximation (C8) is computationally efficient and avoids roundoff errors for small τkt.
+
+APPENDIX D
+
+Diagnosis of CL-Mean TKE
+
+The stability functions are assumed to be uniform across a CL. Their values ShCL and SmCL are computed from (7) and (19) as in an STL, but using a CL bulk Richardson number: denotes a mass-weighted average of an arbitrary quantity f over the interior and surface interfaces of a CL. The symbol is one if the bottom CL interface kb − 1/2 is the surface and zero otherwise.
+
+The CL-mean TKE 〈e〉 is found by discretizing (31): The last term in (D3) is the contribution from the top entrainment interface, based on (29)–(30). The buoyancy source Pb due to top entrainment is given by (B3), and the shear source Ps = KetS2. For an elevated CL, there would also be an analogous contribution from the base entrainment interface. We also approximate the TKE at the entrainment interface by 〈e〉 to simplify the solution of (D3). With this approximation, the discretization of (31) is a cubic equation in 〈e〉1/2; the correct root is calculated analytically.
+
+Given 〈e〉, we can diagnose the CL TKE profile at interior interfaces from (28) and calculate the diffusivities from (2). At entrainment interfaces, the diffusivity is calculated from the entrainment rate using (8).

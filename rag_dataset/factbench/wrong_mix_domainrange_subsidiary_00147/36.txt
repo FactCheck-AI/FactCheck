@@ -1,0 +1,257 @@
+Application component
+
+SAN Manager
+
+Features
+
+Specifications
+
+Limitations
+
+Synology Storage Console for VMware
+
+Features
+
+Specifications
+
+Limitations
+
+Synology Storage Console for Windows
+
+Features
+
+Specifications
+
+Limitations
+
+SMI-S Provider
+
+Features
+
+Specifications
+
+Synology Storage Replication Adapter
+
+Features
+
+Specifications
+
+Limitations
+
+Application component
+
+SAN Manager
+
+Features
+
+High performance and reliable storage solutions for virtualization environments
+
+Intuitive iSCSI service management and monitoring
+
+Virtualization certifications including VMware® vSphere™, Microsoft® Hyper-V®, Citrix® XenServer™, and OpenStack Cinder
+
+Specifications
+
+Maximum iSCSI targets: 256 (See limitation 1)
+
+Maximum LUNs: 512 (See limitation 1)
+
+Maximum snapshots per LUN: 256 (See limitation 1)
+
+iSCSI LUN Clone/Snapshot (See limitation 2)
+
+Two types of space allocation: Thin Provisioning and Thick Provisioning
+
+iSNS (Internet Storage Name Service)
+
+Customizable I/O queue depth
+
+Low-capacity protection mechanism
+
+LUN Defragmentation to improve LUN performance
+
+Online LUN capacity expansion
+
+CHAP and mutual CHAP authentication
+
+Access control by IQN
+
+CRC Checksum for checking for errors that occur during data transmission
+
+Schedulable snapshot tasks with custom retention policies
+
+Supports VMware VAAI features:
+
+Thin Provisioning Stun
+
+Hardware Assisted Locking
+
+Full Copy
+
+Block Zero
+
+Supports Windows ODX
+
+Supports space reclamation
+
+Supports assigning network interfaces to provide iSCSI services
+
+Supports Global iSCSI CHAP to authenticate both connection and discovery sessions
+
+Supports FUA and Sync Cache SCSI commands to lower the risk of data loss or file system crash
+
+Supports buffered I/O and direct I/O principles
+
+Supports moving LUNs across volumes
+
+Supports VASA to allow users to check the types of hard drives (HDD/SSD) in VMware vSphere
+
+Supports the Fibre Channel protocol to provide high performance and stable storage for your SAN environment
+
+Compatible FC adapter
+
+Applied models
+
+Supports grouping multiple initiators to manage their access to LUNs
+
+Snapshot Replication: Offsite snapshot replication and recovery
+
+Synology Hyper Backup: Scheduled tasks to back up LUNs to local shared folders, external devices or another Synology NAS
+
+Synology High Availability (SHA): Ensures the reliability of LUN and iSCSI services
+
+VMware Site Recovery Manager: Allows administrators to enable disaster recovery directly via VMware vCenter Server, simplifying - complicated configurations and optimizing the process
+
+Limitations
+
+The maximum number of LUNs, targets, and snapshots varies according to models (Refer to the software specifications of your Synology products)
+
+iSCSI LUN Clone/Snapshot are only available on specific models (Refer to the software specifications of your Synology products)
+
+Snapshots and space reclamation are not supported on Thick Provisioned LUNs
+
+Only Thin Provisioned LUNs created on Btrfs volumes on DSM 6.2 and above versions support instant snapshot and restoration
+
+Maximum number of concurrent LUN backup tasks: 1
+
+Minimum LUN size: 1 GB
+
+Minimum legacy advanced LUN size on ext4 volumes: 10 GB
+
+Defragmentation is only supported on Thin Provisioned Btrfs LUNs
+
+LUNs with the snapshot feature enabled or legacy advanced LUNs can be cloned quickly only within the same volume
+
+Converting legacy advanced LUNs will also delete the snapshots of the LUNs
+
+Discovery with CHAP authentication is not supported
+
+Only legacy advanced LUNs support three modes for space reclamation
+
+Prioritize I/O Consistency
+
+Balanced
+
+Prioritize Reclamation
+
+Synology Storage Console for VMware
+
+Features
+
+Monitors multiple Synology NAS on VMware vSphere Client
+
+Optimizes the transfer performance of shared folders/LUNs and connection stability between hosts and Synology NAS
+
+Supports application-consistent snapshots
+
+Specifications
+
+System requirements
+
+VMware
+
+vCenter Server Appliance 6.5 U2 or above
+
+vSphere Client (HTML5 only)
+
+Synology: DiskStation Manager 6.2.3 or above
+
+Streamlines vSphere Client datastore creation wizard with integrated creation process of LUNs/shared folders on Synology NAS
+
+Supports ESXi host setting optimization to improve transfer performance and connection stability
+
+Supports VMware VASA Provider (VASA 1.0) and VM storage policy management
+
+Supports adding storage systems via HTTPS
+
+Supports mounting datastores
+
+Limitations
+
+Storage Console virtual machine requires a minimum of 16 GB of available space on the datastore
+
+Synology Storage Console for Windows
+
+Features
+
+Monitors multiple Synology NAS on Windows Server
+
+Supports application-consistent snapshots
+
+Specifications
+
+System requirements
+
+Windows: Windows Server 2012, Windows Server 2012 R2, Windows Server 2016, Windows Server 2019
+
+Synology: DSM 6.2.3 or above
+
+Supports monitoring LUN/volume statuses on multiple Synology NAS
+
+Limitations
+
+Synology Storage Console for Windows and Synology Snapshot Manager for Windows cannot be installed on a Windows Server at the same time
+
+SMI-S Provider
+
+Features
+
+Supports SMI-S standard and integrates System Center Virtual Machine Manager (SCVMM) to facilitate the management of multiple Synology NAS
+
+Specifications
+
+System requirements
+
+Windows: Windows Server 2012, Windows Server 2012 R2, Windows Server 2016, Windows Server 2019
+
+Synology: DSM 6.1 or above
+
+Port 5988 for HTTP and port 5989 for HTTPS must be enabled
+
+Supports the management of LUNs and targets via SCVMM
+
+Creating and deleting LUNs
+
+Creating targets
+
+Configuring LUN and target mapping
+
+Configuring target masking
+
+Synology Storage Replication Adapter
+
+Features
+
+Supports managing iSCSI LUN replication directly on VMware Site Recovery Manager Server
+
+Specifications
+
+System requirements
+
+VMware vCenter 6.0
+
+VMware Site Recovery Manager 6.1
+
+Limitations
+
+Only VMware Site Recovery Manager 6.1 is supported

@@ -1,0 +1,45 @@
+Windows Server 2003 Client Access License
+
+Every computer or Windows terminal that establishes a connection to Windows Server 2003 requires the Windows Server 2003 Client Access License. Client access licenses permit clients to use the file, print, or other network services provided by Windows Server 2003. In the past, these licenses were offered as either Per Client or Per Server licenses.
+
+Under the new Windows Server 2003, the Per Client licenses were renamed and can now be purchased Per Device or Per User. A Per User license does not include concurrent users but named users. This means, for instance, that a company does not have to pay license fees for each client that employees use (for example, for access to the intranet). A company in which several employees share a device can also save money by using the Per Device license.
+
+Though seldom used in companies now, a Per Server Client Access License still requires the number of licenses to equal the maximum number of simultaneous server connections. Each device or user can access the server, but the number of simultaneous connections cannot exceed the number of installed Per Server licenses.
+
+Installation
+
+When setting up Windows Server 2003, you can optionally install a license server on the computer. However, you can also install it later via Add/Remove Windows Component in the dialog box under Start\Control Panel\Add or Remove Programs.
+
+Figure 2-9: Later installation of Terminal Services licensing.
+
+Because Terminal Services should be installed on member servers specifically set up for these services, it might be better to put the license server on an independent computer. However, if you use the terminal server as an independent server, or if this is the only Windows Server 2003 in a Windows NT 4.0 domain, you can install the terminal server licensing service on the same server.
+
+If you plan to migrate a workgroup or Windows NT 4.0 domain to an active directory domain at a later time, it is recommended that you install the license server on a computer that will also be migrated to that new domain.
+
+Figure 2-10: Determining the role of a license server.
+
+A license server is installed by default as a domain license server and is the best option if each domain is to have its own license server. It is also possible to install a license server as a company license server. This type of license server is recommended if several domains need to be managed.
+
+A terminal server can grant nonlicensed clients a connection for 120 days. After this time, the terminal server will not allow these clients to connect unless a license server is found to provide a client license. A license server that is not yet activated can issue temporary licenses valid for 90 days.
+
+After installation, you can find the license server’s administration interface under Start\Administrative Tools\Terminal Server Licensing.
+
+Figure 2-11: Terminal server licensing right after installation and before activation.
+
+Activation
+
+Before a license server can issue permanent licenses for Terminal Services clients, it must first be activated by Microsoft via Terminal Services licensing. Upon activation, Microsoft issues a digital certificate for a license server. This certificate is used to verify the ownership rights and the identity of the server. A license server with this certificate can conduct transactions with Microsoft and receive client licenses for the terminal servers. There are three ways to activate a license server: automatically over the Internet, manually via a Web browser, or over the telephone. As soon as the license server is activated, it confirms the server’s identity and enables it to receive licenses and issue them to clients.
+
+Figure 2-12: Activation wizard for Windows Server 2003.
+
+After license server activation, key packages for client licenses can be installed on the server. These packages allow the server to issue licenses upon request by terminal servers on the network. The corresponding key packages are stored and tracked on the license server. Microsoft installs key packages for client licenses using the Terminal Services licensing procedure. When Microsoft receives a request to install client licenses, it issues the requested number of key packages to the license server. You can use the same methods to install client licenses as you do to activate a license server.
+
+Under Windows Server 2003, the way access licenses are granted depends on the type of license. The following method is used for a Per Device license. When the client licenses are installed on a license server, the server can issue licenses. When a client attempts to log on to a terminal server, the terminal server recognizes that the client does not have a license. It looks for a license server that can issue a new license to the client. For the first session, the new license is a temporary Per Device license.
+
+If the client logs on again after terminating the first session, an attempt is made to convert the temporary license into a full Per Device license. If no Per Device licenses are available, a temporary license valid for 120 days is issued to the client. After this time, the client will no longer be able to log on to a terminal server.
+
+An issued client license is permanently assigned to a certain computer or terminal and cannot be transferred to another device without manual intervention. A client license is a digitally signed certificate that is stored locally on the client.
+
+The following rule was valid under Windows 2000 up to Service Pack 3: If the certificate was lost, possibly due to hard drive damage, the license could be reactivated only by Microsoft and would be reissued to the client after the system was reinstalled. Windows 2000 Service Pack 3 includes a new function that is valid for Windows Server 2003 terminal server licensing. It is a significant improvement over the licensing process described earlier. If a Terminal Server Client Access License is issued as a Per Device license, it is valid for a random period between 52 and 89 days. Its validity is verified upon each connection. If the license is due to expire within the following 7 days, it is renewed for another period ranging from 52 to 89 days. If there is no license server available when the client logs on, the client can still connect to the terminal server.
+
+If a client does not log on again during the valid period, the license is returned to the pool of available licenses on the license server. This eliminates the danger of losing licenses because of hard drive damage, reinstallation of clients, or test connections to the terminal server. You will find a more detailed description of this procedure at http://support.microsoft.com/ under Knowledge Base article 287687, “Before a license server can issue permanent licenses for Terminal Services .”

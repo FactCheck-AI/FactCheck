@@ -1,0 +1,41 @@
+Hi in short
+
+ntp server
+
+points to a server to get its time
+
+ntp peer
+
+gets its ntp off an actual peer device like another router on the network
+
+ntp master
+
+Configures the device as an authoritative NTP server.
+
+Hi,
+
+NTP Master is used to indicate the NTP Server (Authoritative NTP) and its type of stratum, the stratum 1 is used for public NTP Servers, so if you set up one router as NTP Server it could be stratum 2. The NTP Clients will be NTP Stratum 3.
+
+NTP server is configured on the client NTP Routers to indicate the IP Address of NTP Server in order to obtain all the time information.
+
+NTP Peer is configured in order to sync the time settings with other router. You can specify multiple peer associations.
+
+Hope it is useful.
+
+>> Marcar como útil o contestado, si la respuesta resolvió la duda, esto ayuda a futuras consultas de otros miembros de la comunidad. <<
+
+I would offer a slightly different perspective in answering this question. In configuring ntp on an IOS device there are several things that we can specify: who has authoritative ntp time? Is the device we are configuring going to learn ntp time and if so from what device will it learn ntp time? Is this device going to send ntp time to other devices?
+
+When we configure ntp master we are asserting that this device has authoritative ntp time. It does not specify how this device learned its time. It implies that this device will send ntp time to other devices who request it.
+
+When we configure ntp server we are stating that we believe that the device identified in the command knows authoritative ntp time and this device will learn ntp time from that device.
+
+When we configure ntp master or ntp server we are specifying a server relationship or a client relationship. When we configure ntp peer we are not specifying either server or client relationship. In the ntp peer relationship we would offer ntp time to the peer if we know authoritative ntp time and the peer would offer ntp time to us if the peer knows authoritative ntp time.
+
+HTH
+
+Rick
+
+HTH
+
+Rick

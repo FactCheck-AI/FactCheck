@@ -1,0 +1,53 @@
+Load the temperature-depth layer
+
+The Baltic Sea Physics Reanalysis was produced in 2014 at SMHI with the circulation model HIROMB (High- Resolution Operational Model for the Baltic). The data has a resolution of 3 nautical miles (5.5 km) and cover the period 1989 – 2015. It provides, among other informations, 3D fields of temperature and salinity. The present data was downloaded from the Copernicus Marine Environment Monitoring Service (CMEMS). In the following, we will focus only on the temperature in July 2015.
+
+We want to load multidimensional information from one NetCDF file, so we will use create a brick object, loading only the temperature (varname="temp") and having depth as a third dimension (lvar=4).
+
+dir <- "Data/CMEMS_SMHI_PHYS_reanalysis_201507.nc" temp072015 <- brick(dir, varname="temp", lvar=4)
+
+The same functions proj4string(), dim() and res() can be used to describe the brick object.
+
+proj4string(temp072015)
+
+[1] "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
+
+dim(temp072015)
+
+[1] 242 257 50
+
+res(temp072015)
+
+[1] 0.08333333 0.05000000
+
+The matrix is 242x257 pixels (in longitude x latitude) and has information for 50 depth layers. The depth layers’ values are stored in the z attribute of the brick object.
+
+#Get the depth values depth <- temp072015@z[[1]] #See the depth layers depth
+
+[1] 2.0 6.0 10.0 14.0 18.0 22.0 26.0 30.0 34.0 38.0 42.0 [12] 46.0 50.0 54.0 58.0 62.0 66.0 70.0 74.0 78.0 82.5 87.5 [23] 92.5 97.5 102.5 108.0 114.0 120.0 126.5 133.5 141.0 149.5 159.0 [34] 169.5 182.0 197.5 216.5 240.0 269.0 303.0 340.5 380.0 420.0 460.0 [45] 500.0 540.0 580.0 620.0 660.0 700.0
+
+The depth layers are from 2m to 700m depth, with an increasing interval between depth layer (from a 4m interval near the surface to a 40m interval at the bottom).
+
+Load the monthly primary production of 2015 per depth layer
+
+The GlobColour project provide a continuous data set of Ocean Colour products merged from different sensors (MERIS, MODIS AQUA, SeaWIFS and VIIRS) to ensure data continuity, improve spatial and temporal coverage and reduce data noise. The data is available at daily, weekly or monthly time step with a spatial resolution of 1km over Europe (around 0.01\(^\circ\)) and 1/24\(^\circ\) globally. Dataset can be freely downloaded at : http://hermes.acri.fr/.
+
+The data provided here for this example is the monthly Chlorophyll concentration (mg/m3) computed using the GSM model (Maritorena and Siegel, 2005). The main assumption is that phytoplankton concentration dominates over inorganic particles. The chlorophyll concentration is commonly used as a proxy for the biomass of the phytoplankton
+
+We want to load all the files from GlobColor corresponding to the year 2015. The function list.files() make a list of all the files in a given folder with a given pattern in the name (using regular expressions, visit http://www.regexr.com/ for more information).
+
+#list all the files in GlobColour folder finishing by "00.nc" file.names<-list.files("Data/GlobColour", pattern="00.nc$", full.names = TRUE) length(file.names)
+
+[1] 11
+
+# Getting the date of each file from the file name # The date is between position 21 and 26. time<-substr(file.names, 21,26) time
+
+[1] "201501" "201502" "201503" "201504" "201505" "201506" "201507" [8] "201508" "201509" "201510" "201511"
+
+There are 11 files corresponding to the year 2015. The month of December is absent, because all the values are 0, there are no primary production in December in our area of interest.
+
+Visualize
+
+The primary production is skewed with lots of low values and few outliers with very high values, so we will define a non-uniform color scale that represent well the small variations in Chl. Then, we can plot with the same color scale the 11 months with a loop for, incrementing the value of argument y.
+
+#Define manually the color breaks brk <- c(0,1,3,6,10,15,20,25,30,35) #Define the color palette pal <- brewer.pal(9, "BuGn") #Plot the 11 months par(mfrow=c(3,4), mar=c(2,2,2,1)) for (i in 1:length(time)){ #show the primary production of time i image(GColor2015, y=i, main="", xlim=c(4,10), ylim=c(53, 56), col=pal, breaks=brk) #add the country borders map("worldHires", col="grey90", border="grey50", fill=TRUE, add=TRUE) #add the ICES rectangle plot(ICESrect, add=TRUE) #add the title - the time title(time[i], adj=1) } #Add the color scale in a separate plot par(mar=c(2,8,4,4)) plot.scale(brk, pal = pal, lab="Chl concentration\n(mg/m3)")

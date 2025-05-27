@@ -1,0 +1,131 @@
+Qt projects
+
+Qt is a cross-platform C++ framework for creating GUI applications. Qt uses its own build system, qmake, and also supports building with CMake starting from the version Qt4.
+
+A pure Qmake project can't be imported in CLion directly. However, when converted into CMake, it can be opened and managed as a regular CMake application. You can also create a CMake-based Qt project in CLion using the New Project wizard.
+
+Setting up a Qt project in CLion
+
+Toolchains on Windows
+
+When installing Qt on Windows, pick the distributive that matches the environment you are using in CLion, MinGW or MSVC.
+
+For MinGW, both the version and the bitness (32-bit MinGW or MinGW-w64) should match with your toolchain setup.
+
+In CLion, go to Settings (Ctrl+Alt+S), navigate to Build, Execution, Deployment | Toolchain and select the toolchain that matches your Qt installation.
+
+If you have several Qt installations, make sure to select the same toolchain as the one you specified in CMAKE_PREFIX_PATH.
+
+As an example, in the case of MinGW:
+
+CMake settings
+
+Qt projects are handled as regular CMake projects in CLion, so you can configure CMake settings in Settings | Build, Execution, Deployment | CMake as necessary.
+
+For example, you can create different CMake profiles with different build types and set up CMake generators of your choice.
+
+In this dialog, you can also specify CMake options, such as CMAKE_PREFIX_PATH instead of setting them in CMakeLists.txt:
+
+Debugger renderers
+
+You can use Qt type renderers, which are usually shipped with Qt tools, for your project in CLion. However, for now, you need to set them manually either using the .gdbinit/.lldbinit scripts or, in the case of MSVC, via native visualizers.
+
+Windows MSVC
+
+CLionâs debugger for the MSVC toolchain can employ native visualizers if you have them in your project. Make sure to set the Enable NatVis renderers for LLDB option in Settings | Build, Execution, Deployment | Debugger | Data Views | C/C++.
+
+For example, copy qt5.natvis under your project root, and CLion will automatically detect and use it for rendering.
+
+Windows MinGW / macOS / Linux
+
+For non-MSVC toolchains, a solution would be to configure the Qt renderers via .gdbinit/.lldbinit. These scripts are loaded on every invocation of GDB or LLDB, respectively.
+
+You can try KDevelop formatters for GDB, KDevelop formatters for LLDB, Lekensteyn's qt5printers (GDB), or create your own pretty-printers.
+
+To create custom pretty printers, follow the official instructions for LLDB or GDB. You can take the pretty-printers for Rust implemented in the IntelliJ Rust plugin as a reference.
+
+Point the debugger to your renderers via .gdbinit/.lldbinit. Find an example in this github repo.
+
+Place the .gdbinit/.lldbinit files under the project root and allow them in your home directory as described here.
+
+Open UI files in Qt Designer
+
+By default, CLion opens .ui files in Qt Designer.
+
+The IDE searches for the path to Qt Designer in the Qt binaries folder specified in Settings | Languages & Frameworks | QML.
+
+If you installed Qt Designer separately from Qt, CLion might not detect it and will open the .ui files in the editor. In this case, do the following to open them in Qt Designer:
+
+Go to Settings | Editor | File Types.
+
+Select Qt UI Designer Form from the Recognized File Types list, and delete the associated file extension:
+
+Select Files opened in associated applications and add the .ui extension:
+
+Cick Reassign Wildcard.
+
+Click Apply and close the dialog.
+
+Next time you double-click a .ui file in the Project tree, it will be opened in Qt Designer.
+
+Creating a CMake-based Qt project
+
+CLion provides two project templates for Qt: Qt Console Executable and Qt Widgets Executable.
+
+Call File | New Project and select the project type in the left-hand pane. Specify the location, language standard, and Qt version. You can also provide the path to be used in CMAKE_PREFIX_PATH. Click Create when ready.
+
+CLion will generate a ready-to-go stub project with CMakeLists.txt filled in automatically, including the CMAKE_PREFIX_PATH variable:
+
+Qt UI class templates
+
+You can quickly create a Qt class with the corresponding .ui, .cpp, and .h files.
+
+In the Project view, select New from the context menu or press Alt+Insert. Choose Qt UI Class:
+
+In the dialog that opens, fill in the class name and configure the following settings:
+
+Filename base - specify the name for the .ui/.cpp/.h files to be generated.
+
+Parent class - select QWidget, QMainWindow, QDialog, or a custom parent class.
+
+Namespace - specify the enclosing namespace if required.
+
+Add to targets - set this checkbox to automatically add the new files to the list of sources for the selected target(s).
+
+CLion will generate the .ui, .cpp, and .h files following the templates defined in Settings | Editor | File and Code Templates: Qt Designer Form, Qt Class, and Qt Class Header, respectively. If required, you can adjust these templates for your needs.
+
+Qt-specific code insight
+
+CLion provides code completion for Qt signals and slots, filtering the suggestion list to show only the corresponding members:
+
+Completion works for the SIGNAL() and SLOT() macros as well:
+
+CLion's auto-import supports Qt-style header files, offering the shortest possible #include:
+
+Also, CLion integrates with clazy, a Qt-oriented static code analyzer. You can configure the severity and level of clazy checks in Settings | Editor | Inspections | C/C++ | Static Analysis Tools | Clazy:
+
+QtCreator keymap
+
+CLion bundles the QtCreator keymap. You can switch to it in Settings | Keymap or by calling View | Quick Switch Scheme from the main menu (Ctrl+`):
+
+Troubleshooting
+
+If you get the Process finished with exit code -1073741515 (0xC0000135) error message when running on MinGW, the issue might relate to Qt deployment on Windows: dynamic libraries and Qt plugins must be found from the directory of the running binary. Try one of the workarounds described below.
+
+Option 1
+
+Add the path to bin under the MinGW directory in the Qt installation (for example, C:\Qt\5.15.1\mingw81_64\bin) to the system PATH or in the Environment variables field of the configuration settings.
+
+If this doesn't solve the issue for your project, try Option 2.
+
+Option 2
+
+Copy the .dll-s located in bin under the MinGW directory in the Qt installation to your projectâs generation folder, which is cmake-build-debug or cmake-build-release by default.
+
+The libraries you will most likely need are libstdc++-6.dll, Qt5Widgets.dll, Qt5Gui.dll, and Qt5Core.dll, but your setup might require other libraries as well.
+
+In the settings of the configuration you use for running, set the QT_QPA_PLATFORM_PLUGIN_PATH environment variable to plugins\platforms under the MinGW directory:
+
+For more information, refer to Qt Plugins.
+
+Last modified: 26 May 2024

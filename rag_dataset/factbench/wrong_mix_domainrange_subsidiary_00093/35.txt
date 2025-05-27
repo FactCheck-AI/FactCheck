@@ -1,0 +1,1123 @@
+11.2. Manycast Mode
+
+Manycasting is an automatic discovery and configuration paradigm new to NTP Version 4. It is intended as a means for a client to survey the nearby network neighborhood to find cooperating servers, validate them using cryptographic means and evaluate their time values with respect to other servers that might be lurking in the vicinity. The intended result is that each client mobilizes associations with a given number of the "best" nearby servers, yet automatically reconfigures to sustain this number of servers should one or another fail.
+
+Manycasting can be used with either symmetric key or public key cryptography. Public key cryptography offers the best protection against compromised keys and is generally considered stronger. By default, either of these two means is required, but this can be overridden by the disable auth command.
+
+A manycast client association is configured using the manycastclient configuration command, which is similar to the server configuration command, but with a broadcast or multicast address. Depending on address family, the manycast client sends ordinary client mode messages, but with a broadcast address rather than a unicast address. It sends only if less than a given threshold of servers have been found and then only at the minimum feasible rate and minimum feasible time-to-live (TTL) hops. There can be as many manycast client associations as different broadcast addresses, each one serving as a template for a future unicast client/server association.
+
+Manycast servers configured with the manycastserver command listen on the specified broadcast address for manycast client messages. If a manycast server is in scope of the current TTL and is itself synchronized to a valid source and operating at a stratum level equal to or lower than the manycast client, it replies to the manycast client message with an ordinary unicast server message.
+
+The manycast client receiving this message mobilizes a preemptable client association according to the matching manycast client template, but only if cryptographically authenticated and the server stratum is less than or equal to the client stratum. The client runs the NTP mitigation algorithms, which act to demobilize all but a threshold number of associations according to stratum and synchronization distance. The surviving associations then continue in ordinary client/server mode.
+
+If for some reason the number of available servers falls below the threshold, the manycast client resumes sending broadcast messages. The polling strategy is designed to reduce as much as possible the volume of broadcast messages and the effects of implosion due to near-simultaneous arrival of manycast server messages. The strategy is determined by the tos and ttl configuration commands described below.
+
+It is possible and frequently useful to configure a host as both manycast client and manycast server. A number of hosts configured this way and sharing a common group address will automatically organize themselves in an optimum configuration based on stratum and synchronization distance.
+
+For example, consider an NTP subnet of two primary servers and several secondary servers and a number of dependent clients. All servers and clients have identical configuration files including both multicastclient and multicastserver commands using, for instance, multicast group address 239.1.1.1. Each primary server configuration file must include commands for the primary reference source such as a GPS receiver.
+
+The remaining configuration files for all secondary servers and clients have the same contents, except for the tos command, which is specific for each stratum level. For stratum 1 and stratum 2 servers, that command is not necessary. For stratum 3 and above servers the tos floor value is set to the intended stratum number. Thus, all stratum 3 configuration files use tos floor 3, all stratum 4 files use tos floor 4, and so forth.
+
+Once operations have stabilized, the primary servers will find the primary reference source and each other, because they both operate at the same stratum (1), but not with any secondary server or client, since these operate at a higher stratum. The secondary servers will find the servers at the same stratum level. If one of the primary servers loses its GPS receiver, it will continue to operate as a client and other clients will time out the corresponding association and re-associate accordingly.
+
+11.2.1. Manycast Options
+
+Following are options that can be used with manycast.
+
+tos [ ceiling ceiling | cohort {0 | 1} | floor floor | minclock minclock | minsane minsane ]
+
+This command affects the clock selection and clustering algorithms. It can be used to select the quality and quantity of peers used to synchronize the system clock and is most useful in manycast mode.
+
+The variables operate as follows:
+
+ceiling ceiling
+
+Servers with stratum at or above ceiling will be discarded if there are at least minclock peers remaining. This value defaults to 15, but can be changed to any number from 1 to 15.
+
+cohort 0 | 1
+
+This is a binary flag which enables (0) or disables (1) manycast server replies to manycast clients with the same stratum level. This is useful to reduce implosions where large numbers of clients with the same stratum level are present. The default is to enable these replies.
+
+floor floor
+
+Peers with strata below floor will be discarded if there are at least minclock peers remaining. This value defaults to 1, but can be changed to any number from 1 to 15.
+
+minclock minclock
+
+The clustering algorithm repeatedly casts out outlyer associations until no more than minclock associations remain. This value defaults to 3, but can be changed to any number from 1 to the number of configured sources.
+
+minsane minsane
+
+This is the minimum number of candidates available to the clock selection algorithm in order to produce one or more truechimers for the clustering algorithm. If fewer than this number are available, the clock is undisciplined and allowed to run free. The default is 1 for legacy purposes. However, according to principles of Byzantine agreement, minsane should be at least 4 in order to detect and discard a single falseticker.
+
+ttl hop...
+
+This command specifies a list of TTL values in increasing order. Up to 8 values can be specified. In manycast mode these values are used in turn in an expanding-ring search. The default is eight multiples of 32 starting at 31.
+
+11.7. NTP Authentication Support
+
+Authentication support allows the NTP client to verify that the server is in fact known and trusted and not an intruder intending accidentally or on purpose to masquerade as that server. The NTPv3 specification RFC-1305 defines a scheme which provides cryptographic authentication of received NTP packets. Originally, this was done using the Data Encryption Standard (DES) algorithm operating in Cipher Block Chaining (CBC) mode, commonly called DES-CBC. Subsequently, this was replaced by the RSA Message Digest 5 (MD5) algorithm using a private key, commonly called keyed-MD5. Either algorithm computes a message digest, or one-way hash, which can be used to verify the server has the correct private key and key identifier.
+
+NTPv4 retains the NTPv3 scheme, properly described as symmetric key cryptography, and, in addition, provides a new Autokey scheme based on public key cryptography. Public key cryptography is generally considered more secure than symmetric key cryptography, since the security is based on a private value that is generated by each host and never revealed. With the exception of the group key described later, all key distribution and management functions involve only public values, which considerably simplifies key distribution and storage. Public key management is based on X.509 certificates, which can be provided by commercial services or produced by utility programs in the OpenSSL software library or the included utilities.
+
+Though the algorithms for symmetric key cryptography are included in the NTPv4 distribution, public key cryptography requires the OpenSSL software library to be installed before running NTP. The minimum version required is SSL for OpenVMS V1.2.
+
+Authentication is configured separately for each association using the key or autokey subcommand on the peer, server, broadcast, and manycastclient configuration commands as described in Table 11.3. The authentication options described below specify the locations of the key files, if other than default, which symmetric keys are trusted and the interval between various operations, if other than default.
+
+Authentication is always enabled, although ineffective if not configured as described below. If an NTP packet arrives including a message authentication code (MAC), it is accepted only if it passes all cryptographic checks. The checks require correct key ID, key value and message digest. If the packet has been modified in any way or replayed by an intruder, it will fail one or more of these checks and be discarded. Furthermore, the Autokey scheme requires a preliminary protocol exchange to obtain the server certificate, verify its credentials and initialize the protocol
+
+The auth flag controls whether new associations or remote configuration commands require cryptographic authentication. This flag can be set or reset by the enable and disable commands and also by remote configuration commands sent by an ntpdc program running on another machine. If this flag is enabled, which is the default case, new broadcast/manycast client and symmetric passive associations and remote configuration commands must be cryptographically authenticated using either symmetric key or public key cryptography. If this flag is disabled, these operations are effective even if not cryptographically authenticated. It should be understood that operating with the auth flag disabled invites a significant vulnerability where a rogue hacker can masquerade as a truechimer and seriously disrupt system timekeeping. Note that this flag has no purpose other than to allow or disallow a new association in response to new broadcast and symmetric active messages and remote configuration commands and, in particular, the flag has no effect on the authentication process itself.
+
+11.7.1. Symmetric Key Cryptography
+
+The original RFC-1305 specification allows any one of possibly 65,534 keys, each distinguished by a 32-bit key identifier, to authenticate an association. The servers and clients involved must agree on the key and key identifier to authenticate NTP packets. Keys and related information are specified in a key file, which must be distributed and stored using secure means beyond the scope of the NTP protocol itself. Besides the keys used for ordinary NTP associations, additional keys can be used as passwords for the ntpq and ntpdc utility programs. Ordinarily, the keys file is generated by the ntp_keygen program.
+
+When the NTP server is first started, it reads the key file specified in the keys configuration command and installs the keys in the key cache. However, individual keys must be activated with the trustedkey command before use. This allows, for instance, the installation of possibly several batches of keys and then activating or deactivating each batch remotely using ntpdc. This also provides a revocation capability that can be used if a key becomes compromised. The requestkey command selects the key used as the password for the ntpdc utility, while the controlkey command selects the key used as the password for the ntpq utility.
+
+11.7.2. Public Key Cryptography
+
+NTPv4 supports the original NTPv3 symmetric key scheme described in RFC-1305 and in addition the Autokey protocol, which is based on public key cryptography. The Autokey Version 2 protocol described in Section 11.7.2.1 verifies packet integrity using MD5 message digests and verifies the source with digital signatures and any of several digest/signature schemes. Optional identity schemes described in Section 11.7.2.4 and based on cryptographic challenge/response algorithms are also available. Using these schemes provides strong security against replay with or without modification, spoofing, masquerade and most forms of clogging attacks.
+
+11.7.2.1. Autokey Protocol
+
+What makes Autokey special is the way in which these algorithms are used to deflect intruder attacks while maintaining the integrity and accuracy of the time synchronization function. The detailed design is complicated by the need to provisionally authenticate under conditions when reliable time values have not yet been acquired. Only when the server identities have been confirmed, signatures verified and accurate time values obtained does the Autokey protocol declare success.
+
+The NTP message format has been augmented to include one or more extension fields between the original NTP header and the message authenticator code (MAC). The Autokey protocol exchanges cryptographic values in a manner designed to resist clogging and replay attacks. It uses timestamped digital signatures to sign a session key and then a pseudo-random sequence to bind each session key to the preceding one and eventually to the signature. In this way the expensive signature computations are greatly reduced and removed from the critical code path for constructing accurate time values.
+
+Each session key is hashed from the IPv4 or IPv6 source and destination addresses and key identifier, which are public values, and a cookie that can be a public value or hashed from a private value depending on the mode. The pseudo-random sequence is generated by repeated hashes of these values and saved in a key list. The server uses the key list in reverse order, so as a practical matter the next session key cannot be predicted from the previous one, but the client can verify it using the same hash as the server.
+
+There are three Autokey protocol variants in NTP, one for client/server mode, another for broadcast/multicast mode, and a third for symmetric active/passive mode. For instance, in client/server mode the server keeps no state for each client, but uses a fast algorithm and a private value to regenerate the cookie upon arrival of a client message. A client sends its designated public key to the server, which generates the cookie and sends it to the client encrypted with this key. The client decrypts the cookie using its private key and generates the key list. Session keys from this list are used to generate message authentication codes (MAC) that are checked by the server for the request and by the client for the response.
+
+11.7.2.2. Certificate Trails
+
+A timestamped digital signature scheme provides secure server authentication, but it does not provide protection against masquerade, unless the server identity is verified by other means. The PKI security model assumes each client is able to verify the certificate trail to a trusted certificate authority (TA), where each ascendent server must prove identity to the immediately descendant client by independent means, such as a credit card number or PIN. While Autokey supports this model by default, in a hierarchical ad-hoc network, especially with server discovery schemes like Manycast, proving identity at each rest stop on the trail must be an intrinsic capability of Autokey itself.
+
+Our model is that every member of a closed group, such as might be operated by a timestamping service, be in possession of a secret group key. This could take the form of a private certificate or one or another identification schemes described in the literature and below. Certificate trails and identification schemes are at the heart of the NTP security model preventing masquerade and middleman attacks. The Autokey protocol operates to hike the trails and run the identity schemes.
+
+An NTP secure group consists of a number of hosts dynamically assembled as a forest with roots the trusted hosts (TH) at the lowest stratum of the group. The TH do not have to be, but often are, primary (stratum 1) servers. A TA, not necessarily a group host, generates private and public identity values and deploys selected values to the group members using secure means.
+
+The Alice group consists of TH Alice, which is also the TA, and Carol. Dependent servers Brenda and Denise have configured Alice and Carol, respectively, as their time sources. Stratum 3 server Eileen has configured both Brenda and Denise as her time sources. The certificates are identified by the subject and signed by the issuer. Note that the group key has previously been generated by Alice and deployed by secure means to all group members.
+
+The steps in hiking the certificate trails and verifying identity are as follows.
+
+At startup each host loads its self-signed certificate from a local file. By convention the lowest stratum server certificates are marked trusted in an X.509 extension field. As Alice and Carol have trusted certificates, they need do nothing further to validate the time. It could be that the TH depends on servers in other groups; this scenario is discussed later.
+
+Brenda, Denise and Eileen start with the Autokey Parameter Exchange, which establishes the server name, signature scheme and identity scheme for each configured server. They continue with the Certificate Exchange, which loads server certificates recursively until a self-signed trusted certificate is found. Brenda and Denise immediately find self-signed trusted certificates for Alice, but Eileen will loop because neither Brenda nor Denise has its own certificates signed by either Alice or Carol.
+
+Brenda and Denise continue with the Identity Exchange, which uses one of the identity schemes described below to verify each has the group key previously deployed by Alice. If this succeeds, each continues in step 4.
+
+Brenda and Denise present their certificates to Alice for signature. If this succeeds, either or both Brenda and Denise can now provide these signed certificates to Eileen, which may be looping in step 2. When Eileen receives them, she can now follow the trail in either Brenda or Denise to the trusted certificates for Alice and Carol. Once this is done, Eileen can execute the Identity Exchange and Signature Exchange just as Brenda and Denise.
+
+11.7.2.3. Secure Groups
+
+The NTP security model is based on multiple overlapping security compartments or groups. The preceding example illustrates how groups can be used to construct closed compartments, depending on how the identity credentials are deployed. The rules can be summarized as follows:
+
+Each host holds a private group key generated by a trusted authority (TA).
+
+A host is trusted if it operates at the lowest stratum in the group and has a trusted, self-signed certificate.
+
+A client verifies group membership if the server has the same key and has an unbroken certificate trail to a trusted host.
+
+Each compartment is assigned a group key by the TA, which is then deployed to all group members by secure means. For retrieval purposes the name of the group key file is the name of a TH.
+
+For various reasons it may be convenient for a server to hold keys for more than one group. There are three secure groups: Alice, Helen, and Carol.
+
+Hosts A, B, C and D belong to the Alice group, hosts R, S to the Helen group and hosts X, Y and Z to the Carol group. Hosts A, B, R and X hold trusted certificates, while the remaining hosts hold standard certificates. Hosts A, B, C, D and X hold the group key for Alice; hosts R, S and X hold the group key for Helen; hosts X, Y and Z hold the group key for Carol.
+
+The name of the group key file in Carol is X, while the name of that file in Helen is R, since there is no ambiguity in server selection. Alice is a special case, as the name of the group key depends on which server is chosen by the selection algorithm. By convention, both A and B generate individual group keys and distribute them to all group hosts by secure means. Then, it doesn't matter whether the certificate trail lands on A or B. Note that only X needs the group keys for Alice and Helen; Carol and her dependents need only her group key.
+
+In most identity schemes there are two kinds of group keys, server and client. The intent of the design is to provide security separation, so that servers cannot masquerade as TAs and clients cannot masquerade as servers. Assume for example that Alice and Helen belong to national standards laboratories and their group keys are used to confirm identity between members of each group. Carol is a prominent corporation receiving standards products via broadcast satellite and requiring cryptographic authentication.
+
+Perhaps under contract, trusted host X belonging to the Carol group rents client keys for both Alice and Helen and has server keys for Carol. Hosts Y and Z have only client keys for Carol. The Autokey protocol operates as previously described for each group separately while preserving security separation. Host X can prove identity in Carol to clients Y and Z, but cannot prove to anybody that she can sign certificates for either Alice or Helen.
+
+Ordinarily, it would not be desirable to reveal the group key in server keys and forbidden to reveal it in client keys. This can be avoided using the MV identity scheme described later. It allows the same broadcast transmission to be authenticated by more than one key, one used internally by the laboratories (Alice and/or Helen) and the the other handed out to clients like Carol. In the MV scheme these keys can be separately activated upon subscription and deactivated if the subscriber fails to pay the bill.
+
+The following example shows operational details where more than one group is involved, in this case Carol and Alice. As in the previous example, Brenda has configured Alice as her time source and Denise has configured Carol as her time source. Alice and Carol have server keys; Brenda and Denise have server and client keys only for their respective groups. Eileen has client keys for both Alice and Carol. The protocol operates as previously described to verify Alice to Brenda and Carol to Denise.
+
+The interesting case is Eileen, who may verify identity via Brenda or Denise or both. To do that she uses the client keys of both Alice and Carol. But, Eileen doesn't know which of the two keys to use until hiking the certificate trail to find the trusted certificate of either Alice or Carol and then loading the associated local key. This scenario can of course become even more complex as the number of servers and depth of the tree increase. The bottom line is that every host must have the client keys for all the lowest-stratum trusted hosts it is ever likely to find.
+
+11.7.2.4. Identity Schemes
+
+While the identity scheme described in RFC-2875 is based on a ubiquitous Diffie-Hellman infrastructure, it is expensive to generate and use when compared to others described here. There are five schemes now implemented in Autokey to prove identity: (1) private certificates (PC), (2) trusted certificates (TC), (3) a modified Schnorr algorithm (IFF aka Identify Friendly or Foe), (4) a modified Guillou-Quisquater algorithm (GQ), and (5) a modified Mu-Varadharajan algorithm (MV).
+
+For more information, see Section 11.7.4.
+
+11.7.3. Naming and Addressing
+
+Note that Autokey does not use DNS to resolve addresses, because DNS cannot be completely trusted until the name servers have synchronized clocks. The cryptographic name used by Autokey to bind the host identity credentials and cryptographic values must be independent of interface, network and any other naming convention. The name appears in the host certificate in either or both the subject and issuer fields, so protection against DNS compromise is essential.
+
+By convention, the name of an Autokey host is the name returned by the gethostname() call. By the system design model, there are no provisions to allow alternate names or aliases. However, this is not to say that DNS aliases, different names for each interface, etc., are constrained in any way.
+
+Also note that Autokey verifies authenticity using the host name, network address and public keys, all of which are bound together by the protocol specifically to deflect masquerade attacks. For this reason Autokey includes the source and destination IP addresses in message digest computations and so the same addresses must be available at both the server and client. For this reason operation with network address translation schemes is not possible. This reflects the intended robust security model where government and corporate NTP servers are operated outside firewall perimeters.
+
+11.7.4. Operation
+
+A specific combination of authentication scheme (none, symmetric key, public key) and identity scheme is called a cryptotype, although not all combinations are compatible. There may be management configurations where the clients, servers, and peers may not all support the same cryptotypes. A secure NTPv4 subnet can be configured in many ways while keeping in mind the principles explained above and in this section. Note, however, that some cryptotype combinations may successfully interoperate with each other, but may not represent good security practice.
+
+The cryptotype of an association is determined at the time of mobilization, either at configuration time or sometime later when a message of appropriate cryptotype arrives. When mobilized by a server or peer configuration command and no key or autokey subcommands are present, the association is not authenticated; if the key subcommand is present, the association is authenticated using the symmetric key ID specified; if the autokey subcommand is present, the association is authenticated using Autokey.
+
+When multiple identity schemes are supported in the Autokey protocol, the first message exchange determines which one is used, called the cryptotype. The client request message contains bits corresponding to which schemes it has available. The server response message contains bits corresponding to which schemes it has available. Both server and client match the received bits with their own and select a common scheme.
+
+Following the principle that time is a public value, a server responds to any client packet that matches its cryptotype capabilities. Thus, a server receiving an unauthenticated packet will respond with an unauthenticated packet, while the same server receiving a packet of a cryptotype it supports will respond with packets of that cryptotype. However, unconfigured broadcast or manycast client associations or symmetric passive associations will not be mobilized unless the server supports a cryptotype compatible with the first packet received. By default, unauthenticated associations will not be mobilized unless overridden in a decidedly dangerous way.
+
+Some examples may help to reduce confusion. Client Alice has no specific cryptotype selected. Server Bob has both a symmetric key file and minimal Autokey files. Alice's unauthenticated messages arrive at Bob, who replies with unauthenticated messages. Cathy has a copy of Bob's symmetric key file and has selected key ID 4 in messages to Bob. Bob verifies the message with his key ID 4. If it is the same key and the message is verified, Bob sends Cathy a reply authenticated with that key. If verification fails, Bob sends Cathy a thing called a crypto-NAK, which tells her something broke. She can see the debris using the ntpq program.
+
+Denise has rolled her own host key and certificate. She also uses one of the identity schemes that Bob uses. She sends the first Autokey message to Bob and they both dance the protocol authentication and identity steps. If all turns out well, Denise and Bob continue as described above.
+
+It should be clear from the above that Bob can support all the girls at the same time, as long as he has compatible authentication and identity credentials. Now, Bob can act just like the girls in his own choice of servers; he can run multiple configured associations with multiple different servers (or the same server, although that might not be useful). But, wise security policy might preclude some cryptotype combinations; for instance, running an identity scheme with one server and no authentication with another might not be wise.
+
+11.7.5. Key Management
+
+The cryptographic values used by the Autokey protocol are incorporated as a set of files generated by the ntp_keygen utility program, including symmetric key, host key and public certificate files, as well as sign key, identity parameters and leapseconds files. Alternatively, host and sign keys and certificate files can be generated by the OpenSSL utilities, and certificates can be imported from public certificate authorities. Note that symmetric keys are necessary for the ntpq and ntpdc utility programs. The remaining files are necessary only for the Autokey protocol.
+
+Certificates imported from OpenSSL or public certificate authorities have certain limitations. The certificate should be in ASN.1 syntax, X.509 Version 3 format and encoded in PEM, which is the same format used by OpenSSL. The overall length of the certificate encoded in ASN.1 must not exceed 1024 bytes. The subject distinguished name field (CN) is the fully qualified name of the host on which it is used; the remaining subject fields are ignored. The certificate extension fields must not contain either a subject key identifier or a issuer key identifier field; however, an extended key usage field for a trusted host must contain the value trustRoot. Other extension fields are ignored.
+
+11.7.6. Authentication Statements and Commands
+
+Table 11.3 describes describes authentication statements and commands.
+
+11.7.7. Error Code
+
+Errors can occur due to mismatched configurations, unexpected restarts, expired certificates, and unfriendly people. In most cases the protocol state machine recovers automatically by retransmission, timeout and restart, where necessary. Some errors are due to mismatched keys, digest schemes or identity schemes and must be corrected by installing the correct media and/or correcting the configuration file. One of the most common errors is expired certificates, which must be regenerated and signed at least once per year using the tcpip$ntp_keygen program.
+
+The following error codes are reported via the NTP control and monitoring protocol trap mechanism.
+
+Error
+
+Description
+
+11.7.8. Leapseconds Table
+
+The NIST provides a file documenting the epoch for all historic occasions of leap second insertion since 1972. The leapsecond table shows each epoch of insertion along with the offset of International Atomic Time (TAI) with respect to Coordinated Universal Time (UTC), as disseminated by NTP. The table can be obtained directly from NIST national time servers.
+
+While not strictly a security function, the Autokey protocol provides a means to securely retrieve the leapsecond table from a server or peer. Servers load the leapsecond table directly from the file specified in the crypto command, with default ntpkey_leap, while clients can obtain the table indirectly from the servers using the Autokey protocol. Once loaded, the table can be provided on request to other clients and servers.
+
+11.7.9. Configuring Autokey
+
+This section provides a step-by-step guide for setting up NTP Autokey Authentication. There are three Identity Schemes available in the NTP Reference Implementation: IFF, GQ, and MV. Although examples of server parameter generation and client parameter installation are provided for all available Identity Schemes, it is not necessary to use all of them.
+
+Note
+
+Enforcement of NTP Authentication (with restrict statements) is beyond the scope of this topic.
+
+Note
+
+Broadcast and Multicast Autokey are configured on the server side. Unicast Autokey is configured on the client side.
+
+11.7.9.1. Client/Server Setup Procedure
+
+Note
+
+In each of the following examples, the server is "Alice" and the client is "Bob". You can use the default sys$specific:[tcpip$ntp] directory to store the keys or create a new directory.
+
+The servers that are designated to function as trusted roots must be at the root of the hierarchy of time servers. That is, they must not themselves be the client of another NTP server in which there is no Autokey configuration setup. That does not mean that all trusted roots must be stratum 1 servers. If on an isolated network for example with no external reference clock, you may designate a server as the root time source by enabling the following commands in TCPIP$NTP.CONF:
+
+server 127.127.1.0 prefer fudge 127.127.1.0 stratum 0
+
+In this particular example the stratum is set to 0, but it could be set to any low stratum value.
+
+Note
+
+The -"T" option for ntp_keygen should only be used by a Trusted Authority (e.g. time server) for an NTP Trust Group.
+
+11.7.9.1.1. Using The Default TC Identity Scheme (Method 1)
+
+The following steps describe how the TC (trusted certificate) scheme generates keys and a trusted certificate on the trusted server(s) and the client key/certificate on the client(s).
+
+On both Alice and Bob, add two lines to TCPIP$NTP.CONF:
+
+keysdir SYS$SPECIFIC:[TCPIP$NTP] crypto
+
+On Bob, add the server line for Alice to Bob's TCPIP$NTP.CONF:
+
+server alice autokey
+
+On Alice, generate the keys and trusted certificate:
+
+ALICE>ntp_keygen -"T"
+
+On Bob, generate the keys and non-trusted certificate:
+
+BOB>ntp_keygen
+
+Start NTP on Alice and Bob:
+
+ALICE>@sys$startup:tcpip$ntp_startup BOB>@sys$startup:tcpip$ntp_startup
+
+11.7.9.1.2. Using The Default TC Identity Scheme (Method 2)
+
+Perform the following steps:
+
+On Alice, add two lines to TCPIP$NTP.CONF:
+
+keysdir SYS$SPECIFIC:[TCPIP$NTP] crypto pw littlesecret
+
+On Bob, add three lines to TCPIP$NTP.CONF:
+
+keysdir SYS$SPECIFIC:[TCPIP$NTP] crypto pw bigsecret server alice autokey
+
+On Alice, generate the keys and trusted certificate using passwords:
+
+ALICE>ntp_keygen -"T" -p littlesecret -q bigsecret
+
+On Bob, generate the keys and non-trusted certificate using passwords:
+
+BOB>ntp_keygen -q bigsecret
+
+Start NTP on Alice and Bob:
+
+ALICE>@sys$startup:tcpip$ntp_startup BOB>@sys$startup:tcpip$ntp_startup
+
+11.7.9.1.3. Using The PC Identity Scheme
+
+The following steps describe how the PC Identity Scheme generates keys and a trusted certificate on the server. The PC scheme supports only one trusted host.
+
+On both Alice and Bob, add two lines to TCPIP$NTP.CONF:
+
+keysdir SYS$SPECIFIC:[TCPIP$NTP] crypto pw littlesecret
+
+On Bob, add the server line for Alice to Bob's TCPIP$NTP.CONF:
+
+server alice autokey
+
+On Alice, generate the keys and certificate:
+
+ALICE>ntp_keygen -"P" -p littlesecret
+
+Copy the certificate (tcpip$ntpkey_rsa-md5cert_alice.timestamp) and the key (tcpip$ntpkey_rsakey_alice.timestamp) from Alice to Bob's keysdir.
+
+On Bob, create symbolic links to the files:
+
+BOB>ntp_keygen -"P" -l tcpip$ntpkey_rsakey_alice.timestamp - _BOB> tcpip$ntpkey_rsa-md5cert_alice.timestamp
+
+Start NTP on Alice and Bob:
+
+ALICE>@sys$startup:tcpip$ntp_startup BOB>@sys$startup:tcpip$ntp_startup
+
+11.7.9.1.4. Using The IFF Scheme
+
+The IFF parameter generation process produces a server key that should not be distributed to other members of the NTP Trust Group. The IFF Group Key is exported to each client and may be distributed through encrypted email or even by pasting them across terminal windows.
+
+To use the IFF scheme, perform the following steps:
+
+On both Alice and Bob, add two lines to TCPIP$NTP.CONF:
+
+keysdir SYS$SPECIFIC:[TCPIP$NTP] crypto pw littlesecret
+
+On Bob, add the server line for Alice to Bob's TCPIP$NTP.CONF:
+
+server alice autokey
+
+On Alice, create the trusted public key and identity scheme parameter file. Use a password with at least four characters.
+
+ALICE>ntp_keygen -"T" -"I" -p littlesecret
+
+On Bob, generate the client parameters using the server password:
+
+BOB>ntp_keygen -"H" -p littlesecret
+
+Copy the tcpip$ntpkey_iffpar_alice.timestamp from Alice to Bob's keysdir.
+
+On Bob, create a symbolic link to the file:
+
+BOB>ntp_keygen -"I" -l tcpip$ntpkey_iffpar_alice_tcpip_zko_h.3344261784
+
+Start NTP on Alice and Bob:
+
+ALICE>@sys$startup:tcpip$ntp_startup BOB>@sys$startup:tcpip$ntp_startup
+
+11.7.9.1.5. Using The Alternate IFF Scheme
+
+To use the alternate IFF scheme, perform the following steps:
+
+On Alice, add two lines to TCPIP$NTP.CONF:
+
+keysdir SYS$SPECIFIC:[TCPIP$NTP] crypto pw littlesecret
+
+On Bob, add three lines to TCPIP$NTP.CONF:
+
+keysdir SYS$SPECIFIC:[TCPIP$NTP] crypto pw bigsecret server alice autokey
+
+On Alice, create the trusted public key and identity scheme parameter file. Use a password with at least four characters.
+
+ALICE>ntp_keygen -"T" -"I" -p littlesecret
+
+On Bob, generate the client parameters using the client password:
+
+BOB>ntp_keygen -"H" -p bigsecret
+
+On Alice, extract the client key specifying the server password and the client password:
+
+ALICE>ntp_keygen -e -q littlesecret -p bigsecret
+
+The output displays on the screen.
+
+On Bob, create a file with the name specified in the screen output from the previous step, the file name after "Writing new IFF key." Paste the output from the previous step into the file. Following is an example of the final file on Bob (the first two lines starting with # are comments but required for proper operation):
+
+BOB> typ SYS$SPECIFIC:[TCPIP$NTP]TCPIP$NTPKEY_IFFKEY_ALICE.3344272304 # SYS$SPECIFIC:[TCPIP$NTP]TCPIP$NTPKEY_IFFKEY_ALICE.3344272304 # Thu Dec 22 15:32:10 2005 -----BEGIN DSA PRIVATE KEY----- Proc-Type: 4,ENCRYPTED DEK-Info: DES-CBC,E03763213C218BDC O9xAmWUEfJzCYEO6Zgn1KWm67M9NKlc/LzqHH+1K/kWQ/YXudUIf1ugdj+Umpphy R5UyrpVz8kWms4M/VsPZBvMgP2SIXPyYO5ANz0WlMYbk9Myd8Xfc/6LEhYMEhxeM Mjo95aUuWq/+YtlEAzrVvWjhQnHvNpHJtQxNw/7L6/ftVOGT0MuB1e9jJoaGo+lp yBSbhUYmwiyZfJUYvteXfOME/XH3rEx3h8/8k88zL1qACetHxeFmUMIoQq7lUqjg CeKMAidxgUWlmhixYVcUtvuD0ZNYqQ4jjUFfDrlgfAPmeHNLndehEStcQbB3ItLC -----END DSA PRIVATE KEY-----
+
+Create a symbolic link to the client key:
+
+BOB>ntp_keygen -"I" -l tcpip$ntpkey_iffkey_alice.3344272304
+
+Start NTP on Alice and Bob:
+
+ALICE>@sys$startup:tcpip$ntp_startup BOB>@sys$startup:tcpip$ntp_startup
+
+11.7.9.1.6. Using the GQ scheme
+
+The GQ parameter generation process produces a key file that is shared between all members of an NTP Trust Group.
+
+Perform the following steps to use the GQ scheme:
+
+On both Alice and Bob, add two lines to TCPIP$NTdP.CONF:
+
+keysdir SYS$SPECIFIC:[TCPIP$NTP] crypto pw littlesecret
+
+On Bob, add the server line for Alice to Bob's TCPIP$NTP.CONF:
+
+server alice autokey
+
+On Alice, generate the GQ parameters:
+
+ALICE>ntp_keygen -"T" -"G" -p littlesecret
+
+On Bob, generate the client parameters using the server password:
+
+BOB>ntp_keygen -"H" -p littlesecret
+
+Copy the GQ group key tcpip$ntpkey_gqpar_alice.timestamp from Alice to Bob's keysdir.
+
+On Bob, create a symbolic link to the file, using the -r option to specify the server name:
+
+BOB>ntp_keygen -"G" -r alice -l tcpip$ntpkey_gqpar_alice.timestamp
+
+Start NTP on Alice and Bob:
+
+ALICE>@sys$startup:tcpip$ntp_startup BOB>@sys$startup:tcpip$ntp_startup
+
+11.7.9.1.7. Using the MV scheme
+
+The MV parameter generation process produces a server key which must not be distributed to other members of the NTP Trust Group, and a number of client keys.
+
+Perform the following steps to use the MV scheme:
+
+On both Alice and Bob, add two lines to TCPIP$NTP.CONF:
+
+keysdir SYS$SPECIFIC:[TCPIP$NTP] crypto pw littlesecret
+
+On Bob, add the server line for Alice to Bob's TCPIP$NTP.CONF:
+
+server alice autokey
+
+On Alice, generate the MV parameters. The MV parameter generation process produces a server key and a number of client keys. When choosing the number of client keys avoid factors of 512 and do not exceed 30. The following command generates four keys (N-1, where N is 5):
+
+ALICE>ntp_keygen -"T" -"V" 5 -p littlesecret
+
+On Bob, generate the client parameters using the server password:
+
+BOB>ntp_keygen -"H" -p littlesecret
+
+Copy any one of the MV client keys tcpip$ntpkey_mvkeyN_alice.timestamp from Alice to Bob's keysdir.
+
+On Bob, create a symbolic link to the file. Specify 1 after the -"V" option so it does not complain that the -"V" option requires a value. The 1 will be ignored.
+
+BOB>ntp_keygen -"V" 1 -l tcpip$ntpkey_mvkeyN_alice.timestamp
+
+Start NTP on Alice and Bob:
+
+ALICE>@sys$startup:tcpip$ntp_startup BOB>@sys$startup:tcpip$ntp_startup
+
+11.7.9.1.8. Broadcast and Multicast Autokey
+
+Append autokey to the broadcast line in tcpip$ntp.conf for the broadcast/multicast address that you want to authenticate with Autokey:
+
+broadcast my.broadcast.or.multicast.address autokey
+
+The assigned NTP Multicast address is 224.0.1.1, but other valid multicast addresses may be used.
+
+11.7.9.1.9. Monitoring Authentication Status
+
+Use ntpq -c assoc to check the authentication status of ntp associations.
+
+Authenticated associations display ok in the auth column:
+
+ind assID status conf reach auth condition last_event cnt =========================================================== 1 60 9614 yes yes ok sys.peer reachable 1
+
+Use ntpq -c readvar to view the Autokey certificates help by the NTP Server.
+
+11.9. Generating Public and Private Keys with ntp_keygen
+
+This program generates cryptographic data files used by the NTPv4 authentication and identification schemes. It generates MD5 key files used in symmetric key cryptography. In addition, if the OpenSSL software library has been installed, it generates keys, certificate, and identity files used in public key cryptography. These files are used for cookie encryption, digital signature and challenge/response identification algorithms compatible with the Internet standard security infrastructure.
+
+By default, files are not encrypted by ntp_keygen. The -p password option specifies the write password and -q password option the read password for previously encrypted files. If an encrypted file is read successfully and no write password is specified, the read password is used as the write password by default.
+
+The NTP Server configuration command crypto pw password specifies the read password for previously encrypted files. The server exits if the password is missing or incorrect. For convenience, if a file has been previously encrypted, the default read password is the name of the host running the program. If the previous write password is specified as the host name, these files can be read by that host with no explicit password.
+
+All files are in PEM-encoded printable ASCII format, so they can be embedded as MIME attachments in mail to other sites and certificate authorities. File names begin with the prefix tcpip$ntpkey_ and end with the postfix _hostname.filestamp, where hostname is usually the string returned by the gethostname() routine, and filestamp is the NTP seconds when the file was generated, in decimal digits. This both guarantees uniqueness and simplifies maintenance procedures, because all files can be quickly removed by the delete tcpip$ntpkey* command or all files generated at a specific time can be removed by the delete *.filestamp command. To further reduce the risk of misconfiguration, the first two lines of a file contain the file name and generation date and time as comments.
+
+All files are installed by default in the keys directory sys$specific:[tcpip$ntp]. The actual location of the keys directory and each file can be overridden by configuration commands, but this is not recommended. Normally, the files for each host are generated by that host and used only by that host, although exceptions exist as noted later on this page. Files are given read (R), write (W), and delete (D) access for system (S) and owner (O).
+
+The recommended practice is to keep the file name extensions when installing a file and to install a symbolic link from the generic names specified elsewhere on this page to the generated files. This allows new file generations to be activated simply by changing the link. If a link is present, NTP Server follows it to the file name to extract the filestamp. If a link is not present, NTP Server extracts the filestamp from the file itself. This allows clients to verify that the file and generation times are always current. The ntp_keygen program uses the same extension for all files generated at one time, so each generation is distinct and can be readily recognized in monitoring data.
+
+11.9.1. Synopsis
+
+ntp_keygen [ -deGgHIMPT ] [ -c [RSA-MD2 | RSA-MD5 | RSA-SHA | RSA-SHA1 | RSA-MDC2 | RSA-RIPEMD160 | DSA-SHA | DSA-SHA1 ] ] [ -i name ] [ -l file] [ -p password ] [ -q password] [ -m modulus] [-r hostname] [ -S [ RSA | DSA ] ] [ -s name ] [ -v nkeys ] [ -V nkeys ]
+
+11.9.2. Running ntp_keygen
+
+Note
+
+To use ntp_keygen, you must have system management privileges.
+
+When run for the first time, or if all tcpip$ntpkey files have been removed, the program generates a RSA host key file and matching RSA-MD5 certificate file, which is all that is necessary in many cases. The program also generates symbolic links from the generic names to the respective files. If run again, the program uses the same host key file, but generates a new certificate file and link.
+
+The host key is used to encrypt the cookie when required and so must be RSA type. By default, the host key is also the sign key used to encrypt signatures. When necessary, a different sign key can be specified and this can be either RSA or DSA type. By default, the message digest type is MD5, but any combination of sign key type and message digest type supported by the OpenSSL library can be specified, including those using the MD2, MD5, SHA, SHA1, MDC2 and RIPE160 message digest algorithms. However, the scheme specified in the certificate must be compatible with the sign key. Certificates using any digest algorithm are compatible with RSA sign keys; however, only SHA and SHA1 certificates are compatible with DSA sign keys.
+
+Private/public key files and certificates are compatible with other OpenSSL applications and very likely other libraries as well. Certificates or certificate requests derived from them should be compatible with extant industry practice, although some users might find the interpretation of X509v3 extension fields somewhat liberal. However, the identification parameter files, although encoded as the other files, are probably not compatible with anything other than Autokey.
+
+Installing the keys with the default protections might not work in NFS-mounted shared file systems, as NFS clients may not be able to write to the shared keys directory. In this case, NFS clients can specify the files in another directory using the keysdir command. There is no need for one client to read the keys and certificates of other clients or servers, as these data are obtained automatically by the Autokey protocol.
+
+Ordinarily, cryptographic files are generated by the host that uses them, but it is possible for a trusted agent (TA) to generate these files for other hosts; however, in such cases files should always be encrypted. The subject name and trusted name default to the hostname of the host generating the files, but can be changed b y command line options. It is convenient to designate the owner name and trusted name as the subject and issuer fields, respectively, of the certificate. The owner name is also used for the host and sign key files, while the trusted name is used for the identity files.
+
+11.9.3. Random Seed File
+
+All cryptographically sound key generation schemes must have means to randomize the entropy seed used to initialize the internal pseudo-random number generator used by the library routines. The OpenSSL library uses a designated random seed file for this purpose. The file must be available when starting NTP and the ntp_keygen program. If a site supports OpenSSL, it is very likely that means to do this are already available.
+
+It is important to understand that entropy must be evolved for each generation, for otherwise the random number sequence would be predictable. Various means dependent on external events, such as keystroke intervals, can be used to do this and some systems have built-in entropy sources. Suitable means are described in the OpenSSL software documentation, but are outside the scope of this discussion.
+
+The entropy seed used by the OpenSSL library is contained in a file, usually called .rnd, which must be available when starting NTP or the ntp_keygen program. The NTP Server will first look for the file using the path specified by the randfile subcommand of the crypto configuration command. If not specified in this way, or when starting the ntp_keygen program, the OpenSSL library will look for the file in the user home directory. If not found there, the OpenSSL library will look in the location specified by the keysdir configuration command that defaults to sys$specific:[tcpip$ntp]. If the file is not available or cannot be written, NTP writes a message to the NTP log file and then exits.
+
+11.9.4. Trusted Hosts and Groups
+
+Each cryptographic configuration involves selection of a signature scheme and identification scheme, called a cryptotype, as described in Table 11.3. The default cryptotype uses RSA encryption, MD5 message digest and TC identification. First, configure a NTP subnet including one or more low-stratum trusted hosts from which all other hosts derive synchronization directly or indirectly. Trusted hosts have trusted certificates; all other hosts have nontrusted certificates. These hosts will automatically and dynamically build authoritative certificate trails to one or more trusted hosts. A trusted group is the set of all hosts that have, directly or indirectly, a certificate trail ending at a trusted host. The trail is defined by static configuration file entries or dynamic means described on the Section 11.4 page.
+
+Perform the following on each trusted host. To insure a fresh fileset, remove all tcpip$ntpkey files, then run ntp_keygen -T to generate keys and a trusted certificate. On all other hosts do the same, but leave off the -T flag to generate keys and nontrusted certificates. When complete, start NTP on the systems beginning at the lowest stratum and working up the tree. It may take some time for Autokey to instantiate the certificate trails throughout the subnet, but setting up the environment is completely automatic.
+
+If it is necessary to use a different sign key or different digest/signature scheme than the default, run ntp_keygen with the -S type option, where type is either RSA or DSA. You most often need to do this when a DSA-signed certificate is used. If it is necessary to use a different certificate scheme than the default, run ntp_keygen with the -c scheme option and selected scheme as needed. If ntp_keygen is run again without these options, it generates a new certificate using the same scheme and sign key.
+
+After setting up the environment it is advisable to update certificates from time to time, if only to extend the validity interval. Simply run ntp_keygen with the same flags as before to generate new certificates using existing keys. However, if the host or sign key is changed, the NTP Server should be restarted. When the NTP Server is restarted, it loads any new files and restarts the protocol. Other dependent hosts will continue as usual until signatures are refreshed, when the protocol is restarted.
+
+11.9.5. Identity Schemes
+
+As described in Section 11.7.2.4, the default TC identity scheme is vulnerable to a middleman attack. However, there are more secure identity schemes available, including PC, IFF, GQ and MV. These schemes are based on a TA, one or more trusted hosts and some number of nontrusted hosts. Trusted hosts prove identity using values provided by the TA, while the remaining hosts prove identity using values provided by a trusted host and certificate trails that end on that host. The name of a trusted host is also the name of its subgroup and also the subject and issuer name on its trusted certificate. The TA is not necessarily a trusted host in this sense, but often is.
+
+In some schemes there are separate keys for servers and clients. A server can also be a client of another server, but a client can never be a server for another client. In general, trusted hosts and nontrusted hosts that operate as both server and client have parameter files that contain both server and client keys. Hosts that operate only as clients have key files that contain only client keys.
+
+The PC scheme supports only one trusted host in the group. On trusted host alice run ntp_keygen -"P" -p password to generate the host key file tcpip$ntpkey_RSAkey_alice.filestamp and trusted private certificate file tcpip$ntpkey_RSA-MD5_cert_alice.filestamp. Copy both files to all group hosts; they replace the files that would be generated in other schemes. On each host bob use the -l option to install a symbolic link from the generic name tcpip$ntpkey_host_bob to the host key file and symbolic link tcpip$ntpkey_cert_bob to the private certificate file. Note the generic links are on bob, but point to files generated by trusted host alice. In this scheme it is not possible to refresh either the keys or certificates without copying them to all other hosts in the group.
+
+For the IFF scheme proceed as in the TC scheme to generate keys and certificates for all group hosts, then for every trusted host in the group, generate the IFF parameter file. On trusted host alice run tcpip$ntp_keygen -"T" -"I" -p password to produce her parameter file tcpip$ntpkey_IFFpar_alice.filestamp, which includes both server and client keys. Copy this file to all group hosts that operate as both servers and clients and install a symbolic link using the -l option from the generic tcpip$ntpkey_iff_alice to this file. If there are no hosts restricted to operate only as clients, there is nothing further to do. Because the IFF scheme is independent of keys and certificates, these files can be refreshed as needed.
+
+If a rogue client has the parameter file, it could masquerade as a legitimate server and present a middleman threat. To eliminate this threat, the client keys can be extracted from the parameter file and distributed to all restricted clients. After generating the parameter file, on alice run ntp_keygen -e and pipe the output to a file or mail program. Copy or mail this file to all restricted clients. On these clients install a symbolic link from the generic tcpip$ntpkey_iff_alice to this file by issuing the command ntp_keygen -"I" -l file. To further protect the integrity of the keys, each file can be encrypted with a secret password.
+
+For the GQ scheme proceed as in the TC scheme to generate keys and certificates for all group hosts, then for every trusted host in the group, generate the IFF parameter file. On trusted host alice run ntp_keygen -"T" -"G" -p password to produce her parameter file tcpip$ntpkey_GQpar_alice.filestamp, which includes both server and client keys. Copy this file to all group hosts and install a symbolic link from the generic tcpip$ntpkey_gq_alice to this file by issuing the command ntp_keygen -"G" -l file. In addition, on each host bob install a symbolic link from generic tcpip$ntpkey_gq_bob to this file. As the GQ scheme updates the GQ parameters file and certificate at the same time, keys and certificates can be regenerated as needed.
+
+For the MV scheme, proceed as in the TC scheme to generate keys and certificates for all group hosts. For illustration assume trish is the TA, alice one of several trusted hosts and bob one of her clients. On TA trish run ntp_keygen -"V" (n) -p password, where n is the number of revokable keys (typically 5) to produce the parameter file tcpip$ntpkey_MVpar_trish.filestamp and client key files tcpip$ntpkey_MVkeyd_trish.filestamp where d is the key number (0 < d < n). Copy the parameter file to alice and install a symbolic link from the generic tcpip$ntpkey_mv_alice to this file by issuing the command ntp_keygen -"V" -l file. Copy one of the client key files to alice for later distribution to her clients. Which client key file goes to alice does not matter, because they all work the same way. alice copies the client key file to all of her clients. On client bob install a symbolic link from generic tcpip$ntpkey_mv_bob to the client key file. As the MV scheme is independent of keys and certificates, these files can be refreshed as needed.
+
+Table 11.8 describes the command line options.
+
+11.9.6. Cryptographic Data Files
+
+All other file formats begin with two lines. The first contains the file name, including the generated host name and filestamp. The second contains the datestamp. Lines beginning with # are considered comments. Cryptographic values are encoded first using ASN.1 rules, then encrypted, if necessary, and finally written PEM-encoded printable ASCII format preceded and followed by MIME content identifier lines.
+
+11.9.7. Generating Symmetric Keys
+
+The ntp_keygen program can be used to generate MD5 symmetric keys using the -"M" option. This will create a keys file, tcpip$ntpkey_MD5key_hostname.filestamp. The NTP server recognizes the file via the keys command in tcpip$ntp.conf, which specifies the name of the keys file. Because the file contains private shared keys, it should be visible only to authorized users and distributed by secure means to other subnet hosts. Though this file is not used with the Autokey Version 2 protocol, it is needed to authenticate some remote configuration commands used by the ntpq and ntpdc utilities.
+
+Note
+
+Generating cryptographic values can take some time, from one to several minutes with modern architectures, and up to tens of minutes to an hour with older architectures.
+
+11.9.7.1. Authentication Key Format
+
+The NTP service reads keys from a keys file that is specified using the keys command in the configuration file. You can supply one or more keys from 1 to 15 in the keys file.
+
+Key entries use the following format:
+
+key-ID key-type key-value
+
+Each entry contains the following:
+
+key-ID, which is an arbitrary, unsigned 32-bit number (in decimal). The range of possible values is 1 to 15. Key IDs are specified by the requestkey and controlkey statements in the configuration file. The key ID number 0 (56 zero bits) is reserved; it is used to indicate an invalid key ID or key value.
+
+key-type, which identifies the type of key value. Only one key format, M, is currently supported. This indicates that the MD5 authentication scheme is being used.
+
+key-value, which is an ASCII string up to 8 characters long. The following characters are not allowed:
+
+space
+
+pound sign (#)
+
+\t
+
+\n
+
+\0
+
+Because this file contains authorization data, VSI recommends that you limit read access to this file. In particular, you should disable world read access.
+
+The following is a sample keys file:
+
+# # 4 M DonTTelL 6 M hElloWrl 12 M ImASecrt
+
+16.6. Configuring SMTP Antispam
+
+SPAM is the Internet equivalent of junk mail and is a growing source of annoyance to Internet users. Antispam is a function of SMTP that is designed to inhibit the transmission of spam.
+
+SMTP Antispam is implemented in the SMTP receiver which, for the purposes of this discussion, is called the SMTP server. The following sections describe how to enable and configure SMTP Antispam.
+
+16.6.1. Enabling and Managing SMTP Antispam
+
+To enable and manage SMTP Antispam, create or edit the following file:
+
+TCPIP$SMTP_COMMON:SMTP.CONFIG
+
+The logical name TCPIP$SMTP_COMMON is defined at TCP/IP Services startup. For more information, see Section 16.5.
+
+The SMTP.CONFIG file should be owned by TCPIP$SMTP and protection should be set to (W:RE).
+
+The file SMTP_CONFIG.TEMPLATE is provided to help you create this file; it contains guidelines on how to configure Antispam.
+
+For guidelines about specifying configuration options in the SMTP.CONFIG file, see Section 1.1.5.
+
+16.6.1.1. SMTP Antispam Field Names
+
+Table 16.5 describes the field names and values for Antispam configuration.
+
+The following sections provide further information about the configuration options.
+
+16.6.2. Preventing Spam Route-Through
+
+Senders of spam routinely use unaware Internet hosts as route-through hosts for their spam. This illicit use of other SMTP servers is known as SPAM route-through.
+
+Spam mailing lists contain the of addresses and sending a spam takes a great deal of time. Therefore, senders of spam prefer to use hosts other than their own to send the message. The victim is a host not protected by a firewall or by software that is aware of spam. The SMTP client software that generates spam connects to the victim SMTP server host and issues multiple RCPT TO commands, which may number in the thousands. The SMTP client then sends the message to the victim host and closes the link. It is now left to the victim host to do the real work of relaying the spam to the thousands of recipients.
+
+Fortunately, the route-through attack can often be detected. Most or all of the recipients of the spam will not be within the victim's own domains or IP networks. They will be somewhere outside in the expanse of the Internet. You must trap for the situation where an unknown SMTP client is trying to use your system to relay mail to recipients in domains outside its own. If you specify the “known world” and the “unknown world,” the SMTP server can detect this type of spam attack.
+
+SMTP allows you to configure two lists:
+
+Good-Clients, a list of the IP addresses, IP networks, DNS host names, and DNS MX domains of known good SMTP clients.
+
+Relay-Zones, a list of the SMTP domains to which SMTP will relay mail even if it is from an unknown client.
+
+Together, these lists define the “known good world” to the SMTP server for relay purposes. They are used to prevent spam routing as follows:
+
+The SMTP server checks the IP address of the client against the Good-Clients list. If a match occurs, the client is considered “known good” and it is free to use the local system to relay without further checking. However, if no match against the Good-Clients list occurs, the client is considered “unknown” and the process goes to step 2.
+
+When the client is unknown, the domain of the address in each RCPT TO command is checked against the Relay-Zones list. If a match occurs, the RCPT TO command is accepted, because it is a relay from the unknown world to the known world (for example, e-mail from the Internet). If a match does not occur, the RCPT TO is considered unacceptable for route-through.
+
+The SMTP server allows an SMTP client to attempt route-through twice; if a third attempt is made, the SMTP server rejects the RCPT TO command, disconnects the link, and reports a spam event. For more information about spam event reporting, see Section 16.6.7.
+
+If neither Good-Clients nor Relay-Zones is configured, relay checking depends on the setting of the SMTP configuration relay flag. If the relay flag is set, all relays are allowed; if it is not set, relays are not allowed.
+
+To use Good-Clients and Relay-Zones lists, you must still set the SMTP configuration relay flag. Use the following command:
+
+TCPIP> SMTP SET CONFIGURATION/OPTION=RELAY
+
+16.6.2.1. Specifying the Good-Clients List
+
+The Good-Clients list is a comma-separated list of clients, specified as one of the following:
+
+IP address
+
+IP network
+
+DNS hostname
+
+DNS MX domain
+
+To enter an IP network, use standard CIDR notation (n.n.n.n/m, where n.n.n.n is the IP network and m is the number of bits in the subnet mask). For example:
+
+Good-Clients: 1.2.0.0/16, 2.3.4.0/24, 2.3.4.5, relay.abc.com
+
+This Good-Clients list contains two IP networks (1.2.0.0 and 2.3.4.0), an IP address (2.3.4.5), and a DNS entry (relay.abc.com). An entry that does not follow the standard IP address or network format is assumed to be a DNS entry.
+
+16.6.2.2. Processing DNS Entries in the Good-Clients List
+
+The SMTP server uses the Good-Clients list to match the IP addresses of SMTP clients. Therefore, entries are stored internally as IP addresses. DNS hostname and MX domain entries are stored as IP addresses, determined by the following process:
+
+An entry that is not apparently an IP address or IP network is assumed to be a DNS host name, and the matching IP address is stored in the list.
+
+For an entry that cannot be resolved as a DNS host name, the SMTP server looks for MX records.
+
+For configurations where the generic mail server name does not have an associated DNS host name, the SMTP server uses the MX records, which specify mail relay hosts. The following example demonstrates this configuration:
+
+TCPIP> show host relay.abc.com %TCPIP-W-NORECORD, information not found -RMS-E-RNF, record not found TCPIP> show mx relay.abc.com BIND MX database Server: 1.2.3.4 host.abc.com Gate address Preference Gate name 1.3.4.5 100 mail11.abc.com 1.3.5.6 100 mail13.abc.com 2.4.5.6 200 mail2.abc.com 2.4.5.7 200 mail1.abc.com 3.4.5.6 300 mail21.abc.com 3.4.6.7 300 mail12.abc.com
+
+To include the addresses listed as MX gateways in this example, enter relay.abc.com in the Good-Clients list.
+
+16.6.2.3. Mail Relay to MX Gateways
+
+You can configure the SMTP server to relay mail from an unknown SMTP client to a domain that does not match the entries Relay-Zones but that has an MX record naming the local host as an MX gateway. To enable this feature, set the Relay-Based-On-Mx option to TRUE in SMTP.CONFIG.
+
+For example, the Relay-Zones list is not specified on example host VMShost.abc.com. When an unknown host tries to relay mail to podunk.def.com through VMShost, and the Relay-Based-On-Mx option is enabled, the SMTP server on VMShost searches for MX records for podunk.def.com. If one of PODUNK's MX records lists VMShost as the MX gateway, the relay is accepted, even though the SMTP client is unknown and the RCTP TO address did not match the Relay-Zones list.
+
+16.6.2.4. Specifying the Relay-Zones List
+
+The Relay-Zones list specifies the domains to which the SMTP server will relay mail from unknown SMTP clients. Do not use wildcards in the entries in this list; wildcarding is implicit (that is, *.domain is implied). For example:
+
+Relay-Zones: def.com, abc.com, company.com
+
+This example specifies the relay of mail from unknown SMTP clients to any host within the def.com, abc.com, or company.com domain. Because of implied wildcarding, domains like VMShost.abc.com match against this list.
+
+16.6.2.5. Examples of Specifying Good-Clients and Relay-Zones
+
+In the following examples, host.abc.com is the host, and Good-Clients and Relay-Zones lists are configured as follows:
+
+Good-Clients: 1.2.0.0/16, 2.3.0.0/16, relay.abc.com Relay-Zones: def.com, abc.com, company.com
+
+The Good-Clients list specifies clients whose IP addresses are in the 1.2 or 2.3 subnets or whose IP addresses match the relay.abc.com.
+
+The following examples assume that host.abc.com is not protected by a firewall and has direct Internet connectivity.
+
+The following example explains the process of handling a mail message where the client is unknown and RCPT TO address is unknown.
+
+A host with the IP address 2.2.3.5 connects to VMShost's SMTP server. The client sends a RCPT TO address of jones@someplace.else.com. The SMTP server:
+
+Fails to find a matching IP address in the Good-Clients list. The client is considered unknown.
+
+Fails to find the domain of the RCPT TO address in the Relay-Zones list.
+
+The RCPT TO command is rejected with the following message:
+
+<<<RCPT TO:><jones@someplace.else.com> >>>550 User not local, Relay disabled.
+
+This example shows the process of handling a mail message for which the client is unknown but the RCPT TO address is accepted.
+
+A host with the IP address 2.2.3.5 connects to VMShost's SMTP server. This IP address does not match Good-Clients, so the client is considered unknown.
+
+However, if the client sends a RCPT TO address of smith@foobar.xxx.def.com, the domain of the RCPT TO address is matched against the Relay-Zones list. The RCPT TO address foobar.xxx.def.com matches the Relay-Zones list, so the RCPT TO command is accepted.
+
+In this example, the client with IP address 1.2.1.2 connects to VMShost's SMTP server. This IP address matches Good-Clients (it is in subnet 1.2). Therefore, the client is considered known. The SMTP server does not check the domains of the RCPT TO addresses.
+
+16.6.3. Blocking Mail from Specified Clients
+
+You can configure the SMTP server to automatically reject any mail transactions with specified SMTP clients. To enable this feature, configure the Bad-Clients list in SMTP.CONFIG. The syntax of the Bad-Clients list is the same as the Good-Clients list. For example:
+
+Bad-Clients: 1.2.3.5, 100.101.102.103
+
+If Bad-Clients is configured, the SMTP server checks the IP address of the client against the list. If a match occurs, the SMTP client is considered “known bad;” the server sends a failure message to the client and then disconnects the link.
+
+16.6.3.1. Resolving Conflicts between Bad-Clients and Good-Clients
+
+The Bad-Clients and Good-Clients lists are not mutually exclusive. If an SMTP client's IP address may be resolved in both lists, the entry that most closely matches the client's IP address is used.
+
+For example, the following lists are configured:
+
+Bad-Clients: 1.0.0.0/8 Good-Clients: 1.2.3.6
+
+When an SMTP connection comes in from IP address 1.2.3.6, which is in the 1.0.0.0 subnet, the client may be considered a known bad client. But because the specific IP address is specified in the Good-Clients list, the message is accepted.
+
+16.6.4. Real-Time Black Hole Lists (RBL)
+
+The Internet community maintains a list of IP addresses of senders of spam. This is called the Real-time Blackhole List (RBL) and contains DNS A records. For more information and to register to use the RBL, go to the following web site:
+
+www.blackholes.mail-abuse.org
+
+To use the RBL, configure the RBLs list in the SMTP.CONFIG file (described in Section 16.6.1). The RBLs configuration option lists the domains providing RBL services. You can specify a list of RBLs, thereby accommodating individual RBLs and additional Internet-provided RBLs along with the current one.
+
+For example:
+
+RBLs: blackholes.mail-abuse.org, rbl.ourcompany.com
+
+If the SMTP server matches the IP address of the client with an entry in any of the RBLs in the list, the server sends a failure message to the client and disconnects the link.
+
+If a client IP address matches one in the Good-Clients list, the message is accepted; the SMTP server does not check the RBLs.
+
+16.6.5. Translating Client IP Addresses
+
+You can configure SMTP to translate the client's IP address to a host name, and to disconnect the link if no host name exists. To enable this feature, set the Reject-Unbacktranslatable-IP option in SMTP.CONFIG. Translation is not performed if the SMTP client's IP address matches an entry in the Good-Clients list.
+
+16.6.6. Blocking Mail from Specified Senders
+
+You configure SMTP to reject mail based on the address of the sender. The sender's address is specified in the MAIL FROM command. (The terms “sender address” and “MAIL FROM address” are synonymous.) To specify sender addresses from whom mail will always be rejected, include the Reject-Mail-From list in the SMTP.CONFIG file.
+
+The Reject-Mail-From list includes wildcarded patterns that are checked against the sender address. If the SMTP server matches the sender address against a pattern in the Reject-Mail_From list, the MAIL FROM command is rejected and the link is disconnected. Wildcarded patterns may include the standard asterisk (*) and percent sign (%) wildcard characters.
+
+For example:
+
+Reject-Mail-From: *.xyz.com, known.spammer@*, *the_internet*
+
+To specify hosts from which to allow mail, even if the address matches that specified in the Reject-Mail-From list, include them in the Accept-Mail-From list in SMTP.CONFIG.
+
+The Accept-Mail-From list includes wildcarded patterns that are checked against the sender address. If the SMTP server finds that the MAIL FROM address matches an entry in the Reject-Mail-From list, it then checks the Accept-Mail-From list also. You can use this list to allow mail from legitimate senders in the domains listed in the Reject-Mail-From list.
+
+For example:
+
+Accept-Mail-From: *@notabadguy.xyz.com, the_internet_news@somehwere.com
+
+In this example, the entry the_internet_news@somehwere.com allows mail from the sender address the_internet_news@somehwere.com, even though it matches the entry *the_internet* from the Reject-Mail-From list. Likewise, it accepts mail from jones@notabadguy.xyz.com, even though it matches the entry *.xyz.com in the Reject-Mail-From list.
+
+In addition to the Accept-Mail-From list, you can specify the following configuration options in SMTP.CONFIG to allow mail from senders in the Reject-Mail-From list:
+
+Accept-Unqualified-Senders
+
+By default, if the TCP/IP Services SMTP server receives a message with an unqualified sender address, or with a sender address with no domain at all, it will reject the MAIL FROM command and disconnect the link.
+
+For example, the following sender addresses would be rejected by default:
+
+MAIL FROM:<somebody> MAIL FROM:<somebody@someplace>
+
+The first address has no domain and the second has an unqualified domain.
+
+To accept mail with these types of sender addresses, set Accept-Unqualified-Senders in SMTP.CONFIG, as follows:
+
+Accept-Unqualified-Senders: TRUE
+
+When the Accept-Unqualified-Senders option is set, the SMTP server does not check whether the sender address either has a domain or is fully qualified.
+
+Accept-Unresolvable-Domains
+
+By default, if the SMTP server fails to find an MX record for the sender address, it rejects the MAIL FROM command and disconnects the link.
+
+You can specify that messages with unresolvable domains be accepted by setting the Accept-Unresolvable-Domains configuration option to TRUE in SMTP.CONFIG, as follows:
+
+Accept-Unresolvable-Domains: TRUE
+
+When Accept-Unresolvable-Domains is set, the SMTP server will not perform an MX lookup on the sender address.
+
+16.6.7. Specifying Handling of Spam Events
+
+Whenever the TCP/IP Services SMTP server disconnects a link with a client as a result of the Antispam checking, it generates an event message. You can control the way events are handled using the procedures in the following sections.
+
+16.6.7.1. Reporting Spam Events
+
+You can customize the SMTP server to report a spam event in the following ways. The SMTP server can:
+
+Send an OPCOM message.
+
+Send a /TYPE=USER message to the accounting subsystem.
+
+To configure the way SMTP reports the event, use the SPAM-Action field in SMTP.CONFIG. The legal values are:
+
+NONE
+
+OPCOM (the default)
+
+ACCOUNTING
+
+You can specify multiple values for the SPAM-Action field. For example:
+
+SPAM-Action: OPCOM, ACCOUNTING
+
+This example causes both OPCOM and accounting messages to be sent for each spam event. To disable spam event reporting, enter a value of NONE for SPAM-Action in SMTP.CONFIG, as follows:
+
+SPAM-Action: NONE
+
+16.6.7.2. Configuring Spam Security
+
+When the SMTP server disconnects the link with the client because of the Antispam checking, it sends a message back to the client. The text of the message is controlled by the Security field in SMTP.CONFIG. The legal values for this field are:
+
+SECURE (the default)
+
+If Security is set to SECURE, the messages do not indicate the cause of the disconnect.
+
+FRIENDLY
+
+If Security is set to FRIENDLY, the messages indicate the cause of the disconnect.
+
+16.6.7.3. Specifying the Spam Rejection Text
+
+You can specify the rejection text message to be sent to the client. The field names for these options end in “-Text”, and the values for them must be a single line of text. These fields override the default text associated with the specific spam event.
+
+The following are the fields and default messages for the SECURE option:
+
+Unbacktranslatable-IP-Text: Closing transmission channel.
+
+Bad-Clients-Text: Closing transmission channel.
+
+Client-In-RBL-Text: Closing transmission channel.
+
+Reject-Mail-From-Text: Closing transmission channel.
+
+Unqualified-Sender-Text: Closing transmission channel.
+
+Unresolvable-Domain-Text: Closing transmission channel.
+
+SPAM-Relay-Text: User not local, Relay disabled.
+
+The following are the fields and default messages for the FRIENDLY option:
+
+Unbacktranslatable-IP-Text: I can't backtranslate your IP address to a host name.
+
+Bad-Clients-Text: Your IP address or subnet is in my list of bad ones.
+
+Client-In-RBL-Text: Your IP address is in my RBL list.
+
+Reject-Mail-From-Text: That sender address is in my list of bad ones.
+
+Unqualified-Sender-Text: That sender address is unqualified.
+
+Unresolvable-Domain-Text: That sender address is unresolvable into a host name or MX domain.
+
+SPAM-Relay-Text: Both you and the recipient are unknown to me. I will not relay.
+
+You can change one or more of the default messages by including the field and your message for a value. This will override the default setting for that field. For example:
+
+Unbacktranslatable-IP-Text: Your IP address is unbacktranslatable. SPAMMER!
+
+20.1. Key Concepts
+
+NFS software was originally developed on and used for UNIX machines. For this reason, NFS implementations use UNIX style conventions and characteristics. The rules and conventions that apply to UNIX files, file types, file names, file ownership, and user identification also apply to NFS.
+
+Because the TCP/IP Services product runs on OpenVMS, the NFS software must accommodate the differences between UNIX and OpenVMS file systems, for example, by converting file names and mapping file ownership information. You must understand these differences to configure NFS properly on your system, to select the correct file system for the application, and to ensure that your file systems are adequately protected while granting access to users on remote hosts.
+
+The following sections serve as a review only. If you are not familiar with NFS, see the VSI TCP/IP Services for OpenVMS Concepts and Planning manual for more information.
+
+20.1.1. Clients and Servers
+
+NFS is a client/server environment that allows computers to share disk space and allows users to work with their files from multiple computers without copying them to their local system. The NFS server can make any of its file systems available to the network by exporting the files and directories. Users on authorized client hosts access the files by mounting the exported files and directories. The NFS client systems accessing your server may be running UNIX, OpenVMS, or other operating systems.
+
+The NFS client identifies each file system by the name of its mount point on the server. The mount point is the name of the device or directory at the top of the file system hierarchy that you create on the server. An NFS device is always named DNFS n. The NFS client makes file operation requests by contacting your NFS server. The server then performs the requested operation.
+
+20.1.2. NFS File Systems on OpenVMS
+
+The OpenVMS system includes a hierarchy of devices, directories and files stored on a Files–11 On-Disk Structure (ODS-2 or ODS-5) formatted disk. OpenVMS and ODS-2 or ODS-5 define a set of rules that govern files within the OpenVMS file system. These rules define the way that files are named and catalogued within directories.
+
+If you are not familiar with OpenVMS file systems, refer to the VSI OpenVMS System Manager's Manual, Volume 1: Essentials to learn how to set up and initialize a Files–11 disk.
+
+You can set up and export two different kinds of file systems: a traditional OpenVMS file system or a UNIX-style file system built on top of an OpenVMS file system. This UNIX-style file system is called a container file system.
+
+20.1.2.1. Selecting a File System
+
+Each file system is a multilevel directory hierarchy: on OpenVMS systems, the top level of the directory structure is the master file directory (MFD). The MFD is always named [000000] and contains all the top-level directories and reserved system files. On UNIX systems or with a container file system, the top-level directory is called the root.
+
+You can set up and export either an OpenVMS file system or a container file system. Which one you choose depends on your environment and the user needs on the NFS client host.
+
+You might use an OpenVMS file system if:
+
+Your environment calls for extensive file sharing between your OpenVMS system and another OpenVMS host, or between your system and a UNIX client.
+
+Users on the client need to maintain multiple versions of files.
+
+Select the OpenVMS file system if you need to share files between users on OpenVMS and users on NFS clients.
+
+You might use a container file system if:
+
+You do not require extensive file sharing between your OpenVMS system and a UNIX client.
+
+Client applications require symbolic or hard links or special files.
+
+20.1.2.2. Understanding the Container File System
+
+The NFS software lets you create a logical UNIX style file system on your OpenVMS host that conforms to UNIX file system rules. This means that any UNIX application that accesses this file system continues to work as if it were accessing files on a UNIX host.
+
+An OpenVMS server can support multiple container file systems. Creating a container file system is comparable to initializing a new disk with an OpenVMS volume structure, because it provides the structure that enables users to create files. The file system parameters, directory structure, UNIX style file names, and file attributes are catalogued in a data file called a container file.
+
+The number of UNIX containers you should create depends on how you want to manage your system.
+
+In a container file system, each conventional UNIX file is stored as a separate data file. The container file also stores a representation of the UNIX style directory hierarchy and, for each file name, a pointer to the data file. In addition to its UNIX style name, each file in the container file system has a system-assigned valid Files–11 file name.
+
+An OpenVMS directory exists for each UNIX directory stored in the container. All files catalogued in a UNIX directory are also catalogued in the corresponding OpenVMS directory; however, the UNIX directory hierarchy is not duplicated in the OpenVMS directory hierarchy.
+
+Because each UNIX style file is represented as an OpenVMS data file, OpenVMS utilities such as BACKUP can use standard access methods to access these files.
+
+Note
+
+Except for backing up and restoring files, you should not use DCL commands to manipulate files in a container file system. Instead, use the commands described in Section 20.10.
+
+For more information about backing up and restoring files, see Section 20.7 and Section 20.10.7.
+
+For information about setting up container file systems, see Section 20.9.
+
+20.1.2.3. NFS Support for Extended File Specifications
+
+The NFS server and the NFS client support OpenVMS extended file specifications (EFS) on ODS-5 disk volumes.
+
+You can use NFS server to export files on OpenVMS ODS-5 volumes. The traditional ODS-2 volumes continue to be supported. The NFS client can emulate an ODS-5 volume.
+
+Note that the NFS server and NFS client support the ISO Latin-1 character set only.
+
+If an ODS-5 volume is mapped and exported, the NFS server automatically supports EFS features and ignores the NAME_CONVERSION option of the EXPORT command, if it is specified in the export record.
+
+On ODS-2 volumes (with or without the NAME_CONVERSION option), files with all uppercase names are displayed on non-OpenVMS clients with all lowercase letters. On ODS-5 volumes, the file names are displayed by clients in the same case as they are displayed locally on the server host.
+
+If an ODS-2 volume contains file names that were created using the NAME_CONVERSION option of the NFS EXPORT command and include lowercase or special characters that are invalid for ODS-2 file names, those file names displayed locally on the server host contain character sequences (escape codes), as described in Appendix C. If the DCL SET VOLUME /STRUCTURE_LEVEL=5 command is performed on this volume, the names are displayed by clients with the character sequences exactly as they are displayed locally on the server host.
+
+20.1.3. How the Server Grants Access to Users and Hosts
+
+The server uses the following database files to grant access to users on client hosts:
+
+The export database, TCPIP$EXPORT.DAT, is a collection of entries used to store information about the file systems you want to make available to users on client hosts.
+
+Each entry specifies a directory on the local system and one or more remote hosts allowed to mount that directory. A user on a client host can mount any directory at or below the export point, as long as OpenVMS allows access to the directory. Exporting specific directories to specific hosts provides more control than exporting the root of a file system (or the MFD in an OpenVMS system) to all hosts.
+
+The proxy database, TCPIP$PROXY.DAT, is a collection of entries used to register the identities of users on client hosts. To access file systems on your local server, remote users must have valid accounts on your OpenVMS host.
+
+The proxy entries map each user's remote identity to a corresponding identity associated with each user's OpenVMS account. When a user on the client host initiates a file access request, the server checks the proxy database before granting or denying the user access to the file.
+
+These database files are usually created by TCPIP$CONFIG and can be shared by all OpenVMS Cluster nodes running TCP/IP Services. To control access to these database files, set the OpenVMS file protections accordingly. By default, World access is denied.
+
+Section 20.6 describes how to create these database files on your server.
+
+20.1.4. How the Server Maps User Identities
+
+Both OpenVMS and UNIX based systems use identification codes as a general method of resource protection and access control. Just as OpenVMS employs user names and UICs for identification, UNIX identifies users with a user name and a user identifier (UID) and one or more group identifiers (GIDs). Both UIDs and UICs identify a user on a system.
+
+The proxy database contains entries for each user who accesses a file system on your local server. Each entry contains the OpenVMS user name, the UID/GID pair that identifies the user's account on the client system, and the name of the client host. This file is loaded into dynamic memory when the server starts.
+
+When a user on the OpenVMS client host requests access to a file, the client searches its proxy database for an entry that maps the requester's identity to a corresponding UID/GID pair. (Proxy lookup is performed only on OpenVMS servers; UNIX clients already know the user by its UID/GID pair.) If the client finds a match, it sends a message to the server that contains the following:
+
+Identity of the requester as a UID/GID pair
+
+Requested NFS operation and any data associated with the operation
+
+The server searches its proxy database for an entry that corresponds to the requester's UID/GID pair. If the UID maps to an OpenVMS account, the server grants access to the file system according to the privileges set for that account.
+
+In the following example, the proxy entry maps a client user with UID=15/GID=15, to the OpenVMS account named ACCOUNT2. Any files owned by user ACCOUNT2 are deemed to be also owned by user UID=15 and GID=15.
+
+OpenVMS User_name Type User_ID Group_ID Host_name ACCOUNT2 OND 15 15 *
+
+After the OpenVMS identity is resolved, the NFS server uses this acquired identity for all data access, as described in Section 20.1.7.
+
+20.1.5. Mapping the Default User
+
+In a trusted environment, you may want the server to grant restricted access even if the incoming UID does not map to an OpenVMS account. This is accomplished by adding a proxy entry for the default user. The NFS server defines the default user at startup with the following attributes:
+
+noproxy_uid
+
+noproxy_gid
+
+You can initialize these attributes using the SYSCONFIG command, which is defined by the SYS$MANAGER:TCPIP$DEFINE_COMMANDS.COM procedure. For example:
+
+$ @SYS$MANAGER:TCPIP$DEFINE_COMMANDS $ SYSCONFIG -r nfs_server noproxy_uid=-2 noproxy_gid=-2
+
+If the server finds a proxy entry for the default user, it grants access to OpenVMS files as the OpenVMS user associated with “nobody” in the proxy record. TCP/IP Services normally uses the UNIX user “nobody” (–2/–2) as the default user.
+
+To temporarily modify run-time values for the default user, use the /UID_DEFAULT and /GID_DEFAULT qualifiers to the SET NFS_SERVER command.
+
+To permanently modify these values, edit the SYS$STARTUP:TCPIP$NFS_SYSTARTUP.COM file with the commands to define new values for the UID and GID logical names. See Section 20.12 for instructions on modifying SYSCONFIG variables to change the default values.
+
+If you require tighter restrictions, you can disable the default user mapping and set additional security controls by setting the attribute noproxy_enabled. See Section 20.11 for more information.
+
+Note
+
+The configuration procedure for the NFS client creates a nonprivileged account with the user name TCPIP$NOBODY. You may want to add a proxy record for the default user that maps to the TCPIP$NOBODY account.
+
+20.1.6. Mapping a Remote Superuser
+
+When a remote UNIX client does a mount, it is often performed by the superuser. (In some UNIX implementations, this can be performed only by the superuser.)
+
+A superuser (root) on a remote client does not automatically become a privileged user on the server. Instead, the superuser (UID=0) is mapped to the default user defined with the attributes noproxy_uid and noproxy_gid. (By default, user “nobody” (–2/–2) is used.)
+
+You may have remote clients that use the superuser to mount file systems. If you want to grant normal root permissions, add a proxy record with UID=0/GID=1 and map this to an appropriate OpenVMS account. The ability of the remote superuser to mount and access files on the server is controlled by the privileges you grant for this OpenVMS account.
+
+20.1.7. How OpenVMS and the NFS Server Grant File Access
+
+To protect your exported file systems, you must take care when granting account and system privileges for remote users. You must also understand how OpenVMS grants access to files.
+
+The NFS server uses the proxy database to map the incoming user identity to an OpenVMS account. The server uses the account's UIC to evaluate the protection code, along with other security components, before granting or denying access to files.
+
+If the proxy account has an access control entry (ACE) that denies or grants access, the NFS server honors that. However, access checking by the client can make such ACEs ineffective.
+
+For a more thorough discussion on access checking, refer to the VSI OpenVMS Guide to System Security.
+
+20.1.8. Understanding the Client's Role in Granting Access
+
+Before sending a user request to the NFS server, the client performs its own access checks. This check occurs on the client host and causes the client to grant or deny access to data. This means that even though the server may grant access, the client may deny access before the user's request is even sent to the server host. If the client user maps to an OpenVMS account that is not allowed access to a file, an ACL entry may not allow access from an NFS client as it would locally for that OpenVMS account.
+
+With this variable set, the TCP/IP Services startup procedure creates the TCPIP$NFS_REMOTE identifier. For example, you can use this identifier in the ACL to reject access to some (or all) files available through NFS. (See Section 20.12 for more information about logical names.)
+
+20.1.9. Granting Access to PC-NFS Clients
+
+TCP/IP Services provides authentication services to PC-NFS clients by means of PC-NFS. As with any NFS client, users must have a valid account on the NFS server host, and user identities must be registered in the proxy database.
+
+Because PC operating systems do not identify users with UID/GID pairs, these pairs must be assigned to users. PC-NFS assigns UID/GID pairs based on information you supply in the proxy database.
+
+The following describes this assignment sequence:
+
+The PC client sends a request for its UID/GID pair. This request includes the PC's host name with an encoded representation of the user name and password.
+
+PC-NFS responds by searching the proxy database and SYSUAF for a matching entry and by checking the password.
+
+If a matching entry is located, PC-NFS returns the UID/GID pair to the PC client. The PC stores the UID/GID pair for later NFS requests.
+
+If PC-NFS does not find an entry for the PC client in the proxy database, it maps the PC client to the default user TCPIP$NOBODY account. In this case, restricted access is granted based on privileges established for the default user account. See Section 20.1.5 for more discussion on the default user.
+
+21.1. Key Concepts
+
+Because the NFS software was originally developed on and used for UNIX machines, NFS implementations use UNIX file system conventions and characteristics. This means that the rules and conventions that apply to UNIX file types, file names, file ownership, and user identification also apply to NFS.
+
+Because the TCP/IP Services NFS client runs on OpenVMS, the client must accommodate the differences between the two file systems, for example, by converting file names and mapping file ownership information. You must understand these differences to configure NFS properly and to successfully mount file systems from an NFS server.
+
+The following sections serve as a review only. If you are not familiar with these topics, see the VSI TCP/IP Services for OpenVMS Concepts and Planning guide for a more detailed discussion of the NFS implementation available with the TCP/IP Services software.
+
+21.1.1. NFS Clients and Servers
+
+NFS is a client/server environment that allows computers to share disk space and users to work with their files from multiple computers without copying them to the local system. Computers that make files available to remote users are NFS servers. Computers with local users accessing and creating remote files are NFS clients. A computer can be an NFS server or an NFS client, or both a server and a client.
+
+Attaching a remote directory to the local file system is called mounting a directory. A directory cannot be mounted unless it is first exported by an NFS server. The NFS client identifies each file system by the name of its mount point on the server. The mount point is the name of the device or directory at the top of the file system hierarchy. An NFS device is always named DNFS n.
+
+All files below the mount point are available to client users as if they reside on the local system. The NFS client requests file operations by contacting a remote NFS server. The server then performs the requested operation. The NFS client automatically converts all mounted directories and file structures, contents, and names to the format required by OpenVMS. For example, a UNIX file named /usr/webster/.login would appear to an OpenVMS client as DNFS1:[USR.WEBSTER].LOGIN;1.
+
+For more information on how NFS converts file names, see Appendix C.
+
+21.1.2. Storing File Attributes
+
+The OpenVMS operating system supports multiple file types and record formats. In contrast, NFS and UNIX systems support only byte-stream files, seen to the OpenVMS client as sequential STREAM_LF files.
+
+This means the client must use special record handling to store and access non-STREAM_LF files. The OpenVMS NFS client accomplishes this with attribute description files (ADFs). These are special companion files the client uses to hold the attribute information that would otherwise be lost in the translation to STREAM_LF format. For example, a SET FILE/NOBACKUP command causes the client to create an ADF, because NFS has no concept of this OpenVMS attribute.
+
+21.1.2.1. Using Default ADFs
+
+The client provides default ADFs for files with the following extensions: .EXE, .HLB, .MLB, .OBJ, .OLB, .STB, and .TLB. (The client does not provide ADFs for files with the .TXT and .C extensions, because these are STREAM_LF.) The client maintains these ADFs on the server.
+
+For example, SYS$SYSTEM:TCPIP$EXE.ADF is the default ADF for all .EXE type files. When you create .EXE files (or if they exist on the server), they are defined with the record attributes from the single default ADF file. The client refers only to the record attributes and file characteristics fields in the default ADF.
+
+21.1.2.2. How the Client Uses ADFs
+
+By default, the client uses ADFs if they exist on the server. The client updates existing ADFs or creates them as needed for new files. If you create a non-STREAM_LF OpenVMS file or a file with access control lists (ACLs) associated with it on the NFS server, the NFS client checks to see whether a default ADF can be applied. If not, the client creates a companion ADF to hold the attributes.
+
+The client hides these companion files from the user's view. If a user renames or deletes the orginal file, the client automatically renames or deletes the companion file. However, if a user renames or deletes a file on the server side, the user must also rename the companion file; otherwise, file attributes are lost.
+
+You can modify this behavior with the /NOADF qualifier to the MOUNT command. The /NOADF qualifier tells the client to handle all files as STREAM_LF unless a default ADF matches. This mode is only appropriate for read-only file systems because the client cannot adequately handle application-created files when /NOADF is operational.
+
+21.1.2.3. Creating Customized Default ADFs
+
+You can create customized default ADFs for special applications. To do so:
+
+On the client, create a special application file that results in creating an ADF on the server. Suppose that application file is called TEST.GAF.
+
+On the server, check the listing for the newly created file. For example:
+
+> ls -a . .. .$ADF$test.gaf;1 test.gaf
+
+Note that the ADF (.$ADF$test.gaf;1) was created with the data file (TEST.GAF).
+
+On the server, copy the ADF file to a newly created default ADF file on the client. For example:
+
+> cp .\$ADF\$test.gaf\;1 gaf.adf
+
+Note that the backslashes (\) are required for entering the UNIX system nonstandard dollar sign ($) and semicolon (;) symbols.
+
+On the client, copy the new default ADF file to the SYS$SYSTEM directory. For example:
+
+$ COPY GAF.ADF SYS$COMMON:[SYSEXE]TCPIP$GAF.ADF
+
+Dismount all the NFS volumes and mount them again. This starts another NFS ancillary control process (ACP) so that the newly copied default ADF file can take effect.
+
+21.1.3. NFS Client Support for Extended File Specifications
+
+The NFS client supports the extended character set supported by the OpenVMS operating system. Extended file specifications are provided by the ODS-5 file system.
+
+The NFS client does not support NUL (ASCII 0). The length of a file name is limited to 232 characters, including the file name, dot, file extension, semicolon, and version number.
+
+If you do not include the /STRUCTURE qualifier on the MOUNT command, the NFS client assumes that the file system structure being accessed is an ODS-2 volume. You can change this default by defining the following logical name:
+
+TCPIP$NFS_CLIENT_MOUNT_DEFAULT_STRUCTURE_LEVEL
+
+You can use this logical name to ensure that all NFS disks on the system have ODS-5 support enabled. Set the value of the logical to 2 for ODS-2 (the default), or 5 for ODS-5. To override this logical, include the /STRUCTURE qualifier to the TCP/IP management command MOUNT.
+
+To mount an ODS-5 volume, add the /STRUCTURE=5 qualifier to the TCP/IP management command MOUNT. For example:
+
+$ TCPIP TCPIP> MOUNT DNFS0: BOOK1 BEATRICE - _TCPIP> /PATH="/INFERNO" /HOST="FOO.BAR.EREWHON" - _TCPIP> /OPTIONS=TYPELESS /STRUCTURE=5 /SYSTEM
+
+The /OPTIONS=TYPELESS qualifier is required because the path name did not include ".dir." If you specify ".dir" on the path, you do not need to include the /OPTIONS=TYPELESS qualifier.
+
+The /STRUCTURE qualifier accepts the following values:
+
+5 to indicate ODS-5
+
+2 to indicate ODS-2 (the default)
+
+For more information about the MOUNT/STRUCTURE comma

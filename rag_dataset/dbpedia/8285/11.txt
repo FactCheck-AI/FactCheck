@@ -1,0 +1,69 @@
+Tag: mysql
+
+MySQL: Table ‘SOME_TABLE’ doesn’t exist whereas it does exist
+
+In recent development, I tried to connect MySQL database locally in my C# application, and it worked fine. But when I created the same database and tables using sql script in Ubuntu, and using the same application to connect the mysql database, below error/exception occurred:
+
+Table ‘SOME_TABLE’ doesn’t exist
+
+Logging into MySQL and I found the table does exist:
+
+use mydb;
+
+show tables;
+
+Continue reading “MySQL: Table ‘SOME_TABLE’ doesn’t exist whereas it does exist” →
+
+Using MySQL with C# (III): Coding in C#
+
+Install the nuget package: in the nuget management console, type below line and run
+
+Install-Package MySql.Data
+
+Let’s create a class SqlUtils, and in the static constructor, type below code:
+
+static SqlUtils()
+
+{
+
+try
+
+{
+
+con = new MySqlConnection(connectionStr);
+
+con.Open(); //open the connection
+
+Console.WriteLine(“Successfully opened database.”);
+
+}
+
+catch (MySqlException err) //Catch MySql errors
+
+{
+
+Console.WriteLine(“Error: “ + err.ToString());
+
+}
+
+}
+
+where the connection string is:
+
+Continue reading “Using MySQL with C# (III): Coding in C#” →
+
+Using MySQL with C# (II): Creating a DB for programming
+
+You might be interested in how to install MySQL in windows, check up this link for details.
+
+Run MySQL workbench after clicking Finish
+
+In the MySQL workbench, copy below scripts to create a new database called “MyBooks”:
+
+create database MyBooks
+
+Select the above script line, then click the thunder icon to execute the sql statement
+
+A new DB is created, as shown in the left DB group:
+
+Continue reading “Using MySQL with C# (II): Creating a DB for programming” →

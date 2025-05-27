@@ -1,0 +1,287 @@
+Security Services > Anti-Spyware
+
+Topics:
+
+• Anti-Spyware Overview
+
+• Activating Anti-Spyware Service Protection
+
+Anti-Spyware Overview
+
+Dell SonicWALL Anti-Spyware is part of the Dell SonicWALL Gateway Anti-Virus, Anti-Virus and Intrusion Prevention Service solution that provides comprehensive, real-time protection against viruses, worms, Trojans, spyware, and software vulnerabilities.
+
+The Dell SonicWALL Anti-Spyware Service protects networks from intrusive spyware by cutting off spyware installations and delivery at the gateway and denying previously installed spyware from communicating collected information outbound. Dell SonicWALL Anti-Spyware works with other anti-spyware programs, such as programs that remove existing spyware applications from hosts. You are encouraged to use or install host-based anti-spyware software as an added measure of defense against spyware.
+
+Dell SonicWALL Anti-Spyware analyzes inbound connections for the most common method of spyware delivery, ActiveX-based component installations. It also examines inbound setup executables and cabinet files crossing the gateway, and resets the connections that are streaming spyware setup files to the LAN. These file packages may be freeware bundled with adware, keyloggers, or other spyware.
+
+If spyware has been installed on a LAN workstation prior to installing the Anti-Spyware service, the service will examine outbound traffic for streams originating at spyware infected clients and reset those connections. For example, when spyware has been profiling a user's browsing habits and attempts to send the profile information home, the firewall identifies that traffic and resets the connection.
+
+The SonicWALL Anti-Spyware Service provides the following protection:
+
+• Blocks spyware delivered through auto-installed ActiveX components, the most common vehicle for distributing malicious spyware programs.
+
+• Scans and logs spyware threats that are transmitted through the network and alerts administrators when new spyware is detected and/or blocked.
+
+• Stops existing spyware programs from communicating in the background with hackers and servers on the Internet, preventing the transfer of confidential information.
+
+• Provides granular control over networked applications by enabling administrators to selectively permit or deny the installation of spyware programs.
+
+• Prevents Emailed spyware threats by scanning and then blocking infected Emails transmitted either through SMTP, IMAP or Web-based Email.
+
+Activating Anti-Spyware Service Protection
+
+The Security Services > Anti-Spyware page displays the configuration settings for managing the service on your Dell SonicWALL security appliance.
+
+The Security Services > Anti-Spyware page is divided into three sections:
+
+• Anti-Spyware Status – displays status information on the state of the signature database, your Dell SonicWALL Anti-Spyware license, and other information.
+
+• Anti-Spyware Global Settings – provides the key settings for enabling SonicWALL Anti-Spyware on your Dell SonicWALL security appliance, specifying global SonicWALL Anti-Spyware protection based on three classes of spyware, and other configuration options.
+
+• Anti-Spyware Policies – allows you to view Dell SonicWALL Anti-Spyware signatures and configure the handling of signatures by category groups or on a signature by signature basis. Categories are signatures grouped together based on the product or manufacturer.
+
+Note After activating your Dell SonicWALL Anti-Spyware license, you must enable and configure Anti-Spyware on the SonicWALL management interface before anti-spyware policies are applied to your network traffic.
+
+Anti-Spyware Status
+
+The Anti-Spyware Status section shows the state of the signature database, including the database's timestamp, and the time the SonicWALL signature servers were last checked for the most current signatures. The SonicWALL security appliance automatically attempts to synchronize the database on startup, and once every hour.
+
+• Signature Database – indicates the signature database has been downloaded to the SonicWALL security appliance.
+
+• Signature Database Timestamp – displays the date and time the signature database was last updated. The Signature Database Timestamp is a timestamp for updates to the SonicWALL Anti- Spyware signature database, not the last update to the SonicWALL security appliance.
+
+• Last Checked – displays the last time the SonicWALL security appliance checked for signature updates.
+
+• Anti-Spyware Expiration Date – displays your SonicWALL Anti-Spyware license expiration date. If your SonicWALL Anti-Spyware subscription expires, the SonicWALL Anti-Spyware inspection is stopped and the SonicWALL Anti-Spyware configuration settings are removed from the SonicWALL security appliance. These settings are automatically restored after renewing your SonicWALL Anti- Spyware license to the previously configured state.
+
+The following note contains a link to the Network > Zones page where you can configure
+
+Anti-Spyware on individual zones:
+
+Note: Enable the Anti-Spyware per zone from the Network > Zones page.
+
+Anti-Spyware Global Settings
+
+The Anti-Spyware Global Settings panel enables you to globally prevent and/or detect attacks based on the following attack levels:
+
+• High Danger Level Spyware – These spyware applications are the most dangerous to your network, such as keyloggers or porn dialers, or may contain security vulnerabilities. Removal may be extremely difficult or impossible.
+
+• Medium Danger Level Spyware – These spyware applications can cause disruption to your network, such as increased network traffic that slows down performance. Removal may be extremely difficult.
+
+• Low Danger Level Spyware – These spyware applications are characterized by less intrusive activity and are not an immediate threat. They may profile users and usually are simple to remove.
+
+Tip Dell SonicWALL recommends enabling Prevent All for High Danger Level Spyware and Medium Danger Level Spyware to provide network protection against the most damaging spyware.
+
+Anti-Spyware protection provides two methods for managing global spyware threats: detection (Detect All) and prevention (Prevent All). You must specify a Prevent All action in the Signature Groups panel for anti-spyware to occur on a global level on the SonicWALL security appliance.
+
+When Prevent All is enabled for a signature group in the Signature Groups panel, the SonicWALL security appliance automatically drops and resets the connection to prevent the traffic from reaching its destination.
+
+When Detect All is enabled for a signature group in the Signature Groups panel, the SonicWALL security appliance logs and alerts any traffic that matches any signature in the group, but does not take any action against the traffic. The connection proceeds to its intended destination. You view the SonicWALL log on the Log > View page as well as configure how alerts are handled by the SonicWALL security appliance in the Log > Automation page.
+
+CAUTION : Be careful when selecting only Detect All. Selecting only Detect All logs and sends alerts on traffic that matches any signature in the group, but it does not take any action against the traffic. The traffic proceeds to its intended destination.
+
+When Detect All and Prevent All are both enabled for a signature group in the Signature Groups panel, the SonicOS logs and sends alerts on traffic that matches any signature in the group, and automatically drops and resets the connection to prevent the traffic from reaching its destination.
+
+Enabling Inspection of Outbound Spyware Communication
+
+The Enable Inspection of Outbound Spyware Communication option is available for scanning outbound traffic for spyware communication.
+
+Applying Anti-Spyware Protection on Zones
+
+If your firewall is running SonicOS, you can apply Dell SonicWALL Anti-Spyware to zones on the Network > Zones page to enforce Anti-Spyware not only between each network zone and the WAN, but also between internal zones. For example, enabling Anti-Spyware on the LAN zone enforces Anti-Spyware on all incoming and outgoing LAN traffic.
+
+In the Anti-Spyware Status section of the Security Services> Anti-Spyware Service page, click the Network > Zones link to access the Network > Zones page. You apply Anti-Spyware to one of the zones listed on the Network > Zones page.
+
+To enable Anti-Spyware on a zone:
+
+1. In the firewall management interface, select Network > Zones. (Or from the Anti-Spyware Status section, on the Security Services > Intrusion Prevention page, click the Network > Zones link.) The Network > Zones page is displayed.
+
+2. In the Configure column in the Zone Settings panel, click the edit icon for the zone you want to apply SonicWALL Anti-Spyware. The Edit Zone window is displayed.
+
+3. Click the Enable Anti-Spyware checkbox. A checkmark appears. To disable SonicWALL Anti-Spyware, clear the box.
+
+4. Click OK.
+
+You can also enable SonicWALL Anti-Spyware protection for new zones you create on the Network > Zones page. Clicking the Add button displays the Add Zone window, which includes the same settings as the Edit Zone window.
+
+Anti-Spyware Policies
+
+The Anti-Spyware Policies section allows you to view and manage how SonicWALL Anti-Spyware handles signatures by category groups or on a signature by signature basis. Categories are signatures grouped together by product or manufacturer, and they are listed in the View Style menu.
+
+Entries listed in the Anti-Spyware Policies panel are from the Dell SonicWALL Anti-Spyware signature database downloaded to your firewall. Categories and signatures are dynamically updated by the Anti-Spyware Service. Categories and signatures dynamically change over time in response to new threats.
+
+You can display the signatures in a variety of views using the View Style menu. This menu allows you to specify the categories or signatures to display in the Anti-Spyware Policies panel. You can select All Signatures, or you can select the first letter or number in the spyware name.
+
+Selecting All Signatures from the menu displays all of the signatures by category. The Anti-Spyware Policies panel displays all the categories and their signatures. The category headers divide the signature entries. These headers display Global in the Prevent and Detect columns, indicating the global settings that you defined in the Anti-Spyware Global Settings section.
+
+Anti-Spyware Policies Panel
+
+The Anti-Spyware Policies panel displays the following information about each signature entry:
+
+• Product - Displays the spyware name or manufacturer.
+
+• Name - Displays the name of the spyware as a link. Clicking the name link displays the SonicAlert information about the spyware.
+
+• ID - The SonicWALL database ID number of signature.
+
+• Prevent - A check mark in this column indicates prevention is enabled. A green check mark appears in the Detect column any time you make a change from the global or category prevention settings.
+
+• Detect - A check mark in this column indicates detection is enabled. A green check mark appears in the Detect column any time you make a change from the global or category detection settings.
+
+• Danger Level - Defines the attack signature as Low, Medium, or High as defined for the Signature Groups panel.
+
+• Comments - Displays a brief description of the policy.
+
+• Configure - Clicking the edit icon in the Configure column of the category header displays the Edit Anti-Spyware Category window. Clicking the edit icon in the Configure column for an individual signature displays the Edit Anti-Spyware Signature window. These windows allow you to define a different action from the global settings for the specific category or signature.
+
+Displaying Spyware Information
+
+In the Anti-Spyware Policies panel, clicking on the spyware name link in Name column, displays a SonicALERT page that provides detailed information about the spyware.
+
+Navigating the Anti-Spyware Policies Panel
+
+The Items field displays the panel number of the first category or signature. If you are displaying the first page of a panel, the entry might be Items 1 to 50 (of 58). You can enter a number in the Items field to go directly to a specific entry or use the navigation buttons to navigate the panel.
+
+The SonicWALL Anti-Spyware signatures are displayed fifty to a page in the Anti-Spyware Policies panel.
+
+Note : You can change the default, 50 entries per panel, on the System > Adminstration page in the Web Management Settings section.
+
+Searching the Signature Database
+
+You can search the signature database by entering a search string in the Lookup Signatures Containing String field, then clicking icon.
+
+Sorting Category or Signature Entries
+
+Clicking on the Anti-Spyware Policies panel headings (Name, ID, Prevent, Detect, or Danger Level) sorts the panel entries according to the heading. An up arrow by the column header name indicates the entries are sorted in descending order. A down arrow by the column header name indicates the entries are sorted in ascending order.
+
+Configuring Category Policies
+
+You can choose to override the global prevention and detection settings on a category-by-category basis. The global Prevent All and Detect All settings, which include High Danger Level Spyware, Medium Danger Level Spyware, and Low Danger Level Spyware are configured in the Anti-Spyware Global Settings section. Categories can include any combination of Danger Levels as defined in the Signature Groups panel.
+
+The available signature categories are listed in the View Style menu in the Anti-Spyware Policies section. Configuring the prevent and detect behaviors on a category basis affects all the signatures in the category, regardless of the global attack priority settings (Low, Medium, or High)
+
+Overriding Global Prevent and Detect Settings by Category in SonicOS Standard
+
+1. Select All categories or an individual category from the Category menu.
+
+2. If you select All categories, click on the edit icon in the Configure column for the category you want to change. the Edit Anti-Spyware Category window is displayed.
+
+3. If you select an individual category, click on the edit icon to the right of the Category menu. The Edit Anti-Spyware Category window is displayed.
+
+4. If you want to change the Global Setting for Prevention, select Enable or Disable from the Prevention menu.
+
+5. If you want to change the Global Setting for Detection, select Enable or Disable from the Detection menu.
+
+6. If you want to change the Global Settings for both detection and prevention, select Enable or Disable from the Detection and Prevention menu.
+
+7. If you want to change the Log Redundancy Filter setting from the default global setting, uncheck the Use Category Settings box for Log Redundancy Filter (seconds) and enter a time value in seconds.
+
+8. Click OK to save your changes.
+
+Tip : If you select All signatures from the Category menu, all the categories and their signatures are displayed in the Anti-Spyware Policies panel, allowing you to configure both the category and signatures within the category.
+
+If you override any global settings for a category, a green check mark appears in the Prevent and/or Detect columns of the Anti-Spyware Policies panel.
+
+Overriding Global Prevent and Detect Settings by Category in SonicOS
+
+1. Select All categories or an individual category from the Category menu.
+
+2. If you select All Categories, click on the edit icon in the Configure column for the category you want to change. the Edit Anti-Spyware Category window is displayed.
+
+3. If you select an individual category, click on the edit icon to the right of the Category menu. The Edit Anti-Spyware Category window is displayed.
+
+4. If you want to change the Global Setting for Prevention, select Enable or Disable from the Prevention menu.
+
+5. If you want to change the Global Setting for Detection, select Enable or Disable from the Detection menu.
+
+6. If you want to change the Global Settings for both detection and prevention, select Enable or Disable from the Detection and Prevention menu.
+
+7. The following settings allow you to select specific users/groups, IP address ranges, and schedule objects to be included or excluded from this SonicWALL Anti-Spyware category:
+
+• Included Users/Groups - select the Users/Groups you want included in this SonicWALL
+
+Anti-Spyware category. The default is All.
+
+• Excluded Users/Groups - select the Users/Groups you want excluded from this SonicWALL
+
+Anti-Spyware category. The default None.
+
+• Included IP Address Range - select the IP address range you want included in this SonicWALL Anti-Spyware category. The default All.
+
+• Excluded IP Address Range - select the IP address range you want excluded from this SonicWALL Anti-Spyware category. The default None.
+
+• Schedule - select the scheduled time you want for the activation of this SonicWALL Anti-Spyware category. The default Always on.
+
+8. If you want to change the Log Redundancy Filter setting from the default global setting, uncheck the Use Category Settings box for Log Redundancy Filter (seconds) and enter a time value in seconds.
+
+9. Click OK to save your changes.
+
+Tip : If you select All signatures from the Category menu, all the categories and their signatures are displayed in the Anti-Spyware Policies panel, allowing you to configure both the category and signatures within the category.
+
+Resetting SonicWALL Anti-Spyware Configuration to Default
+
+You can remove all custom category and signature settings you created as well as reset global Prevent All and Detect All settings and Log Redundancy Filter (seconds) settings by clicking the Reset Anti-Spyware Settings & Policies button in the Anti-Spyware Global Settings section.
+
+Configuring Signature Policies
+
+Selecting All signatures from the Category menu displays all of the signatures organized within categories. The All signatures option displays every signature in the Anti-Spyware database.
+
+If global Prevent All and Detect All settings are in effect for the category, Global is displayed in the Prevent and Detect columns for the category and all of its signatures.
+
+Selecting a specific signature category, displays the signatures in that category.
+
+Note : You cannot import your own customized signatures into SonicWALL Anti-Spyware or delete a signature entry.
+
+CAUTION : Use caution when overriding global High Danger Level Spyware and Medium Danger Level Spyware signature behaviors because you can create vulnerabilities. If you make changes and want to restore the default global signature settings, click the Reset Anti-Spyware Settings & Policies button to restore the default settings.
+
+Overriding Category Detect and Prevent Settings for a Signature
+
+in SonicOS Standard
+
+To override category detect and prevent attributes for signatures, perform these steps:
+
+1. In the Anti-Spyware Policies panel, display the signature you want to change. Click the edit icon in the Configure column for the entry to display the Edit Anti-Spyware Signature window.
+
+2. If you want to change the Category Setting for Prevention, select Enable or Disable from the Prevention menu.
+
+3. If you want to change the Category Setting for Detection, select Enable or Disable from the Detection menu.
+
+4. If you want to change the Category Setting for both detection and prevention, select Enable or Disable from the Detection and Prevention menu.
+
+5. If you want to change the Log Redundancy Filter setting from the Category setting, uncheck the Use Category Settings box for Log Redundancy Filter (seconds) and enter a time value in seconds.
+
+6. Click OK to save your changes.
+
+Overriding Category Detect and Prevent Settings for a Signature in SonicOS
+
+To override category detect and prevent attributes for signatures, perform these steps:
+
+7. In the Anti-Spyware Policies panel, display the signature you want to change. Click the edit icon in the Configure column for the entry to display the Edit Anti-Spyware window.
+
+8. If you want to change the Category Setting for Prevention, select Enable or Disable from the Prevention menu.
+
+9. If you want to change the Category Setting for Detection, select Enable or Disable from the Detection menu.
+
+10. If you want to change the Category Setting for both detection and prevention, select Enable or Disable from the Detection and Prevention menu.
+
+11. The following settings allow you to select specific users/groups, IP address ranges, and schedule objects to be included or excluded from this SonicWALL Anti-Spyware signature:
+
+• Included Users/Groups - select the Users/Groups you want included in this SonicWALL
+
+Anti-Spyware signature. The default is All.
+
+• Excluded Users/Groups - select the Users/Groups you want excluded from this SonicWALL
+
+Anti-Spyware signature. The default None.
+
+• Included IP Address Range - select the IP address range you want included in this SonicWALL Anti-Spyware signature. The default All.
+
+• Excluded IP Address Range - select the IP address range you want excluded from this SonicWALL Anti-Spyware signature. The default None.
+
+• Schedule - select the scheduled time you want for the activation of this SonicWALL Anti-Spyware signature. The default Always on.
+
+12. If you want to change the Log Redundancy Filter setting from the Category setting, uncheck the Use Category Settings box for Log Redundancy Filter (seconds) and enter a time value in seconds.
+
+13. Click OK to save your changes.
+
+Resetting SonicWALL Anti-Spyware Settings to Default

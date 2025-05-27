@@ -1,0 +1,33 @@
+An old friend recently called my attention to a thoughtful essay by Stanford statistics professor David Donoho, titled “50 Years of Data Science.” Given the keen interest these days in data science, the essay is quite timely. The work clearly shows that Donoho is not only a grandmaster theoretician, but also a statistical philosopher. The paper should be required reading in all Stat and CS Departments. But as a CS person with deep roots in statistics, I believe there are a few points Donaho should have developed more, which I will discuss here, as well as other points on which his essay really shines.
+
+Though no one seems to claim to know what data science is — not even on an “I know it when I see it” basis — everyone seems to agree that it is roughly a combination of statistics and computer science. Fine, but what does that mean? Let’s take the computer science aspect first.
+
+By CS here, I mean facility with computers, and by that in turn I mean more than programming. By happenstance, I was in a conversation today with some CS colleagues as to whether material on computer networks should be required for CS majors. One of my colleagues said there were equally deserving topics, such as Hadoop. My reply was that Hadoop is SLOW (so much so that many are predicting its imminent demise), and maximizing its performance involves, inter alia, an understanding of…computer networks. Donoho doesn’t cover this point about computation (nor, it seems, do most data science curricula), limiting himself to programming languages and libraries.
+
+But he does a fine job on the latter. I was pleased that his essay contains quite a bit of material on R, such as the work of Yihui Xie and Hadley Wickham. That a top theoretician devotes so much space in a major position paper to R is a fine tribute to the status R has attained in this profession.
+
+(In that context, I feel compelled to note that in attending a talk at Rice in 2012 I was delighted to see Manny Parzen, 86 years old and one of the pioneers of modern statistical theory, interrupt his theoretical talk with a brief exposition on the NINE different definitions of quantile available in calls to R’s quantile() function. Bravo!)
+
+Donoho notes, however, that the Berkeley data science curriculum uses Python instead of R. He surmises that this is due to Python handling Big Data better than R, but I suspect it has more to do with the CS people at UCB being the main ones designing the curriculum, acting on a general preference in CS for the “more elegant” language Python.
+
+But is Python the better tool than R for Big Data? Many would say so, I think, but a good case can be made for R. For instance, to my knowledge there is nothing in Python like CRAN’s bigmemory package, giving a direct R interface to shared memory at the C++ level. (I also have a parallel computation package, Rdsm, that runs on top of bigmemory.)
+
+Regretably, the Donoho essay contains only the briefest passing reference to parallel computation. But again, he is not alone. Shouldn’t a degree in data science, ostensibly aimed in part at Big Data, include at least some knowledge of parallel computation? I haven’t seen any that do. Note, though, that coverage of such material would again require some knowledge of computer system infrastructure, and thus being at odds with the “a little of this, a little of that, but nothing in depth” philosophy taken so far in data science curricula.
+
+One topic I was surprised to see the essay omit was the fact that so much data today is not in the nice “rectangular” — observations in rows, variables in equal numbers of columns — form that most methodology assumes. Ironically, Donoho highlights Hadley Wickham’s plyr package, as rectangular as can be. Arguably, data science students ought to be exposed more to sophisticated use of R’s tapply(), for instance.
+
+Now turning to the stat aspect of Data Science, a key theme in the essay is, to borrow from Marie Davidian, aren’t WE (statistics people) Data Science? Donoho does an excellent job here of saying the answer is Yes (or if not completely Yes, close enough so that the answer could be Yes with a little work). I particularly liked this gem:
+
+It is striking how, when I review a presentation on today’s data science, in which statistics is superficially given pretty short shrift, I can’t avoid noticing that the underlying tools, examples, and ideas which are being taught as data science were all literally invented by someone trained in Ph.D. statistics, and in many cases the actual software being used was developed by someone with an MA or Ph.D. in statistics. The accumulated efforts of statisticians over centuries are just too overwhelming to be papered over completely, and can’t be hidden in the teaching, research, and exercise of Data Science.
+
+Yes! Not only does it succinctly show that there is indeed value to theory, but also it illustrates that point that many statisticians are not computer wimps after all. Who needs data science? 🙂
+
+I believe that Donoho, citing Leo Breiman, is too quick to concede the prediction field to Machine Learning. As we all know, prediction has been part of Statistics since its inception, literally for centuries. Granted, modern math stat has an exquisitely developed theory of estimation, but I have seen too many Machine Learning people, ones I otherwise respect highly, make the absurd statement, “ML is different from statistics, because we do prediction.”
+
+Indeed, one of Donoho’s most salient points is that having MORE methods available for prediction is not the same as doing BETTER prediction. Indeed, he shows the results of some experiments he conducted with Jiashun Jin on some standard real data sets, in which a very simple predictor is compared to various “fancy” ones:
+
+Boosting, Random Forests and so on are dramatically more complex and have correspondingly higher charisma in the Machine Learning community. But against a series of pre-existing benchmarks developed in the Machine Learning community, the charismatic methods do not outperform the homeliest of procedures…
+
+This would certainly be a shock to most students in ML courses — and to some of their instructors.
+
+Maybe the “R people” (i.e. Stat Departments) have as much to contribute to data science as the “Python people” (CS) after all.

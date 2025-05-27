@@ -1,0 +1,55 @@
+The Network Time Protocol (NTP) is a protocol for synchronizing system clocks across the network. Synchronizing systems clocks ensures that all systems have the same accurate time, which is critical when troubleshooting and performing log analysis across devices.
+
+This article describes NTP modes on Cisco IOS devices
+
+The following GNS3 lab topology will be used in this article (click to open full size):
+
+UTC Time
+
+All timezones in the world are relative to the “Coordinated Universal Time” or UTC time. NTP synchronizes only this UTC time; features like timezones and daylight saving time are not part of the protocol. If these adjustments are desired, they must to be configured on the devices itself.
+
+Stratum
+
+The NTP stratum shows the distance to the reference clock. The reference clock is a device which synchronizes it’s time with very precise time sources like GPS or the DCF77 radio signal. The reference clock has a stratum value of 0. The reference clock is directly connected to a device which provides NTP services to the network. This network device is called a stratum-1 server and should normally be the primary NTP server in a network.
+
+The device which synchronizes its clock with the stratum-1 server over the network becomes a stratum-2 server. The server which synchronizes its clock with the stratum-2 server becomes a stratum-3 server, and so on.
+
+Because of network delays between different strata, a NTP server with a higher stratum number will be less accurate in relation to the UTC time than a NTP server with a lower stratum number.
+
+Cisco NTP Mode of operation
+
+Cisco devices can be configured in Master, Peer or Client mode of operation. The following section describes the functionality, configuration and verification of the modes.
+
+NTP Master
+
+When configuring a Cisco device as NTP master its clock becomes a reference clock for time synchronization to other devices. The stratum of the NTP master can be configured in the range 1-15, but will usually be configured as stratum-1. Keep in mind that the clock of the Cisco NTP Master will be leading for all clocks which synchronize their clock with it. The following example shows how to configure R5 in the lab as a NTP master with an stratum of 1:
+
+R5-Master(config)#ntp master 1 R5-Master#sh ntp status | inc Clock Clock is synchronized, stratum 1, reference is .LOCL. R5-Master#sh ntp associations detail | inc configured 127.127.7.1 configured, our_master, sane, valid, stratum 0
+
+The example shows that R5 is a stratum-1 server which is synchronized with its internal clock “LOCL” at address 127.127.7.1. The local clock is a stratum-0 clock source.
+
+NTP Peering (active mode)
+
+NTP Peers can mutually synchronize clocks with each other. NTP peering is usually configured where NTP devices with a low stratum number operate as backup for each other. In cases where one of the peers loses all connectivity with its primary NTP servers, the peer can synchronize its clock with the other peers. Peering must be configured on both peers. The following example shows how to configure R6 and R7 in the lab as a NTP peers, both with R5 as NTP Server:
+
+R6-Peer(config)#ntp server 10.1.1.5 R6-Peer(config)#ntp peer 10.1.1.7 R6-Peer#sh ntp status | inc Clock Clock is synchronized, stratum 2, reference is 10.1.1.5 R6-Peer#sh ntp associations detail | inc configured|mode 10.1.1.5 configured, our_master, sane, valid, stratum 1 our mode client, peer mode server, our poll intvl 128, peer poll intvl 128 10.1.1.7 configured, selected, sane, valid, stratum 2 our mode active, peer mode active, our poll intvl 128, peer poll intvl 128 R7-Peer(config)#ntp server 10.1.1.5 R7-Peer(config)#ntp peer 10.1.1.6 R7-Peer#sh ntp status | inc Clock Clock is synchronized, stratum 2, reference is 10.1.1.5 R7-Peer#sh ntp associations det | inc configured|mode 10.1.1.5 configured, our_master, sane, valid, stratum 1 our mode client, peer mode server, our poll intvl 128, peer poll intvl 128 10.1.1.6 configured, selected, sane, valid, stratum 2 our mode active, peer mode active, our poll intvl 128, peer poll intvl 128
+
+The example shows that after configuring the server and peer, both R6 and R7 are operating as a stratum-2 server. Both routers are synchronized with R5 in a client/server mode, and peering is established in active/active mode between R6 and R7.
+
+NTP Client
+
+When a Cisco IOS device is configured in Client mode it operates in a client/server model where the client synchronizes its clock with the configured servers. The following example shows how to configure R8 as a NTP client with R6 and R7 as NTP server:
+
+R8-Client(config)#ntp server 10.1.1.7 R8-Client(config)#ntp server 10.1.1.6 R8-Client#sh ntp status | inc Clock Clock is synchronized, stratum 3, reference is 10.1.1.6 R8-Client#sh ntp associations detail | inc configured|mode 10.1.1.7 configured, selected, sane, valid, stratum 2 our mode client, peer mode server, our poll intvl 256, peer poll intvl 256 10.1.1.6 configured, our_master, sane, valid, stratum 2 our mode client, peer mode server, our poll intvl 256, peer poll intvl 256
+
+The example shows that after configuring the NTP servers, R8 is a stratum-3 server which is primary synchronized with R6.
+
+NTP peer failover example
+
+At this stage the lab is configured with R5 as NTP Master with a stratum of 1, R6 and R7 as NTP peers with a stratum of 2 and R8 as NTP client with a stratum of 3. To test peer failover I will configure an access-list on R5 which denies traffic from R6.
+
+R5-Master(config)#access-list 10 deny 10.1.1.6 R5-Master(config)#access-list 10 permit any R5-Master(config)#int f1/0 R5-Master(config-if)#ip access-group 10 in
+
+Traffic between R6 and R8 will now be denied, and R6 will lose its NTP synchronization with R5. R6 will start synchronizing with its peer R7, and will degrade from stratum-2 to stratum-3. R8 will notice that R6 degraded to stratum-3, and will start synchronizing with R7 which still is a stratum-2 server.
+
+R6-Peer#sh ntp status | inc Clock Clock is synchronized, stratum 3, reference is 10.1.1.7 R6-Peer#sh ntp ass detail | inc configured 10.1.1.5 configured, insane, invalid, unsynced, stratum 16 10.1.1.7 configured, our_master, sane, valid, stratum 2 R8-Client#sh ntp status | inc Clock Clock is synchronized, stratum 3, reference is 10.1.1.7 R8-Client# R8-Client#sh ntp ass detail | inc configured 10.1.1.7 configured, our_master, sane, valid, stratum 2 10.1.1.6 configured, selected, sane, valid, stratum 3

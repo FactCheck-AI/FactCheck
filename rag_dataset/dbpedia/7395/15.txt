@@ -1,0 +1,87 @@
+Find out if you are distributing the latest version of XFile.
+
+It is possible that the problem you are experiencing has been identified as a bug and has been corrected in a subsequent release. For a list of new features and bug fixes in each version, please see the Version Differences page on our website.
+
+What is the latest version?
+
+The latest major version will be listed on the XFile Product Page. If you own a license to the latest major version, then you can check the Product Updates page to see what minor releases are available. They can be downloaded from this same page.
+
+Check the version that is being distributed from your web application.
+
+Find the correct cab file.
+
+Locate the object tag that instantiates XFile and check the path to the cab file in the codebase attribute. Use this path to locate the specific copy of the cab file that is being used in your web application.
+
+Determine who signed the cab file.
+
+Right click on the cab file, choose properties, then digital signatures. Take note if it is signed by SoftArtisans or if it signed by another party. If it is signed by SoftArtisans, you are making available a version of XFile that warns of impending uploads and downloads. Please see Signing XFile to understand the limitations and expected behavior of using the SoftArtisans-signed cab file.
+
+Determine the version of the SAXFile.dll file.
+
+Open the cab file and extract the SAXFile.dll file. Right-click on this file and choose properties, then version. Note the version of this dll and whether there is any notation on the version dialog that this is an evaluation version.
+
+Determine if the client is running the same version you are distributing.
+
+An important thing to determine with XFile is what version the client is running compared to the version that is available through your web application. There may be a discrepancy.
+
+When the browser encounters an object tag that instantiates XFile, it checks to see if the XFile CLSID can be found in the client's registry. If the CLSID is located, the next check performed is on the version of the associated dll. If a version has been specified in the <OBJECT> tag, the browser will make sure that the version of the dll registered on the client is at least as high as the one specified in the HTML. If the CLSID cannot be located, or if the version of the local dll is too old, the browser will make a request for the cab file so that it can obtain the dlls and register them on the client.
+
+Because of this behavior, your client could be running a version that does not match. The consequences of this are as follows:
+
+The version is older than what you are distributing. A property or method that you are using in your application may not be supported in an older version of XFile.
+
+The version is from the SoftArtisans signed cab. The SoftArtisans signed cab file contains different dlls than what you may want to use. Because these dlls are signed by SoftArtisans, these dlls warn of impending uploads and downloads.
+
+The version is an expired evaluation version. This it the most easily identifiable situation, as XFile will notify the user that it is expired and will fail to upload or download.
+
+All three situations can be prevented by forcing a client-side upgrade by specifying the lastest version of XFile in the <OBJECT> tag. In any release, the retail version has a higher version number than the evaluation version. The unsigned dlls also have a higher version number than the SoftArtisans signed dlls.
+
+Check the version that is registered on the client.
+
+Any particular client could be running a different version of XFile, so check the version that is running on the client where your problem behavior can be reproduced. Additionally, there may be multiple copies of XFile on any particular machine. To know which version of the SAXFile.dll file the browser is using, use the version property of the XFRequest object.
+
+MsgBox [XFRequest object].version
+
+If your client and server are the same machine, please also see:
+
+Testing considerations for XFile applications when the client and server are the same machine.
+
+Compare the client and distribution versions of the saxfile.dll file.
+
+If the client version is older, then force a client-side upgrade by specifying the version number in the codebase attribute of the <OBJECT> tag in the web page that instantiates XFile.
+
+Determine if the problem behavior is client-side or server-side.
+
+Client-side troubleshooting:
+
+Confirm that the path to the cab file is correct.
+
+If you type this path into your browser's address bar, you should be able to retrieve the cab file from the server.
+
+Confirm that XFile properly loads in the browser.
+
+If you are not using XFile's graphic interface (the AXFFile object), there are no visual indicators that XFile has correctly loaded. If it has not loaded you may be able to see a box resembling a missing picture indicator. For the sake of troubleshooting, you can do the following: Instantiate the XFRequest object in script with createobject() instead of an HTML <OBJECT> tag. If you are using javascript, do this is a "try...catch" structure and test to see if you were able to instantiate the object. If you are using VBscript, then use "on error resume next" and then check for errors after trying to instantiate it. If you cannot instantiate XFile, check to see that the path to the cab file and the CLSID are both correct.
+
+Check for client scripting errors.
+
+This may require changing your browser settings to both notify you of scripting errors as well as possibly enabling script debugging.
+
+Enable the XFile debug log.
+
+Use the DebugLevel and DebugLog properties to generate a client-side log for XFile's actions and errors.
+
+Server-side troubleshooting:
+
+Get the Server Response.
+
+XFile does not show the server Response unless explicitly told to do so. The Server Response is useful in determining if the server is returning an errors such as permissions errors that FileUp may generate. There are several ways to get the server Response, and this is explained in detail in the following article: Best Practice: Obtaining and Displaying the server response from an upload request
+
+Take XFile out of the picture.
+
+Does your upload work if you submit the files to your FileUp script using an HTML form? Use an HTML form from your FileUp samples directory and post to the same FileUp script that you are using with XFile.
+
+Does your download succeed if you make a simple GET request for the File with the browser alone? Create an HTML page with a hyperlink for the file you are trying to download.
+
+Check your IIS logs.
+
+Is the request from XFile even reaching the server? If it isn't, are there proxy, firewall or web filter settings that could be preventing the request based on size?

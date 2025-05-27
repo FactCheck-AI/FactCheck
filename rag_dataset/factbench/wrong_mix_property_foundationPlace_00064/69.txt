@@ -1,0 +1,91 @@
+1. Microservices for building an IDE The innards of JetBrains Rider Maarten Balliauw @maartenballiauw
+
+3. Rider Cross-platform, full-stack .NET IDE C#, VB.NET, F#, JavaScript, TypeScript, HTML, TypeScript, … .NET full framework, .NET Core, Mono Lightweight, fast & yet a complete IDE! ReSharper built-in Helps you be more productive Editor, code assistance, navigation, refactoring Built in tools, e.g. NuGet, unit testing, DB tools, source control, REST client, … Tons of plugins! Free trial! www.jetbrains.com/rider
+
+4. History
+
+5. JetBrains Founded 2000 in Prague (Czech Republic) 2000 IntelliJ Renamer 2001 IntelliJ 2004 ReSharper 2019 20+ IDE’s and other developer tools
+
+7. ReSharper IDE Project halted (but not gone to waste) Several concepts and architecture remained Keep functionality separate from the actual IDE Same core, IDE interoperability layer on top Visual Studio 2010, 2013, 2015 and 2017 ReSharper command line tools (CLI)
+
+8. “When will JetBrains come with its own .NET IDE?”
+
+9. Why build a .NET IDE? Many reasons! “When will JetBrains come with its own .NET IDE?” ReSharper constrained by Visual Studio environment 32 bit process resource constraints Changes in VS impact ReSharper .NET Core No good cross-platform IDE existed at the time
+
+10. Hurdles... Cross-platform means a cross-platform UI toolkit is needed ReSharper UI elements in WinForms and WPF Existing UI would need converting, new UI to be built WinForms? (Mono sort of has it) GTKSharp? Qt?
+
+11. IntelliJ Platform Foundation of all of our IDE’s Provides base infrastructure Project view, code completion, UI toolkit + Platform plugins such as version control, terminal, ... + JetBrains <product name> IDE plugins Open source (build your own IDE) https://github.com/JetBrains/intellij-community Windows, Linux, Mac – cross-platform thanks to JVM
+
+12. IntelliJ Platform + R# ? IntelliJ Platform Great foundation to build on Windows, Linux, Mac JVM ReSharper (R#) All of those .NET inspections, refactorings, ... .NET
+
+13. Options! Rewrite R# in Java? 14 years of implementation and knowledge, what could go wrong! 2 R# implementations... Automatic conversion? Run R# as a command-line process Already possible (thanks, 2004!) “Just need our own UI on top” – thin IntelliJ Platform UI process
+
+14. IntelliJ Platform + R# ! Headless R# as a language server Cross-platform No constraints It is ReSharper! 2 products, 1 code base IntelliJ as a thin UI Control the R# process
+
+15. We’re not there yet... Is IntelliJ really a thin UI? Three cases... Features where IJ handles everything Features where R# handles almost everything Features where both IDE’s make an awesomer IDE Both sides are an IDE!
+
+16. 1 + 1 = 3 demo
+
+17. How to make them talk? Inter-process communication
+
+18. Example: Context actions (Alt+Enter) 1. IntelliJ provides text editor, caret(s) and lets us Alt+Enter 2. Ask current document’s language for items to display in Alt+Enter menu For C#, this language is a facade to the R# process 3. IntelliJ renders list of items, may add its own entries List of completion items can be a tree of names and icons.
+
+19. 1. IntelliJ provides text editor and plumbing to display squiggles 2. IntelliJ notifies R# that a document was opened (or modified) 3. R# does its thing (analyze, inspect, summarize that data) 4. R# publishes this to IntelliJ 5. IntelliJ displays this info List of inspections can be a set of name, icon, severity, tooltip, text range Not RPC-style! Analysis can take any amount of time, so IJ should not wait for it. ~~~~~~ Example: Inspections and highlighting
+
+20. 1. Bi-directional User can be typing A refactoring or completion may be injecting code at the same time 2. Can be implemented with delta’s IntelliJ pushes delta to R# R# pushes delta to IntelliJ One or both win (concurrency) Data is a delta (from line + column, to line + column, text to insert) Example: Writing code
+
+21. Types of data Context actions A tree of names and icons Inspections A set of name, icon, severity, tooltip, text range Writing code Delta with from line + column, to line + column, text to insert Fairly simple messages! Can we make this generic enough? Make one inspection work  make them all work
+
+22. Which protocol do we use? Re-use Language Server Protocol (LSP)? Great in itself – IDE concepts like window, editor, language, diagnostics, ... We would need customizations for R# feature set Or build a custom REST-like protocol? Experimented with JSON, ProtoBuf, request/response style
+
+23. Request-action-response LSP and custom protocol are request/response mostly Conflict resolution... What if both human and a refactoring make a change to code? How to keep things synchronized and in a healthy state? Realization: Why a “request-action-response” flow? Why RPC? Both IDE’s share a similar model and architecture Messages are simple, but for RPC they would need context (which solution, which file, state info, ...) – overhead!
+
+24. Model-View-ViewModel (MVVM) “facilitates separation of development of the user interface (view) from development of the back-end (model) using a view model as a value converter” IntelliJ is our view, ReSharper provides the model
+
+25. Model IDE into a shared view model! Protocol could serve as the view model that shares lightweight data Project.Files.Add("Foo.cs") Project.Files["Foo.cs"].Inspections.Add( "Possible null reference", "Warning", 20, 30, 20, 42); Both processes can react to such change (observable + observer)
+
+26. Conflict resolution (again)... Changes to our shared model can come from IJ and R# Can still cause conflicts due to features or timing/GC issues IntelliJ: “Deleted file foo.cs” R#: “I just refactored foo.cs” Solutions! Locking? (freezes, how to handle deadlocks?) Conventions!
+
+27. Protocol conflict conventions View + Model (or client: IntelliJ + server: ReSharper) Each value stored in the view model has a version Updates by the view/client increment the version Updates by the model/server do not Only accept changes if version is the same or newer If not: the change is discarded
+
+28. Rider protocol
+
+29. Obligatory diagram Ideally, our developers do not have to know the details of this. Just create view models.
+
+30. Rider protocol “Reactive Distributed communication framework for .net, kotlin, js” Open source - https://github.com/jetbrains/rd 1. Include protocol libraries and build tools on all sides 2. Write view model in special DSL 3. Generate code 4. Work with generated model .NET/Kotlin/JS/... code generator Model definition DSL Primitives Conflict resolution, serialization, ... Sockets, batching, binary wire protocol
+
+31. Rider protocol Only need to know about a few primitives Conflict resolution, wire protocol, timeouts, ... handled by protocol Code generated based on the defined view model Bonus points: no reflection/introspection needed on every run Hierarchical + lifetimes
+
+32. Hierarchical + lifetimes Solution NuGet host Project Document Inspections PSI (Program Structure Interface) Class Field Method Document Inspections ... Project Local history NuGet tool window Project Editor tab Inspections Language Editor tab Inspections Language viewmodel(Riderprotocol)
+
+33. Hierarchical + lifetimes Cleanup and resource management Objects attach to lifetime Lifetime destroys attached objects Parent lifetime destroys children public class Lifetime : IDisposable { private Stack<Action> resources = new Stack<Action>(); public void Attach(Action resource) { resources.Push(resource); } public void Attach(IDisposable disposable) { resources.Push(disposable.Dispose); } public void Dispose() { while (resources.Count > 0) { var resource = resources.Pop(); resource(); } } }
+
+34. Signal (event) Producers/subscribers Observable/observer Using lifetime to manage subscription // Produce event interface ISource<T> { void Fire(T value); } // Subscribe to event interface ISink<T> { void Advise(Lifetime l, Action<T> handler); } // Event interface ISignal<T> : ISource<T>, ISink<T> { }
+
+35. Property Signal implementation Using lifetime to manage subscription To changes to propery in general To changes to specific value // Observable property interface IProperty<T> : ISink<T> { T Value { get; set; } void Advise(Lifetime l, Action<T> handler); void View(Lifetime l, Action<Lifetime, T> handler); }
+
+36. Primitives Primitive Description Signal Event that is fired when something happens Property Observable value List/set/map Observable collections Field Immutable value Call/callback RPC-style call, needed from time to time byte, short, int, long, float, double, char, boolean, string, securestring, void, enum, ... Primitives and special types Aggregatedef/classdef/structdef A node in the viewmodel
+
+38. Rider protocol Very extensible through Kotlin-based DSL Easy to work with for our developers Update view model, generate code, work with generated code No need to think about things being multiple processes, state, conflict resolution, ... Having the Kotlin-based DSL means Find Usages, Navigation, ... work Cross-language, cross-platform Plugin model for Rider is more complex (IJ and R# parts may be needed) https://github.com/JetBrains/fsharp-support https://github.com/JetBrains/resharper-unity
+
+39. Microservices
+
+40. Two processes! Isolation! Each has their own 64 bit memory space Also their own separate GC Multi-core machines Start/stop independently
+
+41. Debugging? Four processes. Rider (IntelliJ + ReSharper) Debugger worker process Your application
+
+42. Multiple processes... What if certain features were running in their own process? Isolation Own memory constraints Start/stop independently Crash independently
+
+43. Shared view model Pass around a shared view model to interested parties Example: Roslyn analyzers/inspections Pass around “reference” of [ { name, icon, severity, tooltip, text range } ]
+
+44. Multiple machines Socket-based wire protocol Sockets can be on multiple machines Example: Docker debugging Remote debugging
+
+45. Unity game engine www.unity3d.com Extension to view model Rider plugin Unity editor plugin https://github.com/JetBrains/resharper-unity https://twitter.com/kskrygan/status/1064950644094705664
+
+47. Future
+
+48. Model the view as well public CSharpInteractiveOptionsPage(Lifetime lifetime, ...) : base(lifetime, ...) { AddHeader("Tool settings"); AddToolPathFileChooserOption(lifetime, commonFileDialogs); AddEmptyLine(); AddStringOption((CSIOptions s) => s.ToolArguments, "Tool arguments:", "Additional tool arguments"); AddHeader("Tool window behavior"); AddBoolOption((CSIOptions s) => s.FocusOnOpenToolWindow, "Focus tool window on open"); AddBoolOption((CSIOptions s) => s.FocusOnSendLineText, "Focus tool window on Send Line"); AddBoolOption((CSIOptions s) => s.MoveCaretOnSendLineText, "Move caret down on Send Line"); // ... FinishPage(); }
+
+49. Every IDE as both a client and server Front-end and back-end: different garbage collection Whatever happens in the backend, the frontend can process the user's typing Every IDE as both a client and server (“contributor to the model”) Bring this technology to other IDE’s? Reuse WebStorm's HTML/CSS/JS functionality in ReSharper (e.g. Visual Studio + R# using WebStorm in back-end mode)
+
+50. Conclusion

@@ -1,0 +1,19 @@
+Because of the way PHP works, the speed of your PHP code is directly related to the number of lines to be executed for a request. But you don’t need to have tens of thousands lines of code to suffer from slowness. Today, Yanick Witschi submitted a pull request on Contao, a PHP Open-Source CMS, that vastly improves the performance of all pages… and the patch consists of one little change.
+
+When profiling the Contao code with Blackfire.io, he found that the __error() function was called more than 7,000 times for a single page.
+
+The pull request description does a great job at explaining the problem:
+
+Contao uses a custom error handler named __error() and does set it in the initialize.phpusing set_error_handler(). Within that handler, it ignores notices (E_NOTICE) completely.
+
+However, whenever a notice is raised, the custom error handler is called, because it’s set to handle all types of errors: set_error_handler('__error');
+
+Considering that we’re talking about thousands (!!) of notices, mainly caused by Undefined index notices because of a missing isset(), this also equals to thousands of calls of__error()!
+
+After applying the patch, Yanick profiled the code again and he shared the comparison graph with us; you can see the performance impact by looking at the __error() node.
+
+Checkout your usages of set_error_handler() in your code with Blackfire.io and you might find a performance optimization. And of course, removing notices in your code is always a good idea as well.
+
+Happy profiling!
+
+Editor’s note: We are always looking for great stories about how Blackfire helped our users find bottlenecks and improve the performance of their apps. Feel free to contact us if you are interested in sharing your experience with Blackfire.

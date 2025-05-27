@@ -1,0 +1,37 @@
+I am trying to implement an Easyroute protocol asked on https://github.com/p4lang/tutorials/tree/master/SIGCOMM_2015#obtaining-required-software. There is skeleton program given on this above github repo. But as I am new learner of P4 language, I need help to write this skeleton program given on above github repository.
+
+Anyone who has already written and implemented above assignment can help me by posting the required P4 program.
+
+The skeleton program is given as:
+
+/* Copyright 2013-present Barefoot Networks, Inc. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. */ // TODO: define headers & header instances parser start { // TODO return ingress; } // TODO: define parser states action _drop() { drop(); } action route() { modify_field(standard_metadata.egress_spec, /* TODO: port field from your header */); // TODO: update your header } control ingress { // TODO } control egress { // leave empty }
+
+[Place yourself in source routing_directory. ./run_demo.sh will compile your code and create the Mininet network described above. It will also use commands.txt to configure each one of the switches. Once the network is up and running, you should type the following in the Mininet CLI:
+
+xterm h1 xterm h3 This will open a terminal for you on h1 and h3.
+
+On h3 run: ./receive.py.
+
+On h1 run: ./send.py h1 h3.
+
+You should then be able to type messages on h1 and receive them on h3. The send.py program finds the shortest path between h1 and h3 using Dijkstra, then send correctly-formatted packets to h3 through s1 and s3]1
+
+.pcap files will be generated for every interface (9 files: 3 for each of the 3 switches). You can look at the appropriate files and check that your packets are being processed correctly
+
+answered Feb 27, 2017 at 10:16
+
+KhattakKhattak
+
+2166 bronze badges
+
+The code given at https://github.com/p4lang/tutorials/tree/master/SIGCOMM_2015#obtaining-required-software has the 'port' argument missing from the action route() method. The correct code is given below. Simply make this small change in the p4 code file and then execute the steps as mentioned in the tutorial given at https://github.com/p4lang/tutorials/tree/master/SIGCOMM_2015#obtaining-required-software.
+
+/* Copyright 2013-present Barefoot Networks, Inc. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. */ // TODO: define headers & header instances parser start { // TODO return ingress; } // TODO: define parser states action _drop() { drop(); } action route(port) { modify_field(standard_metadata.egress_spec, port); // TODO: update your header } control ingress { // TODO } control egress { // leave empty }
+
+All the Best
+
+answered May 16, 2018 at 12:52
+
+Manish Kumar SinghManish Kumar Singh
+
+1

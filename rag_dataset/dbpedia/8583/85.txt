@@ -1,0 +1,149 @@
+Hey,
+
+I want to install Supertux 0.3 in OpenSuse 11 x86-64, and I can’t find it in my repositories, where it was when I had Opensuse 10.3.
+
+So I downloaded the autopackage installer from Download/Unstable - SuperTux
+
+I used
+
+package install supertux-0.3.0b.x86.package
+
+but it always replies although I’ve installed physfs-package.
+
+# Preparing package: SuperTux Platform Game # Checking for required C library versions ... passed # Checking for OpenAL Audio Toolkit ... passed # Checking for Simple DirectMedia Layer (SDL) ... passed # Checking for OpenGL Graphics Toolkit ... passed # Checking for Ogg bitstream library ... passed # Checking for Vorbis audio codec ... passed # Checking for Standard C++ library ... passed # Checking for SDL Image Library ... passed # Checking for PhysicsFS ... /usr/libexec/autopackage/luau-downloader.bin: error while loading shared libraries: libxml2.so.2: cannot open shared object file: No such file or directory failed # FAIL: Could not find 'PhysicsFS'. Try using the native package manager for openSUSE (yast) to install a package with similar name to 'physfs'. FAIL: Unable to prepare package SuperTux Platform Game.
+
+Does anyone know a solution for my problem?
+
+Thanks in advance
+
+BR
+
+̈́Beosoundftw
+
+beosoundftw wrote:
+
+>
+
+> Hey,
+
+>
+
+> I want to install Supertux 0.3 in OpenSuse 11 x86-64, and I can’t find
+
+> it in my repositories, where it was when I had Opensuse 10.3.
+
+>
+
+> So I downloaded the autopackage installer from ‘Download/Unstable -
+
+> SuperTux’ (http://supertux.lethargik.org/wiki/Download/Unstable)
+
+>
+
+> I used
+
+>
+
+> Code:
+
+> --------------------
+
+> package install supertux-0.3.0b.x86.package
+
+> --------------------
+
+>
+
+>
+
+> but it always replies although I’ve installed physfs-package.
+
+>
+
+>
+
+> Code:
+
+> --------------------
+
+> # Preparing package: SuperTux Platform Game
+
+> # Checking for required C library versions … passed
+
+> # Checking for OpenAL Audio Toolkit … passed
+
+> # Checking for Simple DirectMedia Layer (SDL) … passed
+
+> # Checking for OpenGL Graphics Toolkit … passed
+
+> # Checking for Ogg bitstream library … passed
+
+> # Checking for Vorbis audio codec … passed
+
+> # Checking for Standard C++ library … passed
+
+> # Checking for SDL Image Library … passed
+
+> # Checking for PhysicsFS … /usr/libexec/autopackage/luau-downloader.bin:
+
+> # error while loading shared libraries: libxml2.so.2: cannot open shared
+
+> # object file: No such file or directory
+
+> failed
+
+> # FAIL: Could not find ‘PhysicsFS’. Try using the native package manager
+
+> # for openSUSE (yast) to install a package with similar name to ‘physfs’.
+
+> FAIL: Unable to prepare package SuperTux Platform Game.
+
+> --------------------
+
+>
+
+>
+
+> Does anyone know a solution for my problem?
+
+>
+
+> Thanks in advance
+
+>
+
+> BR
+
+> ̈́Beosoundftw
+
+>
+
+>
+
+I love his little red FireFighter hat when he’s powered up!
+
+When you get error messages like you’ve got, it’s usually because you don’t
+
+have the ‘-devel’ package installed…
+
+for the ‘error while loading shared libraries: libxml2.so.2…’
+
+install ‘libxml2’ and ‘libxml2-devel’
+
+For the physicsfs issue:
+
+install ‘physfs’ and ‘physfs-devel’.
+
+The ‘-devel’ package installs the header files and extra stuff needed to
+
+build a program using that code, while the non ‘-devel’ packages contain
+
+just the libraries needed to run a program.
+
+Hope that makes sense.
+
+Loni
+
+L R Nix
+
+lornix@lornix.com

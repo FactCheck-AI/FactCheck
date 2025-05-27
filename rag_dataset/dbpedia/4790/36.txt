@@ -1,0 +1,103 @@
+Author: Tim Higgins
+
+Review Date: 7/14/2000
+
+Model: ISB2LAN-H4
+
+Long-time readers may remember one of my first router reviews, the Nexland ISB2LAN. My conclusion was that is was basically a UMAX UGate Plus clone, but with more limited support and availability.
+
+Well, Nexland has come a long way in the year since that review. The company has gone through a reverse acquisition, revamped their Web site, signed up some good partnering deals, and applied for a Patent on their Multi-session IPSec passthrough technology. They’ve also done some major work on their firmware, so that the ISB2LAN and ISB2LAN-H4 can’t really be thought of as “clones” of the UMAX products any more.
+
+Although this review is on the ISB2LAN-H4, all the software features that are discussed also apply to the ISB2LAN, as long as you update it with the latest firmware (DHCPPPPOE7R1F.zip as of this date), which you can get from this page.
+
+The H4 is packaged in the same box as the 1 port model. The Link/Activity LEDs for the four LAN ports are on the back panel of the box, along with the RJ45 connectors. This isn’t the best place for the indicators, but at least they’re there!
+
+Setup was very easy, with the basic steps documented on a printed Quick Start sheet. Nexland has included both normal and crossover UTP cables so that you don’t have to run out to the store to get the box installed in pretty much any network configuration. The supplied crossover cable also makes up for the lack of Uplink port on the built-in hub.
+
+The H4 comes configured as a DHCP client and with its LAN DHCP server enabled, and many users will pretty much be able to plug in and go, with maybe a quick winipcfg release/renew for their Windows clients.
+
+If this isn’t your situation, then you’ll need to dig into the setup screens, which are located starting at 192.168.0.1. You can get some idea of what you can do from the screen shots below.
+
+NOTE: You’ll see addresses in the 192.168.1.X range in the screen shots. This is due to my network configuration. You would see addresses in the 192.168.0.X range with the factory default settings.
+
+The H4 has a lot of configurability, but you’ll have to get used to navigating around the various screens. I found things a little confusing, mainly due to the lack of a consistent link navigation bar on all the screens, and the use of underlined text that is not hyperlinked. There’s also one important hidden screen, located at http://192.168.0.1/hidden.htm. So that it doesn’t remain a big secret, the screen shot below shows what you can do there.
+
+One more complaint on the interface and I’ll move on. Nexland: Please put the help files IN the box, not on a client machine’s disk! The present method creates unnecessary confusion and adds a step to an otherwise smooth setup process. There are also some linking problems in the various screens that need to be fixed, so you might have to search in the installed ISB\HELP folder to find what you need!
+
+The H4 should work for most any ISP due to its support of many login/authentication methods and protocols:
+
+@Home
+
+You can name the router, and set a domain name for it.
+
+RoadRunner
+
+RoadRunner TAS login protocol is supported by using a Special Applications port mapping (follow the instructions in the printed user guide on pages 12 & 13).
+
+MediaOne/RoadRunner using MAC address authentication
+
+The WAN port MAC address is plainly shown on a few screens so that MediaOne/RR users whose service is locked to their NIC will be able to call in the new MAC address during router installation. Since some MediaOne/RR affiliates have started to block known router MAC address ranges, however, you’ll probably be better off setting the H4’s WAN port MAC address using the Modem Port MAC Address feature on the hidden.htm screen.
+
+On the WAN side, the router can act as a DHCP client, or have static IP info entered, and also support PPPoE authentication.
+
+Opening holes in your firewall can compromise your LAN’s security if done incorrectly.
+
+One of the H4’s strengths is its port forwarding ability. Nexland gives you four different ways to allow inbound (WAN to LAN) access through the H4:
+
+1) Virtual Servers
+
+This is the simplest form. Just check a box and enter the IP address of the server on your LAN for common services like POP3, SMTP, Telnet, etc.
+
+2) User-Defined Virtual Servers
+
+For single-port servers not listed in the Virtual Servers page, you’d use this function. You have the ability to select TCP or UDP protocol and specify an internal and external port number. The second feature is handy for mapping multiple webservers, for example.
+
+3) Special Applications
+
+Gamers and teleconferencing/videoconferencing users will appreciate this feature. It uses a “triggered map” function to allow multiple computers on the LAN to have access to applications requiring inbound data access on port ranges. You don’t get simultaneous use of the same ports by different computers however. One customer at a time! (See the triggered maps link above for more info.)
+
+4) Exposed Computer
+
+Also known by the term “DMZ computer”, this function will place ONE computer completely outside the H4’s NAT firewall. It’s the riskiest way to go, because you’re giving up the protection of the NAT firewall, but sometimes nothing else works for certain applications. You can also use this function until you find out the specific port mapping information for an application.
+
+I checked to see if I could access the admin functions of the router from the WAN port and found the HTTP port was safely closed. No other port scans were performed.
+
+Tip: If you want to enable the router for remote administration, go to the hidden.htm page, enter the IP address (or IP address range) of the computers that you want to allow to access the H4’s admin functions, then type the WAN port IP address of the H4, followed by :8088.
+
+Example
+
+– Wan port address: 24.31.33.4
+
+– Type http://24.31.33.4:8088 into your browser to reach the admin server pages.
+
+The router doesn’t come with an admin password, however, so you should set one as soon as possible, especially if you are going to administer the router remotely.
+
+Outbound access can be controlled by port and by groups of users. You can identify users by MAC address, workstation name or IP address and assign them to one of four groups. You can then deny service entirely to a group or set a profile of ports to block.
+
+Last, but not least, you can set static routing entries in the H4, but it doesn’t support any dynamic routing protocols like RIP1 or RIP2.
+
+One of Nexland’s strengths is their ability to pass multiple PPTP and IPsec VPN client sessions through their routers. They can also pass one L2TP session. (They’ve applied for a patent on their multisession IPsec pass-through technique and have told me that they’ll be vigorously enforcing the patent.) Single PPTP and IPsec servers on the router LAN side can also be accessed from the WAN side. The H4 can’t act as a VPN tunnel “end-point”, however, so you’ll have to run VPN client software on your client machines.
+
+I wasn’t able to test the VPN claims, but soon hope to be, courtesy of a VPN test-bed that we’re setting up with Nexland’s help.
+
+I ran the normal throughput test on the H4 and got the following results:
+
+A little slower than a good number of other routers in this class, but fast enough for most broadband connections. You wouldn’t want to host a server behind the H4, though, given its slow LAN to WAN transfer speed.
+
+The H4 is a pretty capable box, but there are still some things it doesn’t do:
+
+No content filtering.
+
+No logging
+
+No time-based access control
+
+No alarms or reports
+
+Also note that the email sharing capability that is mentioned in the User Manual has been removed. The H4 also doesn’t support “loopback” of WAN addressing for LAN-side mapped servers, but I suspect that this capability will be added in a future firmware release, given the conversation that I had with Nexland.
+
+Finally, note that firmware updating is via TFTP client. Nexland supplies a Win 95/98 client in the firmware update .zip file. You’re on your own for NT, Win2000, Mac or Linux-based firmware updating.
+
+The H4 (and its sister router the ISB2LAN) are capable boxes, with strong VPN capabilities. The Nexlands are a good match for users who run a lot of applications that need forwarded/mapped ports, or who need to support multiple PPTP and IPSec clients on their LAN.
+
+The downside is that Nexland’s focus is really not on the end user, but more on ISPs and resellers. You can purchase product only through the Nexland Web site, so you won’t find any discounts off the list prices. Tech support is limited to 9AM – 6PM (East Coast US time zone) Mon-Fri and is not a free call. And although Nexland recently reduced prices for both their products by $50 each, the pricing is not what you’d call aggressive.

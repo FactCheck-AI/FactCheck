@@ -1,0 +1,83 @@
+In 1976 Donald E. Knuth and Luis Trabb Pardo produced a technical report titled “The Early Development of Programming Languages” [1]. In it they surveyed the evolution of high level programming languages from 1945-1958, describing each languages principal features, and comparing them using a particular algorithm which they called the “TPK algorithm”. Below is a reproduction of the program implemented in Plankalkül, with relevant components of the program highlighted. It provides one of the best (and simple) illustrations of a Plankalkül program [1].
+
+Now for a brief explanation. LIne 1 introduces the data types A2 which is basically an ordered pair comprised of an integer and a floating-point component. The lines in ② and ③ comprise the function f(t), while the lines in ④-⑦ comprise the main program TPK. In reality the program is only 7 lines in length, with each operation spanning several lines. Operations are performed on “Resultatwerte“, or output variables, “Variablen“, or input variables, and “Zwischenwerte” or intermediary variables.
+
+Procedure P1
+
+Lines 2-4 indicate that P1 is a procedure that takes V0 (of type A∆1, i.e. floating-point) as input and produces R0 of the same type. Lines 5-7 perform the functions calculation.
+
+Main Program P2
+
+At the start of the main program P2, lines 8-10 map V0 (of type 11×A∆1) into a result R0 (of type A2). This basically maps a vector of floating-points to a vector of ordered pairs. The W2(11) on line 11 specifies a for loop that iterates from n-1 down to 0. The notation on line 11, namely R10(x) implies the result R0 of applying P1 to x. Lines 15-18 basically mean:
+
+if Z0 > 400 then R0[10-i] = (i,+∞)
+
+Lines 19-22 are similarly defined:
+
+if Z0 <= 400 then R0[10-i] = (i,+∞)
+
+There was no else statement, hence the use of the bar over “Z0>400“, indicating negation.
+
+Knuth and Pardo provide a base algorithm for TPK implemented in Algol-60. I have reproduced the algorithm in Pascal for comparison to the Plankalkül program.
+
+program tpk; uses Math; var i : integer; y : real; a : array[0..10] of real; function f(t: real): real; begin f := sqrt(abs(t)) + 5 * power(t,3); end; begin for i:= 0 to 10 do read(a[i]); for i := 10 downto 0 do begin y := f(a[i]); if (y > 400) then write(i:4,' TOO LARGE') else write(i:4,' ',y:0:2); writeln end; end.
+
+Knuth, D.E., Pardo, L.T., “The Early Development of Programming Languages“, STAN-CS-76-562, Computer Science Department, Stanford University (1976).
+
+We often think of Fortran as the first “real” programming language, which may be an artifact of IBMs control of the programming language world in the 1950s and 60s. But there are other languages that are often forgotten. One of these, is the language Plankalkül, developed by Konrad Zuse. Plankalkül is likely the first programming language ever designed.
+
+By early 1945 Zuse, living in the small Alpine village of Hinterstein, began work on a “universal” language which could be used to express computations. He named this language Plankalkül, which means “program calculus”. Although the work was done in 1945, it was not published until 1972. It was a comprehensive language, an extension of Hilbert’s Aussagenkalkül (propositional calculus), and Prädikatenkalkül (predicate calculus). In an interview [2] with Konrad Zuse in 1981, he said “I saw it is not good to leave development of the computer only to mathematicians“. When asked why, he responded:
+
+“The mathematicians make the world seem much too theoretical. For instance, in 1945, when I was in a small village after the end of the war in the Alps, I had nothing to do – surely the only thing was to survive. [It was then] that I had time to make my theoretical developments. By that I mean the first programming language for computers. This was especially organized for practice. And 10 years later, we had a big series of languages – very complicated. Even today, they are very complicated.”
+
+Backus [1] described Plankalkül as “perhaps the most sophisticated programming language that was to emerge up to the mid 1960s. It was a real dilly. A very powerful language with data types and all kinds of things.”
+
+Plankalkül was an incredibly complete language. The simplest data type was a single bit, which was used to build types for both integer and real numbers. In addition Plankalkül also included both arrays and records. Interestingly, Plankalkül was a language that didn’t include a goto statement, but instead included an iterative structure similar to a for statement. It included a statement Fin, which used a superscript to specify a jump out of a given number of iteration loop nesting or to the beginning of a new cycle of iteration. Plankalkül included a selection statement, but sans the else clause. Here are the highlights of Plankalkül:
+
+Introduced the assignment operation, V1 + V2 ⟹ R1
+
+Programming “plans”, and sub-programs (procedures).
+
+Programs are non-recursive functions.
+
+Conditional statement, i.e. basic if.
+
+Iteration, i.e. a while-like construct.
+
+No recursion or goto statement.
+
+One elementary datatype – the bit.
+
+Data types (boolean, integer, real, complex) types.
+
+Data structures: arrays, records, hierarchical structures, list of pairs.
+
+Type of a variable is specified when used.
+
+Operations of predicate logic and Boolean algebra.
+
+Complicated expressions with parentheses and nesting.
+
+The only thing that likely would have made Plankalkül notation hard to implement was the fact that each statement consisted of 3-4 lines of code. The first line resembles the actual equation and is similar to what one would find in a contemporary language. The line labelled “V” is used to identify subscripts for variables named on the top line. The “K” line is used to denote components of a variable. The bottom line of each group is labelled “A” or “S“, and is used to specify the type of each variable, e.g. 2=type A2, 9=integer. Something like 1.n implies an integer of n bits. Here is an example of adding 1 to the variable Z1 [6]:
+
+| Z + 1 ⇒ Z V | 1 1 S | 1.n 1.n 1.n
+
+The operator ⇒ is used to denote assignment, while ⟶ with a ⋅ beneath it represented a conditional, or “if”. The “W” operator is used for iteration. Here is another example illustrating A(7) = 5 * B(6).
+
+| 5 * B ⇒ A V | 6 7 S | 1.n 1.n
+
+Zuse’s work contained programs of far greater complexity than anything which appeared prior to 1945. In included programs to sort number arrays, test the connectivity of a graph, perform integer and floating-point operations, and perform syntax analysis of logic formulas. There are also 49 pages dedicated to algorithms for playing chess. Sadly, after 1949 Zuse had little time to dedicate to the applications of Plankalkül, as he was too busy with his fledgling computer company. How would programming language design evolved had Zuse’s work been widely known in 1945, instead of 1972?
+
+An evaluation of Plankalkül can be found in [3] for the interested reader. Zuse’s original handwritten manuscript [4] detailing Plankalkül can be found online at the Deutsches Museum.
+
+Backus, J., “Programming in America in the 1950s – Some personal impressions”, A History of Computing in the Twentieth Century, Metropolis, N., Howlett, J., Rota G-C., (eds), pp.125-135 (1980)
+
+Schultz, B., Elmauer, E., “Konrad Zuse – An Interview with the Inventor of the World’s First Fully Functional Programmable Digital Computer”, in The History of Computing, Zientara, M. (ed.) pp.35-42 (1981)
+
+Bruines, B., “Plankalkül“, Bachelor’s Thesis, Radboud University (2010)
+
+Zuse, K., Theorie der angewandten Logistik, NL-207-0233 (1945/46)
+
+Gilio, W.K., “Konrad Zuse’s Plankalkül: The first high-level, “non von Neumann” programming language”, IEEE Annals of the History of Computing, 19(2), pp.17-24 (1997)
+
+Bauer, F.L., Wössner, H., “The ‘Plankalkül’ of Konrad Zuse: A forerunner of today’s programming languages”, CACM, 15(7), pp.678-685 (1972)

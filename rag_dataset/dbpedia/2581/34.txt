@@ -1,0 +1,569 @@
+by
+
+Auwalu Faisal Koko
+
+1 ,
+
+Zexu Han
+
+1,
+
+Yue Wu
+
+1,2,* ,
+
+Ghali Abdullahi Abubakar
+
+3 and
+
+Muhammed Bello
+
+4
+
+1
+
+College of Civil Engineering and Architecture, Zhejiang University, Hangzhou 310058, China
+
+2
+
+International Center for Architecture and Urban Development Studies, Zhejiang University, Hangzhou 310058, China
+
+3
+
+Institute of Applied Remote Sensing and Information Technology, College of Environmental and Resource Sciences, Zhejiang University, Hangzhou 310058, China
+
+4
+
+Department of Architecture, Kaduna Polytechnic, P. M. B. 2021, Kaduna 800262, Nigeria
+
+*
+
+Author to whom correspondence should be addressed.
+
+Remote Sens. 2022, 14(23), 6083; https://doi.org/10.3390/rs14236083
+
+Submission received: 1 November 2022 / Revised: 23 November 2022 / Accepted: 28 November 2022 / Published: 30 November 2022
+
+(This article belongs to the Special Issue Local Scale Land Use and Land Cover Systems Monitoring Using Remote Sensing)
+
+Abstract
+
+:
+
+The change dynamics of land use/land cover (LULC) is a vital factor that significantly modifies the natural environment. Therefore, mapping and predicting spatiotemporal LULC transformation is crucial in effectively managing the built environment toward achieving Sustainable Development Goal 11, which seeks to make cities all-inclusive, sustainable, and reliable. The study aims to examine the change dynamics of LULC in Kano Metropolis, Nigeria from 1991 to 2020 and predict the city’s future land uses over the next 15 and 30 years, i.e., 2035 and 2050. The maximum likelihood algorithm (MLA) of the supervised classification method was utilized to classify the study area’s land uses using Landsat satellite data and various geographic information system (GIS) techniques. A hybrid simulation model comprising cellular automata and Markov chain (CA-Markov) was then employed in validating and modeling the change dynamics of future LULC. The model integrated the spatial continuity of the CA model with the Markov chain’s ability to address the limitations of individual models in simulating long-term land use prediction. The study revealed substantial changes in the historical LULC pattern of Kano metropolis from 1991 to 2020. It indicated a considerable decline in the city’s barren land from approximately 413.47 km2 in 1991 to 240.89 km2 in 2020. Built-up areas showed the most extensive development over the past 29 years, from about 66.16 km2 in 1991 to 218.72 km2 in 2020. This trend of rapid urban growth is expected to continue over the next three decades, with prediction results indicating the city’s built-up areas expanding to approximately 307.90 km2 in 2035 and 364.88 km2 in 2050. The result also suggests that barren lands are anticipated to decline further with the continuous sustenance of various agricultural activities, while vegetation and water bodies will slightly increase between 2020 and 2050. The findings of this study will help decision-makers and city administrators formulate sustainable land use policies for a more inclusive, safe, and resilient city.
+
+1. Introduction
+
+“Land use” and “land cover” are two different concepts used interchangeably to designate the multifaceted interaction between humans and their physical environment [1]. Land cover refers to the physical properties of the Earth’s surfaces, while land use describes the anthropogenic change in land cover [2,3]. The massive alteration of global land use/land cover (LULC) has recently become a topic of vital concern due to the rapid urbanization of most urban centers and cities [4]. The complex interaction of various human activities has exerted pressure over the past few years on limited land resources. The consequence of this development has contributed to the severe challenges faced in the local, regional, and global environment of the 21st century because of the tremendous alteration of land uses [5]. Estimates indicate a fourfold, i.e., 32% global transformation of LULC over the past six decades, specifically between 1960 and 2019 [6]. These changes have resulted in numerous challenges, including loss of soil fertility and habitats, desertification, environmental pollution, alteration of climatic and hydrological cycles [7,8,9,10,11], and many others [12,13]. Therefore, studies on LULC changes play a significant role in achieving sustainable urban development and efficient management of land resources. Environmental studies of existing and future LULC are vital in addressing the challenges of rapid urban development in urban centers and cities.
+
+Therefore, accurate and up-to-date spatiotemporal LULC data are essential to understanding and analyzing the change dynamics of different land uses. Satellite remote sensing and several geographic information systems (GIS) techniques are usually employed to obtain an accurate and reliable spatial map that aids in monitoring the LULC condition of rapidly developing urban centers and cities [14,15,16]. Images of advanced satellite platforms such as QuickBird, GeoEye, and IKONOS have provided timely datasets and effectively served as excellent data sources for assessing the current state and predicting future scenarios of land use [17,18]. Landsat satellites also have been widely utilized in monitoring spatiotemporal land use/land cover information in various environmental studies of local and regional scales due to their free cost and historical archive of providing uninterrupted global data [19,20,21,22]. The analysis of LULC change dynamics is usually performed using the Landsat multi-temporal and multi-spectral satellite data [23]. These data provide the images needed for determining a study area’s distribution pattern of land uses [24]. Landsat sensors commonly utilized for change detection include the Thematic Mapper (TM), Enhanced Thematic Mapper Plus (ETM+), Operational Land Imager (OLI), and Multi-spectral Scanner (MSS) [25]. Land use change detection quantitatively analyzes the previous state of a LULC class based on the properties inherent in the satellite images [26]. A geographic information system (GIS) provides an appropriate and suitable environment for collecting, storing, visualizing, and analyzing satellite images that are needed to detect land use changes [27,28,29]. Therefore, satellite data and advanced GIS techniques have recently emerged as cost-effective tools for analyzing spatiotemporal LULC information on the state of the natural and man-made environment [30,31]. Hence, process-based modeling plays a crucial role in attaining sustainable urban development through a spatial and quantitative simulation of land use scenarios.
+
+Several spatial models have been developed and utilized for LULC modeling and prediction [32]. Such models include Markov chain models [33], cellular models [34,35], evolutionary models [36], expert system models [37], statistical models [38], multi-agent models [39,40], analytical equation-based models [41], and hybrid models [42,43,44]. The Markov chain is a stochastic modeling approach that is randomly discrete in terms of time and state. The model describes the transition of a state, i.e., LULC class from a previous time to a new time, and can predict the future state of LULC classes based on transition probabilities [45]. It utilizes the historical transition probabilities to predict the future state of land uses. However, the Markov chain individual model does not consider the state of neighboring cells for the prediction of land uses. Other individual models have also shown their ability to serve as a quantitative tool that helps facilitate decision-making in environmental and urban studies through assessing and managing future LULC [46]. However, such models have several limitations. Hence, incorporating the CA model that considers the initial state, neighborhood cells, and transition rules helps overcome the Markov chain’s limitations. The hybrid model of CA-Markov integrates the spatial continuity of the CA model with the Markov chain’s ability to simulate long-term prediction using a complex system that is suitable for modeling and predicting various LULC classes [47]. It integrates the advantages of two or more spatial modeling techniques to address the limitations of individual models [48]. The combination of a cellular automata (CA) model and Markov chain has emerged as one of the most effective and widely used hybrid models for LULC simulation prediction [49]. The hybrid modeling approach is an effective, reliable, and robust technique that is dynamic and appropriate for predicting spatiotemporal change dynamics of land uses in rapidly developing cities and urban areas.
+
+Recent studies have established the historical trend of land use changes and employed a hybrid approach to model the future LULC change dynamics in several cities around the world. Omar et al. [50] determined the historical land use transformation in Kirkuk city, Iraq. The study combined a multi-regression and multi-criteria evaluation technique as its CA transition rules to predict the changes in the urban areas of Kirkuk city from 1984 to 2010. Liping et al. [51] examined the spatiotemporal LULC distribution of Jiangle county, China, from 1992 to 2014 and simulated the future distribution of LULC in 2025 and 2036. The study utilized a CA-Markov model to provide the scientific LULC data for the county’s planning and future urban development. Similarly, Wang et al. [52] used a hybrid CA-Markov model to assess three scenarios of environmental protection, crop protection, and spontaneous scenarios in Tianjin city, China, with the study’s outcome revealing the major drivers of the city’s rapid urban expansion between 2025 and 2035. Samat et al. [53] also simulated the urban land use alteration in Malaysia’s conurbation with a hybrid model using various CA-Markov and GIS techniques. Other recent studies that utilized a similar model to forecast future land uses were conducted in the Atlanta Metropolitan area of Georgia, USA [54], Changping District in Beijing, China [55], and Dehradun in Uttarakhand, India [56]. These studies have shown the effectiveness of the CA-Markov model in predicting LULC transformation and indicated the hybrid model’s ability to serve as an appropriate tool for simulating future developmental scenarios would help in the planning and management of land uses and restoration of ecological systems.
+
+Therefore, in the present study, we analyzed the spatiotemporal LULC change dynamics of Kano metropolis and predicted the city’s future LULC scenario using a hybrid CA-Markov model. The study results indicated the historical land use transitions and presented the tremendous alteration of land uses expected in the next 30 years. The findings of this study provided valuable LULC information vital for sustainable urban development and proper land use management. The study will also contribute to formulating and implementing effective land use policies targeting the United Nations’ Sustainable Development Goal 11.
+
+2. Materials and Methods
+
+2.1. The Study Area
+
+Kano Metropolis lies between longitude 8°25′0″E to 8°39′0″E and latitude 11°51′0″N to 12°08′30″N, as shown in Figure 1. It is located within the most populated state in Northern Nigeria, with the study area being the second most populous city in Nigeria [57]. The city’s urban population was approximately 3.8 million in 2018 and is expected to reach 5.6 million by 2030 [58,59]. Kano metropolis is situated within the Sudan savannah region, with a small portion of the city’s south on the Guinea Savannah belt. It covers an area of approximately 575 km2. The city has been the largest and most prominent urban center in the Sudan zone for many years. It dates to more than one thousand years ago and was originally situated around Dala Hill, where the city’s inhabitants smelted and fabricated iron [60]. The urban structure of Kano has transformed over the past centuries as a result of 21st-century industrialization and economic development, with the city’s urban fabric gradually occupied by a rapid urban expansion that is evident in the central and closed settled zone of the city to the peripheral and surrounding areas of the urban center [61].
+
+The climatic condition of Kano metropolis is a tropical wet and dry climate, coded ‘Aw’ by Koppen’s climatic classification system. The city experiences a rainy season starting in May and ending in October, having a dry season from November to April [62]. The annual rainfall of Kano ranges from 800 mm to 1100 mm between the city’s northern and southern parts. The city’s temperature is averagely warm throughout the year, having a mean annual temperature of approximately 26 °C [63]. These climatic conditions make the study area conducive for agricultural activities. Kano is well-known in Nigeria for subsistence and commercial production of various food and cash crops while utilizing wet and dry season farming. As indicated in Table 1, the study area’s urban population has grown tremendously throughout the years, which could be attributed to these agricultural activities, the city’s high demand for land, and the continuous growth in Nigeria’s population. This development has significantly influenced the city’s LULC pattern.
+
+2.2. Data Sources and Acquisition
+
+The study utilized Landsat satellite images that included Thematic Mapper, Enhanced Thematic Mapper Plus (ETM+), and Operational Land Mapper/Thermal Infrared Sensor (OLI/TIRS), as presented in Table 2. The images were retrieved from the Earth Explorer Platform of the United States Geological Survey (USGS), i.e., (http://earthexplorer.usgs.gov/ accessed on 12 July 2022) using path 188 and row 52 of the Worldwide Reference System (WRS) for the period between 1990 and 2020 at a 10-year interval. However, the non-availability of the study area’s Landsat satellite image in the year 1990 necessitated the utilization of the satellite image of the subsequent year, i.e., 1991. The images are optimized datasets, having a 30 m resolution suitable for geospatial operations that include image selection and visual interpretation [64]. The images were acquired between January and March and had a minimal cloud cover of less than 5% to avoid atmospheric errors and minimize seasonal variation. In addition, ancillary/reference data were obtained using a field survey and high-resolution images of Google Earth Pro 7.3.4 to determine the study area’s ground truth condition.
+
+2.3. Methods
+
+The research employed the following procedures: assessment and analysis of land use/land cover changes, evaluation of change potential, and prediction of future change dynamics of LULC using remotely sensed data, GIS techniques, and a hybrid CA-Markov modeling approach. The detailed illustration of methodological flow is presented in Figure 2 and discussed in the subsequent subsections.
+
+2.3.1. Image Preprocessing and LULC Classification
+
+Before the classification of the satellite images acquired for this study, several image preprocessing operations that included atmospheric and radiometric correction, band combination, layer stacking, and image enhancements were performed to rectify satellite platform distortions [65,66,67]. The area of interest, i.e., Kano metropolis, was then extracted and classified using the supervised maximum likelihood classification (MLC) algorithm into different LULC categories. The MLC algorithm determined the probability of the various satellite image pixels being associated with a specific LULC class [64]. The comparison between individual pixels and different spectral signatures of LULC classes determines the probability of each pixel belonging to a specific LULC class [68]. For the image processing operation, Alsharif [68] adopted Richard’s [69] computation and interpretation of each satellite pixel using the discriminant functions presented in Equation (1).
+
+g i x = ln ∗ p w i − 1 2 ln ∑ i − 1 2 x − m i r ∑ i − 1 x − m i ,
+
+(1)
+
+where i is the LULC class, x represents the number of bands in the satellite image, p w i is the probability of class w i in the classified image, i.e., for all the individual LULC classes, ∑ i is the covariance matrix factor that is related to w i data, ∑ i − 1 is the inverse matrix, and m i denotes the mean vector.
+
+In this study, the classification was performed in ENVI 5.3 software and involved the categorization of all the satellite image pixels into four (4) broad LULC categories. These categories included barren/bare lands (i.e., exposed soils devoid of vegetation and urban development), built-up areas (i.e., areas used for residential, commercial, and industrial developments), vegetation (i.e., areas with agricultural and natural vegetation) and water bodies (i.e., areas having streams, rivers, lakes, and reservoirs).
+
+2.3.2. Accuracy Assessment
+
+Reference data collected during the field survey were combined with other ancillary data, i.e., high-resolution satellite images obtained using Google Earth Pro 7.3.4 to evaluate the classified LULC of the four time nodes. A stratified random sampling technique was adopted to examine the accuracy of the classified maps [70]. A confusion/error matrix was then utilized in analyzing the accuracy of the overall pixel-based LULC classification process. The error matrix highlights the extent to which the classified land uses correspond with the actual ground truth conditions [8]. It comprises the overall accuracy and the kappa coefficient [71]. The overall accuracy signifies the proportion of the correctly classified image pixels to the total image pixels [72]. It is computed as the sum of correctly classified pixels divided by the sum of pixels in the error matrix [4]. The Kappa coefficient defines the extent of agreement between two thematic maps taking into consideration all the components of a confusion matrix. It is widely used to assess LULC classification accuracy [73]. The kappa coefficient of agreement is usually computed using Equations (2)–(4) below [74]:
+
+K = p o − p e 1 − p e ,
+
+(2)
+
+where K is the kappa index value, p o is the ratio of the correctly classified pixels, and p e is the expected proportion of the correctly classified pixels by chance.
+
+p o = ∑ i = 1 c P i j ,
+
+(3)
+
+p e = ∑ i = 1 c p i T p T j ,
+
+(4)
+
+Wang [46] and Pal [75] indicate that a kappa index (K) value above 0.8 specifies an almost perfect agreement, while less than 0.20 signifies a slight agreement between two maps, as shown in Table 3. The accuracy of each classified LULC map during the four time periods of this study was analyzed using a minimum of 50 randomly selected validation points for each of the four (4) LULC categories.
+
+2.3.3. Detection of LULC Change Dynamics
+
+Post-Classification Comparison
+
+The post-classification comparison (PCC) method was utilized to detect the LULC change dynamics of Kano metropolis, Nigeria, between 1991 and 2020. Several studies have adopted and effectively utilized the PCC technique in comparing data of spatiotemporal LULC studies [30,76,77]. The PCC produces a land use change matrix using independently classified imageries of two different time nodes [78]. The study performed the post-classification comparison in ArcGIS 10.7.1 using a thematic classified map overlay and various geospatial operations. The statistical data of land use transition were then produced using a cross-tabulation matrix. The outcome of the cross-tabulation indicates the numerous land use transformations that occurred during the period between 1991 and 2020.
+
+Net Change Analysis
+
+The net changes in land uses were computed by comparing the losses and gains of the four (4) LULC categories in the study area during the different study periods. A loss represents the area decline in LULC between two time nodes, while a gain represents the area increase in LULC between the two time nodes [25]. The losses and gains of the different LULC classes of this study were determined and analyzed using graphical illustrations and a cross-tabulated matrix of the four time period under study.
+
+Change Trend (CT), Change Percentage (CP), and Change Rate Analysis
+
+The study examined the land use change trend, i.e., the magnitude of change, change percentage, and the rate of change of the four LULC classes during the different time nodes. The areas of the individual LULC classes were retrieved based on pixel-based classification. The change magnitude of land uses the increase or decrease in each LULC class over time [79]. A decline in LULC class is denoted using a negative (–) sign, while a positive sign (+) signifies an increase in land use size. The change rate is estimated to determine the magnitude of change in each LULC class during the different time nodes [80]. Based on previous studies [81,82,83], the change magnitude, change percentages of the individual LULC categories, and the annual change rate of the four (4) LULC classes were computed using Equations (5)–(7), respectively,
+
+CT = A 2 − A 1 ,
+
+(5)
+
+CP = A 1 − A 2 A 2 × 100 ,
+
+(6)
+
+ACR = A 2 − A 1 n ,
+
+(7)
+
+where CT denotes the change trend; CP represents the change percentage; ACR signifies the annual change rate; A 1 and A 2 represents the area of LULC in the initial and final time, and n is the number of years between the two periods, i.e., A 1 and A 2 .
+
+2.3.4. Hybrid Modeling and Prediction of LULC
+
+Markov Chain Model
+
+The Markov chain is a stochastic model capable of simulating future LULC change dynamics. Andrei Andreyevich Markov developed the Markov model in 1906 [45]. It utilizes a mathematical equation to simulate randomly changing and continuous surfaces. The model is based on the assumption that the future state of any object depends predominantly upon the current state, not on the previous conditions. In environmental studies of LULC, the Markov model highlights the magnitudes of conversion states between land uses and determines the transfer rates between LULC classes [51,84]. The transformation of LULC change dynamics is obtained through the computation of the transition probability matrix. The Markov chain model is mainly utilized in environmental studies for simulating a system having continuous occurrences, particularly changes in LULC and urban growth. The formula for predicting LULC change dynamics as adopted by Mohamed and El-Raey [78], Zadbagher et al. [85], and Abd El-Hamid et al. [86] is presented in Equation (8) below,
+
+S t + 1 = P i j × S t ,
+
+(8)
+
+where S t + 1 is the LULC state at the final time, S t is the state of LULC at the initial time t , and P i j denotes the probability of a LULC class i changing to class j , i.e., the transition probability matrix, and is computed using Equation (9),
+
+P = P i j = P 11 P 12 … P 1 n P 21 P 22 … . P 2 n P n 1 P n 2 … . P n n ,
+
+(9)
+
+0 ≤ P i j ≤ 1 and ∑ j = 1 N P i j = 1 , ( i , j = 1 , 2 , … … , n ) ,
+
+(10)
+
+where P denotes the transition probability matrix of the Markov chain model, i , j represents the LULC class in the initial and final time, P i j signifies the probability of a LULC class i changing to class j , and N is the number of LULC categories in the region.
+
+The MC model produces three main outputs that comprise the transition area matrix (TAM), transition probability matrix (TPM), and transition probability images (TPI). The TAM signifies the number of image pixels anticipated to change from one LULC category to another over a specified period. The TPM indicates the probability of each LULC category changing to another over a new period, which is compared with the previous period using a cross-tabulated matrix of the two different periods [48,87]. The LULC maps of the years 1991, 2000, 2010, and 2020 were utilized in obtaining the study’s transition probability and transition area matrix.
+
+However, the MC model does not consider the spatial distribution of the individual LULC categories and the spatial direction of urban growth [88]. Therefore, the Markov chain model’s utilization is insufficient to simulate and predict various change dynamics of land use effectively. Hence, a hybrid or an integrated modeling method is essential to achieving an accurate LULC prediction.
+
+Cellular Automata Markov (CA-Markov) Model
+
+An improved method of LULC prediction is obtained by combining the techniques of cellular automata and Markov chains using a hybrid model known as CA-Markov [13]. The model utilizes the knowledge of land use distributions and the structure of spatial contiguity to predict changes in various classes of LULC while taking spatial proximity as a vital driver of land use changes [34,51]. The integrated CA-Markov is a model that considers the geographical directions of LULC changes and land use structure.
+
+The CA model is a dynamic model having space and time as its discrete variables. An important feature of CA models is the consideration of local spatial interactions using the influence of neighborhood cells. The state transition of a cell from time (t) to another time (t+1) is a function that depends on its state and the states of neighboring cells. The closer the distance between the central cell and its neighbor, the larger the weight factor. The weight factor is combined with transition probabilities to forecast the state of adjacent grid cells, so that land use change is not a completely random decision. This study utilized a Moore neighborhood filter to capture the local interaction among cells and a standard contiguity filter of 5 × 5 was used to define the neighborhoods of each cell. During the simulation process, pixels were assigned to specific LULC classes based on their suitability and proximity to other pixels of the same class.
+
+The mathematical expression for the CA model, as reported in Zadbagher and Becek [85], Mondal et al. [30], and Liping et al. [51], is presented in Equation (10),
+
+S t , t + 1 = f S t , N ,
+
+(11)
+
+where S represents the set of discrete cellular states, i.e., finite groups of cells at the time ( t , t + 1 ), t is the time node, f is the transformational rule of cellular states in the local space and N represents the cellular field, i.e., the neighborhood of given cells.
+
+In this study, the Markov chain model was employed to simulate the study area’s spatiotemporal LULC transformation using the transition probabilities, while the local rules of cellular automata were used to control spatial dynamics of LULC classes using neighborhood configuration. It maps the spatial distribution of LULC and produces the quantitative data of the Markov chain using a spatially explicit CA function [89]. The combination of transition matrixes and cellular automata help in analyzing the various land use alterations over time [90,91]. Hence, the hybrid modeling technique was performed in IDRISI TerrSet software to simulate LULC in 2020 and validate the study’s prediction model. Finally, the validated model was used to forecast LULC in 2035 and 2050.
+
+2.3.5. Validation of Land Use Prediction Model
+
+To evaluate the reliability of the simulation model in predicting land uses for the projected years 2035 and 2050, validation was performed based on the comparison of classified LULC maps and simulated LULC maps. The study area’s classified LULC map for 2020 was compared with the city’s predicted LULC map in 2020 in order to evaluate LULC predictions using the widely adopted Kappa Statistical Index [32,46,92]. Mansour et al. [84] indicate that the kappa index signifies agreement level and comprises four (4) key parameters that include the kappa for stratum-level location (KlocationStrata), the kappa for grid cell level location (Klocation), the kappa for no information (Kno), and the kappa standard (Kstandard). These indices reveal the modeling procedure’s accuracy level and are utilized in validating the LULC simulation model. The kappa index has a lower (−1) limit that denotes a less than chance agreement and an upper (+1) limit that signifies a total agreement [74]. The equal chance agreement between the simulated and the actual LULC map is signified using a kappa value of 0. A kappa statistical value of 0.80 was used to validate the suitability of the modeling process. The study then mapped and quantified LULC change dynamics for the years 2035 and 2050 using the validated CA-Markov model.
+
+3. Results
+
+3.1. Classified LULC Pattern
+
+The study area’s classified LULC maps were generated using Landsat TM, ETM+, and OLI satellite images of 1991, 2000, 2010, and 2020 based on the maximum likelihood algorithm of the supervised classification method. In 1991, the study area’s barren land covered 413.47 km2 (71.88%), followed by built-up areas (11.50%), vegetation (11.07%), and water bodies (5.55%). In 2000, barren land covered 410.26 km2 (71.32%), with the city’s built-up land accounting for an increased area of 96.50 km2 (16.78%), while the area of vegetation and water bodies declined to 9.78% and 2.13% of the city’s total landmass. In 2010, the area of barren land declined to 61.85%, while built-up areas increased to 24.21%. This LULC change trend continued in 2020 with a further reduction of the study area’s barren land to 41.88% and an increase in built-up areas to 38.02%. Therefore, the barren lands and built-up areas of the Kano metropolis witnessed the most significant decrease and increase over the period between 1991 and 2020. Barren land declined from 413.47 km2 in 1991 to 240.89 km2 in 2020, while built-up areas increased from 66.16 km2 in 1991 to 218.72 km2 in 2020. The spatial mapping and quantitative data of the four LULC classes during the different time nodes are presented in Figure 3 and Figure 4.
+
+3.2. Accuracy Assessment
+
+The accuracy assessment utilized a minimum of 50 stratified random sampling points for each LULC class. The points were selected based on the study area’s ground truth information and the visual interpretation of high-resolution Google Earth images in ENVI 5.3 image processing software. An error matrix for all the four time nodes under consideration was produced, indicating the various overall accuracies and kappa coefficients as presented in Table 4. The result showed an overall image classification accuracy of approximately 89%, 92%, 94%, and 95% in 1991, 2000, 2010, and 2020 respectively, with a kappa coefficient of approximately 0.81, 0.87, 0.89, and 0.92. Based on the results, the overall accuracies and kappa coefficients are all above 85% and 0.8 for each time node under study, hence suggesting a reliable classification of satellite images. The result also conformed to earlier studies that adopted a kappa index of 0.7 and an accuracy level of 80% as a reliable image classification [25,93]. Therefore, the classified images are suitable for analyzing and predicting the change dynamics of LULC.
+
+3.3. LULC Change Dynamics
+
+The study revealed substantial changes in the study area’s LULC, with the city experiencing a rapid development of built-up areas over the past three decades between 1991 and 2020. In 1991, it was observed that the built-up areas of Kano covered a landmass of 66.16 km2, i.e., 11.50% of the city’s total area. The area increased significantly to 139.262 km2 in 2010 and rose to 218.72 km2 in 2020. This indicates a built-up area expansion of about 5.3% from 1990 to 2000, i.e., period 1; 7.4% from 2000 to 2010, i.e., period 2; and 13.81% from 2010 to 2020, i.e., period three. The study area’s built-up land witnessed a significant growth of 26.52% during the whole study period between 1991 and 2020. The consequence of urban growth is the significant decline in the study area’s barren land. Barren land decreased in the study area from approximately 413.47 km2 in 1991 to 355.78 km2 in 2010, signifying a decline of about 10.03% between 1991 and 2010. The area of barren land was in continuous decline throughout the study period, having a landmass of 240.89 km2 in 2020. This indicates a 30.02% decline in the study area’s barren land between 1991 and 2020. The study area’s vegetation increased and decreased between 1991 and 2020, covering an area of approximately 63.66 km2, i.e., 11.07%, which declined to 56.23 km2, i.e., 9.78% in 2000. However, the landmass of vegetation increased to 74.78 km2 in 2010 and further expanded to 110.25 km2 in 2020. This indicates a 9.39% increase in the city’s vegetation cover that could be attributed to the various agricultural activities engaged by the inhabitants of the study area. The study area’s water bodies declined dramatically from 31.93 km2 in 1991 to 12.24 km2 in 2000. By 2020, the city’s water bodies covered an area of about 5.38 km2, i.e., 0.94% of the total landmass of the study area. The change dynamics of the four LULC categories in the different periods are shown in Figure 5.
+
+The spatiotemporal analysis of the LULC change dynamics revealed the study area’s built-up land to have undergone positive changes throughout the three study periods. It indicates the increase in the city’s built-up area by 30.34 km2 between 1991 and 2000, 42.76 km2 between 2000 and 2010, and 79.45 km2 between 2010 and 2020, signifying an urban expansion of 152.33 km2 between 1991 and 2020. The rapid urban development of Kano over the past three decades could be attributed to the continuous in-migration of a large populace to the city due to various pull factors that include but are not limited to suitable farmlands, better business and job opportunities, better urban infrastructure and healthcare facilities, and many others. However, the study area’s barren land showed negative changes during the study period. The result revealed a negative change of −3.20 km2 from 1991 to 2000, −54.49 km2 from 2000 to 2010, and −114.89 km2 from 2010 to 2020, signifying a barren land loss of approximately −152.55 km2 between 1991 and 2020. This negative change/decline could be attributed to the significant transformation of the city’s barren land/bare soils into built-up areas. The city’s vegetation showed negative and positive changes between 1991 and 2020. The result indicated a negative change of −7.45 km2 from 1991 to 2000, a positive change of 18.55 km2 from 2000 to 2010, and 35.47 km2 from 2010 to 2020. The negative change could be attributed to the development of built-up areas and land encroachment engulfing the study area, while the positive changes in vegetation may be linked to the city’s mechanized agriculture and various afforestation and Fadama programs. The study area’s water bodies showed a negative change of −19.69 km2 from 1991 to 2000, −6.82 km2 from 2000 to 2010, and −0.04 km2 from 2010 to 2020, signifying a loss of about 493.67% and a depreciation in the city’s water bodies of approximately −26.55 km2 over the period between 1991 and 2020. The continuous decline in the extent of waterbodies could be attributed to the effect of global warming, the city’s population growth, increased agricultural activities, and large-scale industrialization. The rapid urban expansion of the city has also contributed to the significant water bodies’ decline due to conversion to other LULC categories during various urbanization processes. Between 1991 and 2020, the built-up areas in Kano showed an annual increase of 5.09 km2 per year, followed by vegetation that increased annually by 1.55 km2. The study area showed an annual decline in barren land by −5.76 km2 while water bodies decreased annually by −0.89 km2, respectively.
+
+3.4. Modeling and Prediction of Future Land Uses
+
+A CA-Markov model integrated into the land change module of TerrSet geospatial monitoring and modeling software, developed by Clark Labs, was utilized to simulate the future LULC pattern of the study area in 2035 and 2050. The land use predictions were based on the city’s historical LULC data and transition matrixes. In order to validate the simulation model, the study area’s classified LULC maps of the period between 2010 and 2020 were utilized to produce the transition probability matrix, transition areas matrix, and a set of conditional probability images. These data aided the prediction of future land uses in Kano metropolis, Nigeria.
+
+Transition Probability Matrix
+
+The transition probability matrix was produced in this study by multiplying the columns and the number of cells within the matrix. It indicated the likelihood that a particular LULC class would transform into another class of land use. Table 5 presents a 4 × 4 matrix comprising the newer LULC categories in the columns and the older LULC categories in the rows. The transition probability matrix highlighted the expected LULC changes for the predicted years 2035 and 2050. For each projected year, i.e., 2035 and 2050, the error matrix row indicates the classes of land uses while the column presents the transformation of various LULCs during the period under consideration. The result revealed the built-up areas of Kano metropolis as the most consistent land cover class, having transition probabilities of approximately 0.90 and 0.85 in 2035 and 2050, respectively. This result suggests a low possibility of the city’s built-up areas transforming into other LULC categories. For the predicted years 2035 and 2050, barren land had a transition probability of approximately 0.53 in 2035, which later declined to roughly 0.31 in 2050. The study area’s vegetation transition probabilities decreased from 0.49 to 0.31 between 2035 and 2050. Similarly, the city’s water bodies indicated a declining transition probability of 0.09 in 2035 and 0.02 in 2050. The result revealed barren land and vegetation as the most significant LULC class that contributed to the expansion of built-up areas due to the rapid increase in their transition probabilities between 2035 and 2050. The outcome suggests that urban growth and expanded built-up areas have contributed to the numerous alterations of other LULC classes in the study area. Hence, this aligns with previous studies that highlighted the importance of future LULC prediction in addressing the consequence of rapid urban development that has constantly affected the ecosystem and influenced human health [94,95]. Figure 6 and Figure 7 present the mapping of the Markovian conditional probabilities of the different LULC classes in 2035 and 2050, respectively. They indicate the likelihood of a particular land cover having a similar image pixel. The red colors on the map signify the highest probability, while dark blue represents the lowest probability.
+
+3.5. Predicted LULC Patterns in 2035 and 2050
+
+An accurate prediction of future LULC patterns requires validating the simulation model. The kappa statistical index is one of the most widely used and acceptable tools for evaluating the reliability and performance of simulation models [17]. Simulated land uses are associated with the actual land uses to validate a LULC forecast made through a CA-Markov model. Based on the classified LULC maps of Kano metropolis in 2000 and 2010, the city’s land use was forecasted for 2020. The forecasted LULC map was compared with the actual LULC map of 2020, and the kappa coefficient was then used to validate the efficacy of the simulation model. The study examined the similarity between Kano’s forecasted and actual LULC maps of 2020 using the kappa index. A positive (+) 1 kappa indicates an absolute agreement, while a negative (−) 1 kappa signifies a less likely agreement [96]. IDRISI Terrsat software’s validation module was used to assess the simulation model’s performance. The result revealed a 0.7816 K-no value, 0.8147 K-location value, 0.8063 K-locationStrata value, and 0.7984 K-standard value, signifying good agreement between the simulated and actual land uses of Kano metropolis. Therefore, the validated CA-model is suitable for simulating the future LULC change dynamics of the study area. Figure 8 and Figure 9 show the spatial pattern of the four LULC categories in the projected years of 2035 and 2050, representing a 15- and 30-year planning period. The statistical data of the predicted LULC based on the validated CA-Markov model are presented in Table 6. Based on the results, Kano’s built-up areas are projected to cover approximately 307.90 km2, representing 53.53% of the city’s total landmass, in 2035. Barren land, vegetation, and water bodies are anticipated to occupy an area of 139.67 km2, 121.40 km2, and 6.27 km2, respectively, over the next 15 years. In addition, the study revealed the anticipated LULC distribution in Kano metropolis over the next 30 years. By 2050, the built-up areas of Kano are projected to cover approximately 364.88 km2, while barren land, vegetation, and water bodies are estimated to cover 88.96 km2, 115.17 km2, and 6.23 km2, respectively.
+
+The study further employed the LCM of TerrSet software to analyze the anticipated gains and losses in the different LULC classes for the years 2035 and 2050. The largest gain during the 15-year (i.e., 2020 to 2035) and 30-year planning periods (i.e., 2020 to 2050) was observed in the study area’s built-up land, while barren lands showed the most significant decline. Numerous alterations of LULC are expected to occur over the next 15 to 30 years, as presented in Figure 10. Between 2020 and 2035, the built-up areas of Kano are forecast to show a positive net change of 89.18 km2, comprising a substantial gain of 89.48 km2 and a negligible loss of 0.30 km2. Vegetation and waterbodies are also anticipated to have a positive net change of 11.15 km2 and 0.89 km2, respectively. The city’s barren land is projected to have a negative net change of −101.22 km2 in the next 15 years. The change dynamics of the predicted LULC in 2050 reveal that between 2020 and 2050, Kano is forecast to gain a built-up area of 146.60 km2, then lose 0.44 km2, resulting in a 146.16 km2 net change. The prediction result further indicated that the city’s vegetation and water bodies would slightly increase by 4.91 km2 and 0.85 km2, respectively, while barren lands will experience a net change of −151.93 km2 over the next 30 years. This decline in the study area’s barren land will contribute 63.14 km2 to the development of the city’s built-up areas in 2035 and increase it further to 110.89 km2 in 2050. Anthropogenic pressure is a major factor contributing to the land use transformation in Kano. Other factors that will contribute to the continuous alteration of the study area’s future land uses include but are not limited to internal migration, rapid population growth, and other socioeconomic factors. The statistical data of the change dynamics of the predicted land uses are presented in Table 7.
+
+4. Discussion
+
+This study analyzed the LULC change dynamics in Kano metropolis using Landsat satellite data and GIS techniques. Using the maximum likelihood algorithm of the supervised classification method, the LULC pattern of the study was analyzed. Different methods have been employed in previous environmental studies of LULC mapping [97]. However, the supervised maximum likelihood classification is identified as the most widely adopted due to its simplicity and speed [8]. In addition, the method does not necessarily require advanced knowledge of remote sensing and data science to achieve the desired goal. The present study further employed a hybrid model of integrated cellular automata and Markov chain, i.e., CA-Markov, to map and predict the future LULC change dynamics of Kano metropolis. The CA-Markov model addressed the limitations of the individual models by combining the spatial continuity of the CA model with the Markov chain’s ability to predict future land uses as observed in a previous study of Majang Forest Biosphere Reserves, Southwestern Ethiopia [11]. The classified LULC maps of the different time nodes in the present study revealed overall accuracies above 85% and Kappa coefficients above 0.8, aligning with the earlier studies of Zadbagher et al. suggesting 70% as the minimum threshold for a reliable LULC classification [85].
+
+The analysis of the historical LULC change dynamics showed extensive growth and development in the built-up areas of Kano metropolis, indicating an urban expansion around the city’s metropolitan areas. Similar studies in other regions attributed the development of open spaces in the peri-urban areas of six European regions to the rapid increase in population. Such population growth has contributed significantly to urban congestion and transformed other land uses into built-up areas [5]. The population of Kano metropolis has rapidly increased from approximately 2.6 million in 2000 to 3.8 million in 2018. World Bank estimates further suggest an increase to nearly 5.6 million by 2030 [59]. The consequences of this population growth are the numerous alterations of LULC identified over the past three decades and further changes expected in future years. The alteration in the LULC of the Kano metropolis aligns with recent studies in Delhi that indicated the major transformation of barren lands into urban development areas [98]. Over the past 29 years, the built-up areas of Kano metropolis have expanded significantly, by approximately 69.75%, while other land uses showed positive and negative changes between 1991 and 2020. Built-up areas grew at the expense of barren lands, vegetation, and water bodies, contributing 126.99 km2, 12.83 km2, and 12.73 km2 to the expansion of urban areas, respectively. Similar scenarios were observed in the urban development of Bangladesh [99], Vietnam, and the six European countries of Belgium, Hungary, Spain, Poland, Slovenia, and Germany [100]. However, the vegetation cover of this study area initially showed a decline from 1991 to 2000 but expanded again from 2000 to 2020. This increase in vegetation could be linked to the various Fadama programs and government efforts in achieving all-season farming, especially between 2010 and 2020. A similar increase in vegetation was observed in Nigeria’s city of Zaria due to the city’s intensive afforestation scheme [8].
+
+The forecasted land uses for the validation model indicated a very good agreement between the simulated LULC of the study area in 2020 and the city’s actual LULC classes in 2020. Hence, the predicted land uses of 2035 and 2050 simulated using the validated CA-Markov model indicated the continuous trend of Kano’s built-up area increasing over the next 15 and 30 years while barren land, vegetation, and water bodies are anticipated to decline during the same period. Khanal [101] opines that urbanization contributes to a decline in forest and agricultural lands. The anticipated trends of rapidly expanding built-up areas transforming other important land cover types align with the recent study that reported a similar scenario in the urbanization of other major cities in developing countries [102]. Therefore, in order to avoid the environmental and climatic challenges facing many global cities, achieving a balance between the development of built-up areas and the conversation of natural land resources is crucial to achieving sustainable urban development. Adopting open green spaces, green infrastructure, sustainable urban agriculture, water conservation techniques, and various afforestation schemes will help promote healthy living by reducing soil erosion, land degradation, environmental pollution, and surface temperature [103,104]. The outcome of this study provide vital LULC data that would significantly help the government and relevant authorities in the sustainable planning of future urban development. In addition, the study provides valuable land use insights to urban planners and decision-makers for appropriate infrastructural development.
+
+5. Conclusions
+
+The study examined the historical LULC change dynamics of Kano metropolis, Nigeria in order to predict the city’s future land uses using Landsat multi-temporal satellite data and GIS techniques. A hybrid model that combined cellular automata and the Markov chain model was used to simulate the study area’s future LULC patterns in 2035 and 2050. The historical data show that between 1991 and 2020, the built-up area in the Kano metropolis showed a significant expansion of about 152.56 km2, suggesting a 69.75% urban development. Similarly, the city’s vegetation showed an increase of 46.58 km2 from 1991 to 2020, which could be linked to the city’s continuous population growth and improvement in agricultural activities. The consequences of this growth in built-up areas and farmlands are a substantial decline in the study area’s barren lands and water bodies of 172.58 km2 and 26.55 km2, respectively. The predicted future LULC pattern indicates that the city’s built-up areas will increase to approximately 307.90 km2 in 2035 and further expand to 364.88 km2 in 2050. The rapid urban expansion of Kano metropolis would continue to occur around the central core and spread to the neighboring parts of the city, especially towards the western and eastern corridors. The findings of this study indicate a rapid pace of urban development in Kano over the past three decades, which will extend to the next 30 years, i.e., 2050. Therefore, the utilization of satellite data and GIS technology could help significantly in providing future spatial information and LULC data vital to effectively planning and managing land resources. Although the present study demonstrated the efficiency of remote sensing data and GIS techniques for LULC change analysis and prediction of future LULC scenarios, further research that incorporates various environmental and socioeconomic variables into the simulation model is needed. Such variables will help greatly in providing a more accurate and reliable prediction of land uses in such a rapidly growing urban center. The role of government policies and programs in the change dynamics of land uses could also be highlighted. In addition, future studies might consider the utilization of advanced satellite platforms such as QuickBird, GeoEye, and WorldView that provide images of better spatial information regarding the complex and heterogonous land use features in urban areas.
+
+Author Contributions
+
+Conceptualization, A.F.K.; data curation, Z.H. and G.A.A.; formal analysis, A.F.K. and Z.H.; funding acquisition, Y.W.; investigation, M.B.; methodology, A.F.K.; project administration, Y.W. and Z.H.; resources, Y.W.; software, A.F.K.; validation, G.A.A. and M.B.; writing—original draft, A.F.K.; writing—review and editing, G.A.A. and M.B. All authors have read and agreed to the published version of the manuscript.
+
+Funding
+
+This research received no external funding.
+
+Institutional Review Board Statement
+
+Not applicable.
+
+Informed Consent Statement
+
+Not applicable.
+
+Data Availability Statement
+
+All the relevant data from this study are available from the corresponding author upon request.
+
+Conflicts of Interest
+
+The authors declare no conflict of interest.
+
+References
+
+Shahfahad; Naikoo, M.W.; Das, T.; Talukdar, S.; Asgher, M.S.; Asif; Rahman, A. Prediction of land use changes at a metropolitan city using integrated cellular automata: Past and future. Geol. Ecol. Landsc. 2022, 1–19. [Google Scholar] [CrossRef]
+
+Anila, N.; Haroon, R. Modeling the Rice Land Suitability Using GIS and Multi-Criteria Decision Analysis Approach in Sindh, Pakistan. J. Basic Appl. Sci. 2017, 13, 26–33. [Google Scholar] [CrossRef]
+
+Marufuzzaman, M.; Khanam, M.; Hasan, M.K. Monitoring the Land Cover Change and Its Impact on the Land Surface Temperature of Rajshahi City, Bangladesh using GIS and Remote Sensing Techniques. J. Geogr. Environ. Earth Sci. Int. 2021, 25, 1–19. [Google Scholar] [CrossRef]
+
+Auwalu, F.K.; Wu, Y.; Ghali, A.A.; Roknisadeh, H.; Akram Ahmed, N.A. Analyzing urban growth and land cover change scenario in Lagos, Nigeria using multi-temporal remote sensing data and GIS to mitigate flooding. Geomat. Nat. Hazards Risk 2021, 12, 631–652. [Google Scholar] [CrossRef]
+
+Hussain, S.; Mubeen, M.; Karuppannan, S. Land use and land cover (LULC) change analysis using TM, ETM+ and OLI Landsat images in district of Okara, Punjab, Pakistan. Phys. Chem. Earth Parts A/B/C 2022, 126, 103117. [Google Scholar] [CrossRef]
+
+Winkler, K.; Fuchs, R. Global land use changes are four times greater than previously estimated. Nat. Commun. 2021, 12, 2501. [Google Scholar] [CrossRef]
+
+Awotwi, A.; Anornu, G.K.; Quaye-Ballard, J.A.; Annor, T. Monitoring land use and land cover changes due to extensive gold mining, urban expansion, and agriculture in the Pra River Basin of Ghana, 1986–2025. Land Degrad. Dev. 2018, 29, 3331–3343. [Google Scholar] [CrossRef]
+
+Koko, A.F.; Yue, W.; Abubakar, G.A.; Hamed, R.; Alabsi, A.A.N. Monitoring and Predicting Spatio-Temporal Land Use/Land Cover Changes in Zaria City, Nigeria, through an Integrated Cellular Automata and Markov Chain Model (CA-Markov). Sustainability 2020, 12, 10452. [Google Scholar] [CrossRef]
+
+Näschen, K.; Diekkrüger, B.; Evers, M.; Höllermann, B.; Steinbach, S.; Thonfeld, F. The Impact of Land Use/Land Cover Change (LULCC) on Water Resources in a Tropical Catchment in Tanzania under Different Climate Change Scenarios. Sustainability 2019, 11, 7083. [Google Scholar] [CrossRef] [Green Version]
+
+Said, M.; Hyandye, C.; Komakech, H.C.; Mjemah, I.C.; Munishi, L.K. Predicting land use/cover changes and its association to agricultural production on the slopes of Mount Kilimanjaro, Tanzania. Ann. GIS 2021, 27, 189–209. [Google Scholar] [CrossRef]
+
+Tadese, S.; Soromessa, T.; Bekele, T. Analysis of the Current and Future Prediction of Land Use/Land Cover Change Using Remote Sensing and the CA-Markov Model in Majang Forest Biosphere Reserves of Gambella, Southwestern Ethiopia. Sci. World J. 2021, 2021, 6685045. [Google Scholar] [CrossRef] [PubMed]
+
+Verma, P.; Singh, P.; Srivastava, S.K. Impact of land use change dynamics on sustainability of groundwater resources using earth observation data. Environ. Dev. Sustain. Multidiscip. Approach Theory Pract. Sustain. Dev. 2020, 22, 5185–5198. [Google Scholar] [CrossRef]
+
+Karimi, H.; Jafarnezhad, J.; Khaledi, J.; Ahmadi, P. Monitoring and prediction of land use/land cover changes using CA-Markov model: A case study of Ravansar County in Iran. Arab. J. Geosci. 2018, 11, 592. [Google Scholar] [CrossRef]
+
+Hussain, S.; Karuppannan, S. Land use/land cover changes and their impact on land surface temperature using remote sensing technique in district Khanewal, Punjab Pakistan. Geol. Ecol. Landsc. 2021, 1–13. [Google Scholar] [CrossRef]
+
+Faruque, M.J.; Vekerdy, Z.; Hasan, M.Y.; Islam, K.Z.; Young, B.; Ahmed, M.T.; Monir, M.U.; Shovon, S.M.; Kakon, J.F.; Kundu, P. Monitoring of land use and land cover changes by using remote sensing and GIS techniques at human-induced mangrove forests areas in Bangladesh. Remote Sens. Appl. Soc. Environ. 2022, 25, 100699. [Google Scholar] [CrossRef]
+
+Wasim, P.; Vali, U.; Shoab Ahmad, K.; Junaid Aziz, K. Satellite-based land use mapping: Comparative analysis of Landsat-8, Advanced Land Imager, and big data Hyperion imagery. J. Appl. Remote Sens. 2016, 10, 026004. [Google Scholar] [CrossRef] [Green Version]
+
+Singh, S.K.; Laari, P.B.; Mustak, S.; Srivastava, P.K.; Szabó, S. Modelling of land use land cover change using earth observation data-sets of Tons River Basin, Madhya Pradesh, India. Geocarto Int. 2018, 33, 1202–1222. [Google Scholar] [CrossRef]
+
+Aksoy, H.; Kaptan, S. Monitoring of land use/land cover changes using GIS and CA-Markov modeling techniques: A study in Northern Turkey. Environ. Monit. Assess. 2021, 193, 507. [Google Scholar] [CrossRef]
+
+Kafy, A.-A.; Naim, M.N.H.; Subramanyam, G.; Faisal, A.-A.; Ahmed, N.U.; Rakib, A.A.; Kona, M.A.; Sattar, G.S. Cellular Automata approach in dynamic modelling of land cover changes using RapidEye images in Dhaka, Bangladesh. Environ. Chall. 2021, 4, 100084. [Google Scholar] [CrossRef]
+
+Alam, A.; Bhat, M.S.; Maheen, M. Using Landsat satellite data for assessing the land use and land cover change in Kashmir valley. GeoJournal 2020, 85, 1529–1543. [Google Scholar] [CrossRef]
+
+Sultana, S.; Satyanarayana, A.N.V. Assessment of urbanisation and urban heat island intensities using landsat imageries during 2000–2018 over a sub-tropical Indian City. Sustain. Cities Soc. 2020, 52, 101846. [Google Scholar] [CrossRef]
+
+Mohajane, M.; Essahlaoui, A.L.I.; Oudija, F.; el Hafyani, M.; El Hmaidi, A.; Ouali, A.; Randazzo, G.; Teodoro, A. Land Use/Land Cover (LULC) Using Landsat Data Series (MSS, TM, ETM+ and OLI) in Azrou Forest, in the Central Middle Atlas of Morocco. Environments 2018, 5, 131. [Google Scholar] [CrossRef] [Green Version]
+
+Namugize, J.N.; Jewitt, G.; Graham, M. Effects of land use and land cover changes on water quality in the uMngeni river catchment, South Africa. Phys. Chem. Earth Parts A/B/C 2018, 105, 247–264. [Google Scholar] [CrossRef]
+
+Hussain, S.; Mubeen, M.; Akram, W.; Muhammad, H.; Ghaffar, A.; Asad, A.; Muhammad, A.; Hafiz, U.F.; Amjad, F.; Wajid, N. Study of land cover/land use changes using RS and GIS: A case study of Multan district, Pakistan. Environ. Monit. Assess. Vol. 2020, 192, 2. [Google Scholar] [CrossRef]
+
+Koko, A.F.; Yue, W.; Abubakar, G.A.; Alabsi, A.A.N.; Hamed, R. Spatiotemporal Influence of Land Use/Land Cover Change Dynamics on Surface Urban Heat Island: A Case Study of Abuja Metropolis, Nigeria. ISPRS Int. J. Geo-Inf. 2021, 10, 272. [Google Scholar] [CrossRef]
+
+Arora, G.; Wolter, P.T. Tracking land cover change along the western edge of the U.S. Corn Belt from 1984 through 2016 using satellite sensor data: Observed trends and contributing factors. J. Land Use Sci. 2018, 13, 59–80. [Google Scholar] [CrossRef]
+
+Hussain, S.; Mubeen, M.; Ahmad, A.; Akram, W.; Hammad, H.M.; Ali, M.; Masood, N.; Amin, A.; Farid, H.U.; Sultana, S.R.; et al. Using GIS tools to detect the land use/land cover changes during forty years in Lodhran District of Pakistan. Environ. Sci. Pollut. Res. Int. 2020, 27, 39676–39692. [Google Scholar] [CrossRef]
+
+Khan, S.; Qasim, S.; Ambreen, R.; Syed, Z.-U.-H. Spatio-Temporal Analysis of Landuse/Landcover Change of District Pishin Using Satellite Imagery and GIS. J. Geogr. Inf. Syst. 2016, 8, 361–368. [Google Scholar] [CrossRef] [Green Version]
+
+Chang, K.-T. Geographic Information System. In International Encyclopedia of Geography; Richardson, D., Castree, N., Goodchild, M.F., Kobayashi, A., Liu, W., Marston, R.A., Eds.; John Wiley & Sons, Inc.: Hoboken, NJ, USA, 2022; pp. 1–10. [Google Scholar] [CrossRef]
+
+Mondal, M.S.; Sharma, N.; Kappas, M.; Garg, P.K. Critical Assessment of Land Use Land Cover Dynamics Using Multi-Temporal Satellite Images. Environments 2015, 2, 61–90. [Google Scholar] [CrossRef]
+
+Mayani-Parás, F.; Botello, F.; Castañeda, S.; Munguía-Carrara, M.; Sánchez-Cordero, V. Cumulative habitat loss increases conservation threats on endemic species of terrestrial vertebrates in Mexico. Biol. Conserv. 2021, 253, 108864. [Google Scholar] [CrossRef]
+
+Mahamud, M.A.; Samat, N.; Tan, M.L.; Chan, N.W.; Tew, Y.L. Prediction of Future Land Use Land Cover Changes of Kelantan, Malaysia. Int. Arch. Photogramm. Remote Sens. Spat. Inf. Sci. 2019, XLII-4/W16, 379–384. [Google Scholar] [CrossRef] [Green Version]
+
+Ahmad, F.; Goparaju, L.; Qayum, A. LULC analysis of urban spaces using Markov chain predictive model at Ranchi in India. Spat. Inf. Res. 2017, 25, 351–359. [Google Scholar] [CrossRef]
+
+Singh, S.K.; Mustak, S.; Srivastava, P.K.; Szabó, S.; Islam, T. Predicting Spatial and Decadal LULC Changes Through Cellular Automata Markov Chain Models Using Earth Observation Datasets and Geo-information. Environ. Processes 2015, 2, 61–78. [Google Scholar] [CrossRef] [Green Version]
+
+Lu, Y.; Laffan, S.; Pettit, C.; Cao, M. Land use change simulation and analysis using a vector cellular automata (CA) model: A case study of Ipswich City, Queensland, Australia. Environ. Plan. B Urban. Anal. City Sci. 2019, 47, 239980831983097. [Google Scholar] [CrossRef]
+
+Aitkenhead, M.J.; Aalders, I.H. Predicting land cover using GIS, Bayesian and evolutionary algorithm methods. J. Environ. Manag. 2009, 90, 236–250. [Google Scholar] [CrossRef]
+
+Stefanov, W.; Ramsey, M.; Christensen, P. Monitoring urban land cover change: An expert system approach to land cover classification of semiarid to arid urban centers. Remote Sens. Environ. 2001, 77, 173–185. [Google Scholar] [CrossRef]
+
+Hyandye, C. GIS and Logit Regression Model Applications in Land Use/Land Cover Change and Distribution in Usangu Catchment. Am. J. Remote Sens. 2015, 3, 6–16. [Google Scholar] [CrossRef] [Green Version]
+
+Ralha, C.; Abreu, C.; Coelho, C.; Zaghetto, A.; Macchiavello, B.; Machado, R. A Multi-Agent Model System for Land-Use Change Simulation. Environ. Model. Softw. 2013, 42, 30–46. [Google Scholar] [CrossRef]
+
+Dai, E.; Ma, L.; Yang, W.; Wang, Y.; Yin, L.; Tong, M. Agent-based model of land system: Theory, application and modelling framework. J. Geogr. Sci. 2020, 30, 1555–1570. [Google Scholar] [CrossRef]
+
+Shamsi, S.R. Integrating Linear Programming and Analytical Hierarchical Processing in Raster-GIS to Optimize Land Use Pattern at Watershed Level. J. Appl. Sci. Environ. Manag. 2010, 14, 81–85. [Google Scholar] [CrossRef]
+
+Tajbakhsh, A.; Karimi, A.; Zhang, A. Modeling land cover change dynamic using a hybrid model approach in Qeshm Island, Southern Iran. Environ. Monit Assess. 2020, 192, 303. [Google Scholar] [CrossRef] [PubMed]
+
+Kourosh Niya, A.; Huang, J.; Kazemzadeh-Zow, A.; Karimi, H.; Keshtkar, H.; Naimi, B. Comparison of three hybrid models to simulate land use changes: A case study in Qeshm Island, Iran. Environ. Monit Assess. 2020, 192, 302. [Google Scholar] [CrossRef] [PubMed]
+
+Marquez, A.; Guevara, E.; Rey, D. Hybrid Model for Forecasting of Changes in Land Use and Land Cover Using Satellite Techniques. IEEE J. Sel. Top. Appl. Earth Obs. Remote Sens. 2019, 12, 252–273. [Google Scholar] [CrossRef]
+
+Nierhaus, G. (Ed.) Markov Models. In Algorithmic Composition: Paradigms of Automated Music Generation; Springer: Vienna, Vienna, 2009; pp. 67–82. [Google Scholar] [CrossRef]
+
+Wang, J.; Maduako, I.N. Spatio-temporal urban growth dynamics of Lagos Metropolitan Region of Nigeria based on Hybrid methods for LULC modeling and prediction. Eur. J. Remote Sens. 2018, 51, 251–265. [Google Scholar] [CrossRef] [Green Version]
+
+Chotchaiwong, P.; Wijitkosum, S. Predicting Urban Expansion and Urban Land Use Changes in Nakhon Ratchasima City Using a CA-Markov Model under Two Different Scenarios. Land 2019, 8, 140. [Google Scholar] [CrossRef] [Green Version]
+
+Al-sharif, A.A.A.; Pradhan, B. Monitoring and predicting land-use change in Tripoli Metropolitan City using an integrated Markov chain and cellular automata models in GIS. Arab. J. Geosci. 2014, 7, 4291–4301. [Google Scholar] [CrossRef]
+
+Jafarpour Ghalehteimouri, K.; Shamsoddini, A.; Mousavi, M.N.; Binti Che Ros, F.; Khedmatzadeh, A. Predicting spatial and decadal of land use and land cover change using integrated cellular automata Markov chain model based scenarios (2019–2049) Zarriné-Rūd River Basin in Iran. Environ. Chall. 2022, 6, 100399. [Google Scholar] [CrossRef]
+
+Omar, N. Modelling Land-use and Land-cover Changes Using Markov-CA, and Multiple Decision Making in Kirkuk City. Int. J. Sci. Res. Environ. Sci. 2014, 2, 29–42. [Google Scholar] [CrossRef]
+
+Liping, C.; Yujun, S.; Saeed, S. Monitoring and predicting land use and land cover changes using remote sensing and GIS techniques—A case study of a hilly area, Jiangle, China. PLoS ONE 2018, 13, e0200493. [Google Scholar] [CrossRef]
+
+Wang, R.; Hou, H.; Murayama, Y. Scenario-Based Simulation of Tianjin City Using a Cellular Automata–Markov Model. Sustainability 2018, 10, 2633. [Google Scholar] [CrossRef] [Green Version]
+
+Samat, N.; Mahamud, M.A.; Tan, M.L.; Maghsoodi Tilaki, M.J.; Tew, Y.L. Modelling Land Cover Changes in Peri-Urban Areas: A Case Study of George Town Conurbation, Malaysia. Land 2020, 9, 373. [Google Scholar] [CrossRef]
+
+Sun, X.; Crittenden, J.C.; Li, F.; Lu, Z.; Dou, X. Urban expansion simulation and the spatio-temporal changes of ecosystem services, a case study in Atlanta Metropolitan area, USA. Sci. Total Environ. 2018, 622–623, 974–987. [Google Scholar] [CrossRef]
+
+Wang, S.; Zheng, X. Dominant transition probability: Combining CA-Markov model to simulate land use change. Environ. Dev. Sustain. 2022. [Google Scholar] [CrossRef]
+
+Deep, S.; Saklani, A. Urban sprawl modeling using cellular automata. Egypt J. Remote Sens. Space Sci. 2014, 17, 179–187. [Google Scholar] [CrossRef] [Green Version]
+
+Koko, A.F.; Wu, Y.; Abubakar, G.A.; Alabsi, A.A.N.; Hamed, R.; Bello, M. Thirty Years of Land Use/Land Cover Changes and Their Impact on Urban Climate: A Study of Kano Metropolis, Nigeria. Land 2021, 10, 1106. [Google Scholar] [CrossRef]
+
+Barau, A.S.; Maconachie, R.; Ludin, A.N.M.; Abdulhamid, A. Urban morphology dynamics and environmental change in Kano, Nigeria. Land Use Policy 2015, 42, 307–317. [Google Scholar] [CrossRef] [Green Version]
+
+United Nations Department of Economic and Social Affairs. World Urbanization Prospects: The 2018 Revision. Available online: https://population.un.org/wup/Country-Profiles/ (accessed on 15 June 2020).
+
+Dankani, I.M. Constraints to Sustainable Physical Planning in Metropolitan Kano. Int. J. Manag. Soc. Sci. Res. (IJMSSR) 2013, 2, 34–42. [Google Scholar]
+
+Mohammed, M.; Jeb, D. GIS-Based Analysis of the Location of Filling Stations in Metropolitan Kano against the Physical Planning Standards. Int. J. Eng. Res. 2014, 3, 147–158. [Google Scholar]
+
+Abaje, I.B.; Ndabula, C.; Adamu, G. Is the Changing Rainfall Patterns of Kano State and its Adverse Impacts an Indication of Climate Change? Eur. Sci. J. 2014, 10, 192–206. [Google Scholar]
+
+Nwagbara, M. Case Study: Emerging Advantages of Climate Change for Agriculture in Kano State, North-Western Nigeria. Am. J. Clim. Chang. 2015, 04, 263–268. [Google Scholar] [CrossRef] [Green Version]
+
+Gupta, S.; Singh, R. Assessment and prediction of LULCC dynamics in a part of Indo-Gangetic Alluvial Plain (IGAP) using geospatial techniques on multi-temporal Landsat imageries. Arab. J. Geosci. 2022, 15, 1076. [Google Scholar] [CrossRef]
+
+Amir Siddique, M.; Wang, Y.; Xu, N.; Ullah, N.; Zeng, P. The Spatiotemporal Implications of Urbanization for Urban Heat Islands in Beijing: A Predictive Approach Based on CA–Markov Modeling (2004–2050). Remote Sens. 2021, 13, 4697. [Google Scholar] [CrossRef]
+
+Sadiq Khan, M.; Ullah, S.; Sun, T.; Rehman, A.U.; Chen, L. Land-Use/Land-Cover Changes and Its Contribution to Urban Heat Island: A Case Study of Islamabad, Pakistan. Sustainability 2020, 12, 3861. [Google Scholar] [CrossRef]
+
+Moisa, M.B.; Gemeda, D.O. Analysis of urban expansion and land use/land cover changes using geospatial techniques: A case of Addis Ababa City, Ethiopia. Appl. Geomat. 2021, 13, 853–861. [Google Scholar] [CrossRef]
+
+Alsharif, M.; Alzandi, A.A.; Shrahily, R.; Mobarak, B. Land Use Land Cover Change Analysis for Urban Growth Prediction Using Landsat Satellite Data and Markov Chain Model for Al Baha Region Saudi Arabia. Forests 2022, 13, 1530. [Google Scholar] [CrossRef]
+
+Richards, J.A.; Xiuping, J. Remote Sensing Digital Image Analysis: An Introduction; Springer: Berlin/Heidelberg, Germany, 1999. [Google Scholar] [CrossRef]
+
+Congalton, R.G. A review of assessing the accuracy of classifications of remotely sensed data. Remote Sens. Environ. 1991, 37, 35–46. [Google Scholar] [CrossRef]
+
+Shao, G.; Tang, L.; Liao, J. Overselling overall map accuracy misinforms about research reliability. Landsc. Ecol 2019, 34, 2487–2492. [Google Scholar] [CrossRef] [Green Version]
+
+Moisa, M.B.; Dejene, I.N.; Roba, Z.R.; Gemeda, D.O. Impact of urban land use and land cover change on urban heat island and urban thermal comfort level: A case study of Addis Ababa City, Ethiopia. Environ. Monit. Assess. 2022, 194, 736. [Google Scholar] [CrossRef]
+
+Rwanga, S.; Ndambuki, J. Accuracy Assessment of Land Use/Land Cover Classification Using Remote Sensing and GIS. Int. J. Geosci. 2017, 8, 611–622. [Google Scholar] [CrossRef] [Green Version]
+
+Cohen, J. A Coefficient of Agreement for Nominal Scales. Educ. Psychol. Meas. 1960, 20, 37–46. [Google Scholar] [CrossRef]
+
+Pal, S.; Ziaul, S. Detection of land use and land cover change and land surface temperature in English Bazar urban centre. Egypt J. Remote Sens. Space Sci. 2017, 20, 125–145. [Google Scholar] [CrossRef] [Green Version]
+
+Gebru, B.M.; Lee, W.-K.; Khamzina, A.; Lee, S.-G.; Negash, E. Hydrological Response of Dry Afromontane Forest to Changes in Land Use and Land Cover in Northern Ethiopia. Remote Sens. 2019, 11, 1905. [Google Scholar] [CrossRef] [Green Version]
+
+Ahlqvist, O. Extending post-classification change detection using semantic similarity metrics to overcome class heterogeneity: A study of 1992 and 2001 U.S. National Land Cover Database changes. Remote Sens. Environ. 2008, 112, 1226–1241. [Google Scholar] [CrossRef]
+
+Mohamed, S.A.; El-Raey, M.E. Land cover classification and change detection analysis of Qaroun and Wadi El-Rayyan lakes using multi-temporal remotely sensed imagery. Environ. Monit. Assess. 2019, 191, 229. [Google Scholar] [CrossRef] [PubMed]
+
+Maity, B.; Mallick, S.K.; Rudra, S. Spatiotemporal dynamics of urban landscape in Asansol municipal corporation, West Bengal, India: A geospatial analysis. GeoJournal 2022, 87, 1619–1637. [Google Scholar] [CrossRef]
+
+Meshesha, T.W.; Tripathi, S.K.; Khare, D. Analyses of land use and land cover change dynamics using GIS and remote sensing during 1984 and 2015 in the Beressa Watershed Northern Central Highland of Ethiopia. Model. Earth Syst. Environ. 2016, 2, 1–12. [Google Scholar] [CrossRef] [Green Version]
+
+Abebe, M.S.; Derebew, K.T.; Gemeda, D.O. Exploiting temporal-spatial patterns of informal settlements using GIS and remote sensing technique: A case study of Jimma city, Southwestern Ethiopia. Environ. Syst. Res. 2019, 8, 6. [Google Scholar] [CrossRef] [Green Version]
+
+Elias, E.; Seifu, W.; Tesfaye, B.; Girmay, W. Impact of land use/cover changes on lake ecosystem of Ethiopia central rift valley. Cogent Food Agric. 2019, 5, 1595876. [Google Scholar] [CrossRef]
+
+Fenta, A.A.; Yasuda, H.; Haregeweyn, N.; Belay, A.S.; Hadush, Z.; Gebremedhin, M.A.; Mekonnen, G. The dynamics of urban expansion and land use/land cover changes using remote sensing and spatial metrics: The case of Mekelle City of northern Ethiopia. Int. J. Remote Sens. 2017, 38, 4107–4129. [Google Scholar] [CrossRef]
+
+Mansour, S.; Al-Belushi, M.; Al-Awadhi, T. Monitoring land use and land cover changes in the mountainous cities of Oman using GIS and CA-Markov modelling techniques. Land Use Policy 2020, 91, 104414. [Google Scholar] [CrossRef]
+
+Zadbagher, E.; Becek, K.; Berberoglu, S. Modeling land use/land cover change using remote sensing and geographic information systems: Case study of the Seyhan Basin, Turkey. Environ. Monit. Assess. 2018, 190, 494. [Google Scholar] [CrossRef] [PubMed]
+
+Abd El-Hamid, H.T.; Kaloop, M.R.; Abdalla, E.M.; Hu, J.W.; Zarzoura, F. Assessment and prediction of land-use/land-cover change around Blue Nile and White Nile due to flood hazards in Khartoum, Sudan, based on geospatial analysis. Geomat. Nat. Hazards Risk 2021, 12, 1258–1286. [Google Scholar] [CrossRef]
+
+Gong, W.; Yuan, L.; Fan, W.; Stott, P. Analysis and simulation of land use spatial pattern in Harbin prefecture based on trajectories and cellular automata-Markov modelling. Int. J. Appl. Earth Obs. Geoinf. 2015, 34, 207–216. [Google Scholar] [CrossRef]
+
+Ghosh, P.; Mukhopadhyay, A.; Chanda, A.; Mondal, P.; Akhand, A.; Mukherjee, S.; Nayak, S.K.; Ghosh, S.; Mitra, D.; Ghosh, T.; et al. Application of Cellular automata and Markov-chain model in geospatial environmental modeling- A review. Remote Sens. Appl. Soc. Environ. 2017, 5, 64–77. [Google Scholar] [CrossRef]
+
+Yang, Y.; Zhang, S.; Yang, J.; Xing, X.; Wang, D. Using a Cellular Automata-Markov Model to Reconstruct Spatial Land-Use Patterns in Zhenlai County, Northeast China. Energies 2015, 8, 3882–3902. [Google Scholar] [CrossRef]
+
+Nouri, J.; Gharagozlou, A.; Arjmandi, R.; Faryadi, S.; Adl, M. Predicting Urban Land Use Changes Using a CA–Markov Model. Arab. J. Sci. Eng. 2014, 39, 5565–5573. [Google Scholar] [CrossRef]
+
+Gidey, E.; Dikinya, O.; Sebego, R.; Segosebe, E.; Zenebe, A. Cellular automata and Markov Chain (CA_Markov) model-based predictions of future land use and land cover scenarios (2015–2033) in Raya, northern Ethiopia. Model. Earth Syst. Environ. 2017, 3, 1245–1262. [Google Scholar] [CrossRef]
+
+Hua, A. Application of CA-Markov model and land use/land cover changes in Malacca river watershed, Malaysia. Appl. Ecol. Environ. Res. 2017, 15, 605–622. [Google Scholar] [CrossRef]
+
+Abubakar, G.A.; Wang, K.; Belete, M.; Shahtahamassebi, A.; Biswas, A.; Gan, M. Toward digital agricultural mapping in Africa: Evidence of Northern Nigeria. Arab. J. Geosci. 2021, 14, 643. [Google Scholar] [CrossRef]
+
+Abbas, Z.; Yang, G.; Zhong, Y.; Zhao, Y. Spatiotemporal Change Analysis and Future Scenario of LULC Using the CA-ANN Approach: A Case Study of the Greater Bay Area, China. Land 2021, 10, 584. [Google Scholar] [CrossRef]
+
+Qiao, Z.; Liu, L.; Qin, Y.; Xu, X.; Wang, B.; Liu, Z. The Impact of Urban Renewal on Land Surface Temperature Changes: A Case Study in the Main City of Guangzhou, China. Remote Sens. 2020, 12, 794. [Google Scholar] [CrossRef] [Green Version]
+
+Girma, R.; Fürst, C.; Moges, A. Land use land cover change modeling by integrating artificial neural network with cellular Automata-Markov chain model in Gidabo river basin, main Ethiopian rift. Environ. Chall. 2022, 6, 100419. [Google Scholar] [CrossRef]
+
+Talukdar, S.; Singha, P.; Mahato, S.; Shahfahad; Pal, S.; Liou, Y.-A.; Rahman, A. Land-Use Land-Cover Classification by Machine Learning Classifiers for Satellite Observations—A Review. Remote Sens. 2020, 12, 1135. [Google Scholar] [CrossRef] [Green Version]
+
+Chaudhuri, G.; Mainali, K.P.; Mishra, N.B. Analyzing the dynamics of urbanization in Delhi National Capital Region in India using satellite image time-series analysis. Environ. Plan. B Urban. Anal. City Sci. 2022, 49, 368–384. [Google Scholar] [CrossRef]
+
+Arifeen, H.M.; Phoungthong, K.; Mostafaeipour, A.; Yuangyai, N.; Yuangyai, C.; Techato, K.; Jutidamrongphan, W. Determine the Land-Use Land-Cover Changes, Urban Expansion and Their Driving Factors for Sustainable Development in Gazipur Bangladesh. Atmosphere 2021, 12, 1353. [Google Scholar] [CrossRef]
+
+Spyra, M.; Kleemann, J.; Calò, N.C.; Schürmann, A.; Fürst, C. Protection of peri-urban open spaces at the level of regional policy-making: Examples from six European regions. Land Use Policy 2021, 107, 105480. [Google Scholar] [CrossRef]
+
+Khanal, N.; Uddin, K.; Matin, M.A.; Tenneson, K. Automatic Detection of Spatiotemporal Urban Expansion Patterns by Fusing OSM and Landsat Data in Kathmandu. Remote Sens. 2019, 11, 2296. [Google Scholar] [CrossRef] [Green Version]
+
+Wang, S.W.; Munkhnasan, L.; Lee, W.-K. Land use and land cover change detection and prediction in Bhutan’s high altitude city of Thimphu, using cellular automata and Markov chain. Environ. Chall. 2021, 2, 100017. [Google Scholar] [CrossRef]
+
+Asuquo Enoh, M.; Ebere Njoku, R.; Chinenye Okeke, U. Modeling and mapping the spatial–temporal changes in land use and land cover in Lagos: A dynamics for building a sustainable urban city. Adv. Space Res. 2022. [CrossRef]
+
+Tsegaye, B. Effect of Land Use and Land Cover Changes on Soil Erosion in Ethiopia. Int. J. Agric. Sci. Food Technol. 2019, 5, 26–34. [Google Scholar] [CrossRef]
+
+Figure 1. Location map of the study area, i.e., (a) Kano metropolis in, (b) Kano State, and (c) Nigeria.
+
+Figure 2. Methodological flow of predicting the study area’s future LULC.
+
+Figure 3. Classified LULC of the study area, i.e., Kano metropolis in (a) 1991, (b) 2000, (c) 2010, and (d) 2020.
+
+Figure 4. Graphical distribution of LULC in Kano metropolis, Nigeria.
+
+Figure 5. Detection of LULC change dynamics between, (a) 1991 and 2000, (b) 2000 and 2010, (c) 2010 and 2020, and (d) 1991 and 2020.
+
+Figure 6. Markovian conditional probabilities for the predicted, (a) Barren Land, (b) Built-up Areas, (c) Vegetation, and (d) Waterbodies in 2035.
+
+Figure 7. Markovian conditional probabilities for the predicted, (a) Barren Land, (b) Built-up Areas, (c) Vegetation, and (d) Waterbodies in 2050.
+
+Figure 8. Mapping of predicted LULC in 2035.
+
+Figure 9. Mapping of predicted LULC in 2050.
+
+Figure 10. Change dynamics of predicted LULC from, (a) 2020−2035, and (b) 2020−2050.
+
+Table 1. Urban population growth of Kano metropolis.
+
+Urban Agglomeration of Kano Metropolis, NigeriaCity Population (Thousands)Average Annual Rate of Change (Percentage)2000201820302000–20182018–20302602382055512.13.1
+
+Table 2. Sources and description of satellite data.
+
+Satellite ImageResolution (m)Sensor TypeWRSAcquisition
+
+DateScene Identification
+
+Number PathRowLandsat 530 × 30TM188527 January 1991LT41880521991007XXX02Landsat 730 × 30ETM+188524 March 2000LE71880522000064SGS00Landsat 730 × 30ETM+1885228 February 2010LE71880522010059ASN00Landsat 830 × 30OLI/TIRS1885216 February 2020LC81880522020047LGN00
+
+Table 3. Interpretation of kappa statistics.
+
+S/No.Kappa Index (K)
+
+ValuesKappa Index InterpretationLevel of Agreement1.< 0Less than chance agreement2.0.01–0.20Slight agreement3.0.21–0.40Fair agreement4.0.41–0.60Moderate agreement5.0.61–0.80Substantial agreement6.0.81–0.99Almost perfect agreement
+
+Table 4. Error/confusion matrix of the four time nodes, i.e., 1991, 2000, 2010, and 2020.
+
+i. Error Matrix for the Year 1991S/
+
+No.LULC ClassesBarren LandBuilt-Up AreasVegetationWater BodiesTotal1.Barren Land201513463221872.Built-up Areas1831528103618203.Vegetation183042104694.Water Bodies01811341535.Total221617105311724629Overall Accuracy = 88.53%, Kappa Coefficient = 0.8137ii. Error Matrix for the Year 2000S/
+
+No.LULC ClassesBarren LandBuilt-Up AreasVegetationWater BodiesTotal1.Barren Land21575914622362.Built-up Areas616547316703.Vegetation1823436806204.Water Bodies82751051455.Total218919743941144671Overall Accuracy = 91.71%, Kappa Coefficient = 0.8652iii. Error Matrix for Year 2010S/
+
+No.LULC ClassesBarren LandBuilt-Up AreasVegetationWater BodiesTotal1.Barren Land2630302026622.Built-up Areas032570132583.Vegetation024636716144.Water Bodies514861002595.Total263536813751026793Overall Accuracy = 93.54%, Kappa Coefficient = 0.8891iv. Error Matrix for Year 2020S/
+
+No.LULC ClassesBarren LandBuilt-Up AreasVegetationWater BodiesTotal1.Barren Land22227014523112.Built-up Areas0443544244813.Vegetation32471067313204.Water Bodies1301191235.Total2226475511251298235Overall Accuracy = 95.24%, Kappa Coefficient = 0.9190
+
+Table 5. Transition probability matrix (2010–2020).
+
+i. 2035: Probability of Changing toS/No.LULC ClassesBarren LandBuilt-Up AreaVegetationWater Bodies1.Barren Land0.53290.26640.19330.00742.Built-up Area0.00560.90070.09000.00373.Vegetation0.08500.39590.49000.02914.Water Bodies0.13410.56810.20560.0922ii. 2050: Probability of Changing toS/No.LULC ClassesBarren LandBuilt-Up AreaVegetationWater Bodies1.Barren Land0.31070.45920.21920.01082.Built-up Area0.01610.85220.12550.00623.Vegetation0.09090.58260.30720.01944.Water Bodies0.10460.67690.19630.0222
+
+Table 6. Statistical data of the predicted LULC in 2035 and 2050.
+
+S/
+
+No.Simulated/
+
+Projected Period2035 Prediction2050 Prediction(15-Year Planning Period)(30-Year Planning Period)LULC ClassesArea (km2)Area (Percentage)Area (km2)Area (Percentage)1.Barren Land139.666524.279988.960515.46502.Built-up Area307.896353.52522364.875363.43063.Vegetation121.403721.1050115.166720.020784.Water Bodies6.26941.089886.23341.083625.Total575.2359100575.2359100
+
+Table 7. Predicted change dynamics of LULC in 2035 and 2050.
+
+LULC
+
+ClassesLULC Change Dynamics 2020–2035LULC Change Dynamics 2020–2050Contributions to Built-Up Area in 2035 (km2)Contributions to Built-Up Area in 2050 (km2)Losses (km2)Gains
+
+(km2)Net ChangeLosses
+
+(km2)Gains
+
+(km2)Net ChangeBarren Land−101.350.13−101.22−152.010.08−151.9363.14110.89Built-up Area−0.3089.4889.18−0.44146.60146.16--Vegetation−26.3237.4811.15−34.6739.584.9123.8533.18Water Bodies−2.213.100.89−2.132.990.852.192.09
+
+Publisher’s Note: MDPI stays neutral with regard to jurisdictional claims in published maps and institutional affiliations.
+
+© 2022 by the authors. Licensee MDPI, Basel, Switzerland. This article is an open access article distributed under the terms and conditions of the Creative Commons Attribution (CC BY) license (https://creativecommons.org/licenses/by/4.0/).
+
+Share and Cite
+
+MDPI and ACS Style
+
+Koko, A.F.; Han, Z.; Wu, Y.; Abubakar, G.A.; Bello, M. Spatiotemporal Land Use/Land Cover Mapping and Prediction Based on Hybrid Modeling Approach: A Case Study of Kano Metropolis, Nigeria (2020–2050). Remote Sens. 2022, 14, 6083. https://doi.org/10.3390/rs14236083
+
+AMA Style
+
+Koko AF, Han Z, Wu Y, Abubakar GA, Bello M. Spatiotemporal Land Use/Land Cover Mapping and Prediction Based on Hybrid Modeling Approach: A Case Study of Kano Metropolis, Nigeria (2020–2050). Remote Sensing. 2022; 14(23):6083. https://doi.org/10.3390/rs14236083
+
+Chicago/Turabian Style
+
+Koko, Auwalu Faisal, Zexu Han, Yue Wu, Ghali Abdullahi Abubakar, and Muhammed Bello. 2022. "Spatiotemporal Land Use/Land Cover Mapping and Prediction Based on Hybrid Modeling Approach: A Case Study of Kano Metropolis, Nigeria (2020–2050)" Remote Sensing 14, no. 23: 6083. https://doi.org/10.3390/rs14236083
+
+Note that from the first issue of 2016, this journal uses article numbers instead of page numbers. See further details here.
+
+Article Metrics
+
+No
+
+No
+
+Article Access Statistics
+
+For more information on the journal statistics, click here.
+
+Multiple requests from the same IP address are counted as one view.

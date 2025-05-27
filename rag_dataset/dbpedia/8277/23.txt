@@ -1,0 +1,27 @@
+Hi all,
+
+I'm a novice continuing to learn about FFI, with no C/C++ background.
+
+After my last thread, I thought that perhaps taskwarrior would be a cool project to build FFI bindings for, and work on a safe rust wrapper*. With cmake -DCMAKE_BUILD_TYPE=release && make it builds without issue on both my M1 Mac and Linux x86_64 machines.
+
+I think it looks like a better candidate for FFI than my prior project as it has most of the functionality exposed in shared libraries; here is the main.cpp, see several in the compiled C++ project:
+
+$ fd -u '^lib.*\.a$' src/columns/libcolumns.a src/commands/libcommands.a src/liblibshared.a src/libtask.a
+
+Unfortunately, with either of my machines I can't get it to build and link with cmake-rs. After lots of tinkering, here is the most recent iteration of my build.rs (and my only test currently just calls let context = Context_getContext();, which I think should be the proper name-mangled function after looking at bindings.rs).
+
+use std::env; use std::path::PathBuf; use cmake::Config; fn main() { println!("cargo:rerun-if-changed=wrapper.h"); let dst = Config::new("vendor/taskwarrior").profile("release").build(); println!( "cargo:rustc-link-search=native={}/build/src/columns", dst.display() ); println!( "cargo:rustc-link-search=native={}/build/src/commands", dst.display() ); println!("cargo:rustc-link-search=native={}/build/src", dst.display()); println!("cargo:rustc-link-lib=static=task"); println!("cargo:rustc-link-lib=static=libshared"); println!("cargo:rustc-link-lib=static=columns"); println!("cargo:rustc-link-lib=static=commands"); let bindings = bindgen::Builder::default() .header("wrapper.h") .parse_callbacks(Box::new(bindgen::CargoCallbacks)) .clang_arg("-xc++") .clang_arg("-lc++") .clang_arg("-std=c++17") .clang_arg("-stdlib=libc++") .clang_arg("-Ivendor/taskwarrior/src") .clang_arg("-Ivendor/taskwarrior/src/commands") .clang_arg("-Ivendor/taskwarrior/src/columns") .clang_arg("-Ivendor/taskwarrior/src/libshared/src") // .allowlist_type("Context") .allowlist_function("Context_getContext") .generate() .expect("Unable to generate bindings"); let out_path = PathBuf::from(env::var("OUT_DIR").unwrap()); bindings .write_to_file(out_path.join("bindings.rs")) .expect("Couldn't write bindings!"); }
+
+// wrapper.h #include "Context.h" static Context& getContext ();
+
+I keep getting linking errors about not being able to find types that I think should be available in the C (EDIT: C++ rather) stdlib:
+
+= note: Undefined symbols for architecture arm64: "std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >::~basic_string()", referenced from:
+
+or being unable to find operator new(unsigned long) or operator delete(void*). All of my SO searches and googling make it seem that pointing clang towards the correct stdlib with .clang_arg("-stdlib=libc++") and .clang_arg("-lc++") should be the solution, but they don't seem to help.
+
+I think I'm probably just failing to link something needed by C++, but having looked through all of the cmake output in the compiled C++ project, I can't find any paths that I'm missing.
+
+I've seen some of the bindgen disclaimers about C++ and realize this might not be a smooth road, but after failing to make progress on this several days in a row I was wondering if anyone sees any obvious step that I'm missing.
+
+TIA for any pointers, as always!

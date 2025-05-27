@@ -1,0 +1,31 @@
+I recently had to whitelist a website for a client that is using a SonicWall Firewall running SonicOS 7.0. I was not able to find a document that clearly outlined the process so I figured that this would be a great time for a blog post!
+
+To start, you should always ensure that the website is actually being blocked by the SonicWall and there isn’t something else going on. In this instance I checked to see if I was able to access the website from my computer first. I was. This told me that the address was correct and that the website was not down or otherwise having issues. I then connected to, in this case, the customers server and attempted to access the same website there. It did not load and gave the below error message telling me that it was being blocked by the SonicWall.
+
+In this instance the URL was for the PA state lottery and it was being blocked because it is categorized as gambling. We won’t get into why the client needed to access this website but there was a legitimate reason for them to be accessing it.
+
+You should always seek approval following your internal policies before making any changes. In this instance I sought approval from our contact at this client as well as following our internal Change Management process by creating an RFC and getting it approved before applying any changes. One I received the approvals I could make the changes.
+
+SonicWall firewalls are Object-based. You need to create Objects and then those objects are applied to rules or policies. In this case I logged into the SonicWall’s web interface and navigated to Object > Match Objects > Addresses > Address Objects.
+
+Click the +Add button at the top to add a new Address Object.
+
+To add a URL; change the Type to FQDN.
+
+Change the Zone Assignment to the correct option. In this case it was an external website so the Zone will be WAN.
+
+Name the Object whatever you like and add the FQDN in the FQDN Hostmane field. In this case the FQDN was palottery.state.pa.us. I left the other options at the default. Once you have everything filled out click the Save button at the bottom-right.
+
+To allow multiple Address Objects to be used in Rules or Policies without creating individual Rules or Policies we need to create an Address Group. As the name implies, an Address Group is just a group of Address Objects. Click on the Address Group tab at the top of the page.
+
+Click the +Add button at the top to add a new Address Group.
+
+You can come back to this Address Group at any time to Edit it. Any changes that are saved will take affect immediately so if this Address Group is being actively used in a Rule or Policy be sure the changes you are making are correct before saving.
+
+Now we need to apply the Address Group to the SonicWall’s Content Filter. Navigate to Policy > Security Services > Content Filter > SonicWall CFS.
+
+Under CFS Exclusion > Excluded Address click the dropdown box. Locate the Address Group you made earlier and select it. Click Accept to enable the Exclusions. As you can see in this instance you can only select one Address Object or Address Group, which is why using an Address Group is a good idea even with just one Address Object. You never know if you will need to add more addresses later so it’s good practice to use an Address Group where you can.
+
+That’s it! Now test that you can access the website to ensure that everything has been added successfully.
+
+I hope this post has helped you out! Stay tuned for more.

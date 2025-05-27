@@ -1,0 +1,65 @@
+by Matt Cutts
+
+What is the GIMP?
+
+The GIMP stands for General Image Manipulation Program (or the GNU Image Manipulation Program). The GIMP is a free, robust, powerful program for painting, image processing, and manipulating pictures. If you enjoy using Adobe's Photoshop® program, you'll love the GIMP. The GIMP is a project of Spencer Kimball and Peter Mattis at the University of California, Berkeley. It began as a compiler class project in LISP. Frustration with the program, plus system crashes, pushed the project in a new direction. Instead of LISP, the students decided to write an image manipulation project in C. The result has quickly grown into a full-fledged image editing program.
+
+One critical aspect of the GIMP is that it is free software. It is released under the General Public License of the Free Software Foundation. That means that you can always obtain the source to the program. Furthermore, it is free for downloading over the Internet. The GIMP fills the need for a free Photoshop®-like program. The tool is available for most UNIX platforms. Binary versions are available for Solaris, SunOS, HP-UX, SGI's IRIX, Linux, and FreeBSD. Since the program is written for UNIX, you're out of luck if you only have access to Microsoft Windows or Apple Macintosh machines.
+
+If you do install and run the GIMP, you'll find that it is packed with features. Paint tools include a paintbrush, airbrush, text tools, clone, blur, and sharpen. You can also transform images with rotation, scaling, flipping, and shearing. The GIMP supports many common file formats: TIFF, GIF, JPEG, BMP, PPM, etc. Selections can be performed with rectangle, ellipse, and freehand tools. If that's not enough, you can use intelligent scissors, fuzzy selection by color, and even bezier selection. The program supports a full host of channel operations and many types of displays from 8 bit to 24 bit. Newer beta versions of the program support layers, transparency, and scripts to automatically generate logos and other images. Soon the program may be able to operate with graphics tablets.
+
+One fantastic feature is the ability to use plug-ins, which let users create their own custom features and special effects. Volunteers and the GIMP enthusiasts have written close to a hundred different plug-ins including pinch, despeckle, oilify, plasma, map to sphere, fade, mosaic, line integral convolution, motion blur, engrave, page curl, sparkle, checkerboard, lens flare, displace, lunarize, de-interlace, and extrude. Users can get these plug-ins from the Web easily or write their own.
+
+How do I get it?
+
+You're probably wondering how to get the GIMP and try it out. You can download binary code for many platforms from the GIMP's home page (see http://www.XCF.Berkeley.EDU/~gimp/). The file will appear something like "gimp-0.54-linux-ELF-bin.tar.gz" and will be quite large. You will want to untar the program with a command like "tar zxvf gimp-0.54-linux-ELF-bin.tar.gz". If your version of tar is old, you can execute "gzip -cd gimp-0.54-linux-ELF-bin.tar.gz | tar xvf -". Once the program is unpacked, change into the "gimp" directory. You'll see README files and a file called "gimprc". You should execute "cp gimprc ~/.gimprc" to make a copy of your own gimp configuration file. You'll need to edit ~/.gimprc to add the path where you unpacked the directory. Alternatively, you can try the program out by running "gimp" while you are in the gimp directory.
+
+How do I use it?
+
+When you run the program for the first time, you will see the main application "toolbox." From this menu you can perform most of the GIMP's operations. You will also see the menus for files operations.
+
+Figure 1
+
+Figure 1 shows the main menu with some of the buttons labeled. The selection tools are near the top of the dialog, while other tools fill out the other rows. The tools that are built into GIMP on the main menu include moving, magnification, cropping, transforming, flipping, text, color picking, fill, blending, pencil, paintbrush, eraser, airbrush, clone and convolve. Once you open an image, it will appear in its own window. The menus can be accessed quickly by clicking the right mouse button while over the image. Plug-ins are also accessed with the right mouse button or with keyboard short-cuts (also found in the ~/.gimprc file). You will find that most tools operate like other image manipulation programs you may have used before. GIMP is structured in this way to make operations more familiar and easier to use. With a little practice, you can be editing images very quickly. You can also access a variety of tutorials on GIMP over the Web, as you will discover in the next section.
+
+Let's do a simple task right now so you can see how easy it is to start using the GIMP. Let's create an effect known as a "drop shadow" for a rectangular image. A drop shadow looks like a blurry shadow underneath an image. It helps add depth to a picture. You can see the before and after images below.
+
+Figure 2
+
+First we need an image. I started with a picture of a campus landmark at my university. One nice feature about the GIMP is that you can reach all of its functions by clicking with the right button on the image to bring up a pop-up menu that looks like this:
+
+Figure 5
+
+From the menu shown in Figure 5, you can probe further down into more choices. For example, to make sure the image is full-color, you should move the mouse to select "Filters," then "Conversions," and finally "To Color." We will abbreviate this procedure as "Filters->Conversions->To Color." Assuming that you have just opened an image and made sure that it is full-color, we're ready to start.
+
+First, you need some padding around your image. Execute "File->New" on the original image and pad the width and height by 100 pixels or so. Select RGB for the image type. This creates a new, larger image with a white background. For the next step, we want to execute "Select->Select All" and then "Edit->Copy" on the original image. Move to the newly created white image and execute "Edit->Paste." Now you should have an image with some white padding around it:
+
+Image A
+
+We'll label this first padded image Image A. Now execute "Filters->Channel Ops->Duplicate." Note that you get a copy of Image A. We'll use that copy later. The first version of Image A should have a moving border around the inner image. That border is sometimes called "marching ants," and it represents a part of the image which is selected. Now we want to fill the selection with solid black, so execute "Tools->Bucket Fill." Then click the left button of the mouse inside the selection and it will be filled with solid black:
+
+Image B
+
+We're halfway done. By executing "Filters->Channel Ops->Offset" on Image B and selecting an X and Y displacement of about 20 pixels in each direction, we get an image where the black rectangle has moved some:
+
+Image C
+
+To make the shadow of the picture blurry, do the command "Filters->Blur->Gaussian Blur" and use a radius of about 8.0 pixels. The result will look like Image D:
+
+Image D
+
+Now we are ready to make our final image. Execute "Filters->Channel Ops->Composite." Our goal is to composite our copy of Image A with Image D using Image B as our mask. The mask will take the pixels from Image A where Image B is black and take pixels from Image D where Image B is white. The composite window will have pull-down menus for your choices. Look at the titlebars to find which actual images correspond to Images A, B, and D. When you click "OK," you'll get the final result:
+
+Final Image
+
+Now you can create a drop shadow anytime! You'll discover that practice makes everything easier and that keyboard shortcuts exist for most common operations. After a little while using the GIMP, you could probably create a drop shadow in just a few seconds. Also notice that you can experiment with all kinds of variations like shadows of irregularly shaped selections or different colors. In the future, the GIMP will allow scripting of common sequences of commands. This might let you built a drop shadow macro that works with just a keystroke. If you like the power and flexibility of the GIMP, the information in the next section will help you get started and show you where to find more ideas and other tutorials.
+
+Where can I get more info?
+
+Since the growth of the GIMP is due in large part to the Internet and the Web, it shouldn't be surprising that quite a few sites devoted to the GIMP exist. You can start at the GIMP's official home page at http://www.XCF.Berkeley.EDU/~gimp/ to find stable source code, what's new with the program, screen shots, and some tutorials. The authors deserve lots of credit for making such a powerful program a reality and then releasing it for general usage. You can find links at http://abattoir.cc.ndsu.nodak.edu/~nem/gimp/tuts for even more tutorials.
+
+An abundance of GIMP pages can be found using your favorite search engine. One good place to start is the "Everybody loves The GIMP" page at http://luthien.nuclecu.unam.mx/~federico/gimp/index.html, by Federico Mena Quintero. Besides a source tree for newer versions of the GIMP, you can find tons of links to other resources: mailing lists, plug-ins, other people's pages, and tutorials. The page is also updated quite often. Another good page is by Zach Beane at http://xach.dornet.com.xach.html.
+
+For developers interested in writing a plug-in, you should visit the GIMP Plug-in Registry by Adam Moss at http://www.worldserver.pipex.com/home/adam/gimp/plug.html first. This page has a list of the current plug-ins that are available, so you can check if the effect you want has already been written. Along with short descriptions of what each filter does, you can find out who wrote the plug-in and when. Binaries are available for Linux and you can download source code from this site too. In case you decide to design your own plug-in, another useful page can be found at http://www2.ai-lab.fh-furtwangen.de/~bless/the-gimp.html. This site, maintained by Marc Bless, has pointers to the GIMP Programmer's Reference Book. The documentation covers most aspects of writing a plug-in and even has complete templates. You can retrieve the information in HTML, SGML, PostScript, and .dvi formats.
+
+The web has many more great GIMP pages than I could possibly mention. You should take an hour to investigate all the wonderful pages created people around the world about the GIMP. The time you spend exploring the GIMP and its uses can be immensely entertaining and yet educational too.

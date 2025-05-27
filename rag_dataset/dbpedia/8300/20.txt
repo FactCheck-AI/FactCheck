@@ -1,0 +1,603 @@
+Hi Ninjas,
+
+i am a ROR Developer .
+
+I feel happy to develop in ROR over other frameworks because of the
+
+simplicity of Ruby Language
+
+For browser side code i am using Javascript/ActionScript .
+
+but i would like to use Ruby in browser side also (instead of
+
+Javascript/ActionScript)
+
+Is there any way to do this ?
+
+or
+
+Is there any active development /future plan to implement Ruby VM on
+
+browser engine (instead of javascript/actionscript engines ) ?
+
+if yes? then i also want to join in that community/dev team .
+
+if not? please some body initiate a plan to develop a Ruby VM for
+
+browser engine (so i can join with you)
+
+i know already that prototype/jquery frameworks are there but those are
+
+not
+
+looking like pure ruby code
+
+Anyone have an Idea/Suggestion/Intrest ?
+
+please let me know
+
+by
+
+Mokkai @ TLI
+
+···
+
+--
+
+Posted via http://www.ruby-forum.com/.
+
+Do we actually need to have full ruby spec implemented? Don't forget
+
+about the 20/80 rule of the universe - there are only 20 % of features
+
+that provide 80% of value.
+
+It seems that it's impossible in any time soon to create a full-featured
+
+Ruby JS. There were lots of project of this kind (HotRuby, RubyJS, Red,
+
+.... google github) and it seems that all of them are dead by now,
+
+although some of them got some attention in past.
+
+But look at the success of CoffeeScript, it doesn't try to solve all
+
+problems at once, but it eliminates the most annoying problems.
+
+Maybe it would be better do it in the same way? Take the core part, that
+
+can be easily implemented and leave the rest to the better time?
+
+···
+
+--
+
+Posted via http://www.ruby-forum.com/.
+
+Accidentally went off list for a bit.
+
+>>
+
+>>>
+
+>>> >>
+
+>>> >> > That is incredibly cool! But can you really implement *any*
+
+>>> >> > language?
+
+>>> >> > What
+
+>>> >> > about languages that are completely different from javascript? In
+
+>>> >> > Haskell,
+
+>>> >> > for example, everything happens lazily, data is immutable, there
+
+is
+
+>>> >> > a
+
+>>> >> > complex type system. Can you really map this right to javascript?
+
+>>> >> > (or am
+
+>>> >> > I
+
+>>> >> > misunderstanding OMeta?)
+
+>>> >> >
+
+>>> >>
+
+>>> >> This is incredibly cool but can you really translate any language
+
+into
+
+>>> >> machine code?
+
+>>> >> What about languages that are completely different from machine
+
+code?
+
+>>> >> In Haskell, for example, everything happens lazily, data is
+
+immutable,
+
+>>> >> there is a complex type system. Can you really map this right to
+
+>>> >> machine code? (Or am I misunderstanding your question?)
+
+>>> >>
+
+>>> >> Thanks
+
+>>> >>
+
+>>> >> Michal
+
+>>> >
+
+>>> > Your phraseology is confusing, but yes, I assume you are
+
+>>> > misunderstanding my
+
+>>> > question. In the video, he didn't translate to machine code, he
+
+>>> > translated
+
+>>> > to javascript which he then interpreted (at least that is how I
+
+>>> > understand
+
+>>> > it). Also, I am also pretty confident that Haskell doesn't map
+
+straight
+
+>>> > into
+
+>>> > machine code, I think it must embed a runtime to manage things like
+
+>>> > thunks
+
+>>> > and garbage collection.
+
+>>> >
+
+>>>
+
+>>> And how is translating to JavaScript different from translating to
+
+>>> machine code?
+
+>>>
+
+>>> Thanks
+
+>>>
+
+>>> Michal
+
+>>
+
+>> First of all, can JS even generate and execute machine code? I'd expect
+
+>> that to require knowledge of the platform and to be handled within the
+
+>> interpreter, not at the language level. IDK, I'll assume we mean
+
+assembly
+
+>> code for the rest of the post.
+
+>>
+
+>> Assembly (x86, anyway, IDK anything at all about any other kinds) is
+
+based
+
+>> on a certain infrastructure such as a stack, a heap, registers that keep
+
+>> track of where you are at in your code, where you are at on the stack,
+
+and
+
+>> so forth (I'm not positive these registers *must* be used this way, but
+
+at
+
+>> least that is how I've always seen them used). AFAIK, JS doesn't have
+
+these
+
+>> inherently. You could construct a framework that mimics a computer, and
+
+then
+
+Presumably OMeta is as complete as x86 assembly. Quite likely it has
+
+different set of primitives (or insctructions) but that does not mean
+
+translating to it is any more challenging than to x86 assembly to
+
+which all the named languages were translated already.
+
+Ruby isn't translated to Assembly, you must interpret it.
+
+>> recreate the assembly instruction set but :
+
+>>
+
+>> (a) that isn't what he did in the video
+
+>>
+
+>> (b) if your language requires a runtime, then it isn't translatable.
+
+Maybe
+
+>> you could embed the runtime into the output program, but does it count
+
+as a
+
+>> translation if you break 1:1 relationship between before and after code?
+
+>> Even compiled languages don't do this, joining libraries is done by the
+
+>> linker, after the code is translated. (I'm not clear on the difference
+
+>> between assemblers and compilers)
+
+>>
+
+>> (c) by mapping into JS, don't you lose all the qualities that the
+
+language
+
+>> has on its own? ie you have the weaknesses of your actual language on
+
+top of
+
+>> the languages of JS (ie I would expect C to be slower than JS now,
+
+because
+
+>> your C is being translated into what appears to be assembly
+
+instructions,
+
+>> but is actually JS, and your final code is actually a whole series of
+
+>> indirect JS commands) So if this is the case, you have a leaky
+
+abstraction
+
+>> (The Law of Leaky Abstractions – Joel on Software)
+
+I don't see the leak anywhere, nor do I see any reason to translate C to
+
+JS.
+
+The hypothesis was that you could implement *any* language. C falls within
+
+that set. The leak is that JavaScript does not have the properties of
+
+assembly. There is a reason you don't write systems level code with
+
+interpreted languages, because they have very different properties. Wouldn't
+
+implementing a systems level language in an interpreted language cause the
+
+systems level language to lose the attributes that make it a viable choice
+
+for such a domain?
+
+>>
+
+>> Anyway, if you read my post, you'll see I didn't assert that it can't be
+
+>> done, I just asked whether it could. If you think it can and it's
+
+obvious,
+
+>> then how about an explanation of the process. If not, then why do you
+
+keep
+
+>> asking me these questions? I'm not an expert on the domain, I just
+
+watched
+
+>> the video.
+
+>
+
+> Also, why are we off list?
+
+>
+
+Because some three emails back you sent the email only to me, not the list.
+
+Hmm, seems to be because you CC'd me in your response to the ML, so when I
+
+hit reply, gmail sent it to you instead of the list. I changed the recipient
+
+of this one, hopefully we're back on list. You might change your client to
+
+avoid that, it seems unlikely that I'll be the only one to do this.
+
+···
+
+On Mon, Apr 11, 2011 at 7:55 AM, Michal Suchanek <hramrach@centrum.cz>wrote:
+
+On 11 April 2011 14:35, Josh Cheek <josh.cheek@gmail.com> wrote:
+
+> On Mon, Apr 11, 2011 at 7:30 AM, Josh Cheek <josh.cheek@gmail.com> > wrote:
+
+>> On Mon, Apr 11, 2011 at 6:48 AM, Michal Suchanek <hramrach@centrum.cz> > >> wrote:
+
+>>> On 11 April 2011 12:02, Josh Cheek <josh.cheek@gmail.com> wrote:
+
+>>> > On Mon, Apr 11, 2011 at 4:40 AM, Michal Suchanek < > hramrach@centrum.cz> > >>> > wrote:
+
+>>> >> On 8 April 2011 15:03, Josh Cheek <josh.cheek@gmail.com> wrote:
+
+Ruby isn't translated to Assembly, you must interpret it.
+
+YARV generates byte code. The byte code is interpreted by the Ruby VM.
+
+The Ruby VM runs on an operating system. The Operating system runs on
+
+machine code.
+
+Ruby *can* run on machine code, or it wouldn't run at all. The
+
+question is how many intermediary steps are needed to get it running,
+
+and at what costs (it's generally easier, it appears, to run a dynamic
+
+language on some sort of interpreter, if only to make an abstraction
+
+only once).
+
+The hypothesis was that you could implement *any* language. C falls within
+
+that set. The leak is that JavaScript does not have the properties of
+
+assembly.
+
+It doesn't need them. The compiler takes care of that.
+
+Since IE9 was just released to the general public, here's an MSDN
+
+article on Chakra:
+
+http://blogs.msdn.com/b/ie/archive/2010/03/18/the-new-javascript-engine-in-internet-explorer-9.aspx
+
+IE9 is a latecomer to the "compile JS" party, too. Google's V8 is one
+
+of the first.
+
+There is a reason you don't write systems level code with
+
+interpreted languages, because they have very different properties. Wouldn't
+
+implementing a systems level language in an interpreted language cause the
+
+systems level language to lose the attributes that make it a viable choice
+
+for such a domain?
+
+That's a question of optimization.
+
+Even GCC has several optimization switches; some more, some less
+
+dangerous to apply to code.
+
+C's whole reason of existence is that it is a higher level language
+
+than assembly with the compiler taking care of translating the
+
+constructs of the higher level language into something that a CPU
+
+understands.
+
+Hmm, seems to be because you CC'd me in your response to the ML, so when I
+
+hit reply, gmail sent it to you instead of the list. I changed the recipient
+
+of this one, hopefully we're back on list. You might change your client to
+
+avoid that, it seems unlikely that I'll be the only one to do this.
+
+Yup, back on list. Though, IME GMail doesn't change the reply-to
+
+header (maybe it got borked somewhere).
+
+···
+
+On Mon, Apr 11, 2011 at 3:17 PM, Josh Cheek <josh.cheek@gmail.com> wrote:
+
+--
+
+Phillip Gawlowski
+
+Though the folk I have met,
+
+(Ah, how soon!) they forget
+
+When I've moved on to some other place,
+
+There may be one or two,
+
+When I've played and passed through,
+
+Who'll remember my song or my face.
+
+I think it might be actually quite interesting for the original poster to take some of FONC's work such as OMeta, and then the Rubinius project... and use it to build Ruby in OMeta, which could then be used quite easily to plug this Ruby implementation in OMeta into the JavaScript implementation OMeta which is already existing...
+
+For an example of SmallTalk already written in OMeta/JS (ie SmallTalk running inside Javascript, through OMeta), please see:
+
+http://tinlizzie.org/ometa/ometa-js-old/
+
+Given that JavaScript is pretty much the *only* fully realised cross-browser cross-platform implemented programming language that we have available to us (ie guaranteed to be on EVERY machine for the last 10 years), and also given that so much work is continually put into making these interpreters fast and small, I think writing things on top of JavaScript is a brilliant idea.
+
+The other interesting thing about targeting OMeta as an implementation language for a VM in Ruby, while incredibly technically challenging, is that it would be infinitely rewarding, as there are versions of OMeta written in most common programming languages already (which means the target language base of the Ruby implementation in OMeta would grow without any additional effort on the part of the programmers)... people are writing OMeta implementations in various languages, and there are already ones written in:
+
+OMeta itself, C#, SmallTalk, Scheme, Lisp, Python and Ruby (I'm fairly sure there are some written in id.st (or Cola, whatever you want to call it) as well ;-))
+
+Just my two cents.
+
+"You are now able to program any browser in the world with any language you want"
+
+Julian.
+
+···
+
+----------------------------------------------
+
+Buy my new album! 16 Sep 2010:
+
+http://itunes.apple.com/au/album/erste-zeit/id393326346
+
+On 08/04/2011, at 12:01 PM, Chad Perrin wrote:
+
+On Fri, Apr 08, 2011 at 05:37:49AM +0900, Peter Zotov wrote:
+
+On Fri, 8 Apr 2011 01:48:58 +0900, Chad Perrin wrote:
+
+I don't see any license listed. Did I overlook it?
+
+The Ruby license, of course. It is implicit.
+
+(Indeed, I just forgot to add it to git. Fixed already.)
+
+I haven't looked closely enough to know which way this goes, but one of
+
+two sets of conditions are likely to apply here:
+
+1. It's "implicit" because it incorporates Ruby Licensed code in a way
+
+that requires the Ruby License to be applied to the whole project. In
+
+this case, you violate the terms of the license if you do not include the
+
+license text with the code.
+
+2. It's not "implicit", and needs license notification.
+
+I'm not a lawyer, but I spend a lot of time trying to avoid giving
+
+lawyers reason to contact me with bad news.
+
+--
+
+Chad Perrin [ original content licensed OWL: http://owl.apotheon.org ]
+
+I don't think my brain would be very fond of this, I like starting with the
+
+thing I know and applying a series of transformations to it via methods to
+
+turn it into the thing I want. I feel like I'd have to keep jumping to the
+
+right to see what I have, and then back to the left to see what I'm doing to
+
+it.
+
+join of map(&:name) of students
+
+join of map(&:name) of courses
+
+They are the same until the very end, so you can't know what you're talking
+
+about until after you're done talking about it.
+
+But maybe if I experienced I'd become more familiar some way of thinking
+
+that fits better with this syntax. Maybe in practice, it would only be used
+
+in situations like `name of student` where it feels natural and the context
+
+is straightforward, and not in situations like `join of array` where join is
+
+an action rather than an attribute.
+
+IDK, I'd try it out if someone went and did it, but I don't think I'd
+
+advocate that someone put forth the effort to do it otherwise (though it
+
+might not be very difficult, might just require a handful of lines of yacc
+
+or something)
+
+···
+
+On Fri, Apr 8, 2011 at 3:34 AM, Julian Leviston <julian@coretech.net.au>wrote:
+
+Hi,
+
+Consider this:
+
+some_data.to_s.split("\n").each{|item| puts item}
+
+how about an alternative syntax for the dot operator:
+
+each{|item| puts item} of split("\n") of to_s of some_data
+
+or, more intelligently:
+
+this_school.students.addresses.map{|address| a.all_as_one_sentence}
+
+map{|address| all_as_one_sentence of address} of addresses of students of
+
+this_school
+
+Just wondering if this is a possibility?
+
+julian.
+
+That is incredibly cool! But can you really implement *any* language?
+
+What about languages that are completely different from javascript?
+
+In Haskell, for example, everything happens lazily, data is
+
+immutable, there is a complex type system. Can you really map this
+
+right to javascript? (or am I misunderstanding OMeta?)
+
+My take here is full of handwaving. I'll admit I've never of O-Meta
+
+before.
+
+Comp sci point of view:
+
+OMeta is turing complete? If so then by universality it is possible.
+
+Further, OMeta can run C#, it doesn't take a huge stretch of the
+
+imagine to say it can run C. Haskell can compile to C*. Therefore it can
+
+run Haskell.
+
+The best way to do it though would be to port the STG-Machine** into
+
+O-meta. Fun!
+
+* Check the list of GHC features Glasgow Haskell Compiler — The Glasgow Haskell Compiler
+
+** See "Implementing lazy functional languages on stock hardware: the
+
+Spineless Tagless G-machine", Simon Peyton Jones 1992. The link on SPJ's
+
+website is dead unforunately
+
+I've been tempted to port STG into ruby before. Or maybe just
+
+G-Machine because it's simpler. It just sounds like a fun little
+
+project.
+
+Sorry for yet another random long interjection on functional
+
+programming. SIGH.

@@ -1,0 +1,243 @@
+DuraCloud is an open source application for preservation management developed by DuraSpace and maintained by LYRASIS. From 2019 to 2020, Scholars Portal received funding from CANARIE to develop DuraCloud to work with the OLRC. Using DuraCloud with the OLRC means that your data will be managed via the DuraCloud API, and therefore it will become part of the DuraCloud ecosystem. You have the option of having some or all of your data managed through DuraCloud. Data managed via DuraCloud is not accessible through the Horizon interface and vice versa. There is no additional cost to use DuraCloud and a DuraCloud account is created for OLRC members when they join the service. OLRC members who also use Permafrost will have a separate DuraCloud account for storing and managing Archival Information Packages (AIPs) created by Archivematica. DuraCloud features include:
+
+User interfaces: DuraCloud provides two browser interfaces for managing users and content in DuraCloud
+
+DuraCloud API: the DuraCloud HTTP REST API supports all the standard API requests for reading/writing data to and from the OLRC
+
+Content synchronization: DuraCloud can copy your content to several different cloud storage providers and ensures that all copies are kept synchronized
+
+Reporting: various reports are generated and available for download from DuraCloud, including health reports on bit-level integrity checks, audit logs, and space manifests
+
+Content transfer tools: client tools developed by the DuraCloud team at LYRASIS enable bulk, automated uploads from and downloads to local computers and servers
+
+While DuraCloud is feature rich, it is worth noting these disadvantages:
+
+Read-only native APIs: once ingested into DuraCloud, you will have read-only access to your objects using the Swift or S3 APIs. The DuraCloud API can be used to write
+
+It’s slower: because of all the background tasks that occur when writing to DuraCloud, it is necessarily slower
+
+Terminology
+
+As DuraCloud and OpenStack are separate platforms, you may come across different terms that carry similar meanings. Below is a brief list mapping common DuraCloud and OpenStack terms. Our Detailed Functional Comparison provides a more detailed breakdown:
+
+OpenStack DuraCloud Comparison Domain Account An exclusive DuraCloud account is created for each member organization for managing data stored in the OLRC via DuraCloud. DuraCoud is connected to the OLRC using the S3 API and data uploaded to the OLRC via DuraCloud is stored in a separate domain that is associated exclusively with your DuraCloud account. DuraCloud account names generally follow the pattern of “duracloud-organizationname.” For members using Permafrost, DuraCloud account names are structured as “organizationname-permafrost.” DuraCloud accounts connected to the OLRC are distinct from user accounts for individuals. Project, Container Space Data in DuraCloud is organized in spaces, which share similar features with projects and containers in Horizon. For instance, DuraCloud spaces function like containers in Horizon as they are both used to group objects together. However, settings such as permissions are set at the space-level in DuraCloud, while permissions are best managed at the project-level in Horizon. Unlike Horizon, DuraCloud does not support pseudo folders, and further levels of organization are not possible within a space. Object Content Item Uploaded data is referred to as a “content item” or “content” in the DuraCloud ecosystem, which is equivalent to an “object” in OpenStack language. Unlike Horizon, which presents nested objects in pseudo folders, DuraCloud will list content items only. When directories are uploaded to DuraCloud, the path to each object in the directory structure will be reflected in the name of the item. Segments Chunks Large objects uploaded to DuraCloud are similarly stored in smaller parts for efficiency. In DuraCloud, these parts are called “chunks” instead of “segments.” DuraCloud has a higher default threshold of 1GB for chunking large objects. Unlike OpenStack, which stores segments in separate containers, DuraCloud collocates chunks and their manifests in the same space.
+
+User Management
+
+Users accounts for DuraCloud are separate from those for OpenStack. The Management Console is dedicated to user management, including account creation and management. If you do not have an account, please contact your OLRC administrator to request one. If you are unsure who your administrator is, please contact us.
+
+Setting Up Your User Account
+
+If you are accessing DuraCloud for the first time, you will receive an invitation email titled “DuraCloud Account Invitation” to set up your user profile.
+
+The first link in this email will bring you to the New User Signup form for DuraCloud. Open the link and complete the form with your First Name, Last Name, Email, Username, Password, and Security Question and Answer. Select “Create Profile” when you are done.
+
+Returning to the invitation email, click on the link following “2. Click on this link to log in to the DuraCloud Management Console” and log in with the credentials that you just created. Logging in using this link will connect your user to your organization’s DuraCloud account. If you do not use this link the first time you log in, DuraCloud may fail to connect your user to your organizational account.
+
+When you sign into the Management Console, you will be brought to the “Active Accounts” page, which lists the name of your DuraCloud account. Select the link under the “Host Name” heading to access the DuraCloud Interface for content management.
+
+A single user can be connected to multiple DuraCloud accounts. If you have created a user profile for DuraCloud before—to use with Permafrost, for instance—proceed straight to the second step in the invitation email to connect your existing profile to the new DuraCloud account. If your account invitation has expired or you are having trouble connecting your user to a DuraCloud account, please contact your OLRC administrator for support. If you are unsure who your administrator is, please contact us.
+
+Updating User Information
+
+Your user profile and password can be updated at any time through the Management Console:
+
+Log into the Management Console.
+
+Select “My Profile” in the top-right corner to view the Edit Profile page.
+
+The Edit Profile page includes two sections: “Account Identification” and “Change Password.” Changes can only be made to one section at a time. In the relevant section, change your information as appropriate and select “Save.” This will redirect you to the main screen of the Management Console.
+
+If you would like to make changes in the other section, repeat steps 2-3.
+
+Resetting Your Password
+
+If you forget the password for your DuraCloud user account, select “Forgot Password” on the Management Console or main DuraCloud login screen. Provide your username and the answer to your security question to receive an email with instructions to reset your password. If you are unsure of your username or the answer to your security question, please contact your OLRC administrator for support. If you are unsure who your administrator is, please contact us.
+
+Content Management
+
+The main DuraCloud interface is where you upload, manage, and find reports about your data. Each organization has a unique access link for this interface that is based on your DuraCloud account name.
+
+For OLRC DuraCloud accounts, links typically follow the pattern “duracloud-organizationname.scholarsportal.info”
+
+For Permafrost DuraCloud accounts, links typically follow the pattern “organizationname-permafrost.scholarsportal.info”
+
+If you are unsure what your link is, please contact us. The information available to you in the interface will depend on whether your user is assigned the “User” or “Administrator” role within the DuraCloud account. Those with the Administrator role will automatically be given read/write access to all spaces in the account, while those with the User role will need to be provided read-only or read/write access to individual spaces by an Administrator. If you are not sure what permissions you have or would like to request different permissions, please contact your OLRC administrator for support. If you are unsure who your administrator is, please contact us. The following section details what is available to the User role. Information specific to the Administrator role is available in the Administrator’s Guide.
+
+Spaces
+
+The DuraCloud Interface is organized in three vertical panels. After signing in, you will see a list of spaces that you have permission to access in the left pane. The search bar above the list allows you to filter spaces by name. The search string can refer to any part of the space name.
+
+To return to this page at any time, select either the DuraCloud logo or the “Spaces” tab in the top left corner of the screen. Select the name of a space in the left pane to enter the space. This will populate the middle and right panes with a listing of all content items within the space and an overview of the space respectively.
+
+Space Detail
+
+The Space Detail pane on the right provides information about a space. The name of the selected space will appear under the “Space Detail” heading.
+
+If you would like a list with the MD5 checksum and name of every content item in the space, select the “Manifest” button immediately below the space name to download the listing.
+
+You will have the option to download the manifest as a “Tab Separated (TSV)” file or a “Bagit” text file that follows the structure of a bag manifest. If a large number of items are uploaded in bulk, there may be a delay before the manifest file is updated. The “Details” panel that follows includes:
+
+Items: a count of the total number of content items in the space. If the number appears outdated, for instance if you just uploaded or deleted an item, click the “Recount” button to update the figure
+
+Created: the date and time that the space was created
+
+Last Health Check: the date and time that DuraCloud completed its most recent fixity check on all items in the space, as well as the status of the check and a “Report” link to view and download detailed results
+
+A line graph of historical usage by file size and counts for the space is also available in the following “History” panel. A new data point is added to the graph each time content is added or removed from the space. You can hover over a data point to see the exact volume of data stored on a given date.
+
+Health Checks
+
+Health checks refer to fixity checks run on content managed in your DuraCloud account. These fixity checks are separate from those done internally by the OLRC to provide an additional verification that your data remains unchanged. Health checks occur on a monthly basis, and are run on 1,000 objects per space per day for each DuraCloud account. If there are many thousands of objects in a space, a health check may take longer than a month to complete. The next health check for the account will not run until the previous check is completed for all spaces in your account. The status and results of the most recent health check will always be provided in the “Details” panel of the “Space Detail” pane. A green status bar indicates that the last health check ran successfully.
+
+Selecting the “Report” link in the “Last Health Check” status bar will open a report of the health check results in a pop-up window. To save a local copy of the report as a TSV file, click “Download Raw Report” in the top left corner of the pop-up.
+
+Each report will contain the following information:
+
+date-checked: the date that the health of the item was checked (i.e., the integrity check was run)
+
+account: the DuraCloud account that the item is associated with, noted in the first section of the URL that you use to access DuraCloud
+
+store-id: the ID of the DuraCloud account
+
+store-type: the type of storage that the item is stored in. For the OLRC, this is OpenStack Swift connected to DuraCloud using the S3 API, hence “SWIFT_S3”
+
+space-id: the name of the DuraCloud space that the item is stored in. In the Permafrost context, those are “aip” or “backlog”
+
+content-id: the name of the item
+
+result: the result of the health check
+
+content-checksum: the MD5 checksum for the item, retrieved by downloading the item and computing its checksum
+
+provider-checksum: the MD5 checksum for the item that is recorded by the OLRC
+
+manifest-checksum: the MD5 checksum for the item that is recorded in the manifest and audit log for a DuraCloud space
+
+details: any additional details
+
+Content Items
+
+When a space is selected, the middle “Content Items” pane will be populated by a list of all content stored in the space. The total number of items in the space will be noted immediately beneath the “Content Items” heading. If you are storing objects larger than 1GB in DuraCloud, the item count may be higher than expected as DuraCloud manages large objects in smaller chunks for efficiency. The interface will present 200 items at a time. To page through and see more results, select the “show more” link that follows the total item count.
+
+If you would like to search for a specific content item, enter your search string in the search bar to the right of the pagination feature. The search string must start with the prefix, or the beginning characters in sequence, of an object name and include any forward slash (“/”) delimiters. The search function is also case-sensitive and does not accept wildcards. Once you have entered your query, hit “Enter” on your keyboard to run the search.
+
+If you do not see recently uploaded content in the interface, select the “Refresh” button in the top right corner of the pane to update the listing.
+
+Large Items
+
+DuraCloud stores objects larger than 1GB in “chunks” of up to 1GB each for efficiency. The number of chunks for a given object should correspond to the size of the object, rounded up to the next whole GB. For instance, a 2.7GB object would be stored as 3 chunks. To track the chunks and ensure their fixity, DuraCloud calculates and records their checksums in a manifest for that object. Manifests are stored in the same space alongside the chunks. The manifest also includes the checksum for the object as a whole to ensure that chunks for large items are put back together correctly. DuraCloud associates chunks and their manifest file with the large object by appending a suffix to its name: “.dura-chunk-XXXX” starting at “0000” for chunks, and “.dura-manifest” for the manifest.
+
+Content Detail
+
+To view information about a single item, select the item from the listing and review the “Content Detail” section in the right pane.
+
+The DuraCloud ID for the object is given immediately below the “Content Detail” heading.
+
+By default, the DuraCloud ID matches the name of the uploaded file. The URL embedded in the identifier can be shared to provide users with access to the item from storage. Unless an administrator has made the space publicly accessible, only authenticated users connected to the DuraCloud account can access items using these links.
+
+DuraCloud also reports the MIME type and character encoding for the object, if it is known. As DuraCloud identifies MIME types based on file extensions, identification may not always be accurate.
+
+Further information is provided in the “Details” panel, including the name of the space that the file is in, the size of the file, the date and time that the file was last modified, and the MD5 checksum of the file.
+
+If a user has assigned metadata to an uploaded object, these details would appear in the “Properties” and “Tags” panels that follow. Properties are structured as field:value pairs, while tags are standalone labels. Note that properties and tags cannot be used to search for items in the browser interface.
+
+Updating Content Details
+
+If you have write permissions for a space, you will also have the ability to update content details. To edit information about a single content item, select the item from the space listing:
+
+MIME types: below the MIME type, you will see an “Edit” button. Selecting this will open the “Edit Content Item” dialog window, where you can correct or add the MIME type and/or encoding information. Click “Save” to store your changes. Please note that the web interface may not handle certain MIME types well. In these cases, the Set Content Properties API call or curl command can be used to update this information instead.
+
+Properties and tags: properties and tags can be added and removed in the “Properties” and “Tags” panels.
+
+To add a new property or tag, complete the relevant fields and select “Add” to save the change. New entries will be added to the top of the list of properties and tags once processed.
+
+If you would like to remove a property or tag, hover your mouse over the entry you would like removed and select the “X” that appears to the right. The entry will be highlighted before disappearing from the list.
+
+If you would like to apply changes to multiple items at a time:
+
+Select the checkboxes to the left of each relevant item. The right pane will indicate how many items have been selected.
+
+In the right pane, select the “Edit” button if you would like to change the MIME type and/or encoding, or the “Edit Properties” button to update properties and tags.
+
+Viewing and Downloading Content
+
+A link to the object in storage is embedded in the DuraCloud ID at the top of the “Content Detail” pane. Clicking on the identifier will cause the object to either display in the browser or be downloaded to your local system.
+
+Content can also be downloaded or displayed in the browser by selecting the “Download” and “View” buttons below the DuraCloud ID, respectively. If the MIME type of the object is not known or supported by the browser for display, selecting “View” will result in a download instead.
+
+If the selected file is an audiovisual format, such as mp4 or mp3, you will only have the option to download the file. Instead of the “View” button, you may see a “Streaming” panel for HLS streaming; this function is not supported when using DuraCloud with the OLRC.
+
+For objects larger than 1GB, downloading the individual chunks and manifest through the interface will not automatically allow you to open and use the file in its original state. To retrieve these items as whole objects, please use the DuraCloud Retrieval Tool.
+
+Uploading Content
+
+If you have been assigned write permissions for a space, you will also have the ability to add data to the space using the “Upload” button in the top right corner of the “Content Items” pane. Selecting “Upload” will open a dialog box with two upload options:
+
+Select “Browse”, locate the file(s) on your local filesystem, and click “Open” to confirm your selection. While the instructions in the dialog box indicate that only one file can be uploaded using this function, more than one file in a directory can be selected to upload multiple files at once.
+
+Drag and drop one or more files into the area labelled “Optionally drop files here.”
+
+Once you have made your selection, a list of your chosen files will appear in the window. For each file, you will see a “File Name” field with the original filename, an editable “DuraCloud ID” field, and a trash icon to the right of the “DuraCloud ID” field.
+
+The DuraCloud ID is the identifier that will be assigned to the content item after it is uploaded to DuraCloud. While the field is pre-filled with the original filename, you may change the ID as needed. This ID cannot be changed once the item is uploaded. Note that there are a few naming restrictions for content objects:
+
+The name cannot include the question mark character (?)
+
+The name cannot include the backslash character (\)
+
+The name is limited to 1024 bytes (byte count is checked after URL and UTF-8 encoding)
+
+If an object name does not meet these requirements, you may not receive an error message to flag these issues and you may see a notification in the upload dialog that the upload was successful. The object, however, will not be uploaded. To remove any items from the upload, select the trash icon next to that item. After you have confirmed your choices, select “Upload” to start the transfer process. A status bar will display in the window to track progress and will be replaced by a notification when the upload is complete. From here, select the “Upload more” button below the notification to transfer more files, or “Close” in the bottom right corner to exit.
+
+If you would like to automate file or directory uploads, please see the DuraCloud Client Tools section of this guide.
+
+Copying Content
+
+A copy of an item from one space can be created in another or the same space. For a given item, the “Copy” button will be visible to all users, regardless of your permissions for the originating space. You must also have write permissions for the destination space to successfully copy an item. To make a copy, either:
+
+Select the “Copy” button to the left of the “Download” button in the “Content Detail” pane
+
+Hover your mouse over the item in the content listing and select the copy icon that appears on the right of the content name
+
+Selecting either option will bring up the “Copy Content Item” window with a form to define the parameters of the copy action:
+
+Space: from the drop-down menu, select the destination space that you would like to copy the item to. The list will only include spaces that you have write permissions for. The default value selected is the name of the originating space that the item is currently in. This field is mandatory, and a red “Select a space” warning will appear if a space is not chosen.
+
+Content Name: this field is pre-populated with the DuraCloud ID of the original item. If you would like to change the name of the copy, you may do so in this text field. Note that items in the destination space, including the copy, must have unique names. This field is mandatory, and a red “This field is required” warning will appear if no value is given.
+
+Delete original after copy?: this allows you to retain or delete the original item once the copy is created. This option is not selected by default, meaning that a copy of the item will exist in both the source and destination spaces. Check the box for this option if you would like DuraCloud to remove the item from the originating space.
+
+Navigate to new item after copy?: with this option, you can choose to be redirected to the copy in the destination space once the action is completed or to remain in the originating space. This option is preset to redirect you. To remain in the originating space, uncheck the box for this setting.
+
+Overwrite existing items w/o [without] prompt?: this parameter is offered to avoid accidentally overwriting content from the destination space due to naming conflicts. By default, this option is disabled: DuraCloud will alert you if a content item with the same name already exists in the destination space and prompt you to confirm if you would like to overwrite the existing content. We do not recommend turning the prompt off, but you may do so by selecting the checkbox.
+
+Once you have completed the form, select “OK” to perform the copy.
+
+Items can also be copied in bulk by checking the boxes to the left of each relevant item and selecting “Copy” from the right pane. When copying multiple items, the “Copy Content Item” window will only show the “Space” drop-down menu and “Delete original after copy?” and “Overwrite existing items w/o prompt?” options.
+
+Deleting Content
+
+Write permissions are required to delete content from a space. To delete a single item, locate the item in the content listing and either:
+
+Select the item and click “Delete” in the “Content Detail” pane.
+
+Hover your mouse over the item in the content listing to display the “delete content item” icon to the right of the entry, and click the icon.
+
+After selecting the Delete button or icon, a pop-up window with the name of the item will appear to confirm your decision. Click “OK” to process the deletion. To perform a bulk deletion, check the boxes to the left of the items that you would like removed. Select the “Delete” button in the right pane then “OK” in the confirmation window to make the deletion.
+
+Other Options for Interacting with DuraCloud
+
+Data stored in the OLRC via DuraCloud is not accessible in Horizon. Read-only access is available with the Swift or S3 APIs.
+
+The DuraCloud ecosystem includes complementary content transfer tools that support a wider range of functions for content transfer, including bulk upload and download. These tools require Java and local installation.
+
+The DuraCloud Sync Tool is a software package that enables manual or automatic transfer between a local file system and DuraCloud. Once the software package is installed, the tool can be run as a web-based browser application or using the command line. The Sync Tool can be configured to automatically upload new content as it is added to a local directory. The chunk size for large objects can also be configured to sizes ranging from 1GB to 5GB. A minimum set of metadata will also be recorded when data is uploaded using the Sync Tool.
+
+The DuraCloud Retrieval Tool is a command-line tool for downloading one or more files from DuraCloud to your local file system. For each file, the checksums of the downloaded file and the file in DuraCloud will be compared to confirm that the files match. Objects larger than 1GB will also be automatically concatenated and delivered as a whole object.
+
+DuraCloud API
+
+The DuraCloud HTTP REST API supports all the standard API requests for reading and writing data to and from the OLRC. The official documentation also includes examples of how to call the API using curl commands.
+
+Content Synchronization

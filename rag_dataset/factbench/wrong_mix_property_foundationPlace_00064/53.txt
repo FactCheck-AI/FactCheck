@@ -1,0 +1,1703 @@
+/*
+
+* Copyright (C) 2018 JetBrains s.r.o.
+
+*
+
+* This program is free software; you can redistribute and/or modify it under
+
+* the terms of the GNU General Public License v2 with Classpath Exception.
+
+* The text of the license is available in the file LICENSE.TXT.
+
+*
+
+* This program is distributed in the hope that it will be useful, but WITHOUT
+
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+
+* FITNESS FOR A PARTICULAR PURPOSE. See LICENSE.TXT for more details.
+
+*
+
+* You may contact JetBrains s.r.o. at Na Hřebenech II 1718/10, 140 00 Prague,
+
+* Czech Republic or at legal@jetbrains.com.
+
+*/
+
+package com.jetbrains.sa.jdwp;
+
+import com.jetbrains.sa.jdi.*;
+
+import com.sun.jdi.AbsentInformationException;
+
+import com.sun.jdi.ClassNotLoadedException;
+
+import com.sun.jdi.IncompatibleThreadStateException;
+
+import com.sun.jdi.VMDisconnectedException;
+
+import java.util.ArrayList;
+
+import java.util.Collections;
+
+import java.util.List;
+
+/**
+
+* Java(tm) Debug Wire Protocol
+
+*/
+
+@SuppressWarnings({"unused", "DanglingJavadoc"})
+
+public class JDWP {
+
+static class VirtualMachine {
+
+static final int COMMAND_SET = 1;
+
+private VirtualMachine() {} // hide constructor
+
+/**
+
+* Returns the JDWP version implemented by the target VM.
+
+* The version string format is implementation dependent.
+
+*/
+
+static class Version implements Command {
+
+static final int COMMAND = 1;
+
+/**
+
+* Text information on the VM version
+
+*/
+
+//final String description;
+
+/**
+
+* Major JDWP Version number
+
+*/
+
+//final int jdwpMajor;
+
+/**
+
+* Minor JDWP Version number
+
+*/
+
+//final int jdwpMinor;
+
+/**
+
+* Target VM JRE version, as in the java.version property
+
+*/
+
+//final String vmVersion;
+
+/**
+
+* Target VM name, as in the java.vm.name property
+
+*/
+
+//final String vmName;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+//description = answer.readString();
+
+answer.writeString(vm.vm.description());
+
+//jdwpMajor = answer.readInt();
+
+answer.writeInt(vm.vm.jdwpMajor());
+
+//jdwpMinor = answer.readInt();
+
+answer.writeInt(vm.vm.jdwpMinor());
+
+//vmVersion = answer.readString();
+
+answer.writeString(vm.vm.version());
+
+//vmName = answer.readString();
+
+answer.writeString(vm.vm.name());
+
+}
+
+}
+
+/**
+
+* Returns reference types for all the classes loaded by the target VM
+
+* which match the given signature.
+
+* Multple reference types will be returned if two or more class
+
+* loaders have loaded a class of the same name.
+
+* The search is confined to loaded classes only; no attempt is made
+
+* to load a class of the given signature.
+
+*/
+
+static class ClassesBySignature implements Command {
+
+static final int COMMAND = 2;
+
+static class ClassInfo {
+
+/**
+
+* <a href="#JDWP_TypeTag">Kind</a>
+
+* of following reference type.
+
+*/
+
+//final byte refTypeTag;
+
+/**
+
+* Matching loaded reference type
+
+*/
+
+//final long typeID;
+
+/**
+
+* The current class
+
+* <a href="#JDWP_ClassStatus">status.</a>
+
+*/
+
+//final int status;
+
+public static void write(ReferenceTypeImpl referenceType, VirtualMachineImpl vm, PacketStream answer) {
+
+//refTypeTag = answer.readByte();
+
+answer.writeByte(referenceType.tag());
+
+//typeID = answer.readClassRef();
+
+answer.writeClassRef(referenceType.uniqueID());
+
+//status = answer.readInt();
+
+answer.writeInt(referenceType.ref().getClassStatus());
+
+}
+
+}
+
+/**
+
+* Number of reference types that follow.
+
+*/
+
+//final ClassInfo[] classes;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+String signature = command.readString();
+
+List<ReferenceTypeImpl> referenceTypes = vm.vm.findReferenceTypes(signature);
+
+answer.writeInt(referenceTypes.size());
+
+for (ReferenceTypeImpl referenceType : referenceTypes) {
+
+ClassInfo.write(referenceType, vm, answer);
+
+}
+
+// //int classesCount = answer.readInt();
+
+//classes = new ClassInfo[classesCount];
+
+//for (int i = 0; i < classesCount; i++) {;
+
+//classes[i] = new ClassInfo(vm, ps);
+
+//}
+
+}
+
+}
+
+/**
+
+* Returns reference types for all classes currently loaded by the
+
+* target VM.
+
+*/
+
+static class AllClasses implements Command {
+
+static final int COMMAND = 3;
+
+static class ClassInfo {
+
+/**
+
+* <a href="#JDWP_TypeTag">Kind</a>
+
+* of following reference type.
+
+*/
+
+//final byte refTypeTag;
+
+/**
+
+* Loaded reference type
+
+*/
+
+//final long typeID;
+
+/**
+
+* The JNI signature of the loaded reference type
+
+*/
+
+//final String signature;
+
+/**
+
+* The current class
+
+* <a href="#JDWP_ClassStatus">status.</a>
+
+*/
+
+//final int status;
+
+public static void write(ReferenceTypeImpl referenceType, VirtualMachineImpl vm, PacketStream answer) {
+
+//refTypeTag = answer.readByte();
+
+answer.writeByte(referenceType.tag());
+
+//typeID = answer.readClassRef();
+
+answer.writeClassRef(referenceType.uniqueID());
+
+//signature = answer.readString();
+
+answer.writeString(referenceType.signature());
+
+//status = answer.readInt();
+
+answer.writeInt(referenceType.ref().getClassStatus());
+
+}
+
+}
+
+/**
+
+* Number of reference types that follow.
+
+*/
+
+//final ClassInfo[] classes;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+List<ReferenceTypeImpl> referenceTypes = vm.vm.allClasses();
+
+answer.writeInt(referenceTypes.size());
+
+for (ReferenceTypeImpl referenceType : referenceTypes) {
+
+ClassInfo.write(referenceType, vm, answer);
+
+}
+
+// //int classesCount = answer.readInt();
+
+//classes = new ClassInfo[classesCount];
+
+//for (int i = 0; i < classesCount; i++) {;
+
+//classes[i] = new ClassInfo(vm, ps);
+
+//}
+
+}
+
+}
+
+/**
+
+* Returns all threads currently running in the target VM .
+
+* The returned list contains threads created through
+
+* java.lang.Thread, all native threads attached to
+
+* the target VM through JNI, and system threads created
+
+* by the target VM. Threads that have not yet been started
+
+* and threads that have completed their execution are not
+
+* included in the returned list.
+
+*/
+
+static class AllThreads implements Command {
+
+static final int COMMAND = 4;
+
+/**
+
+* Number of threads that follow.
+
+*/
+
+//final ThreadReferenceImpl[] threads;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+List<ThreadReferenceImpl> allThreads = vm.vm.allThreads();
+
+// //int threadsCount = answer.readInt();
+
+answer.writeInt(allThreads.size());
+
+for (ThreadReferenceImpl thread : allThreads) {
+
+answer.writeObjectRef(thread.uniqueID());
+
+}
+
+//threads = new ThreadReferenceImpl[threadsCount];
+
+//for (int i = 0; i < threadsCount; i++) {;
+
+//threads[i] = answer.readThreadReference();
+
+//}
+
+}
+
+}
+
+/**
+
+* Returns all thread groups that do not have a parent. This command
+
+* may be used as the first step in building a tree (or trees) of the
+
+* existing thread grouanswer.
+
+*/
+
+static class TopLevelThreadGroups implements Command {
+
+static final int COMMAND = 5;
+
+/**
+
+* Number of thread groups that follow.
+
+*/
+
+//final ThreadGroupReferenceImpl[] groups;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+List<ThreadGroupReferenceImpl> list = vm.vm.topLevelThreadGroups();
+
+// //int groupsCount = answer.readInt();
+
+answer.writeInt(list.size());
+
+for (ThreadGroupReferenceImpl group : list) {
+
+answer.writeObjectRef(group.uniqueID());
+
+}
+
+//groups = new ThreadGroupReferenceImpl[groupsCount];
+
+//for (int i = 0; i < groupsCount; i++) {;
+
+//groups[i] = answer.readThreadGroupReference();
+
+//}
+
+}
+
+}
+
+/**
+
+* Invalidates this virtual machine mirror.
+
+* The communication channel to the target VM is closed, and
+
+* the target VM prepares to accept another subsequent connection
+
+* from this debugger or another debugger, including the
+
+* following tasks:
+
+* <ul>
+
+* <li>All event requests are cancelled.
+
+* <li>All threads suspended by the thread-level
+
+* <a href="#JDWP_ThreadReference_Resume">resume</a> command
+
+* or the VM-level
+
+* <a href="#JDWP_VirtualMachine_Resume">resume</a> command
+
+* are resumed as many times as necessary for them to run.
+
+* <li>Garbage collection is re-enabled in all cases where it was
+
+* <a href="#JDWP_ObjectReference_DisableCollection">disabled</a>
+
+* </ul>
+
+* Any current method invocations executing in the target VM
+
+* are continued after the disconnection. Upon completion of any such
+
+* method invocation, the invoking thread continues from the
+
+* location where it was originally stopped.
+
+* <p>
+
+* Resources originating in
+
+* this VirtualMachine (ObjectReferences, ReferenceTypes, etc.)
+
+* will become invalid.
+
+*/
+
+static class Dispose implements Command {
+
+static final int COMMAND = 6;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+throw new VMDisconnectedException();
+
+}
+
+}
+
+/**
+
+* Returns the sizes of variably-sized data types in the target VM.
+
+* The returned values indicate the number of bytes used by the
+
+* identifiers in command and reply packets.
+
+*/
+
+static class IDSizes implements Command {
+
+static final int COMMAND = 7;
+
+/**
+
+* fieldID size in bytes
+
+*/
+
+//final int fieldIDSize;
+
+/**
+
+* methodID size in bytes
+
+*/
+
+//final int methodIDSize;
+
+/**
+
+* objectID size in bytes
+
+*/
+
+//final int objectIDSize;
+
+/**
+
+* referenceTypeID size in bytes
+
+*/
+
+//final int referenceTypeIDSize;
+
+/**
+
+* frameID size in bytes
+
+*/
+
+//final int frameIDSize;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+//fieldIDSize = answer.readInt();
+
+answer.writeInt(vm.sizeofFieldRef);
+
+//methodIDSize = answer.readInt();
+
+answer.writeInt(vm.sizeofMethodRef);
+
+//objectIDSize = answer.readInt();
+
+answer.writeInt(vm.sizeofObjectRef);
+
+//referenceTypeIDSize = answer.readInt();
+
+answer.writeInt(vm.sizeofClassRef);
+
+//frameIDSize = answer.readInt();
+
+answer.writeInt(vm.sizeofFrameRef);
+
+}
+
+}
+
+/**
+
+* Suspends the execution of the application running in the target
+
+* VM. All Java threads currently running will be suspended.
+
+* <p>
+
+* Unlike java.lang.Thread.suspend,
+
+* suspends of both the virtual machine and individual threads are
+
+* counted. Before a thread will run again, it must be resumed through
+
+* the <a href="#JDWP_VirtualMachine_Resume">VM-level resume</a> command
+
+* or the <a href="#JDWP_ThreadReference_Resume">thread-level resume</a> command
+
+* the same number of times it has been suspended.
+
+*/
+
+static class Suspend implements Command {
+
+static final int COMMAND = 8;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+}
+
+}
+
+/**
+
+* Resumes execution of the application after the suspend
+
+* command or an event has stopped it.
+
+* Suspensions of the Virtual Machine and individual threads are
+
+* counted. If a particular thread is suspended n times, it must
+
+* resumed n times before it will continue.
+
+*/
+
+static class Resume implements Command {
+
+static final int COMMAND = 9;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+}
+
+}
+
+/**
+
+* Terminates the target VM with the given exit code.
+
+* On some platforms, the exit code might be truncated, for
+
+* example, to the low order 8 bits.
+
+* All ids previously returned from the target VM become invalid.
+
+* Threads running in the VM are abruptly terminated.
+
+* A thread death exception is not thrown and
+
+* finally blocks are not run.
+
+*/
+
+static class Exit implements Command {
+
+static final int COMMAND = 10;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+}
+
+}
+
+/**
+
+* Creates a new string object in the target VM and returns
+
+* its id.
+
+*/
+
+static class CreateString implements Command {
+
+static final int COMMAND = 11;
+
+/**
+
+* Created string (instance of java.lang.String)
+
+*/
+
+//final StringReferenceImpl stringObject;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+//stringObject = answer.readStringReference();
+
+}
+
+}
+
+/**
+
+* Retrieve this VM's capabilities. The capabilities are returned
+
+* as booleans, each indicating the presence or absence of a
+
+* capability. The commands associated with each capability will
+
+* return the NOT_IMPLEMENTED error if the cabability is not
+
+* available.
+
+*/
+
+static class Capabilities implements Command {
+
+static final int COMMAND = 12;
+
+/**
+
+* Can the VM watch field modification, and therefore
+
+* can it send the Modification Watchpoint Event?
+
+*/
+
+//final boolean canWatchFieldModification;
+
+/**
+
+* Can the VM watch field access, and therefore
+
+* can it send the Access Watchpoint Event?
+
+*/
+
+//final boolean canWatchFieldAccess;
+
+/**
+
+* Can the VM get the bytecodes of a given method?
+
+*/
+
+//final boolean canGetBytecodes;
+
+/**
+
+* Can the VM determine whether a field or method is
+
+* synthetic? (that is, can the VM determine if the
+
+* method or the field was invented by the compiler?)
+
+*/
+
+//final boolean canGetSyntheticAttribute;
+
+/**
+
+* Can the VM get the owned monitors infornation for
+
+* a thread?
+
+*/
+
+//final boolean canGetOwnedMonitorInfo;
+
+/**
+
+* Can the VM get the current contended monitor of a thread?
+
+*/
+
+//final boolean canGetCurrentContendedMonitor;
+
+/**
+
+* Can the VM get the monitor information for a given object?
+
+*/
+
+//final boolean canGetMonitorInfo;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+//canWatchFieldModification = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canWatchFieldModification());
+
+//canWatchFieldAccess = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canWatchFieldAccess());
+
+//canGetBytecodes = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canGetBytecodes());
+
+//canGetSyntheticAttribute = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canGetSyntheticAttribute());
+
+//canGetOwnedMonitorInfo = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canGetOwnedMonitorInfo());
+
+//canGetCurrentContendedMonitor = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canGetCurrentContendedMonitor());
+
+//canGetMonitorInfo = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canGetMonitorInfo());
+
+}
+
+}
+
+/**
+
+* Retrieve the classpath and bootclasspath of the target VM.
+
+* If the classpath is not defined, returns an empty list. If the
+
+* bootclasspath is not defined returns an empty list.
+
+*/
+
+static class ClassPaths implements Command {
+
+static final int COMMAND = 13;
+
+/**
+
+* Base directory used to resolve relative
+
+* paths in either of the following lists.
+
+*/
+
+//final String baseDir;
+
+/**
+
+* Number of paths in classpath.
+
+*/
+
+//final String[] classpaths;
+
+/**
+
+* Number of paths in bootclasspath.
+
+*/
+
+//final String[] bootclasspaths;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+//baseDir = answer.readString();
+
+answer.writeString(vm.vm.baseDirectory());
+
+List<String> classPath = vm.vm.classPath();
+
+// //int classpathsCount = answer.readInt();
+
+answer.writeInt(classPath.size());
+
+for (String s : classPath) {
+
+answer.writeString(s);
+
+}
+
+//classpaths = new String[classpathsCount];
+
+//for (int i = 0; i < classpathsCount; i++) {;
+
+//classpaths[i] = answer.readString();
+
+//}
+
+// //int bootclasspathsCount = answer.readInt();
+
+List<String> bootClassPath = vm.vm.bootClassPath();
+
+answer.writeInt(bootClassPath.size());
+
+for (String s : bootClassPath) {
+
+answer.writeString(s);
+
+}
+
+//bootclasspaths = new String[bootclasspathsCount];
+
+//for (int i = 0; i < bootclasspathsCount; i++) {;
+
+//bootclasspaths[i] = answer.readString();
+
+//}
+
+}
+
+}
+
+/**
+
+* Releases a list of object IDs. For each object in the list, the
+
+* following applies.
+
+* The count of references held by the back-end (the reference
+
+* count) will be decremented by refCnt.
+
+* If thereafter the reference count is less than
+
+* or equal to zero, the ID is freed.
+
+* Any back-end resources associated with the freed ID may
+
+* be freed, and if garbage collection was
+
+* disabled for the object, it will be re-enabled.
+
+* The sender of this command
+
+* promises that no further commands will be sent
+
+* referencing a freed ID.
+
+* <p>
+
+* Use of this command is not required. If it is not sent,
+
+* resources associated with each ID will be freed by the back-end
+
+* at some time after the corresponding object is garbage collected.
+
+* It is most useful to use this command to reduce the load on the
+
+* back-end if a very large number of
+
+* objects has been retrieved from the back-end (a large array,
+
+* for example) but may not be garbage collected any time soon.
+
+* <p>
+
+* IDs may be re-used by the back-end after they
+
+* have been freed with this command.
+
+* This description assumes reference counting,
+
+* a back-end may use any implementation which operates
+
+* equivalently.
+
+*/
+
+static class DisposeObjects implements Command {
+
+static final int COMMAND = 14;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+}
+
+}
+
+/**
+
+* Tells the target VM to stop sending events. Events are not discarded;
+
+* they are held until a subsequent ReleaseEvents command is sent.
+
+* This command is useful to control the number of events sent
+
+* to the debugger VM in situations where very large numbers of events
+
+* are generated.
+
+* While events are held by the debugger back-end, application
+
+* execution may be frozen by the debugger back-end to prevent
+
+* buffer overflows on the back end.
+
+* Responses to commands are never held and are not affected by this
+
+* command. If events are already being held, this command is
+
+* ignored.
+
+*/
+
+static class HoldEvents implements Command {
+
+static final int COMMAND = 15;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+}
+
+}
+
+/**
+
+* Tells the target VM to continue sending events. This command is
+
+* used to restore normal activity after a HoldEvents command. If
+
+* there is no current HoldEvents command in effect, this command is
+
+* ignored.
+
+*/
+
+static class ReleaseEvents implements Command {
+
+static final int COMMAND = 16;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+}
+
+}
+
+/**
+
+* Retrieve all of this VM's capabilities. The capabilities are returned
+
+* as booleans, each indicating the presence or absence of a
+
+* capability. The commands associated with each capability will
+
+* return the NOT_IMPLEMENTED error if the cabability is not
+
+* available.
+
+* Since JDWP version 1.4.
+
+*/
+
+static class CapabilitiesNew implements Command {
+
+static final int COMMAND = 17;
+
+/**
+
+* Can the VM watch field modification, and therefore
+
+* can it send the Modification Watchpoint Event?
+
+*/
+
+//final boolean canWatchFieldModification;
+
+/**
+
+* Can the VM watch field access, and therefore
+
+* can it send the Access Watchpoint Event?
+
+*/
+
+//final boolean canWatchFieldAccess;
+
+/**
+
+* Can the VM get the bytecodes of a given method?
+
+*/
+
+//final boolean canGetBytecodes;
+
+/**
+
+* Can the VM determine whether a field or method is
+
+* synthetic? (that is, can the VM determine if the
+
+* method or the field was invented by the compiler?)
+
+*/
+
+//final boolean canGetSyntheticAttribute;
+
+/**
+
+* Can the VM get the owned monitors infornation for
+
+* a thread?
+
+*/
+
+//final boolean canGetOwnedMonitorInfo;
+
+/**
+
+* Can the VM get the current contended monitor of a thread?
+
+*/
+
+//final boolean canGetCurrentContendedMonitor;
+
+/**
+
+* Can the VM get the monitor information for a given object?
+
+*/
+
+//final boolean canGetMonitorInfo;
+
+/**
+
+* Can the VM redefine classes?
+
+*/
+
+//final boolean canRedefineClasses;
+
+/**
+
+* Can the VM add methods when redefining
+
+* classes?
+
+*/
+
+//final boolean canAddMethod;
+
+/**
+
+* Can the VM redefine classes
+
+* in arbitrary ways?
+
+*/
+
+//final boolean canUnrestrictedlyRedefineClasses;
+
+/**
+
+* Can the VM pop stack frames?
+
+*/
+
+//final boolean canPopFrames;
+
+/**
+
+* Can the VM filter events by specific object?
+
+*/
+
+//final boolean canUseInstanceFilters;
+
+/**
+
+* Can the VM get the source debug extension?
+
+*/
+
+//final boolean canGetSourceDebugExtension;
+
+/**
+
+* Can the VM request VM death events?
+
+*/
+
+//final boolean canRequestVMDeathEvent;
+
+/**
+
+* Can the VM set a default stratum?
+
+*/
+
+//final boolean canSetDefaultStratum;
+
+/**
+
+* Can the VM return instances, counts of instances of classes
+
+* and referring objects?
+
+*/
+
+//final boolean canGetInstanceInfo;
+
+/**
+
+* Can the VM request monitor events?
+
+*/
+
+//final boolean canRequestMonitorEvents;
+
+/**
+
+* Can the VM get monitors with frame depth info?
+
+*/
+
+//final boolean canGetMonitorFrameInfo;
+
+/**
+
+* Can the VM filter class prepare events by source name?
+
+*/
+
+//final boolean canUseSourceNameFilters;
+
+/**
+
+* Can the VM return the constant pool information?
+
+*/
+
+//final boolean canGetConstantPool;
+
+/**
+
+* Can the VM force early return from a method?
+
+*/
+
+//final boolean canForceEarlyReturn;
+
+/**
+
+* Reserved for future capability
+
+*/
+
+//final boolean reserved22;
+
+/**
+
+* Reserved for future capability
+
+*/
+
+//final boolean reserved23;
+
+/**
+
+* Reserved for future capability
+
+*/
+
+//final boolean reserved24;
+
+/**
+
+* Reserved for future capability
+
+*/
+
+//final boolean reserved25;
+
+/**
+
+* Reserved for future capability
+
+*/
+
+//final boolean reserved26;
+
+/**
+
+* Reserved for future capability
+
+*/
+
+//final boolean reserved27;
+
+/**
+
+* Reserved for future capability
+
+*/
+
+//final boolean reserved28;
+
+/**
+
+* Reserved for future capability
+
+*/
+
+//final boolean reserved29;
+
+/**
+
+* Reserved for future capability
+
+*/
+
+//final boolean reserved30;
+
+/**
+
+* Reserved for future capability
+
+*/
+
+//final boolean reserved31;
+
+/**
+
+* Reserved for future capability
+
+*/
+
+//final boolean reserved32;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+//canWatchFieldModification = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canWatchFieldModification());
+
+//canWatchFieldAccess = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canWatchFieldAccess());
+
+//canGetBytecodes = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canGetBytecodes());
+
+//canGetSyntheticAttribute = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canGetSyntheticAttribute());
+
+//canGetOwnedMonitorInfo = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canGetOwnedMonitorInfo());
+
+//canGetCurrentContendedMonitor = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canGetCurrentContendedMonitor());
+
+//canGetMonitorInfo = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canGetMonitorInfo());
+
+//canRedefineClasses = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canRedefineClasses());
+
+//canAddMethod = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canAddMethod());
+
+//canUnrestrictedlyRedefineClasses = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canUnrestrictedlyRedefineClasses());
+
+//canPopFrames = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canPopFrames());
+
+//canUseInstanceFilters = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canUseInstanceFilters());
+
+//canGetSourceDebugExtension = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canGetSourceDebugExtension());
+
+//canRequestVMDeathEvent = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canRequestVMDeathEvent());
+
+//canSetDefaultStratum = answer.readBoolean();
+
+answer.writeBoolean(false);
+
+//canGetInstanceInfo = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canGetInstanceInfo());
+
+//canRequestMonitorEvents = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canRequestMonitorEvents());
+
+//canGetMonitorFrameInfo = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canGetMonitorFrameInfo());
+
+//canUseSourceNameFilters = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canUseSourceNameFilters());
+
+//canGetConstantPool = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canGetConstantPool());
+
+//canForceEarlyReturn = answer.readBoolean();
+
+answer.writeBoolean(vm.vm.canForceEarlyReturn());
+
+//reserved22 = answer.readBoolean();
+
+answer.writeBoolean(false);
+
+//reserved23 = answer.readBoolean();
+
+answer.writeBoolean(false);
+
+//reserved24 = answer.readBoolean();
+
+answer.writeBoolean(false);
+
+//reserved25 = answer.readBoolean();
+
+answer.writeBoolean(false);
+
+//reserved26 = answer.readBoolean();
+
+answer.writeBoolean(false);
+
+//reserved27 = answer.readBoolean();
+
+answer.writeBoolean(false);
+
+//reserved28 = answer.readBoolean();
+
+answer.writeBoolean(false);
+
+//reserved29 = answer.readBoolean();
+
+answer.writeBoolean(false);
+
+//reserved30 = answer.readBoolean();
+
+answer.writeBoolean(false);
+
+//reserved31 = answer.readBoolean();
+
+answer.writeBoolean(false);
+
+//reserved32 = answer.readBoolean();
+
+answer.writeBoolean(false);
+
+}
+
+}
+
+/**
+
+* Installs new class definitions.
+
+* If there are active stack frames in methods of the redefined classes in the
+
+* target VM then those active frames continue to run the bytecodes of the
+
+* original method. These methods are considered obsolete - see
+
+* <a href="#JDWP_Method_IsObsolete">IsObsolete</a>. The methods in the
+
+* redefined classes will be used for new invokes in the target VM.
+
+* The original method ID refers to the redefined method.
+
+* All breakpoints in the redefined classes are cleared.
+
+* If resetting of stack frames is desired, the
+
+* <a href="#JDWP_StackFrame_PopFrames">PopFrames</a> command can be used
+
+* to pop frames with obsolete methods.
+
+* <p>
+
+* Requires canRedefineClasses capability - see
+
+* <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>.
+
+* In addition to the canRedefineClasses capability, the target VM must
+
+* have the canAddMethod capability to add methods when redefining classes,
+
+* or the canUnrestrictedlyRedefineClasses to redefine classes in arbitrary
+
+* ways.
+
+*/
+
+static class RedefineClasses implements Command {
+
+static final int COMMAND = 18;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+notImplemented(answer);
+
+}
+
+}
+
+/**
+
+* Set the default stratum. Requires canSetDefaultStratum capability - see
+
+* <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>.
+
+*/
+
+static class SetDefaultStratum implements Command {
+
+static final int COMMAND = 19;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+notImplemented(answer);
+
+}
+
+}
+
+/**
+
+* Returns reference types for all classes currently loaded by the
+
+* target VM.
+
+* Both the JNI signature and the generic signature are
+
+* returned for each class.
+
+* Generic signatures are described in the signature attribute
+
+* section in
+
+* <cite>The Java&trade; Virtual Machine Specification</cite>.
+
+* Since JDWP version 1.5.
+
+*/
+
+static class AllClassesWithGeneric implements Command {
+
+static final int COMMAND = 20;
+
+static class ClassInfo {
+
+/**
+
+* <a href="#JDWP_TypeTag">Kind</a>
+
+* of following reference type.
+
+*/
+
+//final byte refTypeTag;
+
+/**
+
+* Loaded reference type
+
+*/
+
+//final long typeID;
+
+/**
+
+* The JNI signature of the loaded reference type.
+
+*/
+
+//final String signature;
+
+/**
+
+* The generic signature of the loaded reference type
+
+* or an empty string if there is none.
+
+*/
+
+//final String genericSignature;
+
+/**
+
+* The current class
+
+* <a href="#JDWP_ClassStatus">status.</a>
+
+*/
+
+//final int status;
+
+public static void write(ReferenceTypeImpl cls, VirtualMachineImpl vm, PacketStream answer) {
+
+//refTypeTag = answer.readByte();
+
+answer.writeByte(cls.tag());
+
+//typeID = answer.readClassRef();
+
+answer.writeClassRef(cls.uniqueID());
+
+//signature = answer.readString();
+
+answer.writeString(cls.signature());
+
+//genericSignature = answer.readString();
+
+answer.writeStringOrEmpty(cls.genericSignature());
+
+//status = answer.readInt();
+
+answer.writeInt(cls.ref().getClassStatus());
+
+}
+
+}
+
+/**
+
+* Number of reference types that follow.
+
+*/
+
+//final ClassInfo[] classes;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+List<ReferenceTypeImpl> allClasses = vm.vm.allClasses();
+
+// //int classesCount = answer.readInt();
+
+answer.writeInt(allClasses.size());
+
+//classes = new ClassInfo[classesCount];
+
+for (ReferenceTypeImpl cls : allClasses) {
+
+ClassInfo.write(cls, vm, answer);
+
+}
+
+//for (int i = 0; i < classesCount; i++) {;
+
+//classes[i] = new ClassInfo(vm, ps);
+
+//}
+
+}
+
+}
+
+/**
+
+* Returns the number of instances of each reference type in the input list.
+
+* Only instances that are reachable for the purposes of
+
+* garbage collection are counted. If a reference type is invalid,
+
+* eg. it has been unloaded, zero is returned for its instance count.
+
+* <p>Since JDWP version 1.6. Requires canGetInstanceInfo capability - see
+
+* <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>.
+
+*/
+
+static class InstanceCounts implements Command {
+
+static final int COMMAND = 21;
+
+/**
+
+* The number of counts that follow.
+
+*/
+
+//final long[] counts;
+
+public void reply(VirtualMachineImpl vm, PacketStream answer, PacketStream command) {
+
+int count = command.readInt();
+
+List<ReferenceTypeImpl> refs = new ArrayList<ReferenceTypeImpl>(count);

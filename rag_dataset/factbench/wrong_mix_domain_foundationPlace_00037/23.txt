@@ -1,0 +1,39 @@
+Normally when I test new software development or IT Operations tools, I do it for work. But this time around I had a nagging old challenge I needed to solve, and it was a modern tool that finally offered a solution. My deep dive into Rogue Wave’s CodeDynamics product was to address a challenge I had been facing since my college days: the debugging of a genetic algorithms (GA) application.
+
+I decided to revisit my dusty old GA API because of a conversation amongst my peers at a coworking space in Livermore California. While I am building marketing applications, my fellow entrepreneurs are working on lasers, and DNA barcoding. So I feel a little angst about my code base compared to theirs. One of the peer companies is working on quantum cryptography. So I got to thinking about what sort of computing power would be required to build even better encryption and decryption software, software that could stand up to the quantum computers of tomorrow. And how the hell would you build such a program?
+
+The real problem with any application of this type, however, is even when simple algorithms are run at massive scale interesting debugging challenges arise. The only way to run such an application at scale is to use many processes with many threads. But when things break, the distributed nature of the application across all these worker threads makes it very hard to know where things went wrong. And a GA application is both relatively simple, and best when run over many generations with many populations (threads) consisting of many critters.
+
+GA steals some of the insights from Darwin's theory of evolution. Basically you build an application that consist of an ecosystem, critters, and the rules that they live, die and reproduce by. You randomly generate these ecosystems and have them evolve at computer speed many many times over. The rules are dictated by something called a fitness function. The fitness function assigns a score to each critter as to how suited they are to solve some "problem”."
+
+I decided it would be possible to use GA to evolve encryption algorithms, but at the same time test the strength of encryption against a simulated decryption algorithm. What is so neat about this is each serves as a fitness function for the other. But it requires massive instances of populations. And in order to get it right a wide range of ecosystem variables need to be tested.
+
+I designed my application with one process that had a thread per ecosystem. You could keep it simple and have just a single ecosystem at a time, but as you will see later there is a benefit to building multiple. Not for speed, because you want to test many variables in the ecosystem to see which produce the best result. You see, the thing with GA is, it is a black box. Even when you get an outcome (a super fit individual that can solve your fitness function) you do not know how it got there. And you do not necessarily know if it was the most efficient way. While you can play with ecosystem variables such as death rates, or even diseases. It is all just a guessing game, a not very scientific way to improve your application.
+
+And finally, this is where CodeDynamics comes it. The tool came from a foundation of debugging for super computers, which makes it well suited to manage and debug highly distributed applications. With the unique debugging, pause, and replay functionality in CodeDynamics, I could finally address the variable challenge in a more deliberate way. CodeDynamics would allow me to look inside the black box and have a better idea of how the final output came to be.
+
+Instead of using my old GA code base, I worked from a more vetted library from MIT with the addition of a few ecosystem functions like disease. I coded my application which evolved neural net encryptors, and fitness function was a similarly evolved decryptor. It is fun because I’m evolving both the encryption and decryption at the same time, but not entirely practical approach to encryption.
+
+I had to first compile the application in Xcode on Mac and then moved the binaries to my Linux box. After I did that I was able to open the application and run it directly in CodeDynamics. Alternatively I could have run the application directly and attached CodeDynamics to the process.
+
+All the operations in CodeDynamics are like a DVD Player (for setup tutorial visit this page) . Besides Play, it is the Pause button that has me the most excited. As far as the execution goes it’s pretty straightforward, you have a tree to view your threads and you just drill down into the location of the issue, or in my case area of focus. Once you do you have details about the thread/process and it’s running variables.
+
+I later found out that the ReplayEngine for reverse debugging was going to be even more valuable to me. If I were to record each run of the application, then I did not need to watch it like a hawk or anticipate a particular number of generations to pause and inspect the result. Instead I could record the whole thing, and then reverse into the population that seemed to have the most favorable result to see which of the environment variables were benefiting the fitness the most.
+
+The other crazy thing this allowed me to do (that I couldn’t do before) was allow there to be breeding across populations - and thus across threads. I could have implemented this, but it would be very hard to, in a systematic way, know the impact, or even that it actually happened correctly.
+
+Now it’s off to the races. I had to limit the number of my generations to a reasonable range in order to quickly hone in on variables. Decryption was pretty slow. And then once I thought I was on the right track I could do much larger runs. Sure enough when I started using the tool I was able to hone in on variables that appeared to be the most useful. Until…. I realized that my fitness functions had actually introduced a problem which prevented convergence beyond a local max.
+
+Once I was up and running it was easy. But there are a few hurdles I ran into that slowed me down. First was understanding the differences between what I can do in CodeDynamics vs Xcode or Visual Studio directly. While you can get into the processes, access to the stack is limited. In my case in particular I could not see the ecosystem variables that were impacting my code unless I was very clever about how I set breakpoints. It also gave me a better indication of if one of my populations just flat out died, but it was not clear because they still returned a result.
+
+Here were some other bumps along the road:
+
+I am not a C++ developer anymore. These days I write in C# and Java. It would be nice to see more support for these languages. Similarly, I would really like to see Windows and Mac versions.
+
+Having two separate tools, an IDE and Debugger, is not familiar to me. But once I got used to it, and a better organization for my builds, it was okay.
+
+The product launch is relatively new, but I would have loved to see videos on using the tool as it takes a while to get your bearings before it becomes easy.
+
+And finally, it would be nice if they could figure out a way to implement thread naming or better identification of threads. The numbering system makes it hard to know where to look.
+
+Anyway, reinvigorated I’ve been working with my GA development past to build other interesting applications beyond encryption. Now I’m looking to GA to help build anomaly detection algorithms against entities produced via natural language processing (NLP) on a large set of business documents. A more real problem.

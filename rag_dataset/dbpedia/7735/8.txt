@@ -1,0 +1,247 @@
+##Make Parallels (working title):
+
+A free + open source digital notebook with a canvas, for creatively organizing + remixing bits of media.
+
+We're a distributed community of designers, developers, artists + researchers interested in changing the way we organize and connect ideas.
+
+####4 design principles guide our vision:
+
+Flow - a system that responds in realtime, always remembers where you are, and lets you play without consequences
+
+Remixablity: anything can be asssembled, broken apart, recombined
+
+Parallels: create + connect ideas with links, or parallels, as we call them. This opens up possibilities for new types of search + organization
+
+Private-by-design- Only you have access to the data you generate, ie, zero-knowledge philosophy.
+
+Blog
+
+This is an alpha version and a proof of concept. It's incomplete, with bugs and continuously changing code, design + features
+
+GNU Affero General Public License. Pay it forward.
+
+Tools we use
+
+Twitter: @makeparallels
+
+Slack for realtime chat + collaboration. Email or tweet for access
+
+Trello for keeping track of stories (units of design + development work)
+
+TravisCI, a Continous Integration system to run automate running our tests and deployment.
+
+Saucelabs Automated cross-browser testing on various platforms
+
+Heroku Cloud hosting platform, with good API's + plugin system
+
+Special thanks for free licenses + support from:
+
+Doodle, great for scheduling team meetings across time zones
+
+Ghost Simple, open source blogging platform
+
+3 main components in this repository:
+
+/meteor-app - the reactive, web app running in modern browsers: a digital canvas enabling you to create, remix + share digital collections of media. Built on Meteor JS
+
+/desktop-app - a wrapper for the Meteor application, letting you use Make Parallels as an installable app on MacOSX, Windows and Linux. Built on Electron
+
+/extensions/chrome/source - a Chrome extension, enabling you to easily save+tag content found on the web to your Make Parallels canvas
+
+Privacy Notice
+
+All of the data you create while running Make Parallels locally during development, (on your computer) stays private to you. Unlike other systems, any action you've taken in Parallels since the beginning of time is accessible, even if deleted. Since this is running locally on your machine, there is little to be concerned about in terms of data privacy.
+
+If you contribute to this project, either by submitting a Pull Request or are submitting a bug or issue and include an export of your database activity, all of your activity history is included, even if some content was previously deleted. You can see what is in your history at any time by pressing the H key when running the web canvas.
+
+If you have any questions or concerns, please contact us before posting your data.
+
+Requirements + Dependencies
+
+OSX / Linux (Windows dev may work, but it has not been tested)
+
+Node.js (4.4.7)
+
+NVM (Node version manager). Optional, but recommended
+
+NPM (Node package manager)
+
+Meteor JS platform
+
+MongoDB NoSQL database
+
+Neo4j graph database
+
+git distributed version control system
+
+Evergreen (self-updating, modern) browsers: Chrome, Firefox, Safari, FireFox, IE10+
+
+1) via NVM (Node Version Manager) - preferred Allows you to keep various versions of Node.js in your development environment (your computer) at once. Useful if you intend on using node.js for other projects besides Parallels. Install instructions
+
+After installing NVM, install the version of node required by Meteor and set it as the default
+
+$ nvm install 4.4.7 $ nvm use 4.4.7 $ nvm alias default 4.4.7
+
+2) Manually All projects you use on your computer will be tied to one version of Node.js. Considering Meteor needs an older version of Node, this is not a great option
+
+OSX, via Homebrew
+
+Linux via Apt
+
+$ curl install.meteor.com | sh
+
+Copy of this repository on your computer
+
+$ git clone https://github.com/parallelsio/core-modules.git parallels-core-modules $ cd parallels-core-modules
+
+Install + start the Mongo database
+
+A Mongo instance is used for the end to end tests, to avoid conflicting with local Mongo install used by the Meteor app Installation Instructions
+
+Install + start the Neo4j database
+
+We use Neo4j to graph the links you create between Bits, or as we call them, Parallels.
+
+We recommend installing Neo4J using a package manager. Our preference is with homebrew Installation Instructions
+
+After install is complete, run $ neo4j start to start the neo4j server. Go to http://localhost:7474 in the browser, which will prompt you for the neo4j username + password. This will only happen once. The default username + password is neo4j. Once you have logged in the first time, neo4j will ask you for a new password. Write the password down, as you will need it to set up your application's config file.
+
+Set up environment variables in a config file
+
+We use a config file, his is a 12-factor app pattern. When running the project locally, settings are loaded into the app via a .env file located in the project root. This file is loaded by a gruntfile plugin that puts the values listed in it, into your local *nix environment before Meteor is loaded. In staging+production servers, these variables are set on the server, so this file is ignored. Thus, don't check this file in.
+
+Copy .env.example to your project root, as .env, remove all the comments and set your variables.
+
+Download + install all of the Node.js packages the Parallels project relies on
+
+$ npm install
+
+Start Either The Web App or Desktop app
+
+To start the app, run either: $ npm run server $ npm run desktop
+
+Running either will do several things:
+
+Compiles the SCSS files into CSS
+
+Compiles the Jade template files
+
+Runs bower install to get all front-end dependencies (JavaScript libraries etc)
+
+Boots up a local Meteor JS server
+
+Runs a watcher, listening for changes to Chrome's extension source code, which lives in /extensions/chrome/source
+
+When server has finished booting, your terminal output should look something like this:
+
+We've disabled the built in Meteor Hot Code, wihch automatically refreshed your browser whenever a change to the Meteor code was detected. We found it was slow and unpredictable. Make changes to /meteor-app and refresh manually to see your changes on http://localhost:3000. Note there is a slight delay for file changes to "kick in".
+
+If you've started the app with $ npm run server, go to http://localhost:3000 in your browser.
+
+If you've started the app with $ npm run desktop, you should see a dedicated window start up. This is like a real app, in the sense you can minimize/maximize it/focus to it independantly. You will also be able to see the web app at http://localhost:3000
+
+Build + Install The Chrome Extension (Optional)
+
+The Parallels Chrome extension allows you to save and send web pages you come across in different tabs, directly to the Parallels web canvas. Before you install and use our Chrome extension, you'll need to build (compile) it.
+
+Once you do so, and then install the built/compiled files into Chrome, where bits go when the extension is used, is 'frozen' and determined by how you built it the extension.
+
+Build the Chrome Extension
+
+The three ways to build the extension are:
+
+$ npm run local : the bits get sent to the local Parallels server, at http://localhost:3000. No one will see your data with this option. Your data is persistent, in that it will survive reloading the Meteor web canvas, and when you run your local end-to-end tests via $ npm run e2e
+
+---------- OR ------------
+
+$ npm run ci : bits get sent to the CI (Continous Integration) Parallels server at http://parallels-ci.meteor.com This data is public, but not persistent: it gets cleared whenever someone pushes new code to master. You should not need to use this directly, this is generally reserved for test automation.
+
+---------- OR ------------
+
+$ npm run prod : bits get sent to the sandbox server, at https://makeparallels.herokuapp.com, our production sandbox server. You should not use this directly, as this is a shared, public demo server, not for personal use.
+
+> #### Install the Chrome Extension > Point the Chrome browser to the extension source code folder: `/extensions/chrome/source` > [Detailed directions](https://developer.chrome.com/extensions/getstarted#unpacked)
+
+You can modify the extension source code and your extension will automatically update, if you have Developer Mode enabled in Chrome-> Extensions.
+
+You can rebuild your extension at any time by re-running whichever of the 3 build options you prefer, though you'll have to remove/uninstall your extension from Chrome, and then re-install it by pointing it to your latest build
+
+> When the server is running, and your extension is installed, save a web page using the web clipper. You should see that 'bit' instantly on your Parallels canvas.
+
+The clipper currently only clips websites on http. SSL-secured websites (https), will not work, as Chrome places restrictions on SSL content locally.
+
+More Workflow Task Scripts
+
+We've added more tasks to make ease development:
+
+$ npm run postinstall:
+
+#### Testing tasks
+
+We are currently focusing our testing for code that lives inside Meteor packages. This simplifies writing and maintaning our test suite, and re-inforces modular thinking by pushing us to break the Meteor app into small, testable peices.
+
+$ npm run test: Does not rely on Meteor to run. Ideally takes only ~2 to 3 minutes to run
+
+> `$ npm run test:integration`:
+
+> `$ npm run test:server`:
+
+Database tasks
+
+$ npm run resetdb: Drops all data in Meteor's Mongo DB and the Neo4j DB, resetting your application to a fresh state. The neo4j portion depends on the NEO4J_DB_PATH variable set in the .env file, in the project root folder.
+
+$ npm run exportlog: Export your canvas data to a JSON file to meteor-app/private/data-backups/canvas.events.json. This task only works while the web app is running (via $ npm run server)
+
+$ npm run importlog: Rebuild your canvas from scratch by importing a JSON file of canvas events to be replayed. This task will read events data from the file at: meteor-app/private/data-backups/canvas.events.json. **This task only works when the web app is running (via $ npm run server). ** You will probably want to clear/reset the databases before importing, although it isn't necessary.
+
+You can see a full list available by running $ npm run.
+
+FAQ + Contact
+
+Having trouble? Please contact us - we want to do everything possible to help get you set up quickly.
+
+have a look at many common questions + answers at the FAQ Wiki.
+
+Tweet to us @makeparallels
+
+email us
+
+Opening an issue
+
+If you come across a bug, please post a Github Issue to let us know. Helpful info to include:
+
+Version of dependencies e.g. NodeJS, MongoDB, Meteor, and Neo4j
+
+- OS, Type, version of browser, ie `OSX 10.10, Chrome, Version 43.0.2357.124 (64-bit)`
+
+- Your local instance eventlog. You can extract this by running `$ npm run exportlog` while the Meteor app is running via `$ npm run server`. Take the output and [create a gist](https://gist.github.com) to include in the issue, or directly upload the exported JSON file.
+
+The file exported as a result of running `$ npm run exportlog` will include all activity in your local instance of Parallels: **Please read the [Privacy Notice](https://github.com/parallelsio/core-modules#privacy-notice) before sharing/uploading this file, to understand what data will be included in it**
+
+Current challenges:
+
+Map-based coordinate system for layout/content
+
+- Designing a multi-client environment that supports realtime collaboration
+
+- Storing, modeling documents in a combination of databases used for different purposes (aka polyglot database architecture)
+
+- Browser extensions for clipping web content
+
+- Physics-based UI animations + transitions, via Greensock JS, SVG, CSS3, WebGL
+
+- Procedural audio, for dynamic, realtime sound synthesis, where UI input is used as parameters for shaping sound
+
+- Interactive documentation, think Bret Vector's definition of [reactive documents](http://worrydream.com/ExplorableExplanations/), to help prevent [this](https://i.imgur.com/Ssz6pjF.png)
+
+- mobile apps: iOS / Android / FireFoxOS
+
+- Decentralized (cloud-less) infrastructure / file storage + blockchain explorations
+
+> #### Designers + Developers:
+
+Fork the project, rather than cloning in the setup details above. Modify the code.
+
+Ensure all tests pass after running `$ npm run test`
+
+* [Submit a Pull Request](https://help.github.com/articles/using-pull-requests) via GitHub **Please ensure you've excluded any of your data or export files. See our [Privacy Notice](https://github.com/parallelsio/core-modules#privacy-notice) to learn more**

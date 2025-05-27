@@ -1,0 +1,79 @@
+1. 1 Mindquarry Mindquarry for Cocoon Users Lars Trieloff, Mindquarry
+
+2. What is Mindquarry 2 Mindquarry
+
+3. What is Mindquarry 2 Mindquarry
+
+4. What is Mindquarry 2 Mindquarry
+
+5. What is Mindquarry 2 Mindquarry
+
+6. What is Mindquarry 2 Mindquarry
+
+7. Short Demo 3 Mindquarry Collaboration Server: Mindquarry Teams, Files, Tasks and Talk Mindquarry Desktop Client: File Synchronization, Task Management Live Sites: http://www.mindquarry.org
+
+8. Mindquarry Internals 4 Server based on Mindquarry Apache Cocoon 2.2 Apache Jackrabbit Apache Lucene Solr Subversion Apache Web Server mod_perl SubethaSMTP JRuby Client based on Java 5 SWT Svnkit
+
+9. Architecture 5 Jetty Web App Container Mindquarry
+
+10. Architecture 5 Jetty Web App Container Mindquarry Apache Cocoon 2.2
+
+11. Architecture 5 Jetty Web App Container Mindquarry Apache Cocoon 2.2 Team Block
+
+12. Architecture 5 Jetty Web App Container Mindquarry Apache Cocoon 2.2 Team Block Apache Jackrabbit
+
+13. Architecture 5 Jetty Web App Container Mindquarry Apache Cocoon 2.2 Team Block Apache Jackrabbit PostgreSQL
+
+14. Architecture 5 Jetty Web App Container Mindquarry Apache Cocoon 2.2 Team DForms Block Block Apache Jackrabbit PostgreSQL
+
+15. Architecture 5 Jetty Web App Container Mindquarry Apache Cocoon 2.2 Wiki Block Team DForms Block Block Apache Jackrabbit PostgreSQL
+
+16. Architecture 5 Jetty Web App Container Mindquarry Apache Cocoon 2.2 Wiki Tasks Block Block Team DForms Block Block Apache Jackrabbit PostgreSQL
+
+17. Architecture 5 Jetty Web App Container Mindquarry Apache Cocoon 2.2 Wiki Tasks Block Block Team DForms Files Block Block Block Apache Jackrabbit PostgreSQL
+
+18. Architecture 5 Jetty Web App Container Mindquarry Apache Cocoon 2.2 Wiki Tasks Block Block Team DForms Files Block Block Block Apache Jackrabbit PostgreSQL SVN Repo
+
+19. Architecture 5 Jetty Web App Container Mindquarry Apache Cocoon 2.2 Wiki Tasks Talk Block Block Block Team DForms Files Block Block Block Apache Jackrabbit PostgreSQL SVN Repo
+
+20. Architecture 5 SubethaSMTP Jetty Web App Container Mindquarry Apache Cocoon 2.2 Wiki Tasks Talk Block Block Block Team DForms Files Block Block Block Apache Jackrabbit PostgreSQL SVN Repo
+
+21. Architecture 5 SubethaSMTP Jetty Web App Container Mindquarry Mail Parser Apache Cocoon 2.2 Wiki Tasks Talk Block Block Block Team DForms Files Block Block Block Apache Jackrabbit PostgreSQL SVN Repo
+
+22. Architecture 5 SubethaSMTP Jetty Web App Container Mindquarry Mail Parser Apache Cocoon 2.2 Wiki Tasks Talk Block Block Block REST Client Team DForms Files Block Block Block Apache Jackrabbit PostgreSQL SVN Repo
+
+23. Architecture 5 SubethaSMTP Jetty Web App Container Mindquarry Mail Parser Apache Cocoon 2.2 Wiki Tasks Talk Block Block Block REST Client Team DForms Files Block Block Block Apache Jackrabbit PostgreSQL SVN Repo
+
+24. Architecture 5 SubethaSMTP Jetty Web App Container Mindquarry Mail Parser Apache Cocoon 2.2 Search Wiki Tasks Talk Block Block Block Block REST Client Team DForms Files Block Block Block Apache Jackrabbit PostgreSQL SVN Repo
+
+25. Architecture 5 SubethaSMTP Jetty Web App Container Mindquarry Mail Parser Apache Cocoon 2.2 Search Wiki Tasks Talk Block Block Block Block REST Client Solr Team DForms Files Servlet Block Block Block Apache Jackrabbit PostgreSQL SVN Repo
+
+26. Architecture 5 SubethaSMTP Jetty Web App Container Mindquarry Mail Parser Apache Cocoon 2.2 Search Wiki Tasks Talk Block Block Block Block REST Client Solr Team DForms Files Lucene Servlet Block Block Block Index Apache Jackrabbit PostgreSQL SVN Repo
+
+27. Lessons learned 6 Mindquarry 1. Integrating Jackrabbit and Cocoon 2. Using the Servlet Services Architecture 3. Integrating Solr-based search with Cocoon 4. Tuning AJAX Performance 5. Neat REST Tricks in Mindquarry Code and Libraries available at www.mindquarry.org
+
+28. Jackrabbit and Cocoon 7 Jackrabbit: JCR/JSR-173 Container Mindquarry Versioned, Typed, Queryable Node Store Ideal for document-centric applications Mindquarry's Enhancements com.mindquarry.jcr.xml.source.JCRNodeSource an JCR-to-XML mapping com.mindquarry.jcr.jackrabbit.xpath.JaxenQueryHandler a XPath 1.0 Query handler for Jackrabbit based on Jaxen Mindquarry's most popular Pitfalls Having many small nodes in JCR affects performance Mapping Business objects to JCR is no good idea There is no easy way to limit the result size of queries
+
+29. Mapping XML to JCR 8 Mindquarry rep:root nt:unstructured / xt:element xt:text nt:folder * nt:folder STRING xt:characters users images xt:element: child nodes of type xt:element (XML elements) xt:element: child nt:ﬁle properties of type nt:ﬁle STRING (XML attribute) alex.saar photo154 nt:unstructured Binary Data xt:document xt:document jcr:content nt:resource XML jcr:content xt:element user <user> BINARY jcr:data <name>Alexander Saar</name> <email type=quot;businessquot;>alex@mq.com</name> STRING jcr:mimeType </user> xt:element DATE jcr:lastModiﬁed name xt:text text STRING xt:characters = Alexander Saar mix:versionable xt:element email nt:resource xt:text Later text STRING type = business STRING xt:characters = alex@mq.com xt:versionableresource
+
+30. Using Servlet Services 9 Servlet Services allow running and interacting with Mindquarry arbitrary servlets in the Cocoon quot;Containerquot; What works great Shielding: Conﬂicting dependencies are no problem Inheritance: Deﬁne a parent block that handles all requests that the child cannot handle What needs more handwork Inheritance of resources, e.g. having a common styling resource for all blocks Passing complex requests (e.g. including authentication) between blocks Polymorphy: e.g. a parent block passing sub-requests back to the child
+
+31. Mindquarry's Servlet 10 Services Mindquarry Solr Tasks Wiki Block Servlet Block Search Team DForms Files Block Talk Block Block Block Block Resources Usage Block Inheritance
+
+32. Integrating Solr and 11 Cocoon Solr is a REST-based search engine based on Lucene Mindquarry Implemented as a Servlet, easy to embed in Cocoon SolrPost TextFilter XSLT Generator Serializer HTTP POST XML Solr AJAX Lucene Document Servlet Client Index HTTP GET JSON When using with Jackrabbit, Shielding is neccessary com.mindquarry.cocoon.TextFilterGenerator
+
+33. Tuning AJAX 12 Performance Cocoon uses Dojo, which is very powerful Mindquarry And up to 500 kb big, which need to be downloaded parsed for every page reload better use caching and better do not reload Mindquarry uses following solution special AJAX representation of every resource customization stylesheet (html2lightbox.xsl) Client side: Dojo widget AjaxLink replaces every (internal) link with an AJAX call
+
+34. REST in Mindquarry 13 What means REST? Mindquarry Everything is a resource and has an URI Different representations of a resource possible HTML, XML, RSS, JSON, Atom... Interaction via GET, PUT, POST, DELETE HTTP HTTP Session-less Accept-Headers Authentication web applications
+
+35. HTTP Accept-Headers 14 Specify what content the client can process Mindquarry most often HTML, images, but also XML, JSON, etc. Deﬁnition: <selector name=quot;RESTquot; src=quot;org.apache.cocoon.selection.RegexpHeaderSelectorquot;> <header-name>accept</header-name> <pattern name=quot;htmlquot;>application/xhtml+xml|text/html|*/*</pattern> <pattern name=quot;xmlquot;>text/xml</pattern> <pattern name=quot;atomquot;>application/atom.xml</pattern> <pattern name=quot;pdfquot;>application/pdf</pattern> <pattern name=quot;opmlquot;>text/x-opml</pattern> <pattern name=quot;icalquot;>text/calendar</pattern> <pattern name=quot;jsonquot;>(text|application)/json</pattern> </selector>
+
+36. HTTP Accept-Headers 15 Usage Example: Mindquarry <select type=quot;RESTquot;> <when test=quot;jsonquot;> <transform src=quot;xslt/json/log2jsonXML.xslquot;> <parameter name=quot;baselinkquot; value=quot;/tasks/{1}/{2}quot; /> </transform> <transform type=quot;i18nquot;> <parameter name=quot;localequot; value=quot;{request-attr:locale}quot; /> <parameter name=quot;default-catalogue-idquot; value=quot;mindquarryquot; /> </transform> <serialize type=quot;jsonquot; /> </when> <otherwise> <serialize type=quot;xmlquot; /> </otherwise> </select>
+
+37. HTTP Accept-Headers 16 What to do if my client does not support Accept- Mindquarry Headers? <filter> <filter-name>HttpHeaderSpoofingFilter</filter-name> <display-name>HTTP Header Spoofing Filter</display-name> <filter-class> com.mindquarry.webapp.servlet.HttpHeaderSpoofingFilter </filter-class> </filter> Turns http-*-header request parameters into actual HTTP headers Example usage http://localhost:8888/changes?http-accept- header=application/json
+
+38. HTTP Authentication 17 HTTP-Basic or HTTP-Digest Authentication Mindquarry cross client support (even non-interactive) no Cookies needed no Sessions needed But: ugly login window
+
+39. HTTP Authentication 18 Mindquarry Mindquarry's solution combines a servlet ﬁlter a Dojo (AJAX) widget <filter> <filter-name>MindquarryAuthenticationFilter</filter-name> <display-name> Mindquarry Authentication filter </display-name> <filter-class> com.mindquarry.user.webapp.AuthenticationFilter </filter-class> <init-param> <param-name>realm</param-name> <param-value>Mindquarry Server</param-value> </init-param> </filter>
+
+40. Session-less web applications 19 Mindquarry Mindquarry needs no sessions REST architecture HTTP Authentication Easy to cluster But Mindquarry uses CForms, which uses Continuations, which is very close to sessions A better solution: AJAX-based forms construct XML document from form values send PUT, POST or DELETE afterwards But not yet implemented

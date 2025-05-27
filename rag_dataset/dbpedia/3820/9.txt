@@ -1,0 +1,31 @@
+If the latitude coordinate is reported as -6.3572375290155 or -63.572375290155 in decimal degrees then you could round-off and store up to 6 decimal places for 10 cm (or 0.1 meters) precision. If the coordinate reference system (CRS) is not EPSG:4326 (e.g., EPSG:3857) then the x and y values measure a distance in meters from the origin point rather than in degrees.
+
+Overview
+
+The valid range of latitude in degrees is -90 and +90 for the southern and northern hemisphere, respectively. Longitude is in the range -180 and +180 specifying coordinates west and east of the Prime Meridian, respectively. For reference, the Equator has a latitude of 0°, the North pole has a latitude of 90° north (written 90° N or +90°), and the South pole has a latitude of -90°.
+
+The Prime Meridian has a longitude of 0° that goes through Greenwich, England. The International Date Line (IDL) roughly follows the 180° longitude. A longitude with a positive value falls in the eastern hemisphere and the negative value falls in the western hemisphere.
+
+Decimal degrees precision
+
+Six (6) decimal places precision in coordinates using decimal degrees notation is at a 10 cm (or 0.1 meters) resolution. Each .000001 difference in coordinate decimal degree is approximately 10 cm in length. For example, the imagery of Google Earth and Google Maps is typically at the 1-meter resolution, and some places have a higher resolution of 1 inch per pixel. One meter resolution can be represented using 5 decimal places so more than 6 decimal places are extraneous for that resolution. The distance between longitudes at the equator is the same as latitude, but the distance between longitudes reaches zero at the poles as the lines of meridian converge at that point.
+
+For millimeter (mm) precision then represent lat/lon with 8 decimal places in decimal degrees format. Since most applications don't need that level of precision 6 decimal places is sufficient for most cases.
+
+In the other direction, whole decimal degrees represent a distance of ~111 km (or 60 nautical miles) and a 0.1 decimal degree difference represents a ~11 km distance.
+
+Here is a table of # decimal places difference in latitude with the delta degrees and the estimated distance in meters using 0,0 as the starting point.
+
+Degrees-minute-second (DMS) representation
+
+For DMS notation 1 arc second = 1/60/60 degree = ~30 meter length and 0.1 arc sec delta is ~3 meters.
+
+Example:
+
+0° 0' 0" W, 0° 0' 0" N ⟹ 0° 0' 0" W, 0° 0' 1" N ⟹ 30.715 meters
+
+0° 0' 0" W, 0° 0' 0" N ⟹ 0° 0' 0" W, 0° 0' 0.1" N ⟹ 3.0715 meters
+
+1 arc minute = 1/60 degree = ~2000m (2km)
+
+Update:

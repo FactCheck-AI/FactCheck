@@ -1,0 +1,59 @@
+GIMP is a digital photo manipulation tool for Windows (and many other platforms) that’s considered to be the open source (free) answer to Adobe Photoshop. Like Photoshop, GIMP is suitable for a variety of image manipulation tasks, including photo retouching, image composition, image construction, and has many other capabilities. It can be used as a simple paint program, an expert quality photo retouching program, an online batch processing system, a mass production image renderer, an image format converter, and so much more.
+
+GIMP is amazingly expandable and extensible – it is designed to be augmented with plug-ins and extensions to do just about anything. The advanced scripting interface allows everything from the simplest task to the most complex image manipulation procedures to be easily scripted.
+
+One of GIMP's strengths is its free availability from many sources for many operating systems. So, if you don’t want to pay the price for Photoshop, GIMP is definitely the app for you!
+
+GIMP features:
+
+Full suite of painting tools including Brush, Pencil, Airbrush, Clone, and more – including the support of custom brushes & patterns
+
+Extremely powerful gradient editor and blend tool
+
+Transformation tools including rotate, scale, shear, flip, and more
+
+Supports a variety of selection tools such as rectangle, rounded rectangle, ellipse, free, fuzzy, and more
+
+Supports many file formats – including bmp, gif, jpeg, mng, pcx, pdf, png, ps, psd, svg, tiff, tga, xpm, and more
+
+Advanced path tool doing bezier and polygonal selections
+
+Supports a virtually unlimited number of images open at one time
+
+Load, display, convert, and save to many different file formats
+
+Release highlights:
+
+Bug fixes for GIMP on Windows; see below for details.
+
+The Dashboard dockable now has memory support in OpenBSD.
+
+Performance improvements for GIMP on macOS Big Sur were applied in our macOS packages since GIMP 2.10.22 as experiments. We felt confident enough to move the code to our main codebase.
+
+The following plug-ins received fixes: C-source, DICOM, GIF, PS, Sunras, BMP, DDS, PSD, TIFF, Gimpressionist, metadata viewer and several script-fu scripts as well as the script-fu interpreter itself.
+
+Some accessibility issues in themes were fixed, such as mouse-hover feedback or problematic colors.
+
+A new Script-Fu function (dir-make) enables to create directories from scripts.
+
+Fixed bugs (Windows)
+
+Very slow file dialogs: it used to happen when network devices were slow or unavailable, or pluggable devices disconnected, or even because of fake floppy drives configured in the BIOS. GLib was using an inappropriate Windows API to get some information about drives. This has been fixed! (#913, glib!2020)
+
+Opening files in specific third-party software was crashing GIMP: apparently, these applications were editing the file-handling registry field while GLib had a buggy watcher on the registry. (#6780, glib!2205, glib!2210)
+
+GTK was outputting the wrong character on some keyboard input using Input Engines (e.g. alphanumeric characters were interpreted as half-width katakana when using the Japanese IME). (#1603, gtk!3741)
+
+TIFF exporting used to lock the TIFF files because of a bug in the Windows thumbnailer (Explorer.exe would acquire a lock on the file and never release it). Since Microsoft doesn’t seem to want to fix this long-standing bug, we decided to switch to another way of creating thumbnails by adding a “reduced-resolution image” as the second page of the TIFF, as proposed in the TIFF specification, instead of adding a subifd thumbnail. This takes care of the lock issue in a nice way, bypassing Explorer‘s bug. Of course, it means that programs that can’t reads tags properly might try opening thumbnails as additional pages, even though it is explicitly annotated as “reduced-resolution image“. If you ever run into this very issue, please report it to developers of such programs. What they need to check is the SubFile type of the pages their software opens (as per TIFF specification). (#3740)
+
+GIMP used to prevent some applications to open, when these programs needed to watch some specific directory, because GLib was reading directory with inappropriate access rights. Actually, this fix has been available since GIMP 2.10.24. (#4594, glib!1976)
+
+Windows software with invisible windows (e.g. gesture shortcuts, screen capture and the like) used to interfere with GTK software and break some mouse interactions. We have had a patch for this, by Ell, since 2017, which we used for all GIMP 2.10.x releases. Unfortunately, with GTK2 maintenance stopped, our patch was only available in the bugtracker and in our binaries, while it was beneficial to other GTK software, even in GTK3 or newer. It has only recently been reworked and improved by Luca Bacci so that this problem is now officially fixed in GTK3 too! (#1082, gtk!2767)
+
+To get a more complete list of changes, you should refer to the NEWS file or look at the commit history.
+
+Download: GIMP 2.10.28 | 238.0 MB (Open Source)
+
+View: GIMP Website | Screenshot | Release Notes
+
+Get alerted to all of our Software updates on Twitter at @NeowinSoftware

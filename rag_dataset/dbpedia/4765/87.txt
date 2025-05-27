@@ -1,0 +1,133 @@
+An International Standard Serial Number (ISSN) is a unique eight-digit number used to identify a periodical publication at a specific media type.[1] It is internationally accepted as a fundamental identifier for distinguishing between identical serial titles and facilitating checking and ordering procedures, collection management, legal deposit, interlibrary loans etc.[2]
+
+When a periodical is published, with the same content, in two or more different media, a different ISSN is assigned to each media type – in particular the print and electronic media types, named print ISSN (p-ISSN) and electronic ISSN (e-ISSN or eISSN).
+
+The ISSN system was first drafted as an ISO international standard in 1971 and published as ISO 3297 in 1975.[3] The ISO subcommittee TC 46/SC 9 is responsible for the standard. To assign a unique identifier to the serial as content, linking among the different media, “linking ISSN (ISSN-L)” must be used, as defined by ISO 3297:2007.
+
+Code format[]
+
+The format of the ISSN is an eight digit code, divided by a hyphen into two four-digit numbers.[1] As an integer number, it can be represented by the first seven digits.[4] The last code digit, which may be 0-9 or an X, is a check digit. The general form of the ISSN code can be expressed by a PCRE regular expression:
+
+Template:Code
+
+The ISSN of the journal Hearing Research, for example, is 0378-5955, where the final 5 is the check digit. To calculate the check digit, the following algorithm may be used:
+
+Calculate the sum of the first seven digits of the ISSN multiplied by its position in the number, counting from the right—that is, 8, 7, 6, 5, 4, 3, and 2, respectively:
+
+0 ⋅ 8 + 3 ⋅ 7 + 7 ⋅ 6 + 8 ⋅ 5 + 5 ⋅ 4 + 9 ⋅ 3 + 5 ⋅ 2 {\displaystyle 0\cdot 8 + 3\cdot 7 + 7\cdot 6 + 8\cdot 5 + 5\cdot 4 + 9\cdot 3 + 5\cdot 2}
+
+= 0 + 21 + 42 + 40 + 20 + 27 + 10 {\displaystyle = 0 + 21 + 42 + 40 + 20 + 27 + 10}
+
+= 160 {\displaystyle = 160}
+
+The modulus 11 of this sum is then calculated; divide the sum by 11 and determine the remainder:
+
+160 11 = 14 remainder 6 = 14 + 6 11 {\displaystyle \frac{160}{11} = 14\mbox{ remainder }6=14+\frac{6}{11}}
+
+If there is no remainder the check digit is 0, otherwise the remainder value is subtracted from 11 to give the check digit:
+
+11 − 6 = 5 {\displaystyle 11 - 6 = 5}
+
+5 is the check digit.
+
+An upper case X in the check digit position indicates a check digit of 10 (like a Roman ten).
+
+To confirm the check digit, calculate the sum of all eight digits of the ISSN multiplied by its position in the number, counting from the right (if the check digit is X, then add 10 to the sum). The modulus 11 of the sum must be 0.
+
+There is an online ISSN checker that can validate an ISSN, based on the above algorithm.[5][6]
+
+Code assignment[]
+
+ISSN codes are assigned by a network of ISSN National Centres, usually located at national libraries and coordinated by the ISSN International Centre based in Paris. The International Centre is an intergovernmental organization created in 1974 through an agreement between UNESCO and the French government. The International Centre maintains a database of all ISSNs assigned worldwide, the ISDS Register (International Serials Data System) otherwise known as the ISSN Register. At the end of 2013 , the ISSN Register contained records for 1,749,971 items.[7]
+
+Comparison with other identifiers[]
+
+ISSN and ISBN codes are similar in concept, where ISBNs are assigned to individual books. An ISBN might be assigned for particular issues of a periodical, in addition to the ISSN code for the periodical as a whole. An ISSN, unlike the ISBN code, is an anonymous identifier associated with a periodical title, containing no information as to the publisher or its location. For this reason a new ISSN is assigned to a periodical each time it undergoes a major title change.
+
+Since the ISSN applies to an entire periodical a new identifier, the Serial Item and Contribution Identifier, was built on top of it to allow references to specific volumes, articles, or other identifiable components (like the table of contents).
+
+Media vs Content[]
+
+Separate ISSN are needed for serials in different media (except reproduction microforms). Thus, the print and electronic media versions of a serial need separate ISSN.[8] Also, a CD-ROM version and a web version of a serial require different ISSN since two different media are involved. However, the same ISSN can be used for different file formats (e.g. PDF and HTML) of the same online serial.
+
+This "media-oriented identification" of serials made sense in the 1970s. In the 1990s and onward, with PCs, good screens, and the Web, what makes sense is to consider only content, independent of media. This "content-oriented identification" of serials' was a repressed demand during a decade, but no ISSN's update or initiative occurred. A natural extension for ISSN, the unique-identification of the articles in the serials, was the main demand application. An alternative serials' contents model arrived with the indecs Content Model and its application, the Digital Object Identifier (DOI), as ISSN-independent initiative, consolidated in the 2000s.
+
+Only later, in 2007, ISSN-L was defined in the new ISSN standard (ISO 3297:2007) as an "ISSN designated by the ISSN Network to enable collocation or versions of a continuing resource linking among the different media".[9]
+
+Availability[]
+
+The ISSN Register is not freely available for interrogation on the web, but is available by subscription. There are several routes to the identification and verification of ISSN codes for the public:
+
+The print version of a periodical typically will include the ISSN code as part of the publication information.
+
+Most periodical websites contain ISSN code information.
+
+Derivative lists of publications will often contain ISSN codes; these can be found through on-line searches with the ISSN code itself or periodical title.
+
+WorldCat permits searching its catalog by ISSN, by entering "issn:"+ISSN code in the query field. One can also go directly to an ISSN's record by appending it to "Template:Code", e.g. http://www.worldcat.org/ISSN/1021-9749. This does not query the ISSN Register itself, but rather shows whether any Worldcat library holds an item with the given ISSN.
+
+Use in URNs[]
+
+An ISSN can be encoded as a Uniform Resource Name (URN) by prefixing it with "Template:Code".[10] For example Rail could be referred to as "Template:Code". URN namespaces are case-sensitive, and the ISSN namespace is all caps.[11] If the checksum digit is "X" then it is always encoded in uppercase in a URN.
+
+Problems[]
+
+The util URNs are content-oriented, but ISSN is media-oriented:
+
+ISSN is not unique when the concept is "a journal is a set of contents, generally copyrighted content": the same journal (same contents and same copyrights) have two or more ISSN codes. A URN needs to point to "unique content" (a "unique journal" as a "set of contents" reference).
+
+Examples: Nature has an ISSN for print, 0028-0836, and another for the same content on the Web, 1476-4687; only the oldest (0028-0836) is used as a unique identifier. As the ISSN is not unique, the U.S. National Library of Medicine needed to create, prior to 2007, the NLM Unique ID (JID).[12]
+
+ISSN does not offer resolution mechanisms like a Digital Object Identifier (DOI) or an URN does, so the DOI is used as a URN for articles, with (for historical reasons) no need for an ISSN's existence.
+
+Example: the DOI name "10.1038/nature13777" can represented as an HTTP string by http://dx.doi.org/10.1038/nature13777, and is redirected (resolved) to the current article's page; but there is no ISSN's online service, like http://dx.issn.org/, to resolve the ISSN of the journal (in this sample 1476-4687), that is, a kind of http://dx.issn.org/1476-4687 redirecting to the journal's home.
+
+A unique URN for serials simplifies the search, recovery and delivery of data for various services including, in particular, search systems and knowledge databases.[9] ISSN-L was created to fill this gap.
+
+ISSN variants[]
+
+Print ISSN[]
+
+p-ISSN, the "default" ISSN, is the ISSN for the print media (paper) version of a periodical.
+
+Electronic ISSN[]
+
+e-ISSN (or eISSN) is the ISSN for the electronic media (online) version of a periodical.
+
+Linking ISSN[]
+
+ISSN-L is a unique identifier for all versions of the periodical containing the same content across different media. As defined by ISO 3297:2007, the “linking ISSN (ISSN-L)” provides a mechanism for collocation or linking among the different media versions of the same continuing resource.
+
+The ISSN-L is one ISSN number among the existing ISSNs, so, does not change the use or assignment of "ordinary" ISSNs;[13] it is based on the ISSN of the first published medium version of the publication. If the print and online versions of the publication are published at the same time, the ISSN of the print version is chosen as the basis of the ISSN-L.
+
+With ISSN-L is possible to designate one single ISSN for all those media versions of the title. The use of ISSN-L facilitates search, retrieval and delivery across all media versions for services like OpenURL, library catalogues, search engines or knowledge bases.[14]
+
+See also[]
+
+Wikipedia:ISSN
+
+Template:ISSN
+
+References[]
+
+[]
+
+Template:Wikidata property
+
+List of 63800 ISSN numbers and titles
+
+Lua error in Module:Citation/CS1 at line 3799: attempt to index field 'date_names' (a nil value).
+
+Lua error in Module:Citation/CS1 at line 3799: attempt to index field 'date_names' (a nil value)..
+
+Lua error in Module:Citation/CS1 at line 3799: attempt to index field 'date_names' (a nil value)..
+
+Lua error in Module:Citation/CS1 at line 3799: attempt to index field 'date_names' (a nil value)..
+
+Lua error in Module:Citation/CS1 at line 3799: attempt to index field 'date_names' (a nil value)..
+
+Lua error in Module:Citation/CS1 at line 3799: attempt to index field 'date_names' (a nil value).
+
+Lua error in Module:Citation/CS1 at line 3799: attempt to index field 'date_names' (a nil value).
+
+Template:Audiovisual works Template:ISO standards

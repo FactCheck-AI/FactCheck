@@ -1,0 +1,209 @@
+Quick facts
+
+Overview
+
+AAUSat-3 (Aalborg University CubeSat-3)
+
+AAUSat3 is the third student-developed 1U CubeSat in the Department of Electronic Systems of Aalborg University (AAU), Aalborg, Denmark. The satellite is the successor to AAUSat-2 which was launched in April 2008 and is still operational to some extent in 2011.
+
+The AAUSat3 educational project was initiated in the fall of 2007 - introducing students to all aspects of satellite design and development. The objective of the AAUSat3 mission is to fly two different types of AIS (Automated Identifications System) receivers. One of the AIS receivers onboard AAUSat3 is an SDR (Software Defined Radio) based AIS receiver. The other one is a conventional hardware AIS receiver. The goal is to investigate the quality of ship monitoring from space.
+
+The project is funded mainly by Aalborg University and by DaMSA (Danish Maritime Safety Administration), along with other sponsors. DaMSA is particularly interested in the performance of the prototype SDR AIS receiver collecting AIS signals from ships in the vicinity of Greenland.
+
+The satellite prototype was tested on a stratospheric balloon flight in October 2009 as part the BEXUS (Balloon Experiments for University Students) program, which allows European students to test scientific experiments in high altitude conditions. The balloon test served as an excellent opportunity to test the AIS receivers with an extended field of view (FOV) and to acquire realistic samples for further development of the final payload receivers. The payload on BEXUS was called NAVIS (North Atlantic Vessel Identification System).
+
+Spacecraft
+
+AAUSat3 is designed to be a highly modular and distributed design, with strictly defined subsystem interfaces and tasks. Compared to its predecessor AAUSat-2, which is a monolithic system based on a centralized OBC (On-Board Computer), this presents a number of advantages, most importantly the parallel development and testing of the subsystems.
+
+In a distributed system, it is a common approach to have a flight planner (FP) functionality for controlling experiments and payloads. To make this fail save, all subsystems must be able to operate in their basic modes. The EPS (Electrical Power Subsystem) is the primary subsystem and is in charge of switching on subsystems in accordance with available power and a pre-designated plan of operations; the activated subsystems will carry out the predefined operations.
+
+The following subsystems are recognized on AAUSat3; their sequence identifies also their functional ranking: EPS, COM, ADCS, AIS1 (standard) and AIS2 (SRD based), FP, LOG (logging system) and SWIS (SW Image Server) where SWIS may be a secondary payload. EPS must be available continuously while all other subsystems operate on request.
+
+The three subsystems EPS, COM and ADCS are by nature closely coupled with their associated input/output hardware (batteries, solar cells, radio HW and antennas, magnetorquers and sensors). To achieve a high level of integrity each subsystem resides on its own PCB (Printed Circuit Board); hence, they can carry out the designated default operations even in critical situations. In AAUSat3, EPS, COM, ADCS and AIS2 are integrated on their own hardware.
+
+ADCS (Attitude Determination and Control Subsystem): The ADCS provides 3-axis stabilization using magnetorquers as actuators. Attitude and angular rate sensing is provided by magnetometers and gyroscopes, respectively. ADCS is powered by the 32-bit ARM microprocessor.
+
+Internal communication is provided by a CAN (Controller Area Network) bus using the network-layer CSP (CubeSat Space Protocol). The CSP was originally developed for use in AAUSat3, but is now jointly maintained by the AAUSat3 students and involved persons from the open source community. The protocol allows subsystem programmers to use socket-like communication between subsystems by assigning addresses to subsystems and ports to available services, hence hosting services to reply to requests. All subsystems except AIS2 are based on Atmel AVR8 microcontrollers.
+
+EPS (Electrical Power Subsystem): Face-mounted solar cells are used to provide on orbit power. A Lithium-ion battery (8.2 V, 2200 mAh) is chosen for power storage and distribution; power bus: 3.3 V and 5 V regulated
+
+RF communications (also referred to as COM): Use of UHF band communications between the spacecraft and the ground station with FEC (Forward Error Corrective) protocols. The COM subsystem is implemented as a transparent routing device. This feature permits all subsystems to initiate their own ground communication, and it provides the ability to directly receive data from the ground. Hence, for the operation of a given subsystem, only EPS and COM are needed.
+
+• 162 MHz "uplink" for the AIS payload
+
+• 437 MHz uplink/downlink for S/C communication
+
+• Radiolink Viterbi and Reed Solomon encoding.
+
+The use of a high performance narrow-band transceiver of Analog Devices, ADF 7021, is providing a half duplex solution.
+
+Table 1: Parameters of the AAUSat3 CubeSat
+
+Launch
+
+The AAUSat3 CubeSat was launched as a secondary payload on Feb. 25, 2013 from SDSC-SHAR (Sriharikota, India) on the PSLV-C20 launcher of ISRO. The primary payload on this flight is the SARAL minisatellite, a collaborative mission of ISRO and CNES.
+
+The Six Secondary Payloads Manifested on this Flight
+
+• BRITE-Austria (CanX-3b) and UniBRITE (CanX-3a), both of Austria. UniBRITE and BRiTE-Austria are part of the BRITE Constellation, short for "BRIght-star Target Explorer Constellation", a group of 6.5 kg, 20 cm x 20 cm x 20 cm nanosatellites who purpose is to photometrically measure low-level oscillations and temperature variations in the sky's 286 stars brighter than visual magnitude 3.5.
+
+• Sapphire (Space Surveillance Mission of Canada), a minisatellite with a mass of 148 kg.
+
+• NEOSSat (Near-Earth Object Surveillance Satellite), a microsatellite of Canada with a mass of ~74 kg.
+
+• AAUSat3 (Aalborg University CubeSat-3), a student-developed nanosatellite (1U CubeSat) of AAU, Aalborg, Denmark. The project is sponsored by DaMSA (Danish Maritime Safety Organisation).
+
+• STRaND-1 (Surrey Training, Research and Nanosatellite Demonstrator), a 3U CubeSat (nanosatellite) of SSTL (Surrey Satellite Technology Limited) and the USSC (University of Surrey Space Centre), Guildford, UK. STRaND-1 has a mass of ~ 4.3 kg.
+
+Orbit: Sun-synchronous near-circular dawn-dusk orbit, altitude of ~781 km, inclination of 98.55o, orbital period of 100.6 minutes, LTAN (Local Time on Ascending Node) = 6:00 hours.
+
+Status of Mission
+
+• October 1, 2014: The project at AAU declared the end of the AAUSat-3 mission due to battery problems (continuous decline in power production). On Sept. 17, 2014, the last transmission from the AAUSAT3 satellite was received. — The project is grateful for the experience gained throughout the mission.
+
+- With AAUSat-3, it has been proven that a 1U CubeSat outfitted with a low-power SDR based AIS receiver and a simple dipole antenna makes it possible to receive high quality AIS data from LEO. It has been found, that continuous reception rates of above 13,000 AIS messages/hour is possible and that the main challenge is not to receive all the data, but to get it transmitted down to the ground stations (Ref. 22).
+
+• 2014: The project developed a new version of the SDR firmware which was uploaded to the spacecraft. One of the main improvements was the implementation to do realtime continuous demodulation and decoding as opposed to the default launch software, which only allowed for a sample and analyze kind of routine. This also means, that while the receiver was able to detect more than 10 000 AIS messages/day this has now been improved to more than 10 000 AIS messages/hour (Ref. 22).
+
+- The results show, that there are several different effects which affect the receivers ability to receive good AIS signals from an 800 km LEO. Amongst other things, interfering signals on the same AIS frequencies, strong signals on neighboring frequencies and wide band burst disturbances.
+
+• On Feb. 25, 2014, AAUSat3 was on-orbit for 1 year. The CubeSat is in full operation.
+
+• On Sept. 22, 2013, the project tested the latest version of the AIS receiver algorithm for 5 hours. A plot can be seen in Figure 10. More than 52,000 ships were received correctly and subsequently downloaded via the two ground stations to the control center in Aalborg.
+
+• June 5, 2013: AAUSat3 has now been in space for 100 days. In that period the main payload - namely the in-house developed SDR AIS receiver - has received more than 700.000 AIS messages. Currently, the project is receiving 10,000 AIS messages/day at the ground station in Aalborg, Denmark. The spacecraft and its payload are operating nominally. The project is preparing another ground station at Thule in Greenland at 72 o North, which will triple download capacity.
+
+• In April 2013, the AAUSat3 CubeSat is operating nominally . Up to 10,000 AIS messages/day are downloaded. As of April 10, 2013 (43 days after launch), a total of 8 MByte of AIS data were successfully downloaded.
+
+• On March 15, 2013, the high-speed downlink of 19.2 kbaud was tested. This permitted the project to transmit 6-8 packages/s.
+
+• On March 12, 2013, the project reported that the AIS2 (Automated Identifications System 2) device on AAUSat-3 had already received 100,000 AIS messages from ships in the ground segment. This is a remarkable feat for a 1U CubeSat.
+
+• The project at Aalborg University made contact with AAUSat3 on the first pass.
+
+Sensor Complement
+
+Background
+
+The AIS system operates in the VHF maritime band on two channels around 162 MHz which is reserved for the AIS communication purpose worldwide. The AIS transponders are developed to transmit either in high or low power mode according to the AIS transceiver Class (A or B).
+
+To be able to meet the requirements on high broadcast rates and ensure a reliable and robust operation as is described in the AIS standard, the channels are shared by using the TDMA (Time Division Multiple Access) modulation scheme. However, when using TDMA it needs to be synchronized. At open sea, it is not desirable to be dependent on a master to determine when other ships are allowed to broadcast in the TDMA scheme. Therefore, the AIS system uses the SO-TDMA (Self Organizing TDMA) scheme (also written as SOTDMA) and uses the UTC time standard, as a reference for synchronizing TDMA.
+
+The AIS system decides which slots to use, depending on received transmissions from other AIS transponders. Furthermore, radio frequency discrimination is used by the AIS system to shrink the TDMA zone. This is done to suppress weak signals from distant ships in favor of receiving strong nearby transmissions. To ensure correct communication in the AIS system, the TDMA zones are intended to be 20 to 200 nautical miles.
+
+Compared to a standard terrestrial AIS receiver, there are a number of issues, which need to be taken into account, when talking about receiving AIS messages from space. These include the Doppler shifting of the transmission, the extended FOV (Field of View) of the satellite and the lower signal strength of the AIS signal once it reaches the satellite.
+
+Payload
+
+The main payload is comprised of two AIS receivers based on two different receiver structures and demodulation methods. These are used for testing how different solutions will react to the extended FOV and to evaluate the two solutions for further development of AIS receives for the final satellite. The AIS1 subsystem performs demodulation of the signals with a commercial radio frontend and processes a serial output to decode the AIS messages. AIS2 is a software based receiver, that samples a down converted intermediate frequency output and stores it for later processing.
+
+Since the two AIS receivers are completely independent, the probability of success is increased even if one of the subsystems should malfunction during the flight. However, they share a common VHF antenna and LNA (Low Noise Amplifier).
+
+Challenges Compared to Terrestrial Receivers
+
+As opposed to a terrestrial receiver, a receiver used from LEO needs to be able to handle the inevitable Doppler shift which will occur at the receiver as well as the lower signal strength and large antenna footprint. The Doppler shift experienced at 162 MHz, from a 800 km LEO is more that ±3 kHz, meaning that more than a 6 kHz difference will be observed and needed to be taken care of. As the AIS messages are rather short, on the order of 48 ms for a short message; the change in the Doppler shift within one message is therefore neglected. This means, that a per transmission estimate needs to be made in order to receive the message correctly.
+
+Method
+
+The designed AIS receiver utilizes a RF-transceiver chip, from which a 200 kHz wide I/Q IF signal can be extracted, which in turn is sampled at 758 ksample/s and fed into a DSP for decoding. The software can either store a raw 1 second sample sequence onboard the satellite, equivalent to 3 MB, for later download to Earth, which is useful for further decoder algorithm improvements, or the onboard decoder can be utilized to try to decode the received AIS messages, and then only download the decoded AIS messages, which obviously is a lot more bandwidth efficient. The onboard AIS decoder works by first dividing the stream into two separate bandpass filtered streams, one for each AIS channel wide enough to include the possible Doppler shift of the AIS messages. For each of the channels, a matched filter non-coherent demodulator is employed, with the augmentation compared to a terrestrial receiver, that it is preceded by a center frequency estimator, which is fed forward to the demodulator.
+
+AIS1 (Automated Identifications System 1)
+
+AIS1 is a hardware receiver based on the Analog Devices ADF 7021 radio transceiver. The transceiver demodulates the radio signals from one of the two AIS channels to a 9.6 kbit/s data stream. This is connected using a SPI (Serial Peripheral Interface) to an Atmel AVR microcontroller that processes and decodes the data. The received AIS messages are decoded and messages with both correct and incorrect FCS (Frame Check Sequence) and stored on permanent storage for later analysis.
+
+AIS1 features:
+
+• LNA (Low Noise Amplifier)
+
+- Around +15dB
+
+- Includes SAW filter
+
+• Radio chip
+
+- Analog Devices ADF 7021
+
+- Advantage: SPI compatible bitstream output.
+
+AIS2 (Automated Identifications System 2)
+
+Hardware design: AIS2 is an SDR (Software Defined Radio) system based on a DSP module from Bluetechnix. The module populates a Blackfin 16 bit fixed point DSP (Digital Signal Processor) from Analog Devices and RAM/Flash for basic operations. AIS reception is enabled by a radio frontend and an ADC (Analog to Digital Converter) sampling the IF (Intermediate Frequency), and demodulation in software on the DSP. Furthermore, AIS2 has a SD (Secure Digital) memory card for mass storage. The developed board has two external 16 MB Nor Flash IC's, a CAN bus 2.0 interface and a RS232 serial port for interfacing. A block diagram of the setup is shown in Figure 14 and a photo of the finished board can be seen in Figure 15.
+
+AIS2 features:
+
+• LNA (Low Noise Amplifier)
+
+- Around +15dB
+
+- Includes SAW filter
+
+• RF front-end
+
+- Analog Devices ADF 7020
+
+- Advantage: I/Q at 200 kHz IF
+
+• ADC (Analog Digital Converter)
+
+- Analog Devices AD 7262
+
+- Capable of 1 Msample/s.
+
+• AIS sensitivity better than -114 dBm.
+
+Legend to Figure 15: The colored part is the SDR based receiver.The gray scale part of the board is a traditional hardware based AIS receiver, used as a reference.
+
+Software design: The receiver is running the µClinux operating system for basic multitasking, and the following kernel space drivers are optimized for performance: The SPORT (synchronous high-speed serial port) has been updated to support the serial interface to the ADC. The DMA (Direct Memory Access) engine and memory has been improved to manage the data input FIFO without software overhead. The DSP algorithm is using internal data and instruction cache to reduce load on the SDRAM, by the design of a buffering system that allows processing of data in chunks, reducing the algorithm overhead.
+
+The AIS2 SDR receiver has been built and tested on the ground and in a stratospheric balloon flight. The receiver has a size of ~ 40 cm2, and it uses ~ 1 W at peak power.
+
+The antenna system onboard the AAUSat3 satellite for reception of AIS signals consists of a single dipole antenna pointing towards Earth, which results in a link margin of 14.5 dB to 8.5 dB for a class A transponder with a range of 1000 to 2000 km. Since a class B transponder transmits with 7 dB less power, the link margin will correspondingly be 7 dB lower for reception of class B transponders.
+
+References
+
+Jesper A. Larsen, Hans Peter Mortensen, Jens D. Nielsen, "An SDR based AIS Receiver for Satellites," Proceedings of RAST 2011 (Recent Advances in Space Technologies) Conference, Istanbul, Turkey, June 9-11, 2011
+
+Jens F. Dalsgaard Nielsen, Dan D. V. Bhanderi, "The Engineering Space Workforce of Tomorrow - The Integrated Space Engineer," URL: http://bhanderi.dk/research/publications/nielsen_space_workforce.pdf
+
+Jesper A. Larsen, Jens D. Nielsen, "Development of Cubesats in an Educational Context," Proceedings of RAST 2011 (Recent Advances in Space Technologies) Conference, Istanbul, Turkey, June 9-11, 2011
+
+Information provided by Jens Frederik Dalsgaard Nielsen of AAU, Aalborg, Denmark.
+
+Hans Peter Mortensen, Ulrik Wilken Rasmussen, Nikolaj Bisgaard Pedersen, Jesper A. Larsen, Jens Fredrik Dalsgaard Nielsen, "NAVIS: Performance Evaluation of the AAUSat3 CubeSat Using Stratospheric Balloon Flight," Proceedings of the 61st IAC (International Astronautical Congress), Prague, Czech Republic, Sept. 27-Oct. 1, 2010, IAC-10.E2.3.5, URL: http://vbn.aau.dk/files/52851448/paper.pdf
+
+Jens Dalsgaard Nielsen, Jesper A Larsen, "A Decentralized Design Philosophy for Satellites," Proceedings of RAST 2011 (Recent Advances in Space Technologies) Conference, Istanbul, Turkey, June 9-11, 2011
+
+"AAUSat3," URL: http://www.space.aau.dk/aausat3/index.php?n=Tech.AAUSAT3InDetails
+
+Jesper E. Pedersen, Soren T. Hede, Claus T. B. Pedersen, Henrik Dalsager, "AAUSAT3, Attitude and Determination Control System," June 2008, URL: http://zcuba.dk/reports/08gr633.pdf
+
+Kasper Fuglsang Jensen, Kasper Vinther, "Attitude Determination and Control System for AAUSAT3," Master Thesis, June 2010, Aalborg University, Department of Electronic Systems Intelligent Autonomous Systems, URL: http://www.crn2.inpe.br/conasat1/projetos_cubesat/projetos/AAUSAT-3%20-%20Aalborg%20University%20-%20Denmark/AAUSAT-3%20-%20ADCS%20-%20Attitude%20Determination%20and%20Control%20System.pdf
+
+Johann Andrieu, Chakib Nacer El Haouzia, Jens Dalsgaard Nielsen, "Design and Development of QOS Policy for AAUSat3 Communication Protocol," Spring 2010, URL: http://vbn.aau.dk/files/32880301/10gr872-%20Design%20and%20Development%20of%20QoS%20Policy.pdf
+
+"PSLV - C20 successfully launches Indo-French satellite SARAL and six other commercial payloads into the orbit," ISRO, Feb. 25, 2013, URL: http://www.isro.org/pslv-c20/c20-status.aspx
+
+"AAUSAT3 is not operable anymore. It has been an adventurous journey since launch 25. February 2013," AAU, Oct. 1, 2014 (Ref. .
+
+Jesper A. Larsen, Hans Peter Mortensen, "AIS Spectrum Analysis from a LEO satellite using Raw Spectrum Recordings," Proceedings of the 65th International Astronautical Congress (IAC 2014), Toronto, Canada, Sept. 29-Oct. 3, 2014, paper: IAC-14-B2.5.7
+
+"One year in space - February 25th 2014," AAU, URL: http://www.space.aau.dk/aausat3/#tempid-0
+
+"5th June 2013 - AAUSAT3 has now been in space for 100 days," AAUSat3, June 5, 2013, URL: http://www.space.aau.dk/aausat3/index.php?n=Main.First100Days
+
+"AAUSat-3 home," AAU, URL: http://www.space.aau.dk/aausat3/
+
+Jesper A. Larsen, Hans Peter Mortensen, "In Orbit Validation of the AAUSAT3 SDR based AIS receiver," Proceedings of the 6th International Conference on Recent Advances in Space Technologies (RAST), Istanbul, Turkey, June 12-14, 2013
+
+Information provided by Jens Dalsgaard Nielsen of Aalborg University, Aalborg, Denmark.
+
+"AAUSat3 home page," URL: http://www.space.aau.dk/aausat3/
+
+"AIS2 has now passed a milestone: 100,000 AIS messages!," AAU, March 12, 2013, URL: http://www.space.aau.dk/aausat3/
+
+http://www.space.aau.dk/aausat3/
+
+Jesper A. Larsen, Hans Peter Mortensen, Mathias Tausen, Jesper W. Bundgaard, Thomas Trillingsgaard, "Analysis of received AIS data from a LEO CubeSat," Proceedings of the 65th International Astronautical Congress (IAC 2014), Toronto, Canada, Sept. 29-Oct. 3, 2014, paper: IAC-14-B4.6B.9
+
+The information compiled and edited in this article was provided by Herbert J. Kramer from his documentation of: "Observation of the Earth and Its Environment: Survey of Missions and Sensors" (Springer Verlag) as well as many other sources after the publication of the 4th edition in 2002. - Comments and corrections to this article are always welcome for further updates (eoportal@symbios.space).

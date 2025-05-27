@@ -1,0 +1,19 @@
+Your requirement
+
+You use xinetd to provide one or more services on the Internet. As the server you use your own program, e.g., a shell script. With this you want to realise e.g., Portknocking and therefore you want to find out the IP address of the host which has connected to you.
+
+The solution
+
+xinetd communicates the IP address of the remote host to the called program via the environment. This variable is called REMOTE_HOST.
+
+An example
+
+Let’s assume you attach a shell script /root/test.sh to UDP port 8888. Your configuration for xinetd will look something like this:
+
+/etc/xinetd.d/test:service test { disable = no type = UNLISTED socket_type = dgram protocol = udp user = root wait = yes port = 8888 server = /bin/bash server_args = /root/test.sh }
+
+The test script can access the address as follows:
+
+/root/test.sh:#!/bin/bash logger "xinetd: Verbindung auf Port 8888 von IP-Adresse $REMOTE_HOST"
+
+You can also access the REMOTE_HOST variable from a C program. The getenv() function is available for this purpose:

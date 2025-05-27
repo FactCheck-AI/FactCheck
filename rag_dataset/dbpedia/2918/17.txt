@@ -1,0 +1,77 @@
+Recently, I have been wondering about the communication protocols used in small satellites like CubeSats. After all, these satellites are made up of multiple modules that must communicate effectively with each other in order to successfully carry out their mission. Furthermore, the entire satellite must also establish a connection with the ground station in order to receive telecommands sent to it and to send back telemetry data in response. While searching for phrases such as “satellite communication protocols” or “cubesat communication protocols”, I came across terms such as CCSDS, AX.25, KISS and finally, CSP.
+
+What is Cubesat Space Protocol?
+
+CSP, a small network-layer delivery protocol developed by a group of students from Aalborg University in 2008, was further developed for the AAUSAT3 CubeSat mission that was launched in 2013. It is designed to ease communication between distributed embedded systems in smaller networks, such as CubeSats, by enabling a service-oriented network topology in which there is no distinction between master and slaves. All subsystems can communicate with each other. The implementation is written in C for 8-bit AVR and 32-bit ARM microcontrollers.[,]
+
+Some key features:
+
+API similar to Berkeley sockets
+
+FreeRTOS and Linux support
+
+CAN, I2C and KISS interfaces
+
+Zero-copy buffer and queue system
+
+Cubesat Space Protocol is still actively maintained by Johan de Claville Christiansen.
+
+Clone and build
+
+To avoid making a mess on my main operating system, I installed a fresh version of Ubuntu 22.04 LTS within VirtualBox. This way, I can also check the dependencies and additional modules that I need to install in order to work with the protocol. In my development directory, I began by cloning the CSP source code repository and attempting to build examples using the existing script prepared by the authors. At the time of writing this post, I obtained the [b2996d2] commit from the development branch.
+
+git clone https://github.com/libcsp/libcsp.git && cd libcsp ./examples/buildall.py
+
+Of course, I ran into some missing module errors. It took me a few tries to finally get everything built successfully. Here is a command to install all the needed modules.
+
+sudo apt install python3 python-is-python3 build-essential pkg-config libsocketcan2 libsocketcan-dev libzmq3-dev libzmq5
+
+Run
+
+The first time I ran the csp_server_client example, I got an encouraging view.
+
+./build/examples/csp_server_client
+
+This is an output from server and client tasks communicating with each other via the loopback interface. I could see that something was happening, but to really understand how it was done, I took a look into the code.
+
+What’s in the code
+
+At the beginning, the application parses command-line arguments if applied. Although I found out the application is a little bit outdated and missing some things, it is possible (or at least was in the past) to set things like:
+
+local address
+
+server address
+
+interface devices (KISS, ZMQ, CAN)
+
+routing table
+
+Next, the CubeSat Space Protocol is initialized and a router task is started. From now on, the router is checking for incoming packets. If a destination address matches the local node ID, some additional checks are done before delivering the packet. However, if there is a destination address mismatch, then the router tries to pass on the packet to the recipient using the proper interface found in the routing table.
+
+Depending on the command-line arguments used, the appropriate interfaces are configured. For example, if the name of the USB<->UART converter is provided during startup, the KISS interface will be configured as the default. For example, during startup, it is enough to add -k/dev/ttyUSB0, so that the router starts directing sent packets to that device.
+
+./build/examples/csp_server_client -k/dev/ttyUSB0
+
+Then, in lines 235-246, if the user runs the application with their own routing table specified, it is loaded. In other cases, the default interface is used for the configuration table, to which all outgoing traffic is directed. If such an interface does not exist, all packet transfer will take place through an internal loopback.
+
+And finally, after all the initialization routines, both the client and server tasks are started. The former periodically sends a message to the server and tries to utilize its services, while the latter prints incoming messages and handles all requested services.
+
+Communication over UART
+
+After successful application run, I decided to go one step further and try to establish communication between two instances of the application, one functioning as a client and the other as a server. To achieve this, I used two USB <-> UART converters, between which I crossed the TX and RX lines.
+
+In the application code, I had to make a small fix. When running it with a specified local address through the -a argument, I noticed that despite providing different values, the local address always took the value of 0.
+
+Most likely, the setting of the local address has been mistakenly removed. I added the setting of the local address for the default interface, if it is created.
+
+As a result, after running separate instances for the client and server, communication was established.
+
+Further steps
+
+This is not the end of playing with CSP. Since I have several WeAct BlackPill F411CE boards, I would now like to build an imitation of a small satellite consisting of 3 modules (OBC, COM, EPS) and communicate them with the application running on the computer, as if it were a ground station (GS). Of course, all using the CSP protocol.
+
+First, I will try to establish a connection between the COM module and the GS application. To do this, I will connect the TX/RX outputs of the USB<->UART converter to the appropriate pins on the BlackPill board. Only later will I expand the set with additional OBC and EPS modules, connecting them together with the COM module via the I2C interface. This will also require adding another interface in CSP and configuring the correct routing tables on each module.
+
+More about this in the next post 🙂
+
+References

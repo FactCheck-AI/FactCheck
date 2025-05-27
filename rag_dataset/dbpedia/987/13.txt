@@ -1,0 +1,67 @@
+Image Sprites
+
+An image sprite is a collection of images put into a single image.
+
+A web page with many images can take a long time to load and generates multiple server requests.
+
+Using image sprites will reduce the number of server requests and save bandwidth.
+
+Image Sprites - Simple Example
+
+Instead of using three separate images, we use this single image ("img_navsprites.gif"):
+
+With CSS, we can show just the part of the image we need.
+
+In the following example the CSS specifies which part of the "img_navsprites.gif" image to show:
+
+Example explained:
+
+<img id="home" src="img_trans.gif"> - Only defines a small transparent image because the src attribute cannot be empty. The displayed image will be the background image we specify in CSS
+
+width: 46px; height: 44px; - Defines the portion of the image we want to use
+
+background: url(img_navsprites.gif) 0 0; - Defines the background image and its position (left 0px, top 0px)
+
+This is the easiest way to use image sprites, now we want to expand it by using links and hover effects.
+
+Image Sprites - Create a Navigation List
+
+We want to use the sprite image ("img_navsprites.gif") to create a navigation list.
+
+We will use an HTML list, because it can be a link and also supports a background image:
+
+Example explained:
+
+#navlist {position:relative;} - position is set to relative to allow absolute positioning inside it
+
+#navlist li {margin:0;padding:0;list-style:none;position:absolute;top:0;} - margin and padding are set to 0, list-style is removed, and all list items are absolute positioned
+
+#navlist li, #navlist a {height:44px;display:block;} - the height of all the images is 44px
+
+Now start to position and style for each specific part:
+
+#home {left:0px;width:46px;} - Positioned all the way to the left, and the width of the image is 46px
+
+#home {background:url(img_navsprites.gif) 0 0;} - Defines the background image and its position (left 0px, top 0px)
+
+#prev {left:63px;width:43px;} - Positioned 63px to the right (#home width 46px + some extra space between items), and the width is 43px
+
+#prev {background:url('img_navsprites.gif') -47px 0;} - Defines the background image 47px to the right (#home width 46px + 1px line divider)
+
+#next {left:129px;width:43px;} - Positioned 129px to the right (start of #prev is 63px + #prev width 43px + extra space), and the width is 43px
+
+#next {background:url('img_navsprites.gif') -91px 0;} - Defines the background image 91px to the right (#home width 46px + 1px line divider + #prev width 43px + 1px line divider)
+
+Image Sprites - Hover Effect
+
+Now we want to add a hover effect to our navigation list.
+
+Our new image ("img_navsprites_hover.gif") contains three navigation images and three images to use for hover effects:
+
+Because this is one single image, and not six separate files, there will be no loading delay when a user hovers over the image.
+
+We only add three lines of code to add the hover effect:
+
+Example explained:
+
+#home a:hover {background: url('img_navsprites_hover.gif') 0 -45px;} - For all three hover images we specify the same background position, only 45px further down

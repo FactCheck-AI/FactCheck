@@ -1,0 +1,7 @@
+What should library authors do?
+
+As a library writer you always face a dilemma between reach of your library and the feature set you can depend on in the runtime. In some cases you may feel compelled to split your library in two so that one version can target e.g. the classic .NET Framework, while a âmodernâ version makes use of e.g. new types and features in .NET Core 3.1.
+
+However, with Nullable Reference Types specifically, you should be able to work around this. If you multitarget your library (e.g. in Visual Studio) to .NET Standard 2.0 and .NET Core 3.1, you will get the reach of .NET Standard 2.0 while benefitting from the nullable annotations of the .NET Core 3.1 libraries.
+
+You also have to set the language version to C# 8.0, of course, and that is not a supported scenario when one of the target versions is below .NET Core 3.0. However, you can still do it manually in your project settings, and unlike many C# 8.0 features, the NRT feature specifically happens to not depend on specific elements of .NET Core 3.1. But if you try to use other language features of C# 8.0 while targeting .NET Standard 2.0, all bets are off!

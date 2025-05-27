@@ -1,0 +1,63 @@
+MMIX is a computer architecture designed by Donald Knuth. Knuth is writing a grand monography The Art of Computer Programming, and presents example subroutines and programs in this architecture.
+
+MMIX consists of a CPU architecture and instruction set, a simple but complete operating system interface, an executable file format, and an assembly language. The CPU is specified enough that it would be possible to use for operating system programming, but there is no hardware-level specification of the motherboard and peripherials. The operating system interface (NNIX) tells how a program is started, how it can use virtual memory, and issue system calls to open, read and write files.
+
+Architecture
+
+MMIX is a 64-bit computer. General registers are 64-bit sized, arithmetic instructions operate on full 64-bit integers in registers, a few other instructions work with 64-bit IEEE floating point numbers (doubles) or 64-bit vectors of smaller integers in registers. Memory is addressed in bytes with a 64-bit address, there are loads and stores of one, two, four and eight byte size. All loads and stores are big-endian and aligned, two-byte loads and stores ignore the lowest bit of the address, four-byte loads and stores ignore the lowest two-bits, and eight-byte loads ignore the lowest three bits. This lets you efficiently store tag bits in a pointer (whether it's a pointer to data or code).
+
+All instructions are exactly four byte sized and are aligned in memory.
+
+Addressing modes
+
+Most of the general purpose instructions operate only on general registers, with either two input and an output register, or an input register, an 8-bit immediate constant, and an output register. Some instructions that need more than two inputs or more than one output reuse the output register as a third input, or use specific special registers as additional operands. Load and store instructions compute the address as the sum of two general registers, or as the sum of a general register and an 8-bit immediate; multibyte loads and stores ignore the low bits of the sum as mentioned above. Loads smaller than eight bytes have a zero-extending and a sign-extending version; stores smaller than eight bytes have a truncating version and a version that raises an exception if the signed value doesn't fit in the destination; plus there are instructions for loading or storing 4-byte floating point values from memory, representing it as 8-byte floating point in registers. Most of the general purpose, load and store instructions come in pairs, one variant using two general registers as input, the other using a general register and an 8-bit immediate. Floating point and some system instructions only have the former variant. There is also a set of instructions that have a 16-bit immediate as input and so have only one register operand.
+
+Branch instructions have a 17-bit (I kid you not) instruction-relative address in them that is scaled by 4. There is also an unconditional jump with a 25-bit instruction-relative address, an indirect jump that computes an absolute address similarly to loads and stores, and subroutine entry versions of the latter two.
+
+Register stack
+
+The most unusual feature of MMIX is its register stack.
+
+Ordinary instructions see a virtual array of 256 general-purpose registers called $0..$255. The lower part of these registers provide a view into a conceptual stack S of the program. The program can automatically extend the stack upwards by writing to any virtual register above the current top of the stack. The stack can easily be pushed or popped by any number of elements, thus renumbering the virtual registers. If you push k elements, then the virtual registers will refer to actual registers k higher in the stack than previously; whereas if you pop k elements, they will refer to registers k lower.
+
+The push operation typically happens at subroutine entry, the pop operation at subroutine return. The visible part of the conceptual stack in the caller and callee can overlap by any number of entries, so the subroutine can get any number of arguments and return any number of return values on the register stack. (The caller can also have used registers above the arguments as scratch registers clobbered by the subroutine.) The subroutine entry instructions push the register stack by any number of entries to hide the registers the caller wants to preserve, store the return address, and jump to the subroutine, all in one go. The return instructions pop the stack and truncate its top, so that the part of the conceptual stack above the return values that the subroutine has used will not have to be saved, then jump to the return address, possibly with an offset. The most confusing part of the subroutine handling is what Knuth nicknamed "the infamous MMIX register shuffle": the topmost return address is stored in a special register rJ, the previous value of this register is stored in the conceptual stack in the slot where the primary return value of the subroutine will be placed later, the subroutine has to place this primary return value in the register above the other return values, just above where the stack will be truncated.
+
+You can also call leaf subroutines without affecting the register stack, if the caller and the callee agree on how they share the registers.
+
+The top part of the conceptual stack S is stored in a hardware register ring l, which has at least 256 entries, more in faster implementations. The rest of S is stored in main memory, so the machine will flush entries of the conceptual stack from the bottom when the conceptual stack would have to be extended, and will re-read bottom entries when they would be accessed.
+
+In addition to the view into the conceptual stack, a number of the virtual registers is reserved as global registers, which are mapped to hardware registers with the view never shifting. The number of such registers can be set at runtime between 1 and 224.
+
+All these considerations makes MMIX quite efficient and flexible for all sorts of ordinary operations with subroutines, because the program can store much of its data on the register stack. Arrays have to be stored separately, such as on an alternate stack or the heap, because you can't address the register stack indirectly. MMIX gets somewhat hard to use if you want to use coroutines with multiple stacks, because there's potentially a lot of registers to save when you transfer to a context with a different stack.
+
+Memory
+
+User mode programs see a 63-bit virtual address space. All addresses with the high bit clear address a valid byte, and the operating system will allocate a page there. However, some addresses are easier to handle than others: addresses whose lower 61 bits viewed as an unsigned integer is small are faster to access, because they have to go fewer depth in the paging table tree.
+
+In kernel mode, in addition to the user mode address space, you can use the kernel mode address space, which is not paged, it's just the physical address space mapped directly. The physical address memory space is limited to 48-bit addresses by the paging table format.
+
+Self-modifying code is strongly restricted: between modifying an instruction and executing it, programs have to explicitly flush that region of the memory from the code cache.
+
+Binaries
+
+Knuth has also defined an assembly syntax and an executable format for MMIX. The executable format doesn't support linking multiple object files (static or dynamic), you have to assemble the whole program together. The executable format is such that the assembler outputs it streaming in a single pass, so forward references and output location changes are preserved in the binary as escape codes and the operating system resolves them at program load time.
+
+Implementation
+
+Knuth has written an official simulator for MMIX called MMIXware. This simulates user mode only, includes a stub operating system that forwards file accesses to the host operating system, various debugging and tracing options, and an assembler and loader for the above mentioned formats. MMIXware also has a so-called "meta-simulator", which lets you predict how a program would run on a hypothetical modern optimized hardware CPU with caches and pipeline, with lots of details of the hardware customizable.
+
+Esoteric?
+
+Knuth deliberately made an architecture that didn't yet exist, because if he used an existing architecture or programming language, then users of other computers or programming languages might feel like the book is not targeting them. People using MMIX for serious purposes would defeat this goal, in which sense MMIX is esoteric.
+
+However, Knuth designed MMIX as a realistic ideal computer, so in a hypothetical alternate history it could be used as a real computer. Knuth has agressively frozen the instruction set, not allowing easy extensions, thus trying to avoid extended versions of MMIX which have ugly parts for historical compatibility.
+
+Some critics point out faults in the design of MMIX. For example, the kernel address space can't use paging, thus memory corruption bugs in kernel mode aren't easily caught early. Further, the operating system interface is designed such that user space programs can write anywhere in the virtual address space, without asking the operating system to map something there first, thus in that operating system, memory corruption bugs in user mode programs can't be caught easily either. Switching from user mode to kernel mode is slow, because the CPU has a small design flaw that makes saving registers more difficult than it should be. Most of these faults hinder realistic system programming, or user programming when security matters. They won't affect the typical uses of MMIX which emulate only user level programs and run only textbook example programs. It is thus possible that Knuth made those mistakes because he simply didn't think enough about those uses of the CPU. If Knuth has deliberately introduced those flaws to discourage making production versions of MMIX, then that was a plausibly deniable masterstroke from him.
+
+History
+
+Donald Knuth designed MMIX between 1999 and 2011. Early development took place in 1999, the zeroth printing of its description was published in 2004. Version 1 of the canon software kit MMIXware by Knuth got frozen in 2011, at which point Knuth has stopped working on the MMIX system itself and devotes all his time to writing The Art of Computer Programming.
+
+MMIX replaces MIX, an obsolete polyunsaturated computer architecture from the 1960s that was used in previous editions of TAOCP. MMIX contains even less saturated fats than MIX.
+
+References

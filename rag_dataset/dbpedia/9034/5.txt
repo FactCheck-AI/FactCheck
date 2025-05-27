@@ -1,0 +1,89 @@
+When the last Telefon Tel Aviv record came out, the band already had a tangled legacy behind them. Originally hailing from New Orleans, the duo of Josh Eustis and Charles Cooper quickly drew an avid following with their 2001 debut album, Fahrenheit Fair Enough. Their initial combination of micro-sampling techniques, folky songwriting and expressive sound design remains a unique proposition that mutated over time. Subsequent albums Map Of What Is Effortless and Immolate Yourself each represented a departure from its predecessors, simultaneously confusing existing fans while acquiring new ones. When Cooper tragically passed away in 2009, Telefon Tel Aviv went on indefinite hiatus, leaving behind a small but prominent body of work for listeners to reflect upon. A band that steadfastly refused to adhere to genre conventions or kowtow to expectations, their cult status has only deepened over time.
+
+Having earned a reputation for the high production values of the TTA material, Eustis forged a productive career in music that found him working as a sound designer, producer and mastering engineer for a variety of projects. He notched up repeated stints in alternative rock megaliths such as Nine Inch Nails, A Perfect Circle and Puscifer as well as production credits for Tropic Of Cancer and Vatican Shadow, and much more besides. He also formed Second Woman with Turk Dietrich – an acclaimed project that mutates bruising club aesthetics through intense signal processing and sound design.
+
+Understandably, returning to Telefon Tel Aviv was a conflicted decision for Eustis, but as his work with Dietrich brought him back into a similar sphere of music production, ideas for the project began to present themselves. While his decades of experience in music production had provided him with more than enough tools to solve most conventional production problems, Eustis struck upon a particular concept about time manipulation that couldn’t be solved by conventional means. In 2016 he started trying to realise that idea by immersing himself in the world of Max MSP, all the while developing musical themes that would eventually manifest in the fourth Telefon Tel Aviv album, Dreams Are Not Enough.
+
+A brooding, stormy record at once reminiscent of TTA and equally not like any previous album, Dreams Are Not Enough arrives on Ghostly International as the wholly appropriate follow up to one of the most singular projects in the history of US electronica. We caught up with Eustis to find out more about the process behind the long awaited return.
+
+How do you feel that Dreams Are Not Enough relates sonically to the rest of the Telefon Tel Aviv legacy?
+
+The quick answer is that I think it totally picks up where the last record left off. But the records are all so different from one another, a lot of people think of it like three different bands across three different records, so my thinking this time was to try to incorporate elements of all the records into one record. A little bit of Map [Of What Is Effortless], a little bit of Fahrenheit [Fair Enough] a little bit of Immolate [Yourself] and then whatever else it's gonna be. We always got bored of whatever we were doing and took a hard turn each time we made a new record, so maybe this one is like the others in that it is a bit of a departure again.
+
+Did you strike upon an angle of approach you thought would be the right thing to do for Telefon Tel Aviv?
+
+After five years trying to figure if I was even gonna do the damn thing in the first place, I had to figure out what the sound was gonna be. Once I got my brain around that it was like, ‘Oh, I'm not gonna be able to do this with my current skill set.’ I realised I had to dig in on Max, so I started learning Max online around 2016 and then spent two years while tinkering with little melodies and lyrics and saving them. While doing all that, I spent two and a half years building the tool kit I needed to make the record.
+
+“A Younger Version of Myself” from the new Telefon Tel Aviv album “Dreams Are Not Enough”
+
+Could you tell me more about the technical vision you had for the record?
+
+I needed to figure out a way to mess with the timing of things. And this ties into the Second Woman stuff I've been working on with Turk, where we started trying to think about things being fluid and loose, not on the grid. It goes all the way back to the very beginning of Telefon Tel Aviv. There are a lot of points on Fahrenheit Fair Enough where a rhythm is programmed according to the Fibonacci sequence, or things break apart according to the Mandelbrot Set. We used actual math to program a lot of that stuff manually, to get these curved rhythms. I've always been obsessed with curved rhythms, but while we did a lot with sound design and complex programming, I didn't really dig in a lot on this curved rhythm idea. I wanted to explore it more deeply in the context of melodic material, but also to try to make something that was just fun to listen to and didn't really sound like anything else.
+
+Complex, interlocking patterns – a hallmark of Telefon Tel Aviv’s sound since their debut album “Fahrenheit Fair Enough”
+
+Having come up with the idea and technical approach, what did you set about trying to do going into Max?
+
+It was actually the most fun I've had making music since the very beginning of trying to make electronic music. It was an incredible, liberating, mind blowing experience. It's the same feeling I had the very first time Charlie and I started working on music together in the Pro Tools window, when we really didn't know anything at all. It was this incredible feeling of the world being your oyster and not knowing how to do anything and just tinkering until things sound cool or interesting or new. I've made so many records in the interim time for myself and for other artists, I got to a point where I had a cockiness about the process of making records and I thought I knew everything. Getting into Max took me out of the kiddie pool and threw me in the deep end with no floaty.
+
+What is the toolkit you built in Max?
+
+It’s basically a big standalone app I built in Max, which I then parted out into individual pieces for Max for Live, for working within Ableton Live. I knew that [Live] was gonna be the canvas for this thing because of its implementation with Max. It was either learn Max and deal with the idea of Max For Live controlling timing in Ableton, or learn Javascript and try to do it in Logic, and that seemed much harder. Ableton just feels like home right now.
+
+Josh Eustis breaks down his studio set-up
+
+Can you explain the system you built in Max?
+
+It all has to do with changing the way time is divided. The main system is called Guilt. What Guilt does is, you can set a time period of, let's say two bars, and then instead of dividing those two bars into two bars of 32nd notes, you have 32 steps that can be any length. Each step can be its own length, and you can draw in step lengths using a multi-slider or a graph, and it'll loop around those two bars perfectly, but the distance between steps is not measured in note length, it's measured in a pure time value. So each step can have its own time value, and so you're constantly getting these different time divisions. You can use this to trigger other things. If you put a synth after the Guilt system and play chords or melodies, it will play the notes that you're holding down almost like an arpeggiator, but play them at the times that you determine on the multi-slider.
+
+Now that can also trigger other things. There's a Tragedy system [originally built by Alessio from K-Devices] which is similar, but it's basically a polyphonic MIDI note repeater which has LFOs built into it for velocities, and that can fire together with Guilt if you want to do it a different way. It can store patterns, it can morph or interpolate between patterns, which is a really cool feature. Then there's Pity, which is a gate that also keys off its own timing system, or it can key off the main Guilt timing system. Every time it receives a bang from one of the other devices it will start an amplitude envelope on whatever's coming through it, so you can break something up pretty interestingly that way. There are Polyphonic MIDI note delays that also have curvable delay times, there’s a mono delay... Most of it deals with manipulating MIDI, and how MIDI timing is computed, and it's all really pretty simple.
+
+Josh Esutis has kindly shared one of his own Max for Live creations, a simple tool for designing kick drums and generating low-end frequencies, used in the making of the latest album. The device requires Live 10 and Max for Live.
+
+How long did it take you to strike upon this process?
+
+It took years. I knew exactly what I wanted to do, but I had no clue how to do it, and so I just had to iterate on the idea until it worked. I took the Kadenze course online, which really blew the doors open for me. Tom Hall from Cycling ‘74 helped me a lot with a couple of things.
+
+How much more developed is the system now compared to your original idea?
+
+Way, way beyond anything I thought I would ever be able to do. Without sounding like I got too proud of myself, I was really stoked that I somehow managed to do it and it was way beyond what I thought it was gonna be.
+
+"We always got bored of whatever we were doing and took a hard turn each time we made a new record, so maybe this one is like the others in that it is a bit of a departure again."
+
+Did you ever feel at risk of losing focus on the creative aspect and just obsessing on the technical side of the system?
+
+It's a pitfall for anybody doing something on the technical side of music, but I just put limits on myself. I let myself program Max during the day, but if I was gonna work in the evening it had to be just tinkering with melodies or a beat, it had to be something creative and not technical. It's just about compartmentalising those things and making sure you don't just make busy work for yourself. I started to notice this about myself as I was working on this record. I was working 60, 70 hours a week, and I was justifying it to myself saying, ‘I'm not gonna be able to make the record until I have this tool kit done.’ At the worst part of it, it felt like I was allowing myself to do all this extremely tedious technical work so I wouldn't feel guilty about not writing the record, but then the tool kit really started coming together and Ghostly [International] were like, ‘Hey dude, are you gonna do this record?’ I already knew what all the song titles were gonna be, I had all the themes worked out, most of the melodic stuff was written. I just had to sit down and produce it.
+
+Did you need that kick from Ghostly?
+
+Yeah, I could have probably just worked on this Max MSP stuff for the rest of my life without ever really writing a record. I had to put limits on myself. I listened to promptings from the label, and it was good for me.
+
+What was it like when you began the actual production process, and how did it flow?
+
+Technically I started writing the album in 2016-ish, and I had three songs done before I even really sat down to do the record.
+
+So to make the remaining six tracks, were you firing up the system and feeding pre-prepared ingredients into it?
+
+Yeah. I sort of knew what they were all going to be ahead of time. I have this thing where I don't really sit down and tinker with song stuff. When it comes to melodic stuff or basic song structures, I have a real good idea of where I'm going a lot of the time.
+
+Electronic music creation can lend itself to a non-linear, un-composed approach, but were you still coming at it from a song-writing perspective?
+
+Yeah. It was definitely on my mind. I knew I was gonna have to worry about words and themes and setting a picture – I knew what the songs were going to be about but I didn't know exactly how I was going to say it. I also wasn't sure it wasn't going to be rooted in dance music anyway, because I love that. But it ended up being more... I don't want to say it's a folk record, but it ended up being more like that than it ended up a dance record.
+
+Second Woman – Josh Eustis’ collaboration with Turk Dietrich of Belong takes more direct aim at the dance floor
+
+Beyond the central production ideas about time shifting on Dreams Are Not Enough, it also seemed like there was an emphasis on spatial processing and breathing room in the mixes.
+
+Absolutely. It was an attempt to think about the space between notes. I didn't want this record to be too full, or 70 tracks in a session like the old Telefon stuff. I wanted to exercise a little bit of self-censorship and leave space. I just started to like the way space sounded in music and it became a very rewarding feeling.
+
+You’ve been playing live sets as Telefon Tel Aviv for a few years again, and there are dates scheduled around the release of the new album. Can you explain how your live set is laid out?
+
+It's laid out as scenes in session view, and there are instruments that are just tone generators that are open, and MIDI clips and vocal chains and stuff like that. There's a track for video, there's a track for triggering lights, there's a bunch of auxiliary stuff, but then basically what happens is using Max I've built a graphical overlay that goes on top of everything, so I'm not even looking at Ableton [Live] when I'm playing. With this graphical user interface I can send timing data to MIDI that's already playing, change it or manipulate it in ways that I think are interesting. And that also deals with doing stuff like that to the vocals. It's pretty simple, but also totally open-ended. I can play the song exactly as it is off the record if I wanted, or I can take it somewhere and make a complete mess out of it, and that to me is kind of the fun part of it.
+
+Did you design the live set with a view to being able to improvise more on stage?
+
+I would say live performance in electronic music culture values things like improvisation very much. In the context of songs, improvisation for me doesn't work very well. I get married to the way things should be and I have a hard time wrapping my brain around how to improvise, so what I'm constantly trying to do is find ways to improvise on it. If I've only got a set amount of time for this musical idea to happen, how far can I take it within that time?
+
+Keep up with Telefon Tel Aviv on Soundcloud
+
+Text and interview by Oli Warwick

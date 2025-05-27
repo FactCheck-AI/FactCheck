@@ -1,0 +1,45 @@
+I have been able to figure out a solution. I thought of posting just in case it is of any help to anyone or if somebody wants to suggest something different.
+
+bs = BeautifulSoup(r.text) for movie in bs.findAll('td','title'): title = movie.find('a').contents[0] genres = movie.find('span','genre').findAll('a') genres = [g.contents[0] for g in genres] runtime = movie.find('span','runtime').contents[0] rating = movie.find('span','value').contents[0] year = movie.find('span','year_type').contents[0] imdbID = movie.find('span','rating-cancel').a['href'].split('/')[2] print title, genres,runtime, rating, year, imdbID
+
+The output looks like this:
+
+The Shawshank Redemption [u'Crime', u'Drama'] 142 mins. 9.3 (1994) tt0111161
+
+As a bit of general feedback, I think you would do well to improve your output format. The problem with the format as it stands is there is not a transparent way to programmatically get the data. Consider instead trying:
+
+print "\t".join([title, genres,runtime, rating, year])
+
+The nice thing about a tab delimited file is that if you end up scaling up, it can easily be read into something like impala (or at smaller scales, simple mySql tables). Additionally, you can then programatically read in the data in python using:
+
+line.split("\t")
+
+The second bit of advice, is I would suggest getting more information than you think you need on your initial scrape. Disk space is cheaper than processing time, so rerunning the scraper every time you expand your analytic will not be fun.
+
+You can get everything from div with class="rating rating-list"
+
+All you need to do is retrive attribute id: [id="tt1345836|imdb|8.5|8.5|advsearch"] When you have this content, you split this string by '|', and you get:
+
+parameter: movie id
+
+parameter: movie score
+
+Regarding the movie id, the id is actually in the web page url of the actual movie.
+
+So the steps you should follow are:
+
+find the big table in which all the results are shown.
+
+for each row, find the href in it (link) and simply make another request to that url.
+
+You will find that the imdb urls have the following pattern:
+
+www.imdb.com/tt{the actual imdb id}/
+
+E.g.,
+
+https://m.imdb.com/title/tt0800369/
+
+Here, the id is 0800369.
+
+This makes it very easy to scrape each movie imdb has just by iterating through ids. You can build an entire database based on imdb using web scraping with Beautiful Soup and Django.

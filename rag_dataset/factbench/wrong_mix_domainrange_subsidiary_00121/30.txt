@@ -1,0 +1,107 @@
+Today, EMC announced updates across their entire BRS (Backup and Recovery Solutions) line of products, adding new data protection features. Due to size, I’ve split my analysis of this announcement into two parts, as follows:
+
+Part One: What Was Announced (this post)
+
+Part Two: What It Means
+
+Part One: What Was Announced
+
+EMC announced the following:
+
+New mid-range Data Domain models to replace the current DD640, DD670, DD860, and DD890 models
+
+Avamar version 7
+
+NetWorker 8.1
+
+Enhanced Mozy capabilities
+
+I’ll go into more detail here:
+
+Data Domain
+
+EMC is bringing out four new Data Domain models, the DD2500, DD4200, DD4500, and DD7200. These will replace the current DD640, DD670, DD6800, and DD890 models. The to-be-replaced systems will still be available for sale until the end of 2013. EMC has not officially announced when the older models will go End-of-Life (but personally, I’d expect it to be not long after the new models are in full General Availability). The new models will fit in between the DD620 and DD990 (see below).
+
+The new systems use the Intel Sandy Bridge processors, which will allow them to run three times as many streams as the older models. According to EMC, the new models will have up to four times the performance, scale up to ten times the data stored, and have up to a 38% lower cost per GB stored than the models they’re replacing.
+
+In addition to the new hardware, EMC announced greater application integration for Data Domain. First, integration with SAP HANA. In this case, backups are done from SAP HANA Studio directly to the Data Domain via NFS. (Many folks forget that Data Domain has its origins as an NFS-only NAS device. The deduplication was just a bonus then — since the acquisition by EMC it’s become the main focus of the product.) Second, the DD Boost software will now support Oracle RMAN and has been certified for use with Oracle Exadata.
+
+For both SAP and Oracle, this integration allows DBAs to have easy control over their own backups and restores, without backup admin intervention.
+
+Avamar
+
+Version 7 of the Avamar backup software adds new features in three main areas. These areas, in order of interest to me personally, are:
+
+VMware
+
+Isilon
+
+Data Domain
+
+New Avamar Features for VMware
+
+First, Avamar 7 has been integrated with the VMware vSphere Web Client. This integration will allow VMware admins to manage image-level backup and recovery from the vSphere Web Client directly without ever needing to learn the Avamar interface.
+
+Second, Avamar 7 includes a new web-based interface that backup admins can configure to allow self-service recovery of VM images. This will allow users the ability to recover their own images without needing to contact IT — a time savings for everyone.
+
+Third, Avamar 7 enables newly-created VMs to automatically inherit backup policies that have already been established in the VMware environment. It works by tying Avamar backup policies to vCenter containers. Any new VM created within a container will automatically be assigned that container’s Avamar backup policy. This will help ensure that new VMs are protected and make it easier to have consistent data protection policies across groups of VMs. The highest level container that can be used for this purpose is a DRS Cluster.
+
+Lastly, Avamar 7 provides a new VM recovery feature called “VM Instant Access”. This allows a VM to be powered on directly from the backup copy of the image stored on the Data Domain system. That means you’ll be able to have a VM booted up and running from its backup copy in less than two minutes. This is a great recovery capability. Later, if the VMware admin decides to do so, he can use vMotion to migrate the running VM back to production storage at any time. Obviously, this feature will require that a datastore on the Data Domain system be configured for use by the ESXi cluster, but, as discussed above, Data Domain systems have built-in NFS capability.
+
+Avamar Features for Isilon
+
+The big news here is that Avamar 7 adds NDMP backup support for Isilon scale-out storage systems. It accomplishes this through use of the Avamar NDMP Accelerator device. First introduced in 2006, the NDMP Accelerator connects to a NAS device over the LAN and initiates the backup. The NDMP Accelerator performs in-flight data deduplication on the backup stream and passes the data to an Avamar Data Store.
+
+Prior to version 7, the Avamar NDMP Accelator supported NAS devices like Celerra, VNX, VNXe, and NetApp. Version 7 brings this same support to Isilon.
+
+Avamar Features for Data Domain
+
+Avamar 7 adds DD Boost support for more ways to get data to Data Domain. While Avamar support for using Data Domain as a backup target has been around for a while, version 7 specifically adds the ability for Avamar to direct file system and NDMP workloads to Data Domain. This DD Boost support includes all of the application-specific integration provided by Data Domain.
+
+NetWorker
+
+Version 8.1 of the NetWorker software adds a few new features. The first, and again, most interesting to me personally, is full support for three of the four new VMware-related Avamar features described above, specifically:
+
+Integration with the VMware vSphere Web Client
+
+Web interface for self-service recovery of VM images
+
+Newly-created VMs inherit already-established backup policies for the container
+
+While some folks at EMC are referring to these features as “Powered by Avamar”, I believe the phrase creates more confusion than clarity. These features were, in fact, first developed for Avamar, but the code for them has been copied to, and incorporated into, NetWorker. Use of these features in NetWorker does not require an Avamar license — the development process may have been dependent on Avamar, but use of the features is not.
+
+Second is more integration with array-based snapshots. NetWorker now has the ability to manage snapshots running on EMC storage (VMAX, VNX, and RecoverPoint snaps are supported). A configuration wizard that provides automatic discovery of the storage environment is included.
+
+This integration gives NetWorker the ability to manage all policies for snapshot retention on the attached storage array from the NetWorker Management Console. It also gives NetWorker the ability to recover from a snapshot. While, in my opinion, going snapshot-only is not actually a backup strategy, there are times when snapshots can complement a backup strategy to provide reduced recovery point objectives (RPO).
+
+Third, NetWorker 8.1 adds new integration with Data Domain. This includes support of “DD Boost over Fibre Channel” which adds client-side deduplication, resulting in backups that are up to 50%, and restores up to 2.5 times, faster. NetWorker 8.1 also supports the Data Domain Virtual Synthetic Full backup feature. This feature speeds incremental backups and reduces the number of full backups required.
+
+Fourth, NetWorker 8.1 offers the NetWorker Module for Databases and Applications. This add-on allows Oracle DBAs to manager their own backups and restores with Oracle native tools and RMAN scripts.
+
+Mozy
+
+Like all of the backup products mentioned above, Mozy was another EMC acquisition. Mozy is a Cloud-based data backup service positioned mostly for desktops and laptops. While originally thought of as a service for home or personal use, many companies have adopted Mozy as their means of providing backups for company-owned user machines. The features that have been added are aimed at this corporate usage.
+
+First, Mozy has added Active Directory integration. This will allow backup administrators to enable Mozy for user backup without having to go through the extra steps of creating Mozy accounts. This integration will also make it easier for users to manage their own restores without requiring IT intervention.
+
+Second, Mozy has added new storage pooling capabilities. This will simplify management and allow admins to spend less time worrying about individual machine quotas.
+
+Lastly, Mozy has enabled keyless activation of their software. This will enable admins to get users up and running on Mozy faster by speeding provisioning of users and installation of the backup client software.
+
+VSPEX
+
+EMC also announced their plans to add the new Data Domain systems, Avamar 7, and NetWorker 8.1 to VSPEX Reference Architectures. While they’re calling the new BRS products “VSPEX Ready”, there are no VSPEX Reference Architectures that include them today.
+
+The immediate schedule for adding BRS to VSPEX is:
+
+July – VSPEX for Virtualized Microsoft Applications
+
+August – VSPEX for Virtualized Oracle
+
+September – VSPEX End-User Computing
+
+Availability
+
+The new BRS products are not immediately available. EMC will make them available before the end of July as a Directed Availability (DA) release. Directed Availability is a planned product roll-out that gives EMC more control and oversight over the first installations of new products. Directed Availability generally proceeds the more open General Availability (GA).
+
+EMC has not committed to a date for a General Availability release of the new products, but my understanding is that they hope to have GA before the end of the year.

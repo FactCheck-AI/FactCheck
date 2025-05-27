@@ -1,0 +1,103 @@
+C++ is a multi-paradigm language. It combines features from procedural, functional, object-oriented, and generic programming in an elegant arsenal of things to shoot your foot with.
+
+It also kind of employs logic programming. But it doesn't expose its features directly. These features do not enrich your arsenal. They are never mentioned in C++ books and rarely discussed among C++ practitioners. They just work their ways silently making you less prone to metaphorical self-injuries.
+
+What is logic programming?
+
+Logic programming is about making computers deduce facts for you. You write down the things you know, write down the rules that hold true for these things, and then you ask questions. Like, âwho killed John F. Kennedyâ?
+
+Of course, computers can only juggle the facts you provide. They don't do surveillance or interrogation. They don't have intuition. They can only do logical operations very fast, that's all we can expect from machines.
+
+The most popular logic programming language now is Prolog. It was invented in France, and its name stands for âprogrammation en logiqueâ, which is in itself quite logical.
+
+Let's take a peek at Prolog to see what we can learn from it.
+
+In Prolog, you have terms to store data. Terms are:
+
+atomâââany word or even a full sentence. Like: x, alice, or âyear 2016â.
+
+numberâââfloating-point or integer.
+
+compound termâââcomplex data type constructed of atoms and numbers. This includes lists and strings.
+
+You build relations between data with rules and facts. When you want to say that âAlice likes Bobâ, Alice and Bob are the data and likes is the relation. In Prolog, you write it down like this.
+
+likes(alice, bob).
+
+Such relations are called facts. There are also rules which are conditional facts. Letâs say Alice likes someone who is kind, and intelligent and writes in C++. The rule for that would be:
+
+likes(alice, Person) :- kind(Person), intelligent(Person), writes(Person, cpp).
+
+The Person is a Prolog variable. Syntactically, variables always begin with a capital letter. Semantically, they denote all terms that fit the conditions.
+
+Logic programming is all about deduction. You have a set of terms, known facts, and rules. Then you can deduce something you didnât know before. For instance, if we're going to see if Alice likes Bob according to her own rule from above, we have to introduce Bob with a set of facts and then ask Prolog like this:
+
+?- likes(alice, bob).
+
+Prolog programming is declarative. This means that we only write down facts and rules, but not the way they should be interpreted. Prolog finds the way for us.
+
+So, given the following set of facts, does Alice like Bob or not?
+
+kind(bob). kind(george). kind(steven). intelligent(bob). intelligent(steven). writes(bob, cpp). writes(bob, assembly). writes(george, cpp). writes(steven, prolog). likes(alice, Person) :- kind(Person), intelligent(Person), writes(Person, cpp). ?- likes(alice, bob).
+
+Of course, she does. Bob is kind, intelligent and writes in C++. According to our facts and rules, Alice likes him.
+
+Analogies in C++
+
+C++ doesn't have logic deduction as a language feature. But it has something conceptually similar. It has type deduction. Now let's translate our Prolog program into C++.
+
+Classes will be our atoms.
+
+Polymorphic functions will be our facts.
+
+And a template function will be our rule.
+
+Now if all the types are deducible, the program compiles. The very fact of compilation is the answer to our question.
+
+So does Alice like Bob in C++?
+
+Logic programming v.s. type deduction
+
+While being similar, type deduction differs from logic programming in one crucial way. I guess it would be best to illustrate it with an example.
+
+I stole this idea from Bernardo Pires. If you got interested in Prolog and logic programming in general, please read his article. He uses Prolog to color the map of Germany in four colors. We will try to do the same with C++ and the map of Ukraine.
+
+First, we define colors.
+
+// colors class Yellow{}; class Blue{}; class Red{}; class Green{}; void color(Yellow); void color(Blue); void color(Red); void color(Green);
+
+We need to generalize them to use in our rules, and that's one possible way to do that.
+
+Unlike C++, Prolog has an operator to declare data inequality. So when Bernardo wants to declare a rule stating that all the neighboring regions should have different colors, he writes this:
+
+neighbor(StateAColor, StateBColor) :- color(StateAColor), color(StateBColor), StateAColor \= StateBColor.
+
+We can techincally do the same in modern C++, but it gets needlessly tricky, so we'll define inequality as a plain set of facts instead.
+
+Next, we want every two adjacent regions to have different colors. Here's a rule for that.
+
+// neighborhood rule template <typename Region1Color, typename Region2Color> void neighbor(Region1Color, Region2Color) { color(Region1Color()); color(Region2Color()); different(Region1Color(), Region2Color()); }
+
+Now we program the map of Ukraine as pairs of adjacent regions.
+
+And finally, we write the function that starts type deduction for every region.
+
+Given that there are no typos and we wrote down all our rules and facts correctly, will this program compile or not?
+
+Conclusion
+
+When you write in C++ you actually write in two languages at once. First is C++, and the second one is the invisible Prolog.
+
+If written properly, the second program is helpful. If you build your type relations right, every compilation will reassure you that your expectations about the entity relations are also correct. Type deduction will work just as the logic deduction. Pragmatically, this means fewer bugs and fewer surprises in general.
+
+However, if being neglected, it turns your code into an untangleable mess of incomprehencibles really-really fast. Every new rule multiplies the complexity, so the complexity tends to grow as a geometric progression. The other problem with the compile-time programming is that there are no compile-time debuggers, and error messages for templates are notoriously bad. Not only it gets ugly fast, but it is very hard to make it right again.
+
+And that's why acknowledging the invisible language is probably even more important than mastering the visible one.
+
+Links
+
+Try Logic Programming. A Gentle Introduction to Prolog
+
+Will Computers Redefine the Roots of Math?
+
+There's a Mathematician In Your Compiler

@@ -1,0 +1,105 @@
+HCE project aim and main idea
+
+This project became the successor of Associative Search Machine (ASM) full-text web search engine project that was developed from 2006 to 2012 by IOIX Ukraine.
+
+The main idea of this new project – to implement the solution that can be used to: construct custom network mesh or distributed network cluster structure with several relations types between nodes, formalize the data flow processing goes from upper node level central source point to down nodes and backward, formalize the management requests handling from multiple source points, support native reducing of multiple nodes results (aggregation, duplicates elimination, sorting and so on), internally support powerful full-text search engine and data storage, provide transactions-less and transactional requests processing, support flexible run-time changes of cluster infrastructure, have many languages bindings for client-side integration APIs in one product build on C++ language...
+
+Read more here http://hierarchical-cluster-engine.com/blog/2013/11/28/hierarchical-cluster-engine-hce-project/
+
+Yes, it is. It’s do it now as native features of "Sphinx search"
+
+functionality support. Search results from several Sphinx indexes located on
+
+several data hosts (cluster nodes) are reduced on another hosts (cluster
+
+nodes) organized hierarchically in graph or tree manner. System can to have
+
+any levels, two – for regular horizontal scaling, three or mode – for more
+
+complex or huger. For more detailed description please, see the “Extended
+
+Sphinx index support” here:
+
+http://hierarchical-cluster-engine.com/blog/2013/11/28/hierarchical-cluster-
+
+engine-hce-project/
+
+The HCE core can be used as core engine for sites and any kind of target
+
+projects that has huge amount of data that need to be processed in parallel
+
+mode. It is no limitation for usage because HCE provides universal network
+
+transport and hierarchical infrastructure support as well as flexible API,
+
+thanks to ZMQ library – they can be implemented on 30 programming languages.
+
+Two another native HCE functional parts:
+
+1) providing of environment to create distributed Sphinx Index and
+
+Distributed Sphinx Search extended with new (not supported by Sphinx engine)
+
+possibilities;
+
+2) providing of environment for Distributed Remote Command Execution.
+
+Also, HCE native way supports sharding and balancing modes for distributed
+
+data and can be used as universal load balancer solution in high loaded
+
+systems
+
+The HCE’s developer’s team does not develop web sites. It develops
+
+technologies and engines that can be putted on to the ground of different
+
+services and sites uses huge amount of data that need to be processed stored
+
+distributed way, processed in parallel mode, accessed with reducing or
+
+balancing and so on…
+
+Now under the progress of development applied client-side APIs. Next step –
+
+it is implementation of one universal (Distributed Tasks Manager) and two
+
+sharp functionality (Distributed Crawler Manager) and (Distributed Content
+
+Processor Manager) applications that can be used as services for target
+
+platform. First planned target platform it’s a SNATZ. But, it is open source
+
+and I hope on some funs in future after Demo Test Suit will be extended with
+
+concrete useful applications…
+
+HCE – it is a core engine for target projects. So, it not limits data location
+
+side, but need to be installed and managed on target (user side) host
+
+servers regular usage way (at least now). Off course it can be used to
+
+create closed services like systems that will provide some end-user client
+
+API to do elementary actions by REST API based on HTTP for example (like
+
+ASM2 is), but it is not a proprietary HCE functionality, but some addition
+
+or extension covered core with concrete requirements form.
+
+Depends on number of levels of hierarchy, number of nodes, physical
+
+productivity of each node, productivity and bandwidth of TCP networking of
+
+host servers, limitations of data channels bandwidth, limitations on query
+
+per time unit/slot and so on…
+
+I think it is possible to construct the cluster with thousands physical
+
+nodes that can to store terabytes of data. But this is very theoretical
+
+until we will not have some practical tests for tens or one hundred of
+
+physical hosts for example…

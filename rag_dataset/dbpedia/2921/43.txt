@@ -1,0 +1,1659 @@
+ABSTRACT
+
+Space the final frontier, has been a elusive dream since the birth of the humankind. After humankind broke out from the limits of Earth and reached space, it inspired us even more. CubeSats provide access to space for a wider audience pushing the frontier once more. As a step towards that future UPSat, the first truly open source in both hardware and software paves the way for a more open and democratized space. \ \ This thesis describes the design, implementation and testing of 2 software modules of UPSat: the command and control module plus the on-board computer software.\ \ The command and control module holds all the reusable software used in the subsystems, a common way to access it through the protocol defined ECSS-E-70-41A specification and implemented in the form of services that each subsystem provides.\ \ The on-board computer, the heart of UPSat provide critical operation and it is responsible for packet routing, housekeeping, timekeeping, the science unit m-NLP and the image acquisition component operation and finally mass storage of logs and configuration parameters.\ \ The software besides the required functionality must be written in a way that is fault tolerant and protected from the radiation induced effects and possible failures and errors.\ \ The primary purpose of this thesis is for the reader to easily comprehend our rational and thought process behind every action so it will give him an insight to our design intentions and hopefully provide the necessary information so that future designs are improved.
+
+SUBJECT AREA: CubeSat.
+
+KEYWORDS: fault tolerance, space, CubeSat, command and control
+
+CONTENTS
+
+1. INTRODUCTION 21
+
+1.1 Time 21
+
+1.2 Space and software 21
+
+1.3 CubeSats 22
+
+1.4 Commercial Off The Shelf Components 22
+
+1.5 Space and open source 23
+
+1.6 SatNOGS 23
+
+1.7 Mission requirements 25
+
+1.8 UPSat 27
+
+1.8.1 COMMS 29
+
+1.8.2 OBC 30
+
+1.8.3 ADCS 31
+
+1.8.4 EPS 32
+
+1.8.5 Science Unit 33
+
+1.8.6 IAC 33
+
+2. RESEARCH 34
+
+2.1 Single event effects and rad hard 34
+
+2.1.1 Radiation effects 35
+
+2.1.2 Protection from radiation effects 36
+
+2.2 State of the art 37
+
+2.2.1 NASA state of the art 37
+
+2.2.2 ZA-Aerosat 37
+
+2.2.3 SwissCube 37
+
+2.2.4 Phonesat 39
+
+2.2.5 CKUTEX 40
+
+2.2.6 i-INSPIRE II 40
+
+2.3 Command and control module 41
+
+2.3.1 Requirements 41
+
+2.3.2 CSP 41
+
+2.3.3 ECSS 42
+
+2.3.4 Comparison 43
+
+2.3.5 Result 44
+
+2.4 Safety critical software 44
+
+2.4.1 Undefined behavior 44
+
+2.4.2 Coding standards 45
+
+2.5 Fault tolerance 45
+
+2.5.1 Fault tolerant mechanisms 46
+
+2.5.2 Built in tests 46
+
+2.5.3 Single point of failure 46
+
+2.5.4 State of the art fault tolerance 47
+
+2.5.5 Fault tolerance in hardware 48
+
+2.5.6 Fault tolerance in software 49
+
+3. DESIGN 50
+
+3.1 Coding standards on UPSat 50
+
+3.1.1 10 rules 50
+
+3.1.2 17 steps 50
+
+3.2 Fault tolerance on UPSat 51
+
+3.2.1 Assertions 51
+
+3.2.2 Watchdog 51
+
+3.2.3 Heartbeat 53
+
+3.2.4 Multiple checks 54
+
+3.3 OBC 54
+
+3.3.1 OBC-ADCS schism 54
+
+3.3.2 OBC real time constraints 54
+
+3.3.3 RTOS Vs baremetal and FreeRTOS 55
+
+3.3.4 FreeRTOS concepts 56
+
+3.3.5 Introduction to FreeRTOS 56
+
+3.3.6 Tasks 57
+
+3.3.7 Critical sections 57
+
+3.3.8 Stack overflow detection 58
+
+3.3.9 Heap modes 58
+
+3.3.10 Advanced concepts 58
+
+3.3.11 Logging and file system 58
+
+3.4 ECSS services 60
+
+3.4.1 Services 60
+
+3.4.2 Application ids 63
+
+3.4.3 Packet frame 64
+
+3.4.4 Services in subsystems 66
+
+3.4.5 Software reuse 66
+
+3.4.6 Telecommand verification service 66
+
+3.4.7 Housekeeping 68
+
+3.4.8 WOD 68
+
+3.4.9 Extended WOD 69
+
+3.4.10 CW WOD 69
+
+3.4.11 Housekeeping & diagnostic data reporting service 70
+
+3.4.12 Function management service 71
+
+3.4.13 Large data transfer service 72
+
+3.4.14 On-board storage and retrieval service 74
+
+3.4.15 Test service 75
+
+4. Implementation 78
+
+4.1 ST cubeMX 78
+
+4.2 Project folder organization 79
+
+4.3 GPS 79
+
+4.4 HLDLC 80
+
+4.5 Packet Pool 81
+
+4.6 Queues 83
+
+4.7 Hardware abstraction layer 84
+
+4.8 Peripheral modes 85
+
+4.9 ECSS services 88
+
+4.10 upsat module 88
+
+4.11 Service module 91
+
+4.11.1 Error codes 92
+
+4.11.2 ECSS packet structure 92
+
+4.11.3 Assertions 96
+
+4.12 Service utilities module 96
+
+4.13 Test service module 97
+
+4.14 Telecommand verification service module 98
+
+4.15 Event reporting service module 99
+
+4.16 Housekeeping & diagnostic data reporting service module 100
+
+4.16.1 OBC Housekeeping 101
+
+4.17 Function management service module 101
+
+4.18 Time management service module 102
+
+4.19 Large data transfer service module 104
+
+4.20 Mass storage service module 105
+
+4.20.1 Note on mass storage and large data services 107
+
+4.20.2 2nd design 108
+
+4.20.3 3rd design 108
+
+4.21 SatNOGS client command and control module 109
+
+4.22 Life of a packet 109
+
+4.23 On-board computer 111
+
+4.23.1 Discovery kit 111
+
+4.23.2 FreeRTOS 111
+
+4.23.3 Real time clock 113
+
+4.23.4 FatFS 113
+
+4.23.5 Generic 114
+
+5. Testing 115
+
+5.1 OBC/ADCS PCB tests 115
+
+5.2 COMMS testing 116
+
+5.3 Unit testing 117
+
+5.4 Static analysis 118
+
+5.5 Command and control testing software 118
+
+5.6 SatNOGS client, command and control module 120
+
+5.7 Debug tools, techniques 120
+
+5.7.1 UART 121
+
+5.7.2 ST link and SWD 121
+
+5.7.3 Segger J-Link 122
+
+5.7.4 Segger systemview 122
+
+5.8 RTOS and services timing analysis 124
+
+5.8.1 Python script 124
+
+5.8.2 Arduino stress test 124
+
+5.8.3 Packet processing time analysis 124
+
+5.8.4 Packet pool timestamp 125
+
+5.8.5 Systemview 125
+
+5.9 ECSS statistics 128
+
+5.10 System operation test 129
+
+5.11 Functional tests 130
+
+5.12 e2e tests 130
+
+5.13 Environmental testing 132
+
+5.14 Testing campaign 132
+
+6. Conclusions 133
+
+6.1 Project key points 133
+
+6.2 Simplicity 134
+
+6.3 Refactor 134
+
+6.4 Future work 135
+
+ABBREVIATIONS - ACRONYMS 141
+
+REFERENCES 142
+
+LIST OF FIGURES
+
+Figure 1.1 CubeSat unit specification 22
+
+Figure 1.2 CubeSat numbers 23
+
+Figure 1.3 SatNOGS [4] 24
+
+Figure 1.4 QB50 targets [8] 25
+
+Figure 1.5 UPSat subsystems. 27
+
+Figure 1.6 UPSat subsystems diagram 28
+
+Figure 1.7 COMMS subsystem [6] 29
+
+Figure 2.1 Missions with radiation issues [25] 34
+
+Figure 2.2 SEE classification [49] 35
+
+Figure 2.3 Cost of 2Mbytes rad-hard SRAM [30] 36
+
+Figure 2.4 Argos testbed rad-hard board SEU [43 36
+
+Figure 2.5 Argos testbed COTS board SEU [43] 36
+
+Figure 2.6 SwissCube exploded view [45] 38
+
+Figure 2.7 PhoneSat 2.0 data distribution architecture 40
+
+Figure 2.8 i-INSPIRE II CubeSat [47] 40
+
+Figure 2.9 i-INSPIRE II software state machine [47] 40
+
+Figure 2.10 CSP header 41
+
+Figure 2.11 ECSS TC frame header 42
+
+Figure 2.12 ECSS TC data header 42
+
+Figure 2.13 Fault tolerance mechanisms [29] 47
+
+Figure 2.14 Hardware fault tolerance [26] 48
+
+Figure 2.15 B777 flight computer [57] 48
+
+Figure 2.16 AIRBUS A320-40 flight computer [57] 49
+
+Figure 3.1 Tasks [12] 58
+
+Figure 3.2 tasks life cycle [12] 58
+
+Figure 3.3 FAT file system structure [60] 59
+
+Figure 3.4 FatFS critical operations [32] 60
+
+Figure 3.5 FatFS optimized critical operations [32] 60
+
+Figure 3.6 CW WOD frame 69
+
+Figure 3.7 CW WOD dataset 70
+
+Figure 3.8 Large data transfer split of the original packet 73
+
+Figure 4.1 OBC’s CubeMX project 78
+
+Figure 4.2 Project organization 79
+
+Figure 4.3 The life of a packet 110
+
+Figure 4.4 On-board computer software diagram 111
+
+Figure 5.1 ADCS IMU communication debugging in a logic analyzer 116
+
+Figure 5.2 Packetcraft 119
+
+Figure 5.3 UPSat command and control 120
+
+Figure 5.4 Example use of a breakpoint 121
+
+Figure 5.5 Systemview events display 123
+
+Figure 5.6 OBC extended WOD communications 126
+
+Figure 5.7 Delay before task notification fix 127
+
+Figure 5.8 Delay after task notification fix 127
+
+Figure 5.9 Mass storage service WOD storage 128
+
+\ LIST OF IMAGES
+
+Image 1.1 SatNOGS rotator [4] 24
+
+Image 1.2 UPSat subsystems mounted in the aluminum structure 28
+
+Image 1.3 UPSat’s umbilical connector and remove before flight switch 28
+
+Image 1.4 The antenna deployment system 29
+
+Image 1.5 OBC subsystem during testing 30
+
+Image 1.6 OBC and ADCS subsystem 31
+
+Image 1.7 ADCS subsystem unpopulated PCB 31
+
+Image 1.8 ADCS Spin-Torquer 31
+
+Image 1.9 EPS subsystems PCBs 32
+
+Image 1.10 The EPS PCB with the battery pack mounted 32
+
+Image 1.11 Solar panel used in UPSat along with a SU probe 32
+
+Image 1.12 The science unit m-NLP 33
+
+Image 1.13 The DART4460 of the IAC subsystem 33
+
+Image 2.1 PhoneSat v1.0 39
+
+Image 2.2 PhoneSat v2.5 40
+
+Image 5.1 OBC prototype board 115
+
+Image 5.2 COMMS power amplifier testing 115
+
+Image 5.3 UPSat stack prototype boards 120
+
+Image 5.4 The on-board ST-link connected to the stack 121
+
+Image 5.5 J-links connected to UPSat for debugging 122
+
+Image 5.6 UPSat systemview 125
+
+Image 5.7 UPSat systemview testing 125
+
+Image 5.8 UPSat systemview testing operation 129
+
+Image 5.9 UPSat systemview operational plot 129
+
+Image 5.10 UPSat extended WOD operational plot 129
+
+Image 5.11 During S.U. E2E tests 130
+
+Image 5.12 TVAC chamber with UPSat 132
+
+Image 5.13 TVAC results 132
+
+Image 5.14 UPSat vibration test pod 132
+
+Image 5.15 UPSat subsystem thermal inspection 132
+
+Image 6.1 Some people of the team, the day before the delivery 136
+
+Image 6.2 UPSat during the final tests before delivery 136
+
+Image 6.3 UPSat in the Nanorack’s deployment pod. 137
+
+Image 6.4 UPSat 138
+
+Image 6.5 the CYGNUS supply ship that had UPSat, before docking to ISS 139
+
+Image 6.6 UPSat along with 2 other CubeSats released from ISS 140
+
+LIST OF TABLES
+
+Table 1.1 QB50 related requirements. 26
+
+Table 3.1 10 rules for developing safety critical code [39] 52
+
+Table 3.2 17 steps to safer C code [40] 53
+
+Table 3.3 ECSS services 62
+
+Table 3.4 ECSS services implemented by UPSat 63
+
+Table 3.5 UPSat application ids 63
+
+Table 3.6 Telecommand Data header 64
+
+Table 3.7 Telemetry Data header 65
+
+Table 3.8 Command and control packet frame 65
+
+Table 3.9 Services implemented in each subsystem. 66
+
+Table 3.10 Telecommand packet data ACK field settings 67
+
+Table 3.11 Telecommand verification service subtypes 67
+
+Table 3.12 Telecommand verification service acceptance report frame 67
+
+Table 3.13 Telecommand verification service acceptance failure frame. 68
+
+Table 3.14 Telecommand verification service error codes 68
+
+Table 3.15 WOD packet format 69
+
+Table 3.16 WOD dataset 69
+
+Table 3.17 Housekeeping service structure IDs 71
+
+Table 3.18 Housekeeping service request structure id frame 71
+
+Table 3.19 Housekeeping service report structure id frame 71
+
+Table 3.20 Function management service data frame 71
+
+Table 3.21 Function management services in each subsystem 72
+
+Table 3.22 Large data transfer service transfer data frame. 73
+
+Table 3.23 Large data transfer service acknowledgement frame 73
+
+Table 3.24 Large data transfer service repeat part frame 74
+
+Table 3.25 Large data transfer service abort transfer frame 74
+
+Table 3.26 On-board storage and retrieval service uplink subtype frame 75
+
+Table 3.27 On-board storage and retrieval service downlink subtype frame 75
+
+Table 3.28 On-board storage and retrieval service downlink content subtype frame 76
+
+Table 3.29 On-board storage and retrieval service subtypes used on UPSat 76
+
+Table 3.30 On-board storage and retrieval service delete subtype frame 76
+
+Table 3.31 Store IDs 77
+
+Table 3.32 On-board storage and retrieval service catalogue list subtype frame 77
+
+Table 3.33 On-board storage and retrieval service catalogue report subtype frame 77
+
+Table 4.1 Number of packets and data payload sizes in each subsystem 81
+
+Table 4.2 ECSS status codes 93
+
+Table 4.3 Event service frame 99
+
+Table 4.4 Large data transfer service, different states of the Large data state machine 105
+
+Table 5.1 Functional test list and description 131
+
+INTRODUCTION
+
+The thesis is separated into 6 chapters that loosely correspond to the chronological time line of the events related to design and implementation.
+
+In chapter 0 general information providing the context of the thesis will be presented.
+
+In chapter 1 the research that was conducted in order to familiarize with the aspects of developing software for a CubeSat will be presented.
+
+In chapter 2 the design choices that derived from the research of the previous chapter and the reasons behind them will be presented
+
+In chapter 3 the actual implementation and the parts that diversify from the initial design and the causes of that will be discussed.
+
+In chapter 4 the overall testing campaign and the techniques used will be presented.
+
+In the final chapter, conclusions, thoughts and future improvements are presented and discussed.
+
+Time
+
+The most important factor in this project was time. From the first time, I heard of UPSat, to the day I was officially involved and the original date of delivery to the final delivery date of Aug. 18, only 6 months had passed.
+
+Even though I consider my shelf to as an experienced in programmer and especially in embedded systems, writing fault tolerant software for a CubeSat was definitely new experience.
+
+The time duration of 6 months was for: research, design, development and testing.
+
+In this limited time frame, decisions had to be made in a instant, followed by the implementation.
+
+Research time was reduced to minimum, design was given more time and testing was happening as the development progressed.
+
+Due to these strict conditions, time limitations affected all aspects of the CubeSat development and it was the prominent factor in all decisions.
+
+Space and software
+
+Having to design and implement software that is indented to work in space, differs from other projects in 2 significant factors: Environmental radiation affects the electronics resulting in corrupt memory or more permanent damage like flash and the fact that once the CubeSat is launched into space, it cannot be examined or repaired.
+
+CubeSats
+
+Figure 1.1 CubeSat unit specification
+
+CubeSats provide a low-cost access to space, it first started from California Polytechnic State University and Stanford developing the specification at 1999 with the first CubeSat launching at 2003. Most of the firsts CubeSats came from the academia but as soon as CubeSats proved their usefulness commercial companies started using it as well. Following the CubeSat as low-cost platform success are plans to send swarm of CubeSats to the moon or even mars, while all of CubeSats until now are confined to LEO.
+
+CubeSats are ideal for experiments especially high risk that justify due to the low cost of a CubeSat. A good example of that is the QB50 experiment: The cost of fleet of 50 traditional satellites is not justified by the research conducted and other means like one satellite or a rocket doesn’t spend the time in the thermosphere the researchers wished [11].
+
+CubeSats dimensions are defined in 1U that is equal to 10x10x10 cm and multiples of that. At first most of the CubeSats were 1U but later more options became available for launch configurations to 6U or even 12U.
+
+Commercial Off The Shelf Components
+
+One reason that makes CubeSats a low-cost solution is the use of COTS. The aerospace industry traditionally uses radiation hardened components that are especially designed to withstand the extreme conditions in space. These components are a lot more expensive from the commercial available counter parts and usually one generation behind in the technologies used.
+
+(a) Cubesat launches per year [13]. (b) CubeSat launches per organization [13]. Figure 1.2 CubeSat numbers ———————————————————————————— ————————————————————————————-
+
+Space and open source
+
+NASA states in [19]: “At the other end of the spectrum, low-cost easy-to-develop systems that take advantage of open source software and hardware are providing an easy entry into space systems development, especially for those who lack specific spacecraft expertise or for the hobbyist.”. This is also reflected in [53] as one of the best ways to improve is by reading other people’s code.
+
+Sharing the same opinion, our experience, when we started working on UPSat, we couldn’t find any open source code available for examination. This made more difficult as there wasn’t a starting point in an already difficult project.
+
+In my opinion, open source in space that fault tolerance is a must, it isn’t a luxury, but a critical necessity. By open sourcing and allowing a wider audience to view and analyze the code, not only help engage the community but also increases the possibility of discovering errors.
+
+SatNOGS
+
+The SatNOGS [4] project aim is to provide an open source software and hardware solution of a constellation of ground stations for continuous communication with satellites in LEO. Most of the parts are designed so they can be 3d printed in order to make a ground station construction more feasible. It is currently maintained from the Libre Space Foundation [3].
+
+SatNOGS consists of 4 parts:
+
+The Network is the web application used from the users for ground station operation.
+
+The Database provides information about active satellites.
+
+The Client is the software that runs on the ground stations.
+
+The Ground Station contains the rotator, antennas and electronics.
+
+Figure 1.3 SatNOGS [4]
+
+Image 1.1 SatNOGS rotator [4]
+
+Mission requirements
+
+Figure 1.4 QB50 targets [8]
+
+QB50 is a European FP7 project with worldwide participation from the von Karman Institute for Fluid Dynamics (VKI) in Brussels with the purpose to study the lower thermosphere, between 200 - 380km altitude using a network of 50 low cost cubesats.
+
+QB50 provides 3 different types of Science Units and it’s up to the universities that participate to provide the cubesat to run the experiments.
+
+The mission requirements derive first from the QB50 system requirements, the SU specifications and finally from subsystem requirements defined internally from the UPSat team. The mission requirements is the most prominent factor that shapes the software design. Some of the requirements are generic like the QB50-SYS-1.4.6 and the rest are related to specific parts of the UPSat. The QB50 requirements define operations regarding the WOD format and frequency, mass storage operations, time keeping format, clock accuracy and testing requirements.
+
+Table 1.1 QB50 related requirements.
+
+QB50 requirement number description ————————- ———————————————————————————————————————————————————————————————— QB50-SYS-1.4.1 The CubeSat shall collect whole orbit data and log telemetry every minute for the entire duration of the mission. QB50-SYS-1.4.2 The whole orbit data shall be stored in the OBC until they are successfully downlinked. QB50-SYS-1.4.3 Any computer clock used on the CubeSat and on the ground segment shall exclusively use Coordinated Universal Time (UTC) as time reference. QB50-SYS-1.4.4 The OBC shall have a real-time clock information with an accuracy of 500ms during science operation. Relative times should be counted / stored according to the epoch 01.01.2000 00:00:00 UTC. QB50-SYS-1.4.6 The OBSW shall protect itself against unintentional infinite loops, computational errors and possible lock ups. QB50-SYS-1.4.7 The check of incoming commands, data and messages, consistency checks and rejection of illegal input shall be implemented for the OBSW. QB50-SYS-1.4.8 The OBSW programmed and developed by the CubeSat teams shall only contain code that is intended for use on that CubeSat on ground and in orbit. QB50-SYS-1.4.9 Teams shall implement a command to be sent to the CubeSat which can delete any SU data held in Mass Memory originating prior to a DATE-TIME stamp given as a parameter of the command. QB50-SYS-1.5.11 The CubeSat shall transmit the current values of the WOD parameters and its unique satellite ID through a beacon at least once every 30 seconds or more often if the power budget permits. QB50-SYS-1.7.1 The CubeSat shall be designed to have an in-orbit lifetime of at least 6 months. QB50-SYS-3.1.1 The Cubesat functionalities shall be verified using the functional test sets. QB50-SYS-3.1.2 The satellite flight software shall be tested for at least 14h satellite continuous up-time under representative operations. QB50-SYS-3.2.1 CubeSats boarding the QB50 Sensors Unit shall perform an End-to- End test, to verify the functionality of the sensors and the interfaces with the CubeSat subsystems.
+
+UPSat
+
+In this section, the subsystems of UPSat are analyzed along with the respective hardware.
+
+Most of the hardware was already designed from the university of Patras with the sole exception the separation of the OBC and the ADCS.
+
+UART is used for subsystems communication except the IAC which uses SPI because the OBC didn’t had any UART peripheral left. All subsystems are connected to the OBC which is responsible for packet routing.
+
+All subsystems implement at least the minimum ECSS services and provide the necessary services functionality.
+
+The umbilical connector is used for charging the on-board batteries and serial connection with the OBC used for testing.
+
+Figure 1.5 UPSat subsystems.
+
+Figure 1.6 UPSat subsystems diagram
+
+Image 1.2 UPSat subsystems mounted in the aluminum structure Image 1.3 UPSat’s umbilical connector and remove before flight switch
+
+COMMS
+
+Figure 1.7 COMMS subsystem [6]
+
+The communications subsystem (COMMS) is responsible for the UPSat communication with the Earth and the ground stations.
+
+It consists of: STM32F407 microcontroller with an ARM cortex M4 CPU core that has 1 Mbyte of Flash and
+
+192 Kbytes of SRAM, 2 CC1120 RF transceivers with 2-FSK modulation, connected with the microcontroller with SPI, one used for reception at 145 MHZ and the other for transmission at 435 MHZ, the ADT7420 temperature sensor connected with \(I\^2C\) and the RF5110g power amplifier used for amplifying the transmitted signal.
+
+The COMMS is connected to the antenna deployment system that deploys the 2 antennas after the launch from the ISS.
+
+OBC
+
+Image 1.5 OBC subsystem during testing
+
+The On-Board Computer is responsible for routing the packets to the subsystems, operating the mass storage memory used for logs and configuration storage, managing housekeeping, maintaining UTC time and operating the SU via the SU scripts.
+
+It consists of:
+
+STM32F405 microcontroller with an ARM cortex M4 cpu core that has 1 Mbyte of Flash and 192 Kbytes of SRAM.
+
+The microcontroller’s internal Real Time Clock connected with a coin cell battery.
+
+An SD card connected with SDIO.
+
+IS25LP128 128 MBIT Flash memory connected with SPI.
+
+The initial design that was delivered from the university had the OBC and the ADCS in one PCB running all the functionality in one microcontroller. As at that time, it was unknown if the microcontroller could host both functionalities, it was decided to split the subsystems into 2 PCBs and microcontrollers respectively.
+
+Image 1.6 OBC and ADCS subsystem Image 1.7 ADCS subsystem unpopulated PCB
+
+ADCS
+
+The Altitude Determination and Control Subsystem (ADCS) is responsible for determine UPSat’s position and rotation and controlling the behaviour according to the defined set points. The microcontoller takes the sensors information, feeds it to the controllers, which provide the output of the actuators. The B-dot controller is used during the detumbling phase (rotation greater than 0.3 deg/s) and after UPSat has stable rotation the pointing controller takes control.
+
+It consists of:
+
+STM32F405 microcontroller with an ARM cortex M4 CPU core that has 1 Mbyte of Flash and 192 Kbytes of SRAM.
+
+IS25LP128 128 MBIT Flash memory connected with SPI.
+
+An SD card connected with SPI.
+
+GPS PQNAV-L1 connected with UART.
+
+PNI RM3100 3 axis high precision magnetometer connected with SPI.
+
+LSM9DS0 3 axis gyroscopes and magnetometers, connected with \(I\^2C\).
+
+Newspace systems sun sensor.
+
+AD7682 A/D converter for the sun sensor connected with SPI.
+
+AD7420 temperature sensor connected with \(I\^2C\).
+
+Spin-Torquer, a BLDC motor with a custom controller.
+
+2 Magneto-Torquers embedded into the solar panels and a controller with PWM connection.
+
+EPS
+
+Image 1.9 EPS subsystems PCBs
+
+The Electrical Power Subsystem (EPS) is responsible for charging the batteries from the solar panels, subsystems power management and batteries temperature control. It is also responsible for the post launch sequence that keeps the subsystems turned off for 30 minutes after the launch from the ISS and after the 30 minutes have passed, it deploys the antennas and the SU m-NLP probes by using a resistor to burn a thread that keeps the mechanism closed.
+
+It consists of:
+
+STM32L152 microcontroller with an ARM cortex M3 cpu core that runs the MPTT algorithm for charging the batteries.
+
+3 Li-Po batteries.
+
+MOSFET switches for controlling the subsystems power.
+
+Image 1.10 The EPS PCB with the battery pack mounted Image 1.11 Solar panel used in UPSat along with a SU probe
+
+Science Unit
+
+Image 1.12 The science unit m-NLP
+
+The science unit (SU) is the primary payload of UPSat. It is provided from the QB50 program and it’s the multi-Needle Langmuir Probe (m-NLP) type. It has 4 probes that are deployed after the UPSat launch from ISS.
+
+SU communicates with the OBC through a serial connection. The OBC is responsible for sending commands to the SU and saving the SU information to the OBC’s mass storage.
+
+IAC
+
+The Image Acquisition Component (IAC) is the secondary payload of UPSat, defined from the university of Patras. It is comprised from the embedded linux board DART4460 running a custom OpenWRT build and the Ximea MU9PM-MH USB camera with a 50mm 1/2” IR MP lens.
+
+The IAC’s DART and camera is connected to the OBC PCB and communicated directly to the OBC’s microcontroller through SPI.
+
+Image 1.13 The DART4460 of the IAC subsystem
+
+RESEARCH
+
+In this chapter, the preliminary research for the software development of UPSat regarding the command & control module and the OBC is introduced.
+
+Single event effects and rad hard
+
+The most characteristic issue, during the design and operation of cubesats and satellites in general, is the harsh environment that they have to operate. The most prominent factor is the radiation. Radiation poses a threat to electronics, with observed malfunctions in missions [25] but with careful design shouldn’t be an issue.
+
+Figure 2.1 Missions with radiation issues [25]
+
+Radiation effects
+
+Figure 2.2 SEE classification [49]
+
+Radiation effects can be split in 2 categories:
+
+Total Ionisation Dose.
+
+Single Event Effects.
+
+Total Ionisation Dose (TID) refers to the cumulative effects of radiation in space, resulting in gradual degradation in operational parameters in electronics [52]. This affects missions with longer duration than a typical CubeSat in LEO.
+
+SEEs are separated into different groups and it can be transient or permanent:
+
+Single Event Upset.
+
+Single Event Latch-up.
+
+Single Event Transients.
+
+Single Event Functional Interrupt.
+
+Single Event Burnout.
+
+A SEU usually affects memory (SRAM, DRAM) and usual toggles a single bit or a larger area (more bits). SEUs are not destructive and usually dealt with a rewrite in the memory. The key issue is it need to be detected it before it leads to failure [49].
+
+A SEL and a SEB could lead to permanent damage to part if the current is not limited quick enough [52], SEL is usually dealt with protection circuits [52] when possible. Sometimes a bit could be stuck in a specific state. This could lead to failure if the bit is changed in sensitive areas. Latch-ups though are not common events in CubeSats and it usually affects mission with longer duration [25]
+
+A SET can affect logic gates and can also appear in analog to digital converters. SET are usually harmless
+
+A SEE could lead to a SEFI, if the SEE affects a microcontroller or an equivalent device and put it to an unrecoverable mode [52. By res but it could have devastating results e.g. if the SEE affects the flash memory that stores the program of the OBC resulting in a bricked device.
+
+Protection from radiation effects
+
+Figure 2.3 Cost of 2Mbytes rad-hard SRAM [30]
+
+Some traditional ways to protect a satellite from radiation is:
+
+Shielding.
+
+Radiation hardened processors.
+
+EDAC memories.
+
+Shielding is not the best way for a CubeSat, since it adds weight and it doesn’t fully protect from SEEs [49]. In [42] the mechanical structure can be used to shield sensitive components by placing them in less affected areas.
+
+Rad-hard processors are typical most costly, have less performance, the components available are limited, more power consumption and are at least a generation older than COTS processors [30].
+
+EDAC memory which is ram with error correction in the hardware are also costly.
+
+Moreover, even if rad-hard CPUs offer protection from SEUs, they are not totally immune to SEUs [43].
+
+Due to the cost and the disadvantages stated above, associated with rad-hard components, there is a trend moving from rad-hard to COTS and from hardware protection to software [49] [30] [50] [56]. Reliability issues can be improved by using fault tolerant techniques and redundancy [50].
+
+As already proven by PhoneSat [22] and SwissCube [45], rad-hard components, EDAC memories and other techniques for SEE mitigation, are not necessary for a CubeSat to work.
+
+Figure 2.4 Argos testbed rad-hard board SEU [43 Figure 2.5 Argos testbed COTS board SEU [43]
+
+State of the art
+
+Almost the first thing that was researched, in order to draw inspiration, was other CubeSats. The most heavily influences were: the first swiss CubeSat [45] and ZA-Aerosat of the ESL Stellenbosch university [36]. Due to the time restrictions of project, the time allotted in the research was minimal.
+
+NASA state of the art
+
+In “small spacecraft technology state of the art” [19]. from power, communication to integration, launch and deployment, NASA lists all of the state of the art technologies needed in a CubeSat. As software isn’t mature enough and lacks behind hardware as stated, it doesn’t provide much info in software frameworks etc.
+
+ZA-Aerosat
+
+In Heunis [36], It describes the design and implementation of a QB-50 CubeSat named ZA-Aerosat. Since it is a master thesis, it provides a lot of information about the design that is found in papers.
+
+In the early phase of the project it provided valuable information about SEE’s, fault tolerance and modular programming. Moreover, it gave high level overview of the software about the ECSS and services, memory management and fault tolerance implementation.
+
+SwissCube
+
+This is a great paper [45], even though it doesn’t use up to date technology, it gives valuable lessons, not only in the design but also in factors that are usually underestimated like the management of people and communication.
+
+One interesting design feature is that the Swiss cube has a very simple CW RF beacon that is almost independent from the rest of the design. That is an excellent fault tolerant design
+
+The Swiss cube team scheduled end of phase reviews, with reviewers from the space industry. That allowed them to have good advices that made them reconsider some parts of the design.
+
+Swiss cube software is analyzed in Flight software architecture [24].
+
+SwissCube uses a distributed architecture, this gives the advantage of isolated design, implementation, testing and allows each team to work independently.
+
+For command and control SwissCube uses the ECSS-E-70-41 [54]. It uses the telecommand verification, housekeeping, function management and a custom service used for payload management.
+
+Finally, the suggestion that has the most impact was that we should aim for design simplicity. In my personal I couldn’t agree more with that advice.
+
+A summary of interesting point is listed below:
+
+The EPS is designed to operate without a microcontroller, also it can lose one battery without failing.
+
+During the environmental tests, they did radiation tests, which provided interesting information.
+
+Swiss cube uses radiations Shields.
+
+Implement and test the communication bus as it has critical implications in the whole design.
+
+Plan big flight software tests.
+
+Implement the ground station software early as possible for testing.
+
+Add remote software updates.
+
+Figure 2.6 SwissCube exploded view [45]
+
+Phonesat
+
+Image 2.1 PhoneSat v1.0
+
+PhoneSat [22] is a CubeSat and as the name suggests, is based on an android phone.
+
+Even though we can’t borrow software and hardware ideas due to completely different design and mission goals, it’s main mission objective apply directly to UPSat.
+
+The PhoneSat project long term goal as stated in [22] is to “democratize space by making accessible to more people”, also it states that “The PhoneSat approach to lowering the cost of access to space consist of using off–the-shelf consumer technology, building and testing a spacecraft in a rapid way and validating the design mainly through testing”.
+
+Derived from the successful mission results, it proves that a CubeSat doesn’t need complicated fault tolerant techniques or special hardware, in order to work.
+
+The PhoneSat project consists of 2 versions, both of the versions have a Nexus smart phone, as the main computer.
+
+PhoneSat v1.0 is a very simple design, with the mission goal to prove that such a design is feasible. It has a nexus smart phone, Lion batteries that weren’t rechargeable from solar panels, an external beacon radio and an Arduino that is used as a watchdog timer, resetting the smart phone in a case something went wrong. Also, the smart phones camera was used to take photos of the earth.
+
+PhoneSat v2.0 is building up on the first design by adding solar panels and rechargeable batteries, an ADCS and 2-way communication module (earth to PhoneSat) along with the first version beacon. It also uses more Arduinos to handle the extra tasks. This design is more similar to mainstream CubeSat.
+
+The main software runs on android and in Java programming language. For that reason, it has little value to the UPSat design.
+
+2 PhoneSats v1.0 and 1 v2.0 were launched in 2013, all PhoneSats were operational and operated as expected.
+
+Image 2.2 PhoneSat v2.5 Figure 2.7 PhoneSat 2.0 data distribution architecture
+
+CKUTEX
+
+The software development for CKUTEX [55] didn’t provide value for our design probably because the design is different from UPSat. It uses CAN bus for communication.
+
+i-INSPIRE II
+
+Figure 2.8 i-INSPIRE II CubeSat [47] Figure 2.9 i-INSPIRE II software state machine [47]
+
+The CubeSat design overview report of the i-INSPIRE II CubeSat [47] which is part of the QB50 program, was found online. The report doesn’t offer too much information for the software implementation but offer some information about the hardware used.
+
+INSPIRE uses a msp430 for primary OBC and a spartan 6 FPGA for secondary processor and experimentation. It has I^2^C buses for sensor and command and control. An interesting fact is that the main processor board is a CTOS provided from Olimex and is not designed in house. The OBC and the ground station communicate with an ASCII protocol.
+
+Command and control module
+
+The CnC (command and control) module, defines the protocol for earth to satellite (and vice versa) communication and inter subsystem communication. It consists of the packet format, header and data definition. Operations are grouped into services, defined by the protocol.
+
+There were two choices concerning the CnC protocol: design a custom protocol or adopt an existing.
+
+There were 2 protocols found ECSS and CSP, I couldn’t find any other. Even if there are other protocols used in CubeSats, for example in PhoneSat [22] but the specification is either not published as a specification or there are highly specific for that mission.
+
+A custom protocol could have been developed but due to time restrictions, also due to the availability and quality of CSP and ECSS, it was decided not to reinvent the wheel.
+
+Requirements
+
+The following requirements were set in order to evaluate CSP and ECSS:
+
+Low protocol overhead.
+
+Lightweight.
+
+Highly modular and customized.
+
+Since all interactions to subsystems and earth uses the protocol, if the protocol overhead isn’t efficient, it leads to power waste and added data traffic.
+
+The CnC module will be used with microcontrollers that have limited processing power and resources, so it need to be lightweight.
+
+The protocol should be designed in way that allows some degree of customization, so the implementation will be tailored on the resources available and be efficient.
+
+CSP
+
+Figure 2.10 CSP header
+
+CSP was developed by students in Aalborg University and is currently maintained by the students and the spin-off company GomSpace [35].
+
+CSP at first stood for CAN Space Protocol since it used CAN bus but later as implementations for other buses were developed, it changed to CubeSat Space Protocol.
+
+It is something like a lightweight IP. The header size is 32 bits which is small without sacrificing functionality. The data in the header is not framed in 8 bit which could lead in performance issues in 8 bit microcontrollers. CSP has a nice feature that ECSS lacks, configuration bits that allow to change the frame configuration at run time.
+
+CSP has open source code available with the code ported to FreeRTOS.
+
+In the Wikipedia entry, it says that specific ports are bound to services such as ping but the description of the services couldn’t be found.
+
+CSP uses RPD or UDP depending on the user needs, guarantying reliability or not.
+
+ECSS
+
+Figure 2.11 ECSS TC frame header
+
+Figure 2.12 ECSS TC data header
+
+The ECSS-E-70-41A specification is a work of European Cooperation for Space Standardization and is based in previous experiences. For simplicity ECSS-E-70-41A would be refereed as ECSS in this document.
+
+ECSS is a well-defined protocol and the specification is clear and well written. ECSS describes the frame header and a set of services. The header has a lot of optional parameters that makes it easily adapted to the application needs. The services listed are all optional and it’s up to the user to implement them. Moreover, each service has a list of standard and additional features depending again to the application needs.
+
+The header has 2 parts: a) the packet header, which is standard, and is 6 bytes. b) the data field header, which is variable due to different options available. The options are: packet error control (Checksum [27]), timestamp, destination id and spare bits (so the that the frame is in octet intervals).
+
+Depending on the application and the number of distinct application ids, the user can select to have only 1 set of application ids, defining both the source and destination in one byte, If the number of application ids is large than a separate source/destination has to be used.
+
+The header implemented was 12 bytes versus the 4 bytes of CSP. The switch between TC/TM and source/destination can be confusing. One feature that the protocol lacks is that it doesn’t have a mechanism for different configurations on runtime like the configuration bits of CSP, having configuration bits denoting different configurations, such as the existence of a timestamp or a checksum in the packet, would have made the protocol a lot more versatile.
+
+ECSS is packet oriented e.g. mass storage service use of store packets, even though it’s not a huge disadvantage, it can a bit tedious and could lead to inefficiency on the implementation.
+
+In my personal opinion, it was a delight working with such clear and well-defined document. While reading the specification, I could sense the accumulated experienced from previous designs. Also, the specification was more like targeted in microprocessors with more resources than a microcontroller, for example, an indication is the large data service: the implementation in order to be efficient and uncoupled from other modules needs the whole large data packet stored in RAM. In order to work efficient, the large data packet need to be several times larger than a usual packet, this could be an issue with resources available in microcontrollers but usually not an issue in microprocessors that have large amount of memory.
+
+Comparison
+
+In this subsection, a comparison between CSP and ECSS is performed:
+
+ECSS is more versatile, in the other hand the CSP advantage is its simplicity.
+
+The data overhead is larger in ECSS but the implementation of the same functionality in CSP could lead to similar sizes or even larger.
+
+One important issue is that, the time the research took place, the formal specifications couldn’t be found online.
+
+CSP and ECSS have a similar source, destination port and application id.
+
+Both of them are in binary format.
+
+~12 bytes (ECSS) versus 4 bytes (CSP).
+
+ECSS doesn’t have a reliability mechanism for delivering packets.
+
+32 bits (CSP) versus 8 bits (ECSS) oriented.
+
+Dynamic configuration on runtime (CSP) versus variable options but static on runtime (ECSS).
+
+Open source code available (CSP).
+
+Result
+
+For the following reasons, it was decided to use the ECSS protocol. It was an easy decision, primarily for the CSP lack of formal specification and the modular design of the ECSS.
+
+ECSS was recommend by QB50.
+
+ECSS is used by many other cubesats.
+
+The formal CSP specifications was not found.
+
+ECSS is based on experience on previous protocol designs, as a result the protocol is highly refined.
+
+ECSS is highly flexible on the actual implementation and it allowed to customize it according to our needs.
+
+Safety critical software
+
+C is the language of choice for UPSat. ADA was never really embraced from the community, Rust is too young and both of them lack the ecosystem to quickly use them with the STM32 microcontroller. C though was primary designed for system programming and not for safe critical code, leading to a lot of different issues when used in that field. Developers confusion about the C language use, along with the growing complexity of the design [34] [38] the state of uncertainty [21]. In addition, as compilers is software itself, any bugs they have may introduce bugs to the application. In order to achieve a good level of safety, different techniques have been developed, such as the use of coding standards, software that checks the use of the coding standard and static analyzers that check the code for bugs [38] [21].
+
+Undefined behavior
+
+C by design has a lot of undefined behaviors. This happens because c is primary designed for systems programming and it uses undefined behaviors as a way for compilers to be optimized for specific hardware. A great example is in [63] with the case of division by zero and how different architectures handles them.
+
+Unexpected behavior in C could lead to bugs especially as most engineers aren’t aware of them (I was one of them) [64]. One interesting website [2] that questions your knowledge of C and uncovers misinformation.
+
+From it can be seen that different compilers produce different code. This was Also it complicates testing. Even different versions of the same compiler may introduce bugs [64].
+
+As it can been seen from a lot of failures are introduced from compiler optimizations [63] [64]. For that reason, all of the development went with optimizations disabled.
+
+Coding standards
+
+With the use of coding standard in the project, we try to improve code clarity [37] and prevent bugs, which are introduced by not fully understand or misuse C.
+
+The most widely known coding standard is the misra-c [18] which is developed from MISRA. The standard was introduced in order to improve code safety and security. The next is the standard [23] developed by Michael Barr a known expert in code safety. Another 2 was found, designed from ESA [31] and NASA [46].
+
+The main problem with the above coding standards was that they have many rules which that makes it difficult for a human to remember and use. Usually software that check for the rules and enforce them is used [38]. For the above reasons Gerard J. Holzmann at JPL introduced the power of 10 rules [39]. By having only 10 simple rules Holzmann managed to improve the usage of a coding standard by a developer. The rules are simple, specific, easy to understand and easily remembered. At first the rules seem to be draconian but as soon as someone gets a better understanding, can see the benefits in code clarity and safety [39]. After the introduction of the 10 rules the JPL coding standard [17] was created. The coding standard uses the 10 rules and most of the times add more specific rules [44]. In addition to the JPL’s 10 rules, the 17 steps [40] were consider as well.
+
+Fault tolerance
+
+Fault tolerance is “Fault tolerance is the property that enables a system to continue operating properly in the event of the failure of (or one or more faults within) some of its components” [59], in our case the ability of the UPSat to tolerate errors or failures, generated by either bugs in the design, implementation or radiation inducted, without leading to catastrophic events. Fault tolerance design is mostly based in adding redundancy in software, hardware or both.
+
+Careful fault tolerant design allows to use COTS components that gives great advantages in reducing cost and achieving better performance [29].
+
+There are 2 separate planes in which fault tolerant techniques can be applied, hardware and software, with a clear trend to migrate to ta later [56], for cost reducing reasons of course. Having a historical look, we can see that trend in NASA’s missions [29].
+
+Unfortunately, the time available and the already designed hardware didn’t allowed to add fault tolerance in the hardware in the form of redundant hardware and voting mechanisms. Most of the fault tolerant designs had to be Incorporated in the software.
+
+Fault tolerant mechanisms
+
+There are up to 8 different types of error recovery mechanisms, below the 4 most important are listed [26] [29].
+
+Fault masking.
+
+Fault detection.
+
+Recovery.
+
+Reconfiguration.
+
+Fault containment is the most important mechanism, since it contains the error before leading to permanent damage.
+
+Fault detection is the ability of the systems to understand that error has occurred. Even if fault masking manages to contain the issue, fault detection is crucial in order to evaluate the systems behavior. Diagnosis happens if with fault detection, the nature of the failure is not clear enough.
+
+Recovery makes the system recover from and error and behave as normal.
+
+Reconfiguration as the name states is the process of reconfiguring in the event of permanent damage.
+
+Fault containment and recovery are the most important mechanism in systems, since it allows the system to continue working in the event of error. Fault detection and diagnosis allows the ground crew to identify the issue and maybe give correctional procedures and afterwards the study of the failure information will lead in to better future missions. Reconfiguration is limited used in UPSat, mostly because the hardware design doesn’t allow it.
+
+Built in tests
+
+Build in tests are usually automatic tests B.I.T. that run and help to determine if the state of the system is correct, they can run on startup
+
+power on BIT or when the system is idle - continuous BIT [26]. FPGAs have the advantage that they can run BIT on circuit level BIT referred as BIST. For an example, a BIST can feed components with patterns that are pre-calculated and check if the output is the same as the one expected.
+
+Single point of failure
+
+The single point of failure is a very important concept in fault tolerance: it denotes a part in the system that if that part fails, the whole system fails. As one can imagine it is highly undesirable in safety-critical systems and great measures has to be taken in order to avoid such parts in the design.
+
+For example, in SwissCube [45] a single point of failure is a RF switch that alternates the RF modules responsible for communication and the RF beacon.
+
+Figure 2.13 Fault tolerance mechanisms [29]
+
+State of the art fault tolerance
+
+Most of the state of the art systems for fault tolerance, incorporate FPGAs in their designs. FPGA have the advantage that they can reconfigure so a damaged area in the IC due to SEEs can be avoided.
+
+JPL used radiation-tolerant FPGAs in the Mars exploration mission [51].
+
+ZA-Aerosat [36] uses a hybrid FPGA - microcontroller approach, where the FPGA acts in an intermediate layer between the microcontroller and the memory. The FPGA houses custom logic that with the memory, emulates an EDAC memory.
+
+CNES MYRIADE uses a FPGA for safe against SEEs issues storage [50].
+
+ISAS-JAXA REIMEI uses a FPGA as voting mechanism [50].
+
+Fault tolerance in hardware
+
+Hardware fault tolerance is induced by adding redundant hardware and usually having hardware acting as a voter deciding which of the redundant hardware is correct. The configuration of the redundant hardware and voter design is correlated to the application and the budget.
+
+Figure 2.14 Hardware fault tolerance [26]
+
+A voter which is a hardware specifically added for fault tolerance. It doesn’t mean that is immune to errors and extra caution should be taken in the design. A voter adds to the complexity of the design and it can even lead to the liability of the design. An example is the airplane of the Malaysia Airlines Flight 124 where the ADIRU due to a software error, used a faulted sensor for flight data, leading to a serious incident [58].
+
+Figure 2.15 B777 flight computer [57]
+
+Two interesting designs are Boeing’s 777 flight computer and the AIRBUS A320-40 flight computer [57]. The B777 has a “triple-triple configuration of three identical channels, each composed of three redundant computation lanes. Each channel transmits on a preassigned data bus and receives on all the busses” [57]. AIRBUS’s flight computer has the same specification as the B777 but follows a different approach, a shadow-master technique, where the boards and software is designed by different manufactures.
+
+Figure 2.16 AIRBUS A320-40 flight computer [57]
+
+Fault tolerance in software
+
+The first basic technique is called partitioning. By writing modular software with clear boundaries, partitions: areas that contained are created.
+
+Adding recovery on partitioning with the use of Checkpoints [48] [57] add recovery to the partitioning technique, by adding points in modular software, where the state can be saved and revert back in the case of an error and resume from that point.
+
+By integrating the fault tolerant techniques in a framework, the software development and the fault tolerance can be uncoupled, thus reducing the complexity of the software. That allows the developer to focus on the implementation of the software and not in fault tolerance [57].
+
+Dynamic assertions is an interesting technique used for runtime evaluation of objects [48]. Even though the concept described is for object oriented languages doesn’t mean that we can’t use some aspects of the concept.
+
+A very common approach to software fault tolerance is the technique of multi-version software. Two software teams develop the same application with different approach, sometimes with different tools or restrictions and both of the software runs on different processors in voting scheme [57]. This approach shows no great advantages and it is not cost effective. A better approach uses the same software and the difference is that is compiled from different compilers [57]
+
+Finally testing the software with Software Fault Injection can lead to bugs discovery, when with traditional testing techniques would be very difficult to find [57].
+
+DESIGN
+
+In this chapter, the various design choices and the reasons behind are discussed.
+
+Coding standards on UPSat
+
+There wasn’t enough time to setup the tools needed to enforce and use properly a specific coding standard, for that reason the JPL’s 10 rules [39] and the 17 steps to safer C code [40] were primary used as guidelines.
+
+10 rules
+
+Rules 1, 2, 3, 5, 8, 9 were followed religiously and in no accounts, there were allowed not to be followed.
+
+Rule 4: 60 lines of code per function wasn’t strictly followed as some flexibility was needed but in any case, it wasn’t allowed to
+
+Rule 5: The suggestion was to cover as more cases of assertion as possible, especially to the beginning of a function but without having a minimum.
+
+Rule 6: The rule was followed in general except when code clarity was an issue the rule was allowed to be broken.
+
+Rule 10: Couldn’t be used since the code generated from cubeMX broke the rule.
+
+Finally, the rules weren’t enforced automatically as there wasn’t time to setup a tool to check them and it was left to the developer’s good will to use them.
+
+17 steps
+
+The 17 steps to safer C code provide some very good guidelines, with some complimentary to the 10 rules even if most of them they seem like common sense to an experienced programmer.
+
+The most important step was step 2. Using enumerations not only as error types but as state variables and always defining the last enumerations allowed to make easy range checks with assertions.
+
+Step 15 might seem obvious to most programmers but in my opinion, is the essence of safety-critical code, simplicity improves clarity and clear code is easier understood and
+
+Steps 1, 3, 5 suggests something that is a basic concept for programming but sometimes when working too much hours can be forgotten
+
+Steps 4, 6, 11, 12, 14 are critical for a correct software design and lies within the idea of modular and fault tolerant software.
+
+Step 8 wasn’t applicable to our project since the requirements were already defined. Also steps 9, 10 due to the nature of the project.
+
+Step 13 is about the volatile keyword in C that it is rarely used in non-embedded projects. The concept of volatile can be quite critical in embedded and the incorrect or no usage can lead to very subtle and difficult bugs.
+
+As seen in chapter 1, static code analyzing described in step 16 is an absolutely must.
+
+Using the right tools can save a lot of trouble and time (step 7).
+
+Fault tolerance on UPSat
+
+The main techniques used for fault tolerance in software was:
+
+Error detection.
+
+Error containment.
+
+Due to mission timing constraints, implementing fault tolerance on hardware and other techniques was impossible.
+
+Software was designed as modular and uncoupled as possible, in order to ac hive error containment. Further techniques that was used were:
+
+Assertions.
+
+Watchdog.
+
+Heartbeat.
+
+Multiple variables.
+
+Assertions
+
+The first line of defense was the use of assertions. Assertions check in real time for null pointers, correct range of parameters and correct parameters. If the assertion catches an error, most of the times it cancels the operation and returns to normal state. In order for assertions to be effective, they need to be used regularly.
+
+Watchdog
+
+The next technique is the watchdog timer. Watchdog timers are a very common peripheral in microcontrollers and a widely used technique against software bugs. The watchdog resets the microcontroller if the timer it shelf is not reset in a specific time interval. This way if a task has entered a blocked state due to an error, the microcontroller resets and returns to its starting state.
+
+There are two techniques that the watchdog is used: The OBC and the EPS, clear the timer only if certain tasks have happened. In particular for the OBC it is required that all tasks had run at least once. Every time a task runs, it clears a flag, if all flags have been cleared then the timer gets cleared. In addition to that, ADCS and COMMS check for errors in sensor reading and RF communications, accordingly. The same technique could have been used in the OBC but time constraints didn’t allow for proper design and test.
+
+Table 3.1 10 rules for developing safety critical code [39]
+
+Rule Num Description ———- ———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————– 1 Restrict all code to very simple control flow constructs - do not use goto statements, setjmp or longjmp constructs, and direct or indirect recursion. 2 All loops must have a fixed upper-bound. It must be trivially possible for a checking tool to prove statically that a preset upper-bound on the number of iterations of a loop cannot be exceeded. If the loop-bound cannot be proven statically, the rule is considered violated. 3 Do not use dynamic memory allocation after initialization. 4 No function should be longer than what can be printed on a single sheet of paper in a standard reference format with one line per statement and one line per declaration. Typically, this means no more than about 60 lines of code per function. 5 The assertion density of the code should average to a minimum of two assertions per function. Assertions are used to check for anomalous conditions that should never happen in real-life executions. Assertions must always be side-effect free and should be defined as Boolean tests. When an assertion fails, an explicit recovery action must be taken, e.g., by returning an error condition to the caller of the function that executes the failing assertion. Any assertion for which a static checking tool can prove that it can never fail or never hold violates this rule. 6 Data objects must be declared at the smallest possible level of scope. 7 The return value of non-void functions must be checked by each calling function, and the validity of parameters must be checked inside each function. 8 The use of the preprocessor must be limited to the inclusion of header files and simple macro definitions. Token pasting, variable argument lists (ellipses), and recursive macro calls are not allowed. All macros must expand into complete syntactic units. The use of conditional compilation directives is often also dubious, but cannot always be avoided. This means that there should rarely be justification for more than one or two conditional compilation directives even in large software development efforts, beyond the standard boilerplate that avoids multiple inclusion of the same header file. Each such use should be flagged by a tool-based checker and justified in the code. 9 The use of pointers should be restricted. Specifically, no more than one level of dereferencing is allowed. Pointer dereference operations may not be hidden in macro definitions or inside typedef declarations. Function pointers are not permitted. 10 All code must be compiled, from the first day of development, with all compiler warnings enabled at the compiler’s most pedantic setting. All code must compile with these setting without any warnings. All code must be checked daily with at least one, but preferably more than one, state-of-the-art static source code analyzer and should pass the analyses with zero warnings.
+
+Table 3.2 17 steps to safer C code [40]
+
+Step Description —— ————————————————- 1 Follow the rules you’ve read a hundred times 2 Use enumerations as error types 3 Expect to fail 4 Check input values: never trust a stranger 5 Write once, read many times 6 When in doubt, leave it out 7 Use the right tools 8 Define the software requirements first 9 During boot phase, dump all available versions 10 Use a software version string for every release 11 Design for reuse: use standards 12 Expose only what is needed 13 Make sure you’ve used “volatile” correctly 14 Don’t start with optimization as the goal 15 Don’t write complex code 16 Use a static code checker 17 Myths and sagas
+
+Heartbeat
+
+The last check is the subsystem health check performed by the EPS or heartbeat as we call it. EPS was chosen for this role because it handles the subsystem power.
+
+Each subsystem sends a heartbeat packet (ECSS test service) to the EPS every 2 minutes. When the packet is received from the EPS, it updates a timestamp variable. If that timestamp minus the current time is longer than 20 minutes then the subsystem is reset. It doesn’t have to be a heartbeat packet by any packet will update the timestamp. The heartbeat is used because in normal circumstances, the ADCS and COMMS don’t communicate with the EPS.
+
+Since the OBC does the packet routing, if the OBC fails, the heartbeat packets from ADCS and COMMS destined to EPS won’t be delivered. For that reason, the EPS checks if the OBC has an updated timestamp and then checks for the other subsystems. OBC and EPS have communication every 30 seconds for housekeeping needs, so it should be clear if the OBC works. Otherwise the OBC is reset and all subsystems timestamps are updated (ADCS, COMMS, OBC). This happens so the other subsystems are not reset in case of an error of the OBC.
+
+The heartbeat is intended as the last in line of error checking techniques, the choice of 2 minutes for refresh and 20 minutes for reset reflect this. Having a 2 minutes refresh interval in a 20 minutes window has very good possibilities to be received from the EPS, without generating too much traffic. The 20-minute window is used, in case there an error in the heartbeat mechanism or the OBC routing and the subsystem operate correct, the 20 minutes give enough time to subsystems to perform adequate.
+
+Multiple checks
+
+The EPS and COMMS store in multiple locations the critical data. The data hold critical states of the CubeSat. The state values are generated with random number generator. More over the states have multiple values. These are used for protection against SEEs.
+
+OBC
+
+In the following sections the design choices about the OBC will be analyzed.
+
+OBC-ADCS schism
+
+The hardware design that was initially designed delivered, had the OBC and ADCS on the same PCB and microcontroller. There were concerns if the same microcontroller could handle both of the software, in terms of processing power and the added complexity of the software design. For that reason, it was decided to split the OBC and ADCS to different into 2 separate subsystems. The disadvantages of that design were: increased power consumption and crucial man hours spend into partial redesigning the PCBs.
+
+Without having a good understanding of the processing requirements and the processing power of the microcontroller, having a bottleneck at a later phase of the project, which changes would had been more difficult to make or even impossible. Having both subsystems into one hardware seemed a far greater risk than spending the resources to split and redesign the hardware.
+
+In practice, the OBC uses almost no processing power and the ADCS use only the processor periodically, meaning that that the processing needs of the subsystems could fit into one microcontroller. The decision to separate the subsystems, as it seems wrong at first, it allowed to uncouple the software development and testing, saving precious time during the integration and testing phase of the project.
+
+OBC real time constraints
+
+In UPSat there are certain operations that are critical and they should happen in strict timeframes. For that reason, the real-time requirements in such critical tasks were defined.
+
+Real time constraints are grouped into 3 general categories [62]:
+
+Hard – “missing a deadline is a total system failure”.
+
+Firm – “infrequent deadline misses are tolerable, but may degrade the system’s quality of service. The usefulness of a result is zero after its deadline”.
+
+Soft – “the usefulness of a result degrades after its deadline, thereby degrading the system’s quality of service”.
+
+The real time constrains in OBC and command and control derived from analyzing specifications, the overall design and finally from past experience with embedded devices.
+
+The first priority and hard real-time constraint, is to process an incoming packet before the next one comes so there aren’t lost packets. This especially critical for the OBC since it does all the packet routing.
+
+At 9600 baud rate, with minimum 12 bytes per packet, plus minimum 2 bytes for HLDLC framing. In the worst-case scenario, a packet needs to be processed in 14.5msec. The OBC is connected to 3 subsystems so it can take 3 packets simultaneously, leading to 14.5/3 = 4.8msec.
+
+The next hard real-time constraint is to send Housekeeping packets every 30 seconds with 500 msec accuracy. This is a huge time frame for an embedded system, so normally it wouldn’t be a problem.
+
+The SU script engine had to be able to run within 1 second of the scripts run time.
+
+The schedule service had to release TC within 1 second of the commands release time.
+
+Finally, all OBC’s tasks must run at least once within 30 seconds time frame.
+
+Packets processing, hard real-time constraint.
+
+Housekeeping, hard real-time constraint.
+
+SU engine, hard real-time constraint.
+
+Scheduling service, hard real-time constraint.
+
+OBC tasks, hard real-time constraint.
+
+RTOS Vs baremetal and FreeRTOS
+
+For the OBC there are 2 choices regarding the software, either run bare metal on the microcontroller and design a custom scheduler from scratch or use a RTOS.
+
+A bare metal solution offers to make unique customized and optimized code that the developer team understand (as they wrote it), but has the disadvantages of limited review, it carries a greater risk in case of a design flaw and finally another key part of the software has to be designed and implemented.
+
+The RTOS has code that is already tested and proven working on applications but it won’t be bug free. Working with a RTOS would require evaluation of different RTOSes in order to choose the most suitable and afterwards careful examination of the RTOS in order to understand key concepts for the working and for future debugging.
+
+The choice of a RTOS instead of bare metal was obvious, due to the nature of the tasks of the OBC: different tasks with different timings and a mix of synchronous and asynchronous events in comparison of e.g. the ADCS which has synchronous linear tasks that would be easier and simpler to implement when used a RTOS.
+
+RTOS suits better the OBC tasks.
+
+RTOS is well tested and used.
+
+Time needed to study the RTOS is far less than developing the scheduler.
+
+Need extra time to familiarize with the RTOS concepts.
+
+There are numerous candidates for a RTOS such as FreeRTOS, embOS [12], vxworks [9], RIOT [16] and mC/OS [7] but none of them except FreeRTOS, had met the requirements of the project. FreeRTOS is very simple with only 3 files with basic functionality, has been already ported by ST, it is open source and has already been used in many projects plus it is supported from all major companies.
+
+Simple.
+
+Minimum time for integration.
+
+Open source.
+
+Mature.
+
+FreeRTOS concepts
+
+As the choice for the OBC’s RTOS, FreeRTOS concepts and design needed to be studied. Besides the primary reason which was to identify if FreeRTOS was suited for the OBC, a better understanding would lead to following:
+
+Optimized design and implementation.
+
+Having a better understanding of the FreeRTOS limitations.
+
+Detecting design intricacies that might lead to bugs.
+
+Solving bugs.
+
+The basic concepts were described in FreeRTOS documentation. Finally [41] and a combination of source code examination, step by step debugging, and systemview was used to get an in depth understanding of FreeRTOS. Finding information besides the basic concepts was extremely difficult.
+
+Introduction to FreeRTOS
+
+FreeRTOS was by Richard Barry in 2003 and it has become an industry de facto standard RTOS for microcontrollers. It is open source and the licensing allows proprietary applications to not reveal the source code.
+
+FreeRTOS has been ported in over than 35 microcontrollers and has partners all the major microcontroller companies.
+
+FreeRTOS has been already used in many CubeSat missions [36] [41] and is available in most COTS vendors for use in their boards [35].
+
+FreeRTOS is very simple, it basically is a priority scheduler for threads, called tasks in FreeRTOS terminology, along with supporting mechanisms such as mutex, semaphores queues etc.
+
+Tasks
+
+Threads are called tasks in FreeRTOS terminology. Tasks are created by using the taskCreate function. Also, tasks can be deleted but it’s not used in the project. A task has 4 different states:
+
+Ready.
+
+Running.
+
+Suspended.
+
+Blocked.
+
+Tasks that are in the ready list are waiting to execute, in the running state are the current task working and in the blocked state when a task wait for a resource to become available or the delay time to be completed.
+
+Each task has a priority, that is defined at the task’s creation. A task that has the lowest priority called idle and must always exist in a FreeRTOS project.
+
+FreeRTOS has a support for semaphores and mutexes. In addition, there are queues that are used for thread safe intertask communication.
+
+The scheduler checks in every tick if a task of a higher priority is ready to run and makes the context switch accordingly. If the task has the same priority the tasks share running time round robin.
+
+The scheduler runs in an ISR every tick of the RTOS timer. Usually in ARM cortex M cores the timer used is the systick. The timer’s resolution defines the quantum of (minimum) running time of a task. The timer’s resolution and configuration affects the max delay possible from the freeRTOS delay function.
+
+If a FreeRTOS API function needs to be used from an ISR has different set of functions specific for ISR use, usually the function has the ISR added in the function name.
+
+Critical sections
+
+If an action needs to finish without an interruption there are 2 mechanisms that can be used. The first option is to disable all interrupts and thus disable the scheduler but has the major drawback that it also disables interrupts that are created from peripherals. The second option is to disable the scheduler and thus remove the chance of a possible context switch.
+
+Figure 3.1 Tasks [12] Figure 3.2 tasks life cycle [12]
+
+Stack overflow detection
+
+FreeRTOS has 2 methods for detecting stack overflows. In the first method, the bottom of stack has been filled with known values and in every context, switch those values are checked if there are overwritten. The second method checks in every context switch if the stack pointer remains in valid values.
+
+Heap modes
+
+FreeRTOS has 5 models for the heap memory management that allows different levels of memory allocation with heap 1 that doesn’t allow any memory to be freed after they were allocated and to heap 5 that the maximum freedom. Since memory allocation after the initialization is prohibited in JPL’s 10 rules the only suitable model for UPSat is heap 1.
+
+Advanced concepts
+
+A task’s information used from the FreeRTOS are stored in a Task Control Block (TCB) structure. For every state of a task FreeRTOS has lists that store each task that is in that state. Every time a task changes state it is added to the corresponding list. The scheduler in every tick, checks the ready list for a task waiting to run and compares the priorities with the currently running.
+
+In each context switch the scheduler stores the registers value and the stack pointer which is also a register and loads the registers of the task that is about to run. This code is specific to the architecture and usually is implemented in assembly.
+
+Logging and file system
+
+One of the basic functions of the OBC was to uplink and use SU scripts, store various logs (WOD etc.) and download them into the ground station. A SD card connected to the microcontrollers SDIO peripheral was used for primary storage and an external flash for secondary.
+
+Chan’s FatFS [32] was the one-way choice for the file system because it was already ported and working with support for SD cards from ST’s cubeMX, requiring minimum configuration.
+
+Figure 3.3 FAT file system structure [60]
+
+The other considerations were using the SD card without file system but the major issue was that the SDIO peripheral code had to be developed.
+
+FAT in general is not suitable for safety-critical systems, failure during operation could lead to corrupted files and even corrupted file system without the possibility of recovery [33].
+
+Moreover, as the FAT file system is structured it leads to inefficiency requiring traversing the file system in order to find where a file is in the data region and in read/write operations checking the FAT table. All of these locations are usually in not adjacent sectors leading in performance degradation.
+
+The file system is separate into different regions such as the boot sector, file allocation table, the root directory and the data region.
+
+Directories are special files that provide information for the records such as the type (directory, file), name and starting cluster. There are stored in the data region, except the root directory. The root directory is found in a known location and provides the starting point for traversing the file system.
+
+An entry in the File Allocation Table is allocated for each cluster in the data region. The number in the entry points to the next cluster that the data continuous or the end of the file.
+
+The data area is divided in parts called clusters with each cluster being a multiple of a sector, the sectors are usually 512 bytes. A sector is the minimum data transfer from or to the SD.
+
+Chan’s implementation of FAT file systems is orientated towards microcontrollers and systems with low resources. It has a small API consisting of the basic commands such open, write, read file. The only issue is that the documentation is not very detailed with some errors returned from the commands are too general to make use.
+
+Since a sector is the minimum data transfer, for optimized reads and writes, the data should align with a sector. better if the data fit into a sector only, leading to more efficient reads and writes, because the file system doesn’t ensure the next cluster is after the current one.
+
+In figure 3.4 the critical operations of FatFS is listed. If a failure or interruptions occur between commands with yellow or red could result in data loss or even file system corruption. Minimizing the time, a file is opened the risk of failure is minimized as well. Figure 3.5 shows optimized code with the use of sync.
+
+Figure 3.4 FatFS critical operations [32] Figure 3.5 FatFS optimized critical operations [32]
+
+ECSS services
+
+The ECSS standard is highly adaptive and provides many different choices. In this section, the design choices for UPSat are analyzed.
+
+Services
+
+The first choice that came up was: which services were going to be used in UPSat. Even though all services provide necessary there wasn’t enough time to implement them all.
+
+The telecommand verification service provide a way to receive a response about the successful or not outcome of a telecommand’s operation. This service is required since for some operations it is critical to know the outcome of the operation.
+
+The housekeeping & diagnostic data reporting service provide a way to transmit and receive information (housekeeping) that denote the status of the CubeSat. The housekeeping operation is standard in CubeSats.
+
+The function management service is used for operations that aren’t part for other services operations. In UPSat the service is used mainly for controlling the power in subsystems and devices and setting configuration parameters in different modules.
+
+The time management service is providing a way to synchronize time between subsystems and the ground station. This service was added later when the need to synchronize time between ADCS and OBC and the ability to change the time from the ground came up.
+
+The on-board operations scheduling service provide a way for to trigger events in specific times or continuously with specific intervals with the release of telecommands. This service allows to perform events without having connection with the ground station.
+
+The large data transfer service provides a way to exchange packets that are larger than the size that is allowed by cutting the original packet in chunks that their size is allowed. In UPSat it is used for transferring large files such as the SU scripts.
+
+The on-board storage and retrieval service provide a way to store and retrieve information in mass storage devices. In UPSat it is used to store various logs, SU scripts and configuration parameters in the SD card of the OBC.
+
+The test service provides a simple way to verify that a subsystem is working. It is very similar to the ping program used in IP networks.
+
+The event reporting service provides a way for a subsystem to report events. It was originally designed for subsystems that didn’t have storage devices to report events that were critical to the UPSat’s operation to the OBC so that it would store them for later review from a human operator. Time restrictions didn’t allow for correct implementation and testing so it was removed.
+
+Event-action service uses the event service to generate action when a particular event takes place. Since the event service was removed there wasn’t a way to use the event-action service.
+
+The device command distribution service is not applicable to the UPSat design.
+
+The parameter statistics reporting service provide a way to report statistics about specific parameters when there isn’t ground coverage. In ideal conditions this service would have been used in conjunction with housekeeping service in order to provide a better understanding of the UPSat’s status. For cases that statistics were needed the were added in the housekeeping report and the specifics of the implementation were left to the discretion of the software engineer.
+
+The memory management service provides a way to read or write memory regions in subsystems and mass storage devices. Even though it could be helpful, there wasn’t a urgent need to implement it.
+
+The on-board monitoring service monitors parameters and checks if there are changes that need to be reported in the ground. Again, for this service there isn’t a urgent need.
+
+The packet forwarding control service provides a way to forward a packet to different application id than it was intended. There was the thought of using the service in order to forward specific packets to a software module that captures these packets and stores them as events in mass storage but time limitations didn’t allow to implement it.
+
+The on-board operations procedure service allows for the ground station to store and manipulate functions in subsystems in UPSat. That service provides a way to extend and or change software functionality in a CubeSat without resorting in complex firmware updates. Unfortunately, even if this service is important, once again there wasn’t enough time to implement it.
+
+From the 16 services only 8 were decided to with the time management service added later and the event reporting services removed during the implementation phase.
+
+Since On-board operations scheduling service was designed and implemented from Apostolos Masiakos and Time management service from Apostolos Masiakos and Agis Zisimatos, the services won’t be analyzed further.
+
+The specification states that any custom services or services subtypes should have an number larger than 128. In UPSat’s design this rule wasn’t followed and the custom could have any number that it’s not used from the specification. This happens because there is a a large lookup table for every subsystem which defines which services are used, the way it was implemented having 128 service number and above would create a huge lookup table that wouldn’t fit in the microcontroller’s memory.
+
+Table 3.3 ECSS services
+
+Service Type Service Name ————– ————————————————–
+
+1 Telecommand verification service 2 Device command distribution service 3 Housekeeping & diagnostic data reporting service 4 Parameter statistics reporting service 5 Event reporting service 6 Memory management service 7 Not used 8 Function management service 9 Time management service 10 Not used 11 On-board operations scheduling service 12 On-board monitoring service 13 Large data transfer service 14 Packet forwarding control service 15 On-board storage and retrieval service 16 Not used 17 Test service 18 On-board operations procedure service 19 Event-action service
+
+Table 3.4 ECSS services implemented by UPSat
+
+Service Type Service Name ————– ————————————————–
+
+1 Telecommand verification service 3 Housekeeping & diagnostic data reporting service 8 Function management service 9 Time management service 11 On-board operations scheduling service 13 Large data transfer service 15 On-board storage and retrieval service 17 Test service
+
+Application ids
+
+Application ids are a core concept in ECSS, it is the address of a module that the packet is heading towards, it is very similar to the IP address concept. Using 11 bits for application ids a total of 2047 address can be achieved. Application ids are not confounded only in hardware subsystems but software modules can be given an id.
+
+In UPSat a total of 7 application ids were used: 5 for each subsystem and 2 for the ground station. The 2 application ids used for the ground station is because there are 2 different paths available and there was a need to differentiate them. The first is the serial connection through the umbilical connector and was used only during testing. The second was through the RF communication and the COMMS subsystem. The software is design of UPSat is simple enough so there wasn’t a need for more application ids.
+
+Table 3.5 UPSat application ids
+
+Sybsystem app id ———– ——– OBC 1 EPS 2 ADCS 3 COMMS 4 IAC 5 GND 6 DBG 7
+
+Packet frame
+
+Even if the ECSS standard treats the telecommand and telemetry as packets with different frame structure, the design intention of the packet frame in UPSat was that both of frames could be as identical as possible. The reason behind that was that the software remains as simple as possible, using the same code for manipulating telecommand and telemetry frames. The simpler design in software would lead in less developing the code and testing it. Hello if you, are reading this send a mail at nchronas at gmail dot com and say hi, I would be glad to hear from you.
+
+The packet header and packet error control are identical in telecommands and telemetry packets. The data field header is designed to be identical with source ID in telecommands and destination ID in telemetry packets and without the optional fields of packet sub-counter and time in telemetry that don’t exist in a telecommand packet.
+
+For routing purposes the source and destination application ID was added in telecommand and telemetry packets. When the packet is a telecommand the application ID in packet id denotes the subsystem destination and in the data header field the subsystem that the packet originated and vice versa in a telemetry packet. Without the source ID, it would be impossible to know to which subsystem a possible response should be send and without the destination ID where to route the telemetry packet. It was possible to only use the application ID by having application IDs would denote both the source and destination ID but that design would be more obscure leading to confusion during testing.
+
+The maximum length of a normal frame is 210 bytes, by subtracting the headers and error correction it leaves with 198 bytes for application data. This number derives from restrictions in RF communication with the Earth. Because the COMMS subsystem doesn’t use error correction algorithms, if the size is larger than 210 bytes the probability that the packet is received correctly from the ground station, quickly deteriorates.
+
+For the case of handling large files the normal packet size is inefficient and restrictive. For that reason and for subsystem communication only, the length of a packet can be extended to a maximum of 2050 bytes. The 2050 bytes is calculated from the maximum file transaction of a SU script with 2048 bytes size plus the 12 bytes of packet header. This transaction happens only for OBC-COMMS communication only. For RF communications if the size is larger than normal, the large data service is used.
+
+The version number and data field header flag of the packet ID have the default values of 0 and 1.
+
+The type equals to 1 if the packet is a telecommand and 0 if it is a telemetry packet.
+
+The application ID uses only the 8 bits for efficiency but for compatibility reasons 11 bits are used in the frame.
+
+The Sequence flags in telecommands or Grouping flag in telemetry packets are used only in standalone mode with default value equal to 3.
+
+Table 3.6 Telecommand Data header
+
+CCSDS Secondary Header Flag TC Packet PUS Version Number Ack Service Type Service Sub- type Source ID —————————– —————————— ——– ————– ——————- ———– 1 Bit 3 Bits 4 Bits 8 Bits 8 Bits 8 Bits
+
+The sequence count is a counter that counts the packets that the subsystem has transmitted to another subsystem, there is a different counter for each application id. If a subsystem routes the packet to its indented destination it doesn’t modify the counter. The counter is uses 8 bits instead 14 bits as the standard for efficiency reasons. For compatibility reasons for the packet frame remains 14 bits. Every system that transmits packets frames needs to implement the counter. Moreover, the counter in UPSat is not stored in mass storage memory and it is reset to zero in each subsystem reset. By observing when the counter resets to zero in a subsystem it can be deduced that a reset happened to that subsystem.
+
+The packet length is calculated by subtracting from the actual packet size the size of the packet header which is 6 bytes and subtracting 1.
+
+Packet length = Packet size (bytes) - 6 (packet header) - 1
+
+The data field header varies in a telecommand and a telemetry packet. The CCSDS Secondary Header Flag has a default value of 0 in a telecommand and it’s used as padding in a telemetry packet. The Ack is used in a telecommand from the verification service and as padding in a telemetry since the verification service doesn’t work with telemetry packets.
+
+In both telecommand and telemetry packets the Packet PUS Version Number has a default value of 1.
+
+The service type and subtype denote the functionality of the packet and the service associated with the packet.
+
+In a telecommand the source ID denotes the application ID of the subsystem that the packet originates from and in a telemetry packet the destination ID denotes the destined subsystem. Both the source and destination ID reside in the same position in a telecommand and telemetry packet.
+
+The Packet error control is implemented as a CRC8 algorithm that occupies 8 bits but for compatibility reasons the frame has 16 bits with the first 8 bits are unused.
+
+The packet sub-counter and time fields in a telemetry packet are not used because there wasn’t any need for them in UPSat.
+
+Finally, no optional spare fields were added in both telecommand and telemetry packets.
+
+Table 3.7 Telemetry Data header
+
+Spare TM Packet PUS Version Number Spare Service Type Service Subtype Destination ID ——- —————————— ——– ————– —————– —————- 1 Bit 3 Bits 4 Bits 8 Bits 8 Bits 8 Bits
+
+Table 3.8 Command and control packet frame
+
+Services in subsystems
+
+The table 3.9 provide information about which service is implemented in each subsystem.
+
+Verification, housekeeping, function and test service are basic services needed in all subsystems.
+
+Time management is only used in ADCS and OBC since only them require precision time keeping, OBC for the SU and ADCS for the control calculations.
+
+On-board scheduling and On-board storage services are only used in OBC since they require a mass storage device.
+
+Finally, large data transfer is only implemented in COMMS since it is the only capable for RF communications.
+
+Table 3.9 Services implemented in each subsystem.
+
+Software reuse
+
+One of the first software design decisions was that since the ECSS software is generic and could be used in future missions, the software modules should be designed to be agnostic to the hardware used. For that reason, direct call functions that were hardware related was prohibited and a HAL layer that was a essentially a wrapper for the STM libraries was used.
+
+Telecommand verification service
+
+The Telecommand verification service is the 1. In table 3.11 are shown the minimum and additional capabilities offered by the services. The service is used when a telecommand has the values shown in table 3.10 The service doesn’t support telemetry packets.
+
+For UPSat it was decided that only the minimum capabilities would be used, even if the additional would be definitely helpful they would also complicate the software design. For that reason, only values of 0 and 1 are valid in the ACK field, if other values are present the packet is flagged as invalid and dropped.
+
+Since most of the telecommands are usually finished immediately, the acceptance report means also the competition of the telecommand but the semantics of the acceptance should be considered to be a telecommand.
+
+If the telecommand results in failure, the frame has an error code field. By checking the error code, the ground station operators could find the reason for the failure and make correcting procedures accordingly. The ECSS standard provides some error codes about packet decoding failure listed in table 3.10.
+
+One particular idiosyncrasy of the service is found in the table 3.14 where are listed errors about packet decoding such as error 2 incorrect checksum, that leads reporting acceptance failure about a packet that could have corrupted information including the ACK field.
+
+Table 3.10 Telecommand packet data ACK field settings
+
+Value meaning ——- ————————————- 0 none 1 Acknowledge acceptance 2 Acknowledge start of execution 4 Acknowledge progress of execution 8 Acknowledge completion of execution
+
+Table 3.11 Telecommand verification service subtypes
+
+minimum capabilities ————————————————– ——- Telecommand acceptance report - success Telecommand acceptance report - failure Additional capabilities Telecommand execution started report - success Telecommand execution started report - failure Telecommand execution progress report - success Telecommand execution progress report - failure Telecommand execution completed report - success Telecommand execution completed report - failure
+
+Table 3.12 Telecommand verification service acceptance report frame
+
+Telecommand Packet ID Packet sequence control ———————– ————————- 16 bits 16 bits
+
+Table 3.13 Telecommand verification service acceptance failure frame.
+
+Telecommand Packet ID Packet sequence control Error ———————– ————————- ——– 16 bits 16 bits 8 bits
+
+Table 3.14 Telecommand verification service error codes
+
+Value meaning ——- —————————————— 0 illegal APID 1 incomplete or invalid length packet 2 incorrect 3 illegal packet type 4 illegal packet subtype 5 illegal or inconsistent application data
+
+Housekeeping
+
+Information indicating the status of the CubeSat, are broadcasted to earth, in specific intervals. WOD is transmitted automatically, so it can be easily gathered by ground stations that don’t have transmit capabilities.
+
+UPSat has 3 different WODs and each is used for different purposes:
+
+QB50 WOD.
+
+Extended WOD.
+
+CW WOD.
+
+The QB50, extended and CW WOD, is used for understanding the state of UPSat. It is the last line of defense in the case there isn’t a communication link between ground stations and UPSat. It is going to be the first indication if UPSat works correctly or not. The CW WOD is crucial during the first days of operation, in order to track and verify the operation of UPSat. Since HAM operators around the globe could listen for CW WOD, a global coverage can be obtained.
+
+WOD
+
+In the QB50 requirements, there is WOD. In the frame, it provides historical information. The dataset provides general information. For compatibility with the rest of the missions in QB50, WOD is not encapsulated in ECSS.
+
+Table 3.15 WOD packet format
+
+Table 3.16 WOD dataset
+
+Extended WOD
+
+Since WOD offers only basic information, it was decided to add an independent extended WOD. That would provide more information about the state of UPSat. It was asked of all engineers to supply a set of variables, that would help them understand what happens in the subsystems. A small refactored happened in order to fit all data in a single frame. Extended WOD is encapsulated in a ECSS frame.
+
+CW WOD
+
+In addition to WOD and extended WOD, a CW WOD was added. The reason was that CW has better chances of receiving it from the ground than the FSK modulated WOD and extended WOD. Moreover, in CW there isn’t a need for complicated demodulation hardware, even a human with proper training can understand it. The disadvantage of CW and the reason that it hosts minimal information, is that it has far lower data rate than FSK and higher consumption due to lower data rate.
+
+Figure 3.6 CW WOD frame
+
+Figure 3.7 CW WOD dataset
+
+Housekeeping & diagnostic data reporting service
+
+In this service, the design has deviated a lot from the specification. In the specification, each housekeeping structure send a report in specific intervals. There are also functions that implement new structures and modify the intervals that the reports are generated.
+
+For the UPSat, a different, simpler design was followed: OBC would send a telecommand report parameters request (3,21) and the subsystem would respond with a telemetry parameters report (3,23). OBC handles all the timing and not the service. In the request, there is the structure ID that the OBC wants. The structure ID is most of the times general and the parameters in report are in conjunction with the subsystem that reports it. For WOD variants the OBC gathers the health and extended health reports, forms the WOD variant structures and then transmits it to earth. Some subsystems have structure IDs that are specific to them. Finally. the ground station could also send a request for a parameter report and receive the response.
+
+Even though the request/response mechanism works well, a design that uses intervals as specified in the ECSS standard would have been a better solution for 3 reasons:
+
+It removes the task of sending requests.
+
+Minimizes traffic.
+
+Easier to change intervals.
+
+Table 3.17 Housekeeping service structure IDs
+
+Structure ID name Structure ID Meaning ——————- ————– ———————————- HEALTH_REP 1 Health report EX_HEALTH_REP 2 Extended health report EVENTS_REP 3 Events report WOD_REP 4 WOD report EXT_WOD_REP 5 Extended WOD report SU_SCI_HDR_REP 6 SU science header report ADCS_TLE_REP 7 ADCS TLE report EPS_FLS_REP 8 EPS flash memory contents report ECSS_STATS_REP 9 ECSS statistics report
+
+Table 3.18 Housekeeping service request structure id frame
+
+Structure ID ————– 8 bits
+
+Table 3.19 Housekeeping service report structure id frame
+
+Structure ID Data ————– ————— 8 bits 1 - 1584 bits
+
+Function management service
+
+The Function management service has service type 8 and only one service subtype called perform function (8,1) which is a telecommand.
+
+Each subsystem performs different functions, each device ID is associated with on/off or set value action and a subsystem
+
+Table 3.20 provide the data frame structure. There are 2 groups of actions: power control which turns on and off a device and a set value which configures the device ID parameters. Since set value is specific to each device ID the values following is specified with the device ID, the power control doesn’t need a value. Table 3.21 show which subsystems implement each device IDs and what action is associated with.
+
+Table 3.20 Function management service data frame
+
+Function ID Device ID Data ————- ———– ————– 8 bits 8 bits 0 - 640 bits
+
+Table 3.21 Function management services in each subsystem
+
+Name Sybsystem Function ID Device ID ————— ———– ————– ——————- Power control EPS 0: off 1: on OBC ADCS COMMS SU ADCS 0: off 1: on GPS Sensors OBC 0: off 1: on IAC ADCS 3: Set value Magnetorquers ADCS 3: Set value Spintorguers ADCS 3: Set value TLE ADCS 3: Set value Control gains ADCS 3: Set value Setpoint COMMS 3: Set value WOD pattern EPS 3: Set value Write flash
+
+Large data transfer service
+
+The specification has 2 ways for ensuring that a transfer has been completed successfully. In the first one, every time packet that is successfully received sends an acknowledgement. In order to send the next one, an acknowledgement should have been received for the previous one. The second technique uses a sliding window, where multiple parts are send and the acknowledgement verifies the packets up to the part. In UPSat, for uplink an acknowledgement for each packet is required and for downlink a modified sliding window is used.
+
+The Large data transfer service have 2 different parts: the software running in UPSat and the one running in the ground station. Since UPSat has less resources, is more difficult to write code for UPSat and after a point the software won’t be able to change, it was decided that the operation complexity should be handled from the ground station’s software, whenever that was possible. For that reason, there was a different approach for the service design if the transfer was initiated from UPSat (downlink) or from the ground station (uplink).
+
+For downlink, UPSat sends all the parts with 1ms delay in each transfer and waits for a specific timeout period. The first part is denoted as, all intermediates with and the final part with. During that period, the ground station should send for a packet retransmission if it didn’t receive it properly or that all packets were successfully received. If that time period expires without an acknowledgement, the service aborts the transfer.
+
+When the ground station receives large data transfer packets, checks if there any packets missing and asks for retransmission. If there aren’t any packets missing, it sends that the transfer finished successful. In the case that the last part hasn’t been received, the ground station requests the next part, until the last one is send.
+
+For uplink, the ground station initiates a new transfer by sending the first part, if UPSat receives it, it sends an acknowledgement. If the ground station doesn’t receive the acknowledgement, it retransmits the packet. This continues till the last part or if the operation timeouts.
+
+For both of transfers uplink and downlink, the ground station is responsible of retransmitting a packet in a time frame that is less than the time of UPSat’s timeout, if the ground station hasn’t got a proper response, either a acknowledgment in the case of uplink or the part that ground station requested in a downlink.
+
+For keeping the design simple enough, it was decided to allow only one transfer at the time for both of the uplink and downlink. For the case, it was decided in the future to allow multiple transfers, a large data unit ID was added in the data frame, that ID shows which transfer that packet belongs to. For the current design if a packet arrives that has different ID than current transfer, it drops the packet.
+
+The sequence number shows where the data should be placed when the original packet is reconstructed. For uplink if a packet arrives that has a larger sequence number than the one expected, the packet is dropped, that simplifies the design and it doesn’t allow broken packets. For the current design a maximum of 11 parts are allowed.
+
+Each part should have the max size of 196 bytes from max data size of 198 bytes minus the 2 bytes of the large data transfer service header, except the last part.
+
+Figure 3.8 Large data transfer split of the original packet
+
+Table 3.22 Large data transfer service transfer data frame.
+
+Large data unit ID Sequence number Service data unit part ——————– —————– ———————— 8 bits 8 bits 1 - 1568 bits
+
+Table 3.23 Large data transfer service acknowledgement frame
+
+Large data unit ID Sequence number ——————– —————– 8 bits 8 bits
+
+Table 3.24 Large data transfer service repeat part frame
+
+Large data unit ID Sequence number ——————– —————– 8 bits 8 bits
+
+Table 3.25 Large data transfer service abort transfer frame
+
+Large data unit ID Abort reason ——————– ————– 8 bits 8 bits
+
+On-board storage and retrieval service
+
+The first design choice was that the file names for the logs should only be numbers and not characters. That has the advantage of lower size overhead when there is ground to UPSat communication e.g. the file name as a string could be 8 characters long meaning 8 bytes as string when the equivalent number 99999999 only uses 4 bytes. 

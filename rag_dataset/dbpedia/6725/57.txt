@@ -1,0 +1,19 @@
+I’m very new to Sonicwall as I inherited my job from a previous guy who left. He had set up all the access rules and I understand how they are all set but I’m trying to figure out a way to allow access to the sonicwall management website from only inside the corporate offices. Also, maybe from my home External IP address. I would think it is under Access Rules and under the All X1 Managemnet IP rules that were set up previously but unsure how to proceed. I don’t want to lock myself out from management.
+
+The sonicwall devices is a NSA 3600 on firmware version 6.2.7.1-23n.
+
+Thanks
+
+I set firewall management to internal only. When I want to manage the device directly, I VPN in and remote to my desktop. From there I can access the Sonicwall.
+
+Check your appliance/base settings, and network/interfaces. Edit the interface X0 (LAN) and check the management boxes appropriate for you. X1 (WAN) should not have these checked.
+
+This is how -I- do this, YMMV
+
+I agree with the others. Never enable on the WAN interface unless you are making changes remotely over VPN and want to make sure you have a back door in case you get disconnected. Then be sure to disable management access on the WAN interface ASAP.
+
+Yeah as others have stated, access is granted on each network interface settings. I wouldn’t suggest trying to allow your home IP, as that would need custom access rules created and assuming your home IP is dynamic it will cause headaches in the future. You can remote into a machine on the network, or alternatively, you can grant access to management over SSL VPN so you can connect using NetExtender from home
+
+I have created SSL VPN users for when employees come in remotely. How can I set up a SSL VPN just for sonicwall access or by me connecting to the VPN, enable me to access the Sonicwall even though i’m on the WAN. Sorry guys, this is all new to me.
+
+I made the changes but was still able to access the management console from the outside but it said admin account wasn’t able to be logged in. Which is fine but is there a way so that the portal does not come up at all or that’s not possible?

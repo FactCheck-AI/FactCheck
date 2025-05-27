@@ -1,0 +1,77 @@
+Get2Chip tips comprehensive synthesis tool
+
+By Peter Clarke, EE Times
+
+May 30, 2000 (3:16 p.m. EST)
+
+URL: http://www.eetimes.com/story/OEG20000530S0022
+
+LONDON  In a move that pits a small startup against an EDA Goliath, Get2Chip Inc. (San Jose, Calif.) is expected to launch a combined behavioral, logical and physical synthesis tool at this year's Design Automation Conference, to be held next week in Los Angeles.
+
+Playing David against synthesis giant Synopsys Inc., from which some of its founders hail, Get2Chip's slingshot is Volare, a comprehensive synthesis tool that Get2Chip hopes to establish as the semiconductor industry's leading front-end design product.
+
+Get2Chip is looking for support from Avanti, Cadence Design Systems, Magma and Monterey, vendors of physical design tools said to be complementary to Volare. And it claims to have Cisco, Intel, Motorola and Vitesse Semiconductor as beta sites for a tool it hopes will extend logic synthesis up to the architectural level with a multilevel approach.
+
+But Gary Smith, senior EDA analyst at Dataquest Inc. (San Jose), said that regardless of Volare's technical merits, Get2Chip risks coming out second best commercially if it takes on Synopsys in logic synthesis.
+
+"The ESL [electronic-system-level] market is just forming and Get2Chip has a good chance of making it at that level," Smith said. "They should pitch Volare at architectural synthesis only. It does have fast logic synthesis but it won't help them. Synopsys owns that market. What Get2Chip has got is a real good tool for system-level design. And that's the only market opportunity they've got."
+
+Performance touted
+
+Still, the startup is not shy about performance claims. Bernd Braune, chairman, president and chief executive officer, said that at the logic synthesis level Volare is 10 to 20 times faster than the competition. "We have run benchmarks head to head with current synthesis technology where we did be tter in 45 minutes what the competition did in 13 hours," he said.
+
+Reports from beta customers appear promising. "Working at the architectural level is much more productive  I am pleased with the quality of the results," said a senior ASIC engineer at Cisco Systems Inc. (San Jose), who spoke on condition of anonymity. "I also like the simplicity of the scripting [in Volare]. This methodology is the right way to go for trying to design complex chips easily in a short amount of time."
+
+Get2Chip was formerly known as Meropa Inc. Meropa first disclosed details of its flexible architectural-synthesis technology (Fast) back in 1998, claiming it allowed a flexible and intuitive Verilog coding style; could synthesize all parts of a design, including dense state machines; and offered more predictability than other approaches through process technology-specific timing optimization. Many of the Meropa founders had worked on Behavioral Compiler for Synopsys prior to forming their startup.
+
+Fast changes
+
+Since then Braune, a Mentor Graphics veteran, joined as top boss of the renamed, reorganized company. Former president David Knapp, a University of Illinois professor, has taken the role of chief technology officer. And Fast has become Volare.
+
+"The fundamental issue in electronic design is handling complexity," said Braune. "You can use older tools to design million-gate chips from scratch but that's about the limit. To do 3 million- to 5 million-gate chips and above needs new tools."
+
+Braune departs from the conventional wisdom in declaring that "the reuse of large blocks of logic unaltered  the so-called IP [intellectual property] revolution  has been overemphasized. We do need to support reuse but we also need to provide a productivity gain for gate-based design. It should be the designer's choice, but a choice made at a higher level of abstraction."
+
+Braune said Volare meets these goals by supporting synt hesis of multimillion-gate designs down to timing closure based on ASIC library data.
+
+In essence, Volare encompasses the tasks conventionally performed by separate behavioral, logical and physical synthesis tools, a floor planner and a static timing analyzer. Not only does the use of a single front-end tool simplify the design flow, said Braune. It also beats other tool combinations by allowing global optimization.
+
+Volare works from behavioral Verilog description as the highest-level input, although Get2Chip believes that translation from C/C++ behavioral descriptions or from the Superlog language being developed by Co-Design Automation Inc. (San Jose) can be done easily.
+
+Get2Chip claims that Volare can synthesize 2,000 gates per minute and can scale linearly up to very large design blocks without choking. A typical return might be 500,000 gates synthesized in two to four hours, according to the company.
+
+Because Volare is flexible, Braune said, it can elaborate behavioral Verilog and output synthesizable, register-transfer-level Verilog for logic synthesis by another tool, such as Synopsys' Design Compiler. Similarly, Volare can accept RTL Verilog, perhaps legacy code, and take it down to netlist for a particular target technology. Braune said he hopes engineers will use Volare from behavior in to netlist out.
+
+The connection from behavior to gates and floor-planned chip architecture is a vital part of the tool's effectiveness at the system level, said Adel Khouja, Get2Chip's vice president of logic synthesis. "Other synthesis tools trying to address the architectural or systems level are losing predictability as they push up in abstraction," Khouja said.
+
+The ability to reach down and obtain timing information from ASIC libraries is an important part of making sure Volare can solve real scheduling and allocation problems at the highest level. Indeed, "Every gate is timed and accounted for at the high level, " said Pradeep Fernandes, director of technical marketing.
+
+Volare has three core modules: the Architectural Synthesis Module, Mega Logic Synthesis Module and a yet-to-be fully implemented Topology Driven Synthesis Module, or Topomo.
+
+Get2chip's architectural synthesis models the gate-level critical path before creating an RTL implementation. According to the company, this enhances predictability and allows the scheduling engine to create high-performance implementations. For architectural specifications, designers need only specify pin-out I/O functionality. The module then automatically selects the best design implementation using the given constraints.
+
+For mainstream RTL specifications, designers specify timing constructs, such as clock constraints and timing exceptions. Besides the exceptional run-time and capacity claimed for the logic synthesis module, it also includes data path generation and optimization.
+
+Get2Chip's topology modeling capability  Topomo  includes timing-dr iven partitioning, block placement, wire planning and integrated synthesis intended to achieve quick timing convergence.
+
+The ability to solve timing and area problems globally while taking topology into account during synthesis is complementary to back-end, timing-driven layout and allows designers to use standard back-end tools to get timing closure. Topomo isn't due to be folded into Volare until the fourth quarter, though the feature will be on show at DAC.
+
+An essential part of Get2Chip's claims for Volare therefore hinge on its ability to bring timing information up to the high level where architectural trade-offs are made. "We support the '.lib' library format and build our internal timing models from that," said Braune. Fernandes added: "Library vendors don't need to do anything to support us. We already have a TSMC tape-out with 0.35-micron [design rules]."
+
+Beta reports
+
+Get2Chip said Volare is suited for design of networking, wireless telecom, DSP, multimedia and general c ontroller ICs. "One of our beta sites is a microprocessor company and a pretty big one," said Braune.
+
+"I know the Intel thing is real," said Smith of Dataquest. "Meropa was always important and always being watched, because of who formed it. A lot of the people worked on Behavioral Compiler for Synopsys."
+
+Get2Chip has earned favorable reports in its beta site activities. "We were able to go from a six- or seven-page spec to a 150-line architectural model and a gate-level netlist in three days" by using Volare, said Vassilios Gerousis, who worked with the tool while employed at the system-on-chip operation at Motorola's Semiconductor Products Sector. He is now CAD system architect at Infineon Technologies AG.
+
+"The architectural model was debugged in one to two days," said Gerousis. "We compared the results of taking the RTL through existing design flows and found the Get2Chip flow produced the best-quality netlist in less than one-fortieth of the run-time."
+
+The Cisco ASIC engineer, however, reported that "Debugging the output is still rather primitive, and the GUI state machine analyzer would probably benefit from another approach. I think this could be improved greatly with a different approach to debug, based directly on the architectural source code."
+
+Braune said Get2Chip has not yet fixed a price for Volare, but that it would probably enter the market at about $200,000 per globally floating license. Volare runs under Linux, the open-source Unix operating system.
+
+But Braune said Get2Chip could also support a pay-per-use model where the customer hosts the tool with the software equivalent of a coin-operated meter. The same mechanism could be used to enable an over-the-Web remote use of Volare. Braune said a couple of compute-farm companies have offered to work with Get2Chip to host Volare.
+
+Copyright © 2003 CMP Media, LLC | Privacy Statement

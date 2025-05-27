@@ -1,0 +1,85 @@
+Overview
+
+With Zabbix you can check several availability aspects of web sites.
+
+To activate web monitoring you need to define web scenarios. A web scenario consists of one or several HTTP requests or "steps". The steps are periodically executed by Zabbix server in a pre-defined order. If a host is monitored by proxy, the steps are executed by the proxy.
+
+Web scenarios are attached to hosts/templates in the same way as items, triggers, etc. That means that web scenarios can also be created on a template level and then applied to multiple hosts in one move.
+
+The following information is collected in any web scenario:
+
+average download speed per second for all steps of whole scenario
+
+number of the step that failed
+
+last error message
+
+The following information is collected in any web scenario step:
+
+download speed per second
+
+response time
+
+response code
+
+For more details, see web monitoring items.
+
+Data collected from executing web scenarios is kept in the database. The data is automatically used for graphs, triggers and notifications.
+
+Zabbix can also check if a retrieved HTML page contains a pre-defined string. It can execute a simulated login and follow a path of simulated mouse clicks on the page.
+
+Zabbix web monitoring supports both HTTP and HTTPS. When running a web scenario, Zabbix will optionally follow redirects (see option Follow redirects below). Maximum number of redirects is hard-coded to 10 (using cURL option CURLOPT_MAXREDIRS). All cookies are preserved during the execution of a single scenario.
+
+Configuring a web scenario
+
+To configure a web scenario:
+
+Go to: Data collection â Hosts (or Templates)
+
+Click on Web in the row of the host/template
+
+Click on Create web scenario to the right (or on the scenario name to edit an existing scenario)
+
+Enter parameters of the scenario in the form
+
+The Scenario tab allows you to configure the general parameters of a web scenario.
+
+All mandatory input fields are marked with a red asterisk.
+
+Scenario parameters:
+
+Note that when editing an existing scenario, two extra buttons are available in the form:
+
+The Steps tab allows you to configure the web scenario steps. To add a web scenario step, click on Add in the Steps block.
+
+Configuring steps
+
+Step parameters:
+
+Any changes in web scenario steps will only be saved when the whole scenario is saved.
+
+See also a real-life example of how web monitoring steps can be configured.
+
+The Tags tab allows to define scenario-level tags.
+
+Tagging allows to filter web scenarios and web monitoring items.
+
+Configuring authentication
+
+The Authentication tab allows you to configure scenario authentication options. A green dot next to the tab name indicates that some type of HTTP authentication is enabled.
+
+Authentication parameters:
+
+Zabbix server picks up changes in certificates without a restart.
+
+Display
+
+To view web scenarios configured for a host, go to Monitoring â Hosts, locate the host in the list and click on the Web hyperlink in the last column. Click on the scenario name to get detailed information.
+
+An overview of web scenarios can also be displayed in Dashboards by the Web monitoring widget.
+
+Recent results of the web scenario execution are available in the Monitoring â Latest data section.
+
+Extended monitoring
+
+Sometimes it is necessary to log received HTML page content. This is especially useful if some web scenario step fails. Debug level 5 (trace) serves that purpose. This level can be set in server and proxy configuration files or using a runtime control option (-R log_level_increase="http poller,N", where N is the process number). The following examples demonstrate how extended monitoring can be started provided debug level 4 is already set:

@@ -1,0 +1,453 @@
+Lodestar Finance
+
+Smart Contract Audit Report
+
+Audit Summary
+
+Lodestar Finance is a lending platform allowing users to borrow assets after supplying collateral.
+
+For this audit, we reviewed the project team's contracts folder at commit 9c94356249e8a05cbdcf3c30ab6ec9f254e4443e on the team's GitHub repository.
+
+Audit Findings
+
+Informational findings were identified and the team may want to review them. In addition, centralized aspects are present.
+
+Date: December 30th, 2022.
+
+Updated: February 20th, 2023 with changes from commit 8a8128d178a938613f0350ddf68a190f7e9e18bc to commit 9c94356249e8a05cbdcf3c30ab6ec9f254e4443e.
+
+Finding #1 - GLPOracle - High (Resolved)
+
+Description: The price returned by the getPlvGLPPrice() function is based on the amount of assets in the contract.
+
+Risk/Impact: Please see our analysis of this exploit here.
+
+Recommendation: The team should consider a Time-Weighted Average Price (TWAP) Oracle. Alternatively, plvGLP tokens should not be added as valid collateral on the platform.
+
+Resolution: The team has implemented a new plvGLP Oracle described below.
+
+Finding #2 - SushiOracle - High (Acknowledged)
+
+Description: The price returned by the getPrice() function is based on the ratio of tokens in the Liquidity Pool.
+
+Risk/Impact: A malicious user can inflate the value of an LP token by temporarily supplying a large amount of tokens to the Liquidity Pool. This inflated value can be used to borrow more assets than they should be allowed to under normal conditions. This can lead to the platform being left with a large amount of debt from the user that will not be repaid or liquidated.
+
+Recommendation: The team should consider a Time-Weighted Average Price (TWAP) Oracle. Alternatively, LP tokens should not be added as valid collateral on the platform.
+
+Resolution: The team only intends to use the Oracle for frontend values and not as a pricing mechanism within the platform.
+
+Finding #3 - ComptrollerG7 & ComptrollerNoGov - Informational (Resolved)
+
+Description: The getCompAddress() returns the address of Compound Finance's COMP token.
+
+Recommendation: The team should ensure to update this address to the EFF token's address before deploying either of these contracts.
+
+Resolution: The team has removed the ComptrollerG7 and ComptrollerNoGov contracts.
+
+Finding #4 - WhitePaperInterestRateModel, JumpRateModel & JumpRateModelV2 - Informational
+
+Description: The baseRatePerBlock, multiplierPerBlock, and jumpMultiplierPerBlock are calculated using a constant and estimated blocksPerYear value.
+
+Recommendation: The team should consider using time elapsed in seconds for the above variables to prevent inaccuracies if the average block speed changes.
+
+Finding #5 - Comptroller & ComptrollerNoGov - Informational (Resolved)
+
+Description: The contract contains the fixBadAccruals() function. This function was intended to fix an exploit in the Compound Finance protocol and is unneeded in a new implementation.
+
+Recommendation: The team should consider removing this function to save on contract size and deployment costs.
+
+Resolution: The team has removed the fixBadAccruals() function.
+
+Contracts Overview
+
+The contracts utilize ReentrancyGuard to protect against reentrancy attacks in applicable functions.
+
+As the contracts are implemented with Solidity v0.8.10, they are safe from any possible overflows/underflows.
+
+Comp Contract:
+
+This contract defines the LODE token.
+
+LODE tokens are the main token of the Lodestar protocol and allow users to vote on the management of the protocol.
+
+LODE tokens are earned in the Comptroller contract by being a borrower, supplier, or contributor.
+
+The total supply of the token is initially set to 20 million $LODE [20,000,000].
+
+A specified address is transferred the total supply upon deployment.
+
+No mint or burn functions exist, though the circulating supply can be decreased by sending tokens to the 0x..dead address.
+
+Each LODE token additionally represents votes intended to be used in a DAO where one token represents one vote.
+
+Users may delegate their votes to another address allowing them to vote on behalf of the user.
+
+Once votes are delegated, the user must explicitly delegate back to themselves to regain their votes.
+
+Users also have the option to delegate through the use of a signed message, allowing for a gasless delegation for the user.
+
+Unitroller Contract:
+
+This contract is used to delegate functionality to a valid implementation contract; this is intended to be a Comptroller contract.
+
+The fallback function is used to delegate execution to the current implementation.
+
+The admin may set a pending implementation at any time.
+
+The pending implementation may then accept and become the current implementation at any time.
+
+The admin may set a new pending admin at any time.
+
+The pending admin may then accept and become the admin at any time.
+
+Comptroller Contract:
+
+This contract is used to determine if users can perform various actions with lTokens. It is also used to distribute LODE tokens to suppliers, borrowers, and contributors.
+
+Borrowers and suppliers will earn a reward per block based on the "borrow speed" and "supply speed" of the specified lToken.
+
+Contributors will earn a reward per block based on the individual contributor's "comp speed".
+
+Users may manually claim their LODE at any time. A manual claim will update their earned amount from borrowing and supplying.
+
+Contributors must manually trigger an update of their contributor rewards for them to be included in claims.
+
+Users may enter or exit any number of markets by providing the address of the corresponding lToken.
+
+Users may only exit a market if they do not have any outstanding borrowed tokens in the market being exited and they would have sufficient collateral after redeeming the specified lTokens.
+
+Any address may mint a specified lToken if the token's "mint guardian" is not paused, the token has a listed market, and the mint would not take the total supply of the lToken over the "supply cap".
+
+Any address may redeem their lTokens for the underlying asset if they would have sufficient collateral after redeeming the specified amount of tokens.
+
+A user may borrow an lToken's underlying asset if:
+
+They have entered the market for the lToken.
+
+The lToken's "borrow guardian" is not paused.
+
+The borrow would not cause the total assets borrowed to exceed the lToken's total borrow cap.
+
+They have supplied sufficient collateral for the amount of the asset they intend to borrow.
+
+Users may liquidate a borrower's position if they do not have sufficient collateral deposited.
+
+A maximum of the "close factor" percentage of the user's borrowed amount may be liquidated.
+
+A user's entire borrowed amount may be liquidated regardless of their position's deposited collateral if the borrowed token is deprecated.
+
+An lToken is considered deprecated if:
+
+Its collateral factor is 0.
+
+The borrow guardian is paused.
+
+The reserve factor is 1.
+
+Tokens may be "seized" during a liquidation if the "seize guardian" is not paused and both the collateral and asset use the same Comptroller.
+
+Users will receive a "liquidation incentive" amount of the borrowed tokens depending on the amount being liquidated and the relative prices of the collateral tokens and borrowed tokens.
+
+A user may transfer lTokens if the token's "transfer guardian" is not paused and the transfer would not bring the sender below the minimum collateral needed for their total borrows.
+
+The admin may set the Price Oracle address at any time.
+
+The admin may set the close factor to any value at any time.
+
+The admin may set the collateral factor to any value less than 0.9 at any time.
+
+The admin may set the liquidation incentive to any value at any time.
+
+The admin may add an lToken address as a supported market at any time.
+
+The admin or the BorrowCapGuardian address may update the borrow cap for any market to any value at any time.
+
+The admin may set the BorrowCapGuardian, PauseGuardian, and SupplyCapGuardian addresses at any time.
+
+The admin and SupplyCapGuardian may set the supply cap for any token at any time.
+
+The PauseGuardian address may pause mints, borrows, transfers, and seizes at any time.
+
+The admin may pause and unpause mints, borrows, transfers, and seizes at any time.
+
+The admin may update the LODE supply accrual rate and borrow accrual rate to any value for any lToken at any time.
+
+The admin may transfer any amount of LODE tokens from the contract to any address at any time.
+
+The admin may update the LODE contributor accrual rate for any address to any value at any time.
+
+These contracts contain a _become() function allowing them to be a valid Unitroller implementation.
+
+CToken Contract:
+
+This contract defines the logic for lTokens. lTokens are ERC-20 tokens that are used to represent an underlying asset.
+
+lTokens may only be transferred if allowed within the Comptroller address.
+
+Interest is accrued when any action is taken within the contract.
+
+The interest rate is determined by the current InterestRateModel contract based on this contract's underlying asset balance, total reserves, and total borrowed.
+
+All borrow and reserve amounts will then increase based on the interest rate and the number of blocks since the last time interest was accrued.
+
+Any user may mint lTokens if allowed in the Comptroller.
+
+The user must supply the underlying asset as collateral. They will then be minted lTokens based on the current exchange rate.
+
+Users will receive the "initial exchange rate" amount of tokens if the total supply of lTokens is 0.
+
+Otherwise, users will receive tokens depending on the ratio of the amount of the underlying asset and total borrows to the total supply of lTokens currently minted.
+
+Users may redeem their lTokens for the underlying asset if the redemption is allowed in the Comptroller.
+
+Users may specify either an amount of lTokens to redeem or an amount of the underlying asset to receive.
+
+Users may borrow a specified amount of the underlying asset if allowed in the Comptroller and there is a sufficient amount of the asset in the contract.
+
+Any address that is whitelisted in the Whitelist contract may borrow on the behalf of a user.
+
+Users may repay some or all of their borrowed assets with interest if allowed in the Comptroller.
+
+Any address may repay some or all of a user's borrowed assets on their behalf.
+
+Users may liquidate another user's position if both the liquidation and subsequent seizure of lTokens are allowed in the Comptroller.
+
+Users must provide a specified amount of the borrowed asset. In return, they will receive an amount of lTokens determined in the Comptroller.
+
+If this contract is the collateral token, a "protocol share" of tokens will be seized by the contract and added to the contract's total reserves.
+
+The admin may set the pending admin to any address at any time.
+
+The pending admin may then accept and become the current admin at any time.
+
+The admin may update the Comptroller address at any time.
+
+The admin may set the reserve factor to any value less than or equal to the current reserve factor.
+
+Any address may add to the contract's reserves of the underlying asset.
+
+The admin may withdraw any amount of the underlying asset reserves at any time.
+
+The admin may update the InterestRateModel at any time.
+
+The admin may withdraw any non-asset ERC20 token transferred to the contract.
+
+WhitePaperInterestRateModel, JumpRateModel & JumpRateModelV2 Contracts:
+
+These contracts are used to determine interest rates for individual markets.
+
+Interest rate is determined from the "utilization rate" of a market.
+
+As the amount of borrowed tokens increases relative to the cash value in the market the utilization rate will increase.
+
+The interest rate will begin with a "base rate per block" when the utilization rate is 0.
+
+The interest rate will increase linearly as the utilization rate increases until the utilization rate reaches the "kink".
+
+The interest rate will then increase at the "jump multiplier per block" rate rather than the "multiplier per block" rate.
+
+The WhitePaperInterestRateModel will always linearly increase with no kink or jump multiplier rate.
+
+GovernorAlpha Contract:
+
+This contract is used to manage the DAO voting and proposal functionality within the platform.
+
+Users with more votes than the "proposal threshold" may submit a proposal.
+
+A proposal consists of up to 10 transactions on a target contract.
+
+Any previous proposals must have succeeded, been defeated, or been cancelled, if the proposer has previously submitted a proposal.
+
+Users' voting power is determined from their LODE token balance and delegated votes.
+
+Users may vote for or against a proposal.
+
+Users also have the option to vote through the use of a signed message, allowing for a gasless vote for the user.
+
+A proposal must reach a "quorum threshold" and have more votes for the proposal than against it to succeed.
+
+After a proposal is submitted, votes may not be cast until the "voting delay" has passed.
+
+The proposal will remain open for votes for the entire "voting period".
+
+After the voting period and if the proposal succeeded, any address may queue the proposal's transactions within the Timelock contract.
+
+Any user may trigger the execution of the proposal's transactions once the Timelock's delay period has passed.
+
+Before a proposal is executed, any address may cancel the proposal if the proposer no longer has sufficient votes to meet the proposal threshold.
+
+The Guardian address may cancel any non-executed transaction at any time.
+
+The Guardian address may abdicate, setting the Guardian to the 0 address, at any time.
+
+The Guardian address may queue a transaction to set a new Timelock pending admin at any time.
+
+The Guardian address may execute a previously queued set pending admin Timelock transaction at any time.
+
+The Guardian address may accept the admin role in the Timelock address, if they are the current pending admin, at any time.
+
+GovernorBravo Contract:
+
+This contract is used to inherit the DAO voting and proposal functionality from the GovernorAlpha contract.
+
+After the admin initiates the contract, users with more votes than the "proposal threshold" or whitelisted users may submit a proposal.
+
+A proposal consists of up to 10 transactions on a target contract.
+
+Any previous proposals must have succeeded, been defeated, or been cancelled, if the proposer has previously submitted a proposal.
+
+Users' voting power is determined from their LODE token balance and delegated votes.
+
+Users may vote for, against, or abstain from a proposal.
+
+Users also have the option to vote through the use of a signed message, allowing for a gasless vote for the user.
+
+A proposal must reach a "quorum threshold" and have more votes for the proposal than against it to succeed.
+
+After a proposal is submitted, votes may not be cast until the "voting delay" has passed.
+
+The proposal will remain open for votes for the entire "voting period".
+
+After the voting period and if the proposal succeeded, any address may queue the proposal's transactions within the Timelock contract.
+
+Any user may trigger the execution of the proposal's transactions once the Timelock's delay period has passed.
+
+Before a proposal is executed, any address may cancel the proposal if the proposer no longer has sufficient votes to meet the proposal threshold and the proposer was not whitelisted.
+
+Only the WhitelistGuardian address may cancel a proposal where the proposer no longer has sufficient votes and is whitelisted.
+
+Once after deployment, the admin may initiate the contract. This will set the initial proposal ID based on the number of proposals in the GovernorAlpha contract.
+
+The admin may set the voting delay within the minimum and maximum voting delays at any time.
+
+The admin may set the length of the voting period between the minimum and maximum voting periods at any time.
+
+The admin may set the proposal threshold within the minimum and maximum thresholds at any time.
+
+The admin and WhitelistGuardian may add an address to the whitelist until a specified timestamp at any time.
+
+The admin may set the WhitelistGuardian address at any time.
+
+The owner may set a pending admin address at any time. The pending admin may then accept the role at any time.
+
+Timelock Contract:
+
+This contract is used to execute arbitrary transactions after a delay has passed.
+
+The admin address may queue a transaction by supplying a signed message hash and an execution time.
+
+The execution time must be at least the "delay" greater than the current timestamp.
+
+The transaction will be stored using the hash of all supplied values.
+
+The admin address may execute the transaction once the execution time has passed and before the grace period has ended.
+
+The transaction is then executed on the target address.
+
+The admin may cancel a queued transaction at any time. The transaction must be queued again in order to be executed.
+
+This contract may set a pending admin through the use of a queued transaction.
+
+The pending admin may then accept and become the admin at any time.
+
+This contract may update the execution delay within the minimum and maximum delay through a queued transaction.
+
+PriceOracleProxyETH Contract:
+
+This contract acts as a proxy for other Oracle contracts.
+
+The price of a token is determined in other aggregator contracts.
+
+The price of lEther tokens is a constant 1 ether.
+
+The price of plvGLP tokens is determined in the plvGLPOracle contract.
+
+The price of lLode tokens is determined in the Lode Oracle contract.
+
+All other lToken prices are determined using Chainlink aggregators. This is the industry standard and is resistant to manipulation.
+
+The admin may update the Guardian and admin addresses at any time.
+
+The admin may update the Lode Oracle and glpOracle addresses at any time.
+
+The admin and Guardian may update the aggregator address for a lToken at any time.
+
+SushiOracle Contract:
+
+This contract is used to determine the price of a Sushiswap LP token.
+
+The price of an LP token is determined based on the current token reserves in the Liquidity Pool.
+
+The admin address may update the liquidity pool address at any time.
+
+The admin address may update the admin address at any time.
+
+plvGLPOracle Contract:
+
+This contract is used to track an average price of plvGLP tokens.
+
+The price is determined as an average of a "window size" number of "indexes".
+
+Only whitelisted addresses may record an index.
+
+Each index may only change at most a "max swing" from the previous index.
+
+If the newest index exceeds the max swing then the previous index will be used instead.
+
+If the true index change exceeds the max swing the contract will always record the most recent index taken.
+
+The current reported plvGLP price index is determined through an exchange rate from plvGLP tokens to GLP tokens and value per GLP token.
+
+The value per GLP token is determined in the GLP Manager contract. This contract is outside the scope of this audit so we are unable to give an assessment in regard to security.
+
+The owner may update the plvGLP, GLP, and GLP Manager addresses at any time.
+
+The owner may update the window size at any time.
+
+Reservoir Contract:
+
+This contract is used to distribute a specified token to a recipient address.
+
+Any address may trigger a "drip".
+
+A drip will transfer the "drip rate" amount of tokens to the recipient address for each block since the last drip.
+
+The tokens being distributed must be supplied to the contract.
+
+The contract will distribute tokens until it has exhausted its supply.
+
+Whitelist Contract:
+
+This contract is used to manage whitelisted users for the CToken contract.
+
+The contract will return the current whitelist status of an address when queried.
+
+The owner may add and remove any address from the whitelist at any time.
+
+Audit Results
+
+Contract Source Summary and Visualizations
+
+About SourceHat
+
+SourceHat has quickly grown to have one of the most experienced and well-equipped smart contract auditing teams in the industry. Our team has conducted 1800+ solidity smart contract audits covering all major project types and protocols, securing a total of over $50 billion U.S. dollars in on-chain value!
+
+Our firm is well-reputed in the community and is trusted as a top smart contract auditing company for the review of solidity code, no matter how complex. Our team of experienced solidity smart contract auditors performs audits for tokens, NFTs, crowdsales, marketplaces, gambling games, financial protocols, and more!
+
+Contact us today to get a free quote for a smart contract audit of your project!
+
+What is a SourceHat Audit?
+
+Typically, a smart contract audit is a comprehensive review process designed to discover logical errors, security vulnerabilities, and optimization opportunities within code. A SourceHat Audit takes this a step further by verifying economic logic to ensure the stability of smart contracts and highlighting privileged functionality to create a report that is easy to understand for developers and community members alike.
+
+How Do I Interpret the Findings?
+
+Each of our Findings will be labeled with a Severity level. We always recommend the team resolve High, Medium, and Low severity findings prior to deploying the code to the mainnet. Here is a breakdown on what each Severity level means for the project:
+
+High severity indicates that the issue puts a large number of users' funds at risk and has a high probability of exploitation, or the smart contract contains serious logical issues which can prevent the code from operating as intended.
+
+Medium severity issues are those which place at least some users' funds at risk and has a medium to high probability of exploitation.
+
+Low severity issues have a relatively minor risk association; these issues have a low probability of occurring or may have a minimal impact.
+
+Informational issues pose no immediate risk, but inform the project team of opportunities for gas optimizations and following smart contract security best practices.

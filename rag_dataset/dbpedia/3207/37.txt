@@ -1,0 +1,85 @@
+1. M anaging a Microsoft Windows Server 2003 Environment Chapter 1: Introduction to Windows Server 2003
+
+2. Objectives Differentiate between the different editions of Windows Server 2003 Explain Windows Server 2003 network models and server roles Identify concepts relating to Windows Server 2003 network management and maintenance Explain Windows Server 2003 Active Directory concepts
+
+3. Windows Server 2003 Network Administration Goals To ensure that network resources such as files, folders, and printers are available to users To secure the network so that available resources are only accessible to users who have been granted the proper permissions
+
+4. Windows Server 2003 Editions Multiple versions of Windows Server 2003 exist Each version is defined to meet the need of a certain market segment Versions Include: Standard Edition Enterprise Edition Datacenter Edition Web Edition
+
+5. Standard Edition Designed for everyday needs of small to medium businesses or as a departmental server for larger organizations Provides file and print services, secure Internet connectivity, centralized management of network resources Logical upgrade path for Windows 2000 Server Can be used as a domain controller, member server, or standalone server
+
+7. Enterprise Edition Generally used for medium to large businesses Designed for organizations that require better performance, reliability, and availability than Standard Edition provides Provides support for mission-critical applications Available in both 32 and 64-bit editions
+
+10. Datacenter Edition Designed for mission-critical applications, very large databases, and information access that requires the highest levels of availability Can only be obtained from Original Equipment Manufacturers (OEMs)
+
+12. Web Edition Lower-cost edition Designed for hosting and deploying Web services and applications Meant for small to large companies or departments that develop and/or deploy Web services
+
+14. Activity 1-1: Determining the Windows Server 2003 Edition Installed on a Server Objective is to determine the edition of Windows Server 2003 installed on your server using System Properties Follow the instructions in the book to log in Start  My Computer  Properties  General tab
+
+15. Windows Networking Concepts Overview Two different security models used in Windows environments Workgroup Domain Three roles for a Windows Server 2003 system in a network Standalone server Member server Domain controller
+
+16. Workgroups A workgroup is a logical group of computers Characterized by a decentralized security and and administration model Authentication provided by a local account database – Security Accounts Manager (SAM) Limitations Users need unique accounts on each workstation Users manage their own accounts (security issues) Not very scalable
+
+17. Domains A domain is a logical group of computers Characterized by centralized authentication and administration Authentication provided through centralized Active Directory Active Directory database can be physically distributed across domain controllers Requires at least one system configured as a domain controller
+
+18. Member Servers A member server Has an account in a domain Is not configured as a domain controller Typically used for file, print, application, and host network services All 4 Windows Server 2003 Editions can be configured as member servers
+
+19. Domain Controllers Explicitly configured to store a copy of Active Directory Service user authentication requests Service queries about domain objects May be a dedicated server but is not required to be
+
+21. Activity 1-2: Determining the Domain or Workgroup Membership of a Windows Server 2003 System Objective is to determine the domain or workgroup membership of a system Start  My Computer  Properties  Computer Name tab Displays computer name and domain Change  OK
+
+22. Computer Accounts Assigned in Windows NT, 2000, XP, and 2003 Assigned when joining a domain Method for authentication and access auditing Accounts are represented as computer objects Accounts can be viewed using administrative tools e.g., Active Directory Users and Computers
+
+23. Activity 1-3: Viewing and Configuring Computer Account Settings in Active Directory Users and Computers Objective is to use the Users and Computers tool to view and configure account settings/properties Start  Administrative Tools  Active Directory Users and Computers Follow directions in book to view and configure various account settings
+
+24. Using Active Directory Users and Computers to View a Computer Object
+
+25. Network Management and Maintenance Overview Five major focus areas of administrative tasks Managing and maintaining physical and logical devices Managing users, computers, and groups Managing and maintaining access to resources Managing and maintaining a server environment Managing and implementing disaster recovery
+
+26. Managing and Maintaining Physical and Logical Devices Network administrator responsibilities include : Installing and configuring hardware devices Managing server disks Monitoring and managing performance Tools include Control panel applets Device Manager Disk Defragmenter
+
+27. Managing Users, Computers, and Groups User accounts Creation, maintenance, passwords Group accounts Assign network rights and permissions to multiple users Support e-mail distribution lists Computer accounts Active Directory tools and utilities used to create and maintain computer accounts
+
+28. Activity 1-4: Resetting a Domain User Account Password Using Active Directory Users and Computers Objective is to reset a user password Force user to change password at next log-in Other techniques discussed Start  Administrative Tools  Active Directory Users and Computers  Users Follow directions in book to complete exercise
+
+29. The Reset Password Dialog Box in Active Directory Users and Computers
+
+30. Managing and Maintaining Access to Resources Server 2003 uses sharing technique Sharing setup Through Windows Explorer interface and Computer Management administrative tool Shared folder and NTFS permissions Terminal services Allows access to applications through a central server Allows access from desktops running different operating systems
+
+31. Managing and Maintaining a Server Environment Covers a wide variety of tasks including: Managing server licensing Managing patches and software updates Managing Web servers Managing printers, print queues, disk quotas A wide variety of tools are available including: Event Viewer and System Monitor Software Update Services Microsoft Management Console
+
+32. Activity 1-5: Creating a Custom Microsoft Management Console The objective is to create a custom MMC MMC groups commonly used tools for administrator’s convenience Start  Run  mmc  OK  File  Add/Remove Snap-in Follow directions in book to view and select snap-ins to add to MMC
+
+33. The Add Standalone Snap-in Dialog Box
+
+34. Selecting the Snap-In Focus
+
+35. Managing and Implementing Disaster Recovery Main component of disaster recovery is system backup Backup tool provided is Windows Backup Different types of backup Automated scheduling of backups Back up critical system state information Automated system Recovery Shadow Copies of Shared Folders
+
+36. Introduction to Windows Server 2003 Active Directory Provides the following services Central point for storing and managing network objects Central point for administration of objects and resources Logon and authentication services Delegation of administration
+
+37. Introduction to Windows Server 2003 Active Directory Continued Stored on domain controllers in the network Changes made to any Active Directory will be replicated across all domain controllers Multimaster replication Fault tolerance for domain controller failure Uses Domain Name Service (DNS) conventions for network resources
+
+38. Active Directory Objects An object represents a network resource such as a user, group, computer, or printer Objects have attributes depending on object type Objects are searchable by attributes
+
+39. Active Directory Schema Schema defines the set of possible objects for entire Active Directory structure Only one schema for a given Active Directory, replicated across domain controllers Two main definitions Object classes Attributes Attributes and object classes have a many-to-many relationship
+
+40. Active Directory Logical Structure and Components Active Directory comprises components that: Enable design and administration of a network structure Logical Hierarchical Components include: Domains and organizational units Trees and forests A global catalog
+
+41. Domains and Organizational Units Domain Has a unique name Is organized in hierarchical levels Has an Active Directory replicated across its domain controllers Organizational unit (OU) A logical container used to organize domain objects Makes it easy to locate and manage objects Allows you to apply Group Policy settings Allows delegation of administrative control
+
+42. An Active Directory Domain and OU Structure
+
+43. Trees and Forests Sometimes necessary to create multiple domains within an organization First Active Directory domain is the forest root domain A tree is a hierarchical collection of domains that share a contiguous DNS naming structure A forest is a collection of trees that do not share a contiguous DNS naming structure Transitive trust relationships exist among domains in trees and, optionally, in and across forests
+
+44. Global Catalog An index and partial replica of most frequently used objects and attributes of an Active Directory Replicated to any server in a forest configured to be a global catalog server
+
+45. Global Catalog (continued) Four main functions Enable users to find Active Directory information Provide universal group membership information Supply authentication services when a user logs on from another domain Respond to directory lookup requests from Exchange 2000 and other applications
+
+46. An Active Directory Forest
+
+47. Active Directory Communications Standards The Lightweight Directory Access Protocol (LDAP) is used to query or update Active Directory database directly LDAP follows convention using naming paths with two components Distinguished name: the unique name of an object in Active Directory Relative distinguished name: the portion of a distinguished name that is unique within the context of its container
+
+48. Active Directory Physical Structure Physical structure distinct from logical structure Important to consider the effect of Active Directory traffic and authentication requests on physical resources A site is a combination of 1+ Internet Protocol (IP) subnets connected by a high-speed connection A site link is a configurable object that represents a connection between sites
+
+49. Summary Windows Server 2003 network administration goals: Make network resources available to users as permitted Secure the network from unauthorized access Four editions of Windows Server 2003 with different features and costs Two network security models with three possible server roles

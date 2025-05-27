@@ -1,0 +1,639 @@
+Abstract
+
+The Unmanned Aircraft System Traffic Management (UTM) system is a set of services offering an automated management of the airspace and thus providing safe and secure Unmanned Aerial Vehicle (UAV) flights in both controlled and uncontrolled airspace. Controlled airspace refers to the portion of the airspace that is under the authority of Air Traffic Control (ATC) and where separation services are offered, while uncontrolled airspace refers to the portion of airspace where aircraft are not regulated by ATC. This article is a comprehensive survey of the existing UTMs development efforts with a focus on the different UTMs architectures, the provided services, the used communication technologies and the decision-making process within UTMs. We firstly review the different UTM architecture and propose a novel UTM taxonomy based on high-level qualitative criteria. Secondly, we detail the services provided by UTMs with an emphasis on the used technologies in the identification, the surveillance, the monitoring, and the deconfliction services. Effective decision-making is crucial, particularly in emergency scenarios such as Air-to-Ground (A2G) communication loss, battery or motor malfunction, or encountering aerial obstacles, among other potential hazards. Despite its significance, the UTM decision-making process is not enough considered in the literature and especially in UTM surveys. We analyze and compare in this article both the centralized and decentralized UTM decision-making. Centralized decision-making is not conducted in real-time and primarily relies on Air-to-Ground (A2G) communication. In the decentralized case, the decision-making process primarily relies on communication and collaboration among UAVs with varying degrees of autonomy. We show in this paper that centralized decision-making may encounter issues with packet loss and imperfect data, which can negatively impact the quality of decision-making. We also highlight that the decentralized decision-making may also face challenges related to security and scalability, which can hinder its effectiveness. Finally, evaluating the performance of UTMs on a real environment raises several challenges and the simulation is a cost-effective alternative. Hence, we provide a summary of the existing UTMs simulators and discuss their main features.
+
+Supplementary Material
+
+3617992.supp (3617992.supp.pdf)
+
+Supplementary material
+
+Download
+
+74.53 KB
+
+References
+
+[1]
+
+3GPP. 2020. 5G; Unmanned Aerial System (UAS) Support in 3GPP (3GPP TS 22.125 Version 16.3.0 Release 16). Technical Specification (TS) 22.125. 3rd Generation Partnership Project (3GPP). https://portal.etsi.org/webapp/workprogram/Report_WorkItem.asp?WKI_ID=5985217.1.0.
+
+[2]
+
+Aly Sabri Abdalla and Vuk Marojevic. 2020. Machine learning-assisted UAV operations with the UTM: Requirements, challenges, and solutions. In 2020 IEEE 92nd Vehicular Technology Conference (VTC2020-Fall). 1–5. DOI:
+
+[3]
+
+Aly Sabri Abdalla and Vuk Marojevic. 2021. Communications standards for unmanned aircraft systems: The 3GPP perspective and research drivers. IEEE Communications Standards Magazine 5 (32021), 70–77. DOI:
+
+[4]
+
+Federal Aviation Administration. 2018. Unmanned Aircraft Operations in the National Airspace System. Technical Report.
+
+[5]
+
+Federal Aviation Administration. 2022. FAA Aerospace Forecast Fiscal Years 2022-2042. Technical Report.
+
+[6]
+
+Airbus. 2019. Airbus’ Skyways drone trials world’s first shore-to-ship deliveries. (2019). https://www.airbus.com/en/newsroom/press-releases/2019-03-airbus-skyways-drone-trials-worlds-first-shore-to-ship-deliveries
+
+[7]
+
+Airmap. 2018. (2018). https://www.airmap.com/
+
+[8]
+
+Unmanned Airspace. 2021. Croatia Control and D-Fend demonstrate integrated counter drone solution at Split Airport. (102021). https://www.unmannedairspace.info/counter-uas-systems-and-policies/croatia-control-and-d-fend-demonstrate-integrated-counter-drone-solution-at-split-airport/
+
+[9]
+
+Unmanned Airspace. 2021. Latvian air navigation service provider LGS plans digital infrastructure to support drone operations. (52021). https://www.unmannedairspace.info/latest-news-and-information/latvian-air-navigation-service-provider-lgs-plans-digital-infrastructure-to-support-drone-operations/
+
+[10]
+
+Víctor Alarcón, Manuel García, Francisco Alarcón, Antidio Viguria, Ángel Martínez, Dominik Janisch, José Joaquín Acevedo, Ivan Maza, and Aníbal Ollero. 2020. Procedures for the integration of drones into the airspace based on U-space services. Aerospace 7, 9 (2020). DOI:
+
+[11]
+
+Ruba Alkadi and Abdulhadi Shoufan. 2021. Unmanned aerial vehicles traffic management solution using crowd-sensing and blockchain. CoRR abs/2110.14979 (2021). DOI:
+
+[12]
+
+Azza Allouch, Omar Cheikhrouhou, Anis Koubâa, Khalifa Toumi, Mohamed Khalgui, and Tuan Nguyen Gia. 2021. UTM-chain: Blockchain-based secure unmanned traffic management for internet of drones. Sensors 21, 9 (2021). DOI:
+
+[13]
+
+Amjed Almousa, Belal Sababha, Nailah Al-Madi, Amro Barghouthi, and Rimah Younisse. 2019. UTSim: A framework and simulator for UAV air traffic integration, control, and communication. International Journal of Advanced Robotic Systems 16 (92019). DOI:
+
+[14]
+
+Arinc Tutku Altun, Yan Xu, Gokhan Inalhan, Ignacio Vidal-Franco, and Michael Hardt. 2022. Contingency management concept generation for U-space system. In 2022 Integrated Communication, Navigation and Surveillance Conference (ICNS). 1–12. DOI:
+
+[15]
+
+Amazon Staff. 2022. Amazon Prime Air prepares for drone deliveries. (2022). https://www.aboutamazon.com/news/transportation/amazon-prime-air-prepares-for-drone-deliveries
+
+[16]
+
+Ashwin Ashok, Marco Hernandez, Sven Bilen, and Kamesh Namuduri. 2023. Spectrum Considerations for Vehicle-To-Vehicle Communications for UnManned Aircraft Systems. White Paper - Spectrum Considerations for Vehicle-To-Vehicle Communications for Unmanned Aircraft Systems (2023), 1–12.
+
+[17]
+
+Louise Axon, Dimitrios Panagiotakopoulos, Samuel Ayo, Carolina Sanchez-Hernandez, Yan Zong, Simon Brown, Lei Zhang, Michael Goldsmith, Sadie Creese, and Weisi Guo. 2023. Securing Autonomous Air Traffic Management: Blockchain Networks Driven by Explainable AI. (2023). arxiv:cs.NI/2304.14095
+
+[18]
+
+Joshua E. Baculi and Corey A. Ippolito. 2019. Onboard Decision-Making for Nominal and Contingency sUAS Flight.
+
+[19]
+
+Aygün Baltaci, Ergin Dinc, Mustafa Ozger, Abdulrahman Alabbasi, Cicek Cavdar, and Dominic Schupke. 2021. A survey of wireless networks for future aerial communications (FACOM). IEEE Communications Surveys & Tutorials 23, 4 (2021), 2833–2884. DOI:
+
+[20]
+
+F. Barfield. 2000. Autonomous collision avoidance: The technical requirements. In Proceedings of the IEEE 2000 National Aerospace and Electronics Conference. NAECON 2000. Engineering Tomorrow (Cat. No.00CH37093). 808–813. DOI:
+
+[21]
+
+Cristina Barrado, Mario Boyero, Luigi Brucculeri, Giancarlo Ferrara, Andrew Hately, Peter Hullah, David Martin-Marrero, Enric Pastor, Anthony Peter Rushton, and Andreas Volkert. 2020. U-space concept of operations: A key enabler for opening airspace to emerging low-altitude operations. Aerospace 7, 3 (2020). DOI:
+
+[22]
+
+Aleksandar Bauranov and Jasenka Rakas. 2021. Designing airspace for urban air mobility: A review of concepts and approaches. Progress in Aerospace Sciences 125 (2021). DOI:
+
+[23]
+
+Oussama Bekkouche, Miloud Bagaa, and Tarik Taleb. 2019. Toward a UTM-based service orchestration for UAVs in MEC-NFV environment. In 2019 IEEE Global Communications Conference (GLOBECOM). 1–6. DOI:
+
+[24]
+
+Iván Campaña, Luca Bergesio, Juan Portas, and Gonzalo Miguel. 2019. Air tracking and monitoring for unmanned aircraft traffic management. In 2019 Integrated Communications, Navigation and Surveillance Conference (ICNS). 1–9. DOI:
+
+[25]
+
+CANSO. 2022. Spain’s national action plan for deployment of U-space published. (72022). https://canso.org/spains-national-action-plan-for-deployment-of-u-space-published/
+
+[26]
+
+Carlos Capitán, Héctor León, Jesús Capitán, Ángel Rodíguez Castaño, and Anibal Ollero. 2021. Unmanned aerial traffic management system architecture for U-space in-flight services. Applied Sciences 11 (42021), 3995. DOI:
+
+[27]
+
+Stuart W. Card, Adam Wiethuechter, Robert Moskowitz, and Andrei Gurtov. 2022. Drone Remote Identification Protocol (DRIP) Requirements and Terminology. RFC 9153. (22022). DOI:
+
+[28]
+
+Stuart W. Card, Adam Wiethuechter, Robert Moskowitz, Shuai Zhao, and Andrei Gurtov. 2021. Drone Remote Identification Protocol (DRIP) Architecture. Internet-Draft draft-ietf-drip-arch-18. Internet Engineering Task Force. https://datatracker.ietf.org/doc/html/draft-ietf-drip-arch-18. Work in Progress.
+
+[29]
+
+David Carramiñana, Iván Campaña, Luca Bergesio, Ana Barbolla, and Juan Portas. 2021. Sensors and communication simulation for unmanned traffic management. Sensors 21 (12021), 927. DOI:
+
+[30]
+
+Christopher Chin, Karthik Gopalakrishnan, Maxim Egorov, Antony Evans, and Hamsa Balakrishnan. 2021. Efficiency and fairness in unmanned air traffic flow management. IEEE Transactions on Intelligent Transportation Systems 22, 9 (2021), 5939–5951. DOI:
+
+[31]
+
+CORUS. 2019. U-space Concept of Operations. Technical Report.
+
+[32]
+
+Konstantinos Dalamagkidis, Kimon Valavanis, and Les Piegl. 2009. On Integrating Unmanned Aircraft Systems into the National Airspace System. DOI:
+
+[33]
+
+Christopher Decker and Paul Chiambaretto. 2022. Economic policy choices and trade-offs for unmanned aircraft systems traffic management (UTM): Insights from Europe and the United States. Transportation Research Part A: Policy and Practice 157 (2022), 40–58. DOI:
+
+[34]
+
+Erik Gibbs. 2018. Boeing to produce blockchain-based unmanned vehicles. (2018). https://coingeek.com/boeing-produce-blockchain-based-unmanned-vehicles/
+
+[35]
+
+EuropAviation (EA). 2022. Military and U-Space: Guidelines D1 – U-Space Evaluation. Technical Report.
+
+[36]
+
+FAA. 2020. Unmanned Aircraft System (UAS) Traffic Management, Concept of Operations. V2.0. Technical Report.
+
+[37]
+
+Amal Feriani and Ekram Hossain. 2021. Single and multi-agent deep reinforcement learning for AI-enabled wireless networks: A tutorial. IEEE Communications Surveys & Tutorials 23, 2 (2021), 1226–1252. DOI:
+
+[38]
+
+FOCA. 2020. Swiss U-Space ConOps. Technical Report.
+
+[39]
+
+Global Coin Report. 2018. (2018). https://globalcoinreport.com/deep-aero-ico-overview/
+
+[40]
+
+Global UTM Association. 2017. UAS Traffic Management Architecture. Technical Report. https://gutma.org/
+
+[41]
+
+Global UTM Association. 2020. Designing UTM for Global Success Global UTM Association Safe, Secure and Efficient Integration of UAS. Technical Report. https://gutma.org/
+
+[42]
+
+John Glossner, Samantha Murphy, and Daniel Iancu. 2021. An overview of the drone open-source ecosystem. CoRR abs/2110.02260 (2021). DOI:
+
+[43]
+
+GSMA. 2018. Using Mobile Networks to Coordinate Unmanned Aircraft Traffic. Technical Report.
+
+[44]
+
+GSMA. 2021. High Altitude Platform Systems Towers in the Skies. Technical Report.
+
+[45]
+
+David Gunning, Mark Stefik, Jaesik Choi, Timothy Miller, Simone Stumpf, and Guang-Zhong Yang. 2019. XAI - explainable artificial intelligence. Science Robotics 4, 37 (2019), eaay7120. DOI:. arXiv:https://www.science.org/doi/pdf/10.1126/scirobotics.aay7120
+
+[46]
+
+Tae Chul Hong, Kunseok Kang, Kwangjae Lim, and Jae Young Ahn. 2016. Network architecture for control and non-payload communication of UAV. In 2016 International Conference on Information and Communication Technology Convergence (ICTC). 762–764. DOI:
+
+[47]
+
+Nozhan Hosseini, Hosseinali Jamal, Jamal Haque, Thomas Magesacher, and David W. Matolak. 2019. UAV command and control, navigation and surveillance: A review of potential 5G and satellite systems. In 2019 IEEE Aerospace Conference. 1–10. DOI:
+
+[48]
+
+Jueming Hu, Xuxi Yang, Weichang Wang, Peng Wei, Lei Ying, and Yongming Liu. 2022. Obstacle avoidance for UAS in continuous action space using deep reinforcement learning. IEEE Access 10 (2022), 90623–90634. DOI:
+
+[49]
+
+ICAO International Civil Aviation Organization. 2007. Procedures for Air Navigation Services-Air Traffic Management. Vol. 15. ICAO Journal.
+
+[50]
+
+William D. Ivancic, Robert J. Kerczewski, Robert W. Murawski, Konstantin Matheou, and Alan N. Downey. 2019. Flying drones beyond visual line of sight using 4G LTE: Issues and concerns. In 2019 Integrated Communications, Navigation and Surveillance Conference (ICNS). 1–13. DOI:
+
+[51]
+
+Mohammed Jasim, Hazim Shakhatreh, Nazli Siasi, Ahmad Sawalmeh, Adel Aldalbahi, and Ala Al-Fuqaha. 2021. A survey on spectrum management for unmanned aerial vehicles (UAVs). IEEE Access PP (122021), 1–1. DOI:
+
+[52]
+
+Daniel Mulfinger, Joseph L. Rios, Irene Smith, and Brandon Cook. 2020. Strategic Deconfliction Performance. Technical Report.
+
+[53]
+
+Daniel Mulfinger, Joseph Rios, Irene Smith, and Brandon Cook. 2020. UAS Service Supplier Network Performance. Technical Report.
+
+[54]
+
+João Antunes. 2017. Astral Aerial Solutions Developing a UTM System for Africa. (2017). https://www.commercialuavnews.com/public-safety/astral-aerial-solutions-developing-utm-system-africa
+
+[55]
+
+Jaewoo Jung and Nicholas Craven. 2020. Small Unmanned Aircraft System Communications and Navigation Performance. Technical Report.
+
+[56]
+
+Jaewoo Jung and Sreeja Nag. 2020. Automated management of small unmanned aircraft system communications and navigation contingency. DOI:
+
+[57]
+
+Kyusur Jung, Songju Kim, Beechuilla Jung, Seyeon Kim, Hyunwoo Kang, and Changbong Kang. 2022. UTM architecture and flight demonstration in Korea. Aerospace 9, 11 (Oct.2022), 650. DOI:
+
+[58]
+
+JUTM. 2016. What is JUTM? (72016). https://jutm.org/en/
+
+[59]
+
+Davinder Kaur, Suleyman Uslu, Kaley J. Rittichier, and Arjan Durresi. 2022. Trustworthy artificial intelligence: A review. ACM Comput. Surv. 55, 2, Article 39 (Jan.2022), 38 pages. DOI:
+
+[60]
+
+Robert J. Kerczewski, Rafael D. Apaza, Alan N. Downey, John Wang, and Konstantin J. Matheou. 2018. Assessing C2 communications for UAS traffic management. In 2018 Integrated Communications, Navigation, Surveillance Conference (ICNS). 2D3–1–2D3–10. DOI:
+
+[61]
+
+Muhammad Asghar Khan, Ijaz Mansoor Qureshi, and Fahimullah Khanzada. 2019. A hybrid communication scheme for efficient and low-cost deployment of future flying ad-hoc network (FANET). Drones 3, 1 (2019). DOI:
+
+[62]
+
+Nader Labib, Grégoire Danoy, Jedrzej Musial, Matthias Brust, and Pascal Bouvry. 2019. Internet of unmanned aerial vehicles – A multilayer low-altitude airspace model for distributed UAV traffic management. Sensors 19 (112019), 4779. DOI:
+
+[63]
+
+Claude Le Tallec, Patrick Le Blaye, and Moustafa Kasbari. 2017. Low level RPAS traffic management (LLRTM) concept of operation. In 17th AIAA Aviation Technology, Integration, and Operations Conference. DOI:
+
+[64]
+
+Chin E. Lin, Pei-Chi Shao, and Yu-Yuan Lin. 2020. System operation of regional UTM in Taiwan. Aerospace 7, 5 (52020). DOI:
+
+[65]
+
+Andrew Hately, Ludovic Legros, and Robin Garrity. 2019. Initial View on Principles for the U-space Architecture. Technical Report.
+
+[66]
+
+Tim McCarthy, Lars Pforte, and Rebekah Burke. 2020. Fundamental elements of an urban UTM. Aerospace 7 (62020), 85. DOI:
+
+[67]
+
+Jose A. Millan-Romera, José Joaquín Acevedo, Ángel R. Castaño, Hector Perez-Leon, Carlos Capitán, and Aníbal Ollero. 2019. A UTM simulator based on ROS and Gazebo. In 2019 Workshop on Research, Education and Development of Unmanned Aerial Systems (RED UAS). 132–141. DOI:
+
+[68]
+
+Ministry of Civil Aviation. 2020. The National Unmanned Aircraft System (UAS) Traffic Management Policy. Technical Report.
+
+[69]
+
+Atsushi Oosedo, Hiroaki Hattori, Ippei Yasui, and Kenya Harada. 2021. Unmanned aircraft system traffic management (UTM) simulation of drone delivery models in 2030 Japan. J. Robotics Mechatronics 33 (2021), 348–362. DOI:
+
+[70]
+
+M. P. Papazoglou. 2003. Service-oriented computing: Concepts, characteristics and directions. In Proceedings of the Fourth International Conference on Web Information Systems Engineering, 2003. WISE 2003.3–12. DOI:
+
+[71]
+
+Jong-Hong Park, Sung-Chan Choi, Jaeho Kim, and Kwang-Ho Won. 2018. Unmanned aerial system traffic management with WAVE protocol for collision avoidance. In 2018 Tenth International Conference on Ubiquitous and Future Networks (ICUFN). 8–10. DOI:
+
+[72]
+
+Valentin Polishchuk. 2018. Centralized and distributed UTM in layered airspace. In 8th International Conference on Research in Air Transportation (ICRAT 2018).
+
+[73]
+
+Juan Portas, David Carramiñana, Luca Bergesio, Iván Campaña, and Ana Barbolla. 2022. Modelling and simulation of collaborative surveillance for unmanned traffic management. Sensors 22 (22022). DOI:
+
+[74]
+
+Javier Pérez Castán, Victor Gomez Comendador, Ana Cardenas-Soria, Dominik Janisch, and Rosa Valdés. 2020. Identification, categorisation and gaps of safety indicators for U-space. Energies 13 (12020), 608. DOI:
+
+[75]
+
+Thu Ra, Wei Dai, Ee Ng, and Kin Low. 2021. Initial architecture design and development for real-time risk-based unmanned aerial system traffic management. DOI:
+
+[76]
+
+Douglas Rodrigues, Rayner Pires, Emerson Marconato, Cristiana Areias, João Cunha, Kalinka Castelo Branco, and Marco Vieira. 2017. Service-oriented architectures for a flexible and safe use of unmanned aerial vehicles. IEEE Intelligent Transportation Systems Magazine 9 (32017), 97–109. DOI:
+
+[77]
+
+Arnau Rovira-Sugranes, Abolfazl Razi, Fatemeh Afghah, and Jacob Chakareski. 2022. A review of AI-enabled routing protocols for UAV networks: Trends, challenges, and future outlook. Ad Hoc Networks 130 (2022), 102790. DOI:
+
+[78]
+
+Neno Ruseno, Chung-Yan Lin, and Shih-Cheng Chang. 2022. UAS traffic management communications: The legacy of ADS-B, new establishment of remote ID, or leverage of ADS-B-like systems? Drones 6, 3 (2022). DOI:
+
+[79]
+
+Richard Ryan, Saba Al-Rubaye, and Graham Braithwaite. 2022. UTM regulatory concerns with machine learning and artificial intelligence. In 2022 IEEE/AIAA 41st Digital Avionics Systems Conference (DASC). 1–5. DOI:
+
+[80]
+
+Shankar Sankararaman and Kai Goebel. 2018. Computational architecture for autonomous decision-making in unmanned aerial vehicles. In Micro- and Nanotechnology Sensors, Systems, and Applications X. DOI:
+
+[81]
+
+Lukas Marcel Schalk. 2017. Communication links for unmanned aircraft systems in very low level airspace. In 2017 Integrated Communications, Navigation and Surveillance Conference (ICNS). 6B2–1–6B2–11. DOI:
+
+[82]
+
+Lukas Marcel Schalk and Martin Herrmann. 2017. Suitability of LTE for drone-to-infrastructure communications in very low level airspace. In 2017 IEEE/AIAA 36th Digital Avionics Systems Conference (DASC). 1–7. DOI:
+
+[83]
+
+Alexander Schelle, Florian Völk, Robert Schwarz, A. Knopp, and Peter Stütz. 2022. Evaluation of a multi-mode-transceiver for enhanced UAV visibility and connectivity in mixed ATM/UTM contexts. Drones 6 (32022), 80. DOI:
+
+[84]
+
+Leonid Sedov. 2020. Handling Demand-capacity Imbalances in Aerial Vehicle Traffic. DOI:
+
+[85]
+
+Hazim Shakhatreh, Ahmad H. Sawalmeh, Ala Al-Fuqaha, Zuochao Dou, Eyad Almaita, Issa Khalil, Noor Shamsiah Othman, Abdallah Khreishah, and Mohsen Guizani. 2019. Unmanned aerial vehicles (UAVs): A survey on civil applications and key research challenges. IEEE Access 7 (2019), 48572–48634. DOI:
+
+[86]
+
+Rakesh Shrestha, Rojeena Bajracharya, and Shiho Kim. 2021. 6G enabled unmanned aerial vehicle traffic management: A perspective. IEEE Access 9 (2021), 91119–91136. DOI:
+
+[87]
+
+Rakesh Shrestha, Inseon Oh, and Shiho Kim. 2021. A survey on operation concept, advancements, and challenging issues of urban air traffic management. Frontiers in Future Transportation 2 (2021), 1. DOI:
+
+[88]
+
+Samir Si-Mohammed, Maha Bouaziz, Hamed Hellaoui, Oussama Bekkouche, Adlen Ksentini, Tarik Taleb, Lechoslaw Tomaszewski, Thomas Lutz, Gokul Srinivasan, Tanel Jarvet, and Pawel Montowtt. 2021. Supporting unmanned aerial vehicle services in 5G networks: New high-level architecture integrating 5G with U-space. IEEE Vehicular Technology Magazine 16, 1 (2021), 57–65. DOI:
+
+[89]
+
+Steve Bradford and Parimal Kopardekar. 2021. UTM Pilot Program (UPP) Phase Two (2) Progress Report.
+
+[90]
+
+Robin Radar Systems. 2019. Evolution of the Drone Threat: Top Ten Drone Incidents. (92019). https://www.robinradar.com/press/blog/evolution-of-the-drone-threat-top-ten-drone-incidents
+
+[91]
+
+Hugo Eduardo Teomitzi and Joerg R. Schmidt. 2021. Concept and requirements for an integrated contingency management framework in UAS missions. In 2021 IEEE Aerospace Conference (50100). 1–17. DOI:
+
+[92]
+
+Lechosław Tomaszewski, Robert Kołakowski, Piotr Dybiec, and Sławomir Kukliński. 2022. Mobile networks’ support for large-scale UAV services. Energies 15, 14 (2022). DOI:
+
+[93]
+
+SESAR Joint Undertaking. 2017. U-space Blueprint. Technical Report.
+
+[94]
+
+Unify. 2023. (2023). https://www.unifly.aero/
+
+[95]
+
+Anna Maria Vegni, Valeria Loscrí, Carlos T. Calafate, and Pietro Manzoni. 2021. Communication technologies enabling effective UAV networks: A standards perspective. IEEE Communications Standards Magazine 5, 4 (2021), 33–40. DOI:
+
+[96]
+
+Charles Vidal and Iraj Mantegh. 2021. State of the Art in RTM Technology for Phase 2 Trials. Technical Report.
+
+[97]
+
+Evgenii Vinogradov, Franco Minucci, and Sofie Pollin. 2020. Wireless communication for safe UAVs: From long-range deconfliction to short-range collision avoidance. IEEE Vehicular Technology Magazine 15, 2 (2020), 88–95. DOI:
+
+[98]
+
+Chenchen Xu, Xiaohan Liao, Junming Tan, Huping Ye, and Haiying Lu. 2020. Recent research progress of unmanned aerial vehicle regulation policies and technologies in urban low altitude. IEEE Access 8 (2020), 74175–74194. DOI:
+
+[99]
+
+Min Xue. 2020. Urban air mobility conflict resolution: Centralized or decentralized?AIAA 2020-3192. DOI:
+
+[100]
+
+Roy D. Yates, Yin Sun, D. Richard Brown, Sanjit K. Kaul, Eytan Modiano, and Sennur Ulukus. 2021. Age of information: An introduction and survey. IEEE Journal on Selected Areas in Communications 39, 5 (2021), 1183–1210. DOI:
+
+[101]
+
+Ramazan Yeniceri, Mehmet Hasanzade, Emre Koyuncu, and Gokhan İnalhan. 2017. Enabling centralized UTM services through cellular network for VLL UAVs. In 2017 Integrated Communications, Navigation and Surveillance Conference (ICNS). 2E1–1–2E1–13. DOI:
+
+[102]
+
+Sugjoon Yoon, Dongcho Shin, Younghoon Choi, and Kyungtae Park. 2021. Development of a flexible and expandable UTM simulator based on open sources and platforms. Aerospace 8, 5 (2021). DOI:
+
+Cited By
+
+View all
+
+Sindiramutty STan CWei GEyes in the SkyCybersecurity Issues and Challenges in the Drone Industry10.4018/979-8-3693-0774-8.ch017(405-451)
+
+Sindiramutty SJhanjhi NTan CKhan NShah BYun KRay SJazri HHussain MFuture Trends and Emerging Threats in Drone CybersecurityCybersecurity Issues and Challenges in the Drone Industry10.4018/979-8-3693-0774-8.ch007(148-195)
+
+Hamissi ADhraief ASliman LOn Safety of Decentralized Unmanned Aircraft System Traffic Management Using Blockchain2023 IEEE International Conference on Enabling Technologies: Infrastructure for Collaborative Enterprises (WETICE)10.1109/WETICE57085.2023.10477843(1-6)
+
+Index Terms
+
+A Survey on the Unmanned Aircraft System Traffic Management
+
+Applied computing
+
+Physical sciences and engineering
+
+Aerospace
+
+Computer systems organization
+
+Architectures
+
+Distributed architectures
+
+General and reference
+
+Document types
+
+Surveys and overviews
+
+Networks
+
+Network types
+
+Recommendations
+
+Traffic management for drones flying in the city
+
+Abstract
+
+Air Traffic Management (ATM) is designed based on the notion of a pilot navigating an aircraft from within the aircraft. Increasing demand for Unmanned Aircraft Systems (UAS) usage and its safe integration into segregated/non-...
+
+Information & Contributors
+
+Information
+
+Published In
+
+977 pages
+
+EISSN:1557-7341
+
+DOI:10.1145/3613568
+
+Editor:
+
+Albert Zomaya
+
+University of Sydney, Australia
+
+Issue’s Table of Contents
+
+Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice and the full citation on the first page. Copyrights for components of this work owned by others than the author(s) must be honored. Abstracting with credit is permitted. To copy otherwise, or republish, to post on servers or to redistribute to lists, requires prior specific permission and/or a fee. Request permissions from [email protected].
+
+Publisher
+
+Association for Computing Machinery
+
+New York, NY, United States
+
+Publication History
+
+Published: 06 October 2023
+
+Online AM: 02 September 2023
+
+Accepted: 21 August 2023
+
+Revised: 15 August 2023
+
+Received: 02 November 2022
+
+Published in CSUR Volume 56, Issue 3
+
+Permissions
+
+Request permissions for this article.
+
+Check for updates
+
+Author Tags
+
+UTM
+
+UAV
+
+architecture
+
+communication
+
+performance
+
+services
+
+simulators
+
+decision-making
+
+Qualifiers
+
+Survey
+
+Contributors
+
+Other Metrics
+
+Bibliometrics & Citations
+
+Bibliometrics
+
+Article Metrics
+
+3
+
+Total Citations
+
+View Citations
+
+728
+
+Total Downloads
+
+Downloads (Last 12 months)728
+
+Downloads (Last 6 weeks)50
+
+Other Metrics
+
+Citations
+
+Cited By
+
+View all
+
+Sindiramutty STan CWei GEyes in the SkyCybersecurity Issues and Challenges in the Drone Industry10.4018/979-8-3693-0774-8.ch017(405-451)
+
+Sindiramutty SJhanjhi NTan CKhan NShah BYun KRay SJazri HHussain MFuture Trends and Emerging Threats in Drone CybersecurityCybersecurity Issues and Challenges in the Drone Industry10.4018/979-8-3693-0774-8.ch007(148-195)
+
+Hamissi ADhraief ASliman LOn Safety of Decentralized Unmanned Aircraft System Traffic Management Using Blockchain2023 IEEE International Conference on Enabling Technologies: Infrastructure for Collaborative Enterprises (WETICE)10.1109/WETICE57085.2023.10477843(1-6)
+
+View Options
+
+Get Access
+
+Login options
+
+Check if you have access through your login credentials or your institution to get full access on this article.
+
+Sign in
+
+Full Access
+
+View options
+
+PDF
+
+View or Download as a PDF file.
+
+PDF
+
+eReader
+
+View online with eReader.
+
+eReader
+
+Full Text
+
+View this article in Full Text.
+
+Full Text
+
+Media
+
+Figures
+
+Other
+
+Tables
+
+Share
+
+Share
+
+Share this Publication link
+
+Copied!
+
+Copying failed.
+
+Share on social media
+
+Affiliations
+
+Asma Hamissi
+
+ENSI, University of Manouba, Tunisia
+
+Amine Dhraief
+
+ESEN, University of Manouba, Tunisia
+
+Request permissions Authors Info & Affiliations

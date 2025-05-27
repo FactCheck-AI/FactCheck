@@ -1,0 +1,57 @@
+The PRIVATICS Inria team – July 2nd, 2013 – https://team.inria.fr/privatics/
+
+(this blog has been modified on July 5th, 2013 upon request of FaberNovel)
+
+The RATP iOS App
+
+The RATP is the French public company that is managing the Paris subway (metro). It provides a dedicated and very useful smartphone App. In particular, privacy policy of RATP’s iOS App (version 5.4.1) claims: “The services provided by the RATP application, like displaying geo-targeted ads, does not involve any collection, processing or storage of personal data” (translated from their privacy policy, in French). Below is the screenshot of RATP’s In-App privacy policy (in French). It also says that this App is, in fact, developed and maintained by FaberNovel.
+
+Now, having read above the privacy policy of the App, would you believe the fact that MAC Address of your iPhone’s WiFi chip, your iPhone’s name, and the list of processes running on it (which potentially reveals a subset of Apps installed on the smartphone) among other things, are being sent over the network to a remote third-party by RATP App? Well, if you don’t believe it; here you go. Below are two instances of data we captured on our iPhone while being sent over the network by the RATP App. One good news, though: this data is sent through SSL, not in clear, which avoids eavesdropping.
+
+UTF8StringOfDataSentThroughSSL = {"p":["kernel_task", "launchd", "UserEventAgent", "sbsettingsd", "wifid", "powerd", "lockdownd", "mediaserverd", "mDNSResponder", "locationd", "imagent", "iaptransportd", "fseventsd", "fairplayd.N94", "configd", "kbd", "CommCenter", "BTServer", "notifyd", "aggregated", "networkd", "itunesstored", "apsd", "MyWiCore", "distnoted", "tccd", "filecoordination", "installd", "absinthed", "timed", "geod", "networkd_privile", "lsd","xpcd", "accountsd", "notification_pro", "coresymbolicatio", "assetsd", "AppleIDAuthAgent", "dataaccessd", "SCHelper", "backboardd", "ptpd", "syslogd", "dbstorage", "SpringBoard", "Facebook", "iFile_", "Messenger", "MobilePhone", "MobileVOIP", "MobileSafari", "webbookmarksd", "eapolclient", "mobile_installat", "AppStore", "syncdefaultsd", "sociald", "sandboxd", "RATP", "pasteboardd"], "additional":{"device_language":"en", "country_code":"FR" ,"adgoji_sdk_version":"v2.0.2", "device_system_name":"iPhone OS", "device_jailbroken":true, "bundle_version":"5.4.1", "vendorid":"CECC8023-98A2-4005-A1FB-96E3C3DA1E79", "allows_voip":false, "device_model":"iPhone", "macaddress":"60facda10c20", "asid":"496EA6D1-5753-40B2-A5C9-5841738374A2", "bundle_identifier":"com.ratp.ratp", "system_os_version_name":"iPhone OS", "device_name":"Jagdish's iPhone", "bundle_executable":"RATP", "device_localized_model":"iPhone", "openudid":"9c7a916a1703745ded05debc8c3e97bedbc0bcdd"}, "e":{"782EAF8A-FF82-48EF-B619-211A5CF1F654": [{"n":"start", "t":1369926018, "nonce":"IEx9HAzG" }]}}
+
+UTF8StringOfDataSentThroughSSL = {"s":["fb210831918949520", "fb108880882526064", "evernote", "fbauth2", "fbauth", "fb", "fblogin", "fspot-image", "fb308918024569", "fspot", "fsq+pjq45qactoijhuqf5l21d5tyur0zosvwmfadyw0pvd4b434e+authorize", "fsq+pjq45qactoijhuqf5l21d5tyur0zosvwmfadyw0pvd4b434e+reply", "fsq+pjq45qactoijhuqf5l21d5tyur0zosvwmfadyw0pvd4b434e+post", "foursquareplugins", "foursquare", "fb86734274142", "fb124024574287414", "instagram", "fsq+kylm3gjcbtswk4rambrt4uyzq1dqcoc0n2hyjgcvbcbe54rj+post", "fb-messenger", "fb237759909591655", "RunKeeperPro", "fb62572192129", "fb76446685859", "fb142349171124", "soundcloud", "fb19507961798", "x-soundcloud", "fb110144382383802", "mailto", "spotify", "fb134519659678", "fb174829003346", "fb109306535771", "tjc459035295", "twitter", "com.twitter.twitter-iphone", "com.twitter.twitter-iphone+1.0.0", "tweetie", "com.atebits.Tweetie2", "com.atebits.Tweetie2+2.0.0", "com.atebits.Tweetie2+2.1.0", "com.atebits.Tweetie2+2.1.1", "com.atebits.Tweetie2+3.0.0", "FTP", "PPClient", "fb184136951108"]}
+
+Fortunately, it’s not trivial to detect all the Apps installed on the iPhone because 1) iOS doesn’t provide an API to do so, and 2) due to sandbox restrictions, an App can’t peak into other system activities. However, since this is a highly valuable information to infer the user’s interests, techniques exist to identify some of them. Here are some techniques:
+
+listing the currently running processes using sysctl (We decrypted and opened the RATP binary in a hexeditor and searched for sysctl; See screenshot. It confirms the use of sysctl function in the RATP App).
+
+detecting if a custom url can be handled or not (one can use canOpenURL function of UIApplication class. See more about URLSchemes.). If the url is handled, it confirm the presence of a particular App. You get the answer, but of course this technique requires you actively search for an App by yourself.
+
+Now, the natural question arising in one’s mind would be: Why does the RATP App collect this info whereas they deny to do so in their In-App privacy policy? Well, to your surprise (or not to your surprise if you already aware of these Analytics and Advertising tracking companies), this data is sent to a server named sdk1.adgoji.com (IP Address:Port Number 175.135.20.107:47873) owned by Adgoji, a mobile audience targeting company. Does this company share this data back to RATP? We cannot say. In any case, it’s unclear how Adgoji treats the data and to whom the data is shared with. The questions remain… and only the parties involved can answer what terms and conditions they agreed upon.
+
+Here is a screenshot where decrypted RATP app binary is opened in IDA Pro; you can see some methods inside AppDetectionController and AdGoJiModel class. The internals of the RATP App reveal that it uses the Adgoji library, which, in turn, does the job of collecting and sending the info to their server [Here are the name of header files generated by running class-dump-z on the decrypted binary revealing the classes from Adgoji company starting with prefix Adgoji].
+
+To summarize, Adgoji tries to detect the Apps present on the phone to target the users based on their interests (e.g. if a user is a gamer or news reader or runner or blogger or radio listener etc.). Adgoji also collects the MAC Address, a permanent unique identifier attached to the device, to keep track of the device. They collect the device name as well, probably to infer the gender/country of the user.
+
+What about Apple?
+
+Well, Apple gives users a perception that they can control what private information is accessible to Apps in iOS 6. That’s true in case of Location, Contacts, Calendar, Reminders, Photos, and even your Twitter or Facebook account but Apps can still access other kinds of private data (for example, the MAC Address, Device Name, List of processes currently running etc.) without users’ knowledge. To avoid device tracking, Apple has deprecated the use of the permanent UDID and replaced it by a dedicated “AdvertisingID” that a user can reset at any time. This is certainly a good step to give control back to the user; by resetting this advertising identifier, trackers should not be able to link what you’ve done in the past with what you’ll be doing from that point onwards. But apparently, the reality is totally different: it only gives an illusion to the user that he is able to opt-out from device tracking because many tracking libraries are using other stable identifiers to do that:
+
+Apps can access MAC address (again through sysctl function in libC dylib) to get a unique identifier permanently tied to a device which cannot be changed. Fortunately, the access to the MAC address seems to be banned from the new iOS7 version;
+
+Apps can use UIPasteboard to share data (e.g. a unique identifier) between Apps on a particular device. For example, Flurry analytics library, also included in this App binary, is doing it! Flurry creates a new pasteboard item with name com.flurry.pasteboard of pasteboard type com.flurry.UID and stores a unique identifier whose hexadecimal representation looks like this 49443337 38383436 44452d32 3138302d 34414231 2d423536 432d3936 38363839 36443736 35333532 30443544 3338. A lot of other analytic companies are using the OpenUDID (which is again based on the use of UIPasteboard to share data between each other). Resetting the advertising ID will not impact this OpenUDID;
+
+Apps can use the device name as an identifier, even if it’s far from being a unique identifier. Who cares to change it periodically? Even if it’s not unique, this is in practice a relatively stable identifier;
+
+Or, simply, Apps can store the advertising identifier in some permanent place (e.g. persistent storage on the file system), and later, if this ID has been reset by the user, they can link it with the new advertising identifier. That’s so trivial to do…
+
+We see there are several effective techniques to identify a terminal in the long term, and Apple cannot ignore this trend. Apple needs to take some rigorous steps in regulating these practices.
+
+Also, we don’t understand why Apple is not giving control to the user to let him choose if an App can access the device name or not (we’ve seen that this is an information commonly collected). Earlier this year, we’ve developed an extension to the iOS6 privacy dashboard to demonstrate it’s feasibility and usefulness. Our extension to the privacy dashboard lets users choose if an App can access the device name (that often contains the real name of the iPhone owner) and if it can access the Internet (See our privacy extension package). It’s not sufficient, for sure, but it’s required.
+
+You might also be interested in Paris Metro Tracks and Trackers: Why is RATP App leaking my private data? (Continued…)
+
+Contact: Jagdish Achara, Vincent Roca, Claude Castelluccia
+
+The PRIVATICS Inria team – July 2nd, 2013 – https://team.inria.fr/privatics/
+
+———————————————————————————————-
+
+RATP wishes to reply in light of the publication of our blog with the following items of additional information:
+
+Data exchanges with the Adgoji server
+
+– SDK Sofialys (the adserving company for our online advertising sales service) sends information to the Adgoji server, the Fly Targeting system that provides contextual information about the public based on the applications installed on the terminal. Information recovered by SDK is processed for analysis, but does not make it possible under any circumstances to identify the data user.
+
+– No data collected by Adgoji concerning users of the RATP app have been used. The Fly Targeting module was under study in Sofialys, which mistakenly implemented it in its SDK in “production” phases. We are currently removing it from SDK.

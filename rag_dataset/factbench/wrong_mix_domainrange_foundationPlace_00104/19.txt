@@ -1,0 +1,61 @@
+1. Introducing JCR 2.0 What’s new in JSR-283 aug-2009 David Nuescheler
+
+2. Agenda  A Content Repository?  JCR History, Adoption  Top 10 New Features  Future Plans
+
+3. JCR. “The API should be a standard, implementation independent, way to access content bi- directionally on a granular level to a content repository.”
+
+4. A Content Repository!? CONTENT REPOSITORY FEATURES OF AN FEATURES OF A RDBMS FILESYSTEM Transactions, Query, Structure, Integrity Binaries, Hierarchy, Locking, Access Control + ALL THE OTHER GOOD STUFF YOU ALWAYS WANTED Unstructured, Versioning, Full-text, Multi-Value, Sort-Order, Observation
+
+5. When to use? permissions binaries search JCR read-most versions unstructured 5
+
+6. Introducing JCR Catalyst WEB apache JCR APP sling
+
+7. Industry Standards 170 283 7
+
+8. Tracking success 8
+
+9. Known Compliant Repositories (* partially using 3rd party connectors) Exo Microsoft Apache Jackrabbit Oracle XML DB ECMS Platform Sharepoint OpenText Livelink Day CRX IBM FileNet P8 Xythos Repository Alfresco ECM Vignette V7 Interwoven Saperion +hund reds o Repository IBM CM / Domino EMC Documentum Archive registe f TCKs red
+
+10. Some known JCR Applications Fast BEA Portal Sun Oracle WebCenter Enterprise Search JBoss Portal Interface 21 OpenPortal Day Communique Spring Framework magnolia WCMS DAM Apache Sling Day Communique Alfresco ECMS Mindquarry Collab Collaboration Apache Tapestry QSLabs Apache Compliance Day Communiqué Cocoon WCMS IBM FileNet Artifactory medic-2-medic WebSiteManager Apache James Maven Proxy mapofmedicine Exo ECMS Platform TYPO3 GX WebManager v5.0 WCM InfoQ Hippo Liferay Nuxeo ECM Online Community CMS Enterprise Portal Jahia Sakai Percussion Framework E-learning Rhythmix QuickWCM Sourcemix WCMS Lutece Sourcemix Portal
+
+11. Current Status
+
+12. Backwards Compatible. NEW 100% & IMP BACKWA ROVE D COMPAT RDS IBLE Binary Compatible JSR-170 (JCR v1.0) Applications do not require modification Mixed environment supported (1.0 & 2.0 Apps)
+
+13. Reorganized. NEW 100DEL & BINDING & IMP BACKWA ROVE D D % COMPAT RDS IMP ROVE & IBLE NEW MO Completely re-organized and clarified Specification Separate Content Repository model section Removed a lot of the Java Language specification
+
+14. Bundled. NEW 100DEL & BINDING & IMP BACKWA ROVE D D % COMPAT RDS IMP ROVE & IBLE NEW MO NEW & IMPROVED OSGI BUNDLE Shipped jcr-2.0.jar is an OSGI Bundle Ready to deploy in an OSGI Container
+
+15. Favorites. 10
+
+16. Query extensions AQM JQOM NEW #1 QUER & IMP ROVE SQL 2.0 D Y Abstract Query Model Java Query Object Model (Java Binding) SQL Bindings
+
+17. Query extensions +JOIN NEW & IMP #1 QUER ROVE 2.0 D Revamped Result-Set to allow for multiple nodes Y New and Improved query capabilities
+
+18. Query extensions -XPATH * *well, still available but deprecated NEW & IMP Not enough support from the EG #1 QUER ROVE 2.0 D JQOM allows for many implementations Y Jackrabbit / CRX will support XPATH
+
+19. Access Control Management +ACL +POLICY NEW & IM PROVED #2 ACL 2.0 Allows to set ACL and Access Control Policies
+
+20. Retention Policy & Hold +RETENTION +LEGAL HOLD NEW & IMP ROVE #3 RM 2.0 D Support for interaction with RM systems Allows setting and introspection of Retention Policies and Holds
+
+21. Simple versioning +LINEAR VERSIONING 2.0 ED NEW & IMPROV #4 SIMPLE Simplified Versioning Model to allow VERSIONING for ease of adoption.
+
+22. Lifecycle Management +BPM Allows to express and introspect Lifecycle status NEW & IM and transitions. PROVED #5 LIFECYCLE 2.0
+
+23. Nodetype Registration +REGISTER NODETYPES NEW & IMP ROVE #6 NODE 2.0 D MANAGE TYPE MENT Standardized way of registering new and modify registered Nodetypes
+
+24. New property & nodetypes +mix:title +URL +mix:created +mix:lastModified +WEAK REFERENCE +mix:language +DECIMAL +mix:etag +nt:address NEW & IMPROVED #7 NEW PROPERTY & NODETYPES 2.0 Things we missed in JCR 1.0 applications
+
+25. Workspace Management +CREATE & REMOVE WS 2.0 PROVED NEW & IM #8 WORKSPACE Standardized way of create and remove MANAGEMENT workspaces
+
+26. Shareable nodes +GRAPH Multi-filing. Nodes can have multiple parents. 2.0 NEW & IMPROVED #9 SHAREABLE NODES
+
+27. Journalling Observation +DELTA SINCE? NEW & IMP what changed since I last checked? #10 JOU ROVE 2.0 D RNALLIN OBSERVA G TION
+
+28. What’s next?
+
+29. CMIS Proposers MSindings D B t ocolR subse t Proor JC f
+
+30. CMIS  About CMIS: Least common denominator document management interoperability specification. OASIS Technical Committee.
+
+31. CMIS @ Day  Great for our DM connectors  Layered easily on top of JCR (since it is a functional subset)  Apache Chemistry

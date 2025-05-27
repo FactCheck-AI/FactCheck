@@ -1,0 +1,237 @@
+Hi.
+
+Anyone have experience to share about deploying production environment
+
+with Joyent? TextDrive had a lot of instability problems I recollect
+
+(possibly only with shared plans?).
+
+Thanks for any input.
+
+Morten
+
+I’ve been with TextDrive two years, and I don’t recommend the shared
+
+hosting. Stability has been much better over the last year, but
+
+overall it’s been very difficult to get responses from support. My
+
+feeling is Joyent/TextDrive’s heart is in the right place, but it’s
+
+really all about the cool stuff, and not the fundamentals of quality
+
+hosting.
+
+All that said, the Accelerator is a one-of-a-kind setup in the
+
+industry, and I am dying to try it because I really do believe it is
+
+better than anything else out there. As far as VPS technology goes,
+
+kernel-level support really makes the difference, and Solaris is by
+
+far the most advanced in this area. Accelerator is leveraging
+
+technology from the latest Solaris builds for a VPS that is both
+
+burstable, scalable and more stable overall. No one else has anything
+
+like it. I’d say it’s a pretty good bet for hosting your Rails app.
+
+However, I would stick to just the web hosting and keep my email
+
+somewhere else. Although my email account there has been pretty
+
+stable, it’s high latency (email coming in is delayed by the spam
+
+filtering from 2-20 mins), and when there IS a problem (such as being
+
+flagged as spammy) they just don’t answer tickets in a timely manner
+
+at all.
+
+On May 28, 12:06 am, “removed_email_address@domain.invalid” removed_email_address@domain.invalid
+
+wrote:
+
+On May 23, 8:40 am, dasil003 removed_email_address@domain.invalid wrote:
+
+I’m interested to hear what you perceive as the benefits of Joyent’s
+
+offering -vs- a Xen based solution?
+
+Although I’m not the OP, I’ll take a stab at why Solaris’ VPS solution
+
+interests me over Xen at the moment.
+
+The company I work for builds semi-custom web app tools which we then
+
+host for the customer, so we use at least one server for each customer/
+
+product. So far, we’ve been using Xen-based virtual servers, and this
+
+setup has been working great so far. Until last week…
+
+One of our production servers stopped responding. And by server, I
+
+mean the physical box – every single VM on it was down. It turns out
+
+we were hit by a bug in Xen[1] that’s been open since 2005 and seems
+
+to affect the very core of the architecture. The layman’s description
+
+of the problem is that the kernel in one or more of the virtual
+
+servers develops an issue with (IIRC) its interrupt timing and starts
+
+spending all of its available CPU cycles logging a message that “time
+
+went backwards”. This somehow “infects” all of the other virtual
+
+servers on the same box. The servers don’t actually go /down/, they
+
+just run out of processing power to handle any other task within a
+
+reasonable amount of time. We have, thus far, been unable to determine
+
+what specific conditions cause this behavior to start happening; so
+
+even though it hasn’t occurred on our other (physical) production
+
+servers yet, we have no reason to believe that it won’t.
+
+Now, I don’t want to blow the issue out of proportion, so I won’t go
+
+so far as to say that Xen is unsuitable and no one should use it.
+
+However, this has definitely shaken our confidence in the platform;
+
+and that is why I’m currently taking a serious look at Solaris.
+
+Since we co-locate our own servers, this isn’t a Joyent vs. Engine
+
+Yard (or other Xen-based host) issue, but it’s pretty much the same
+
+question.
+
+[1] Citrix Hypervisor - Server Virtualization and Management Software - Citrix
+
+–
+
+Regards,
+
+John W.
+
+I’m looing at these a bit more from the sidelines, but there are a
+
+couple
+
+appealing things about Solaris in general to me, which then the
+
+virtualization choice is more of a follow-on… One is DTrace. This is
+
+quite a cool tool for diagnosing things. The other is how system
+
+crashes,
+
+crash logs, and reboots work - it’s simply more robust here. ZFS is
+
+also
+
+extremely appealing. I do hope ZFS can be brought to Linux. I think
+
+it’s
+
+somewhat unfortunate that there is a Linux vs. Solaris battle. I happen
+
+to
+
+use Linux a lot, but Solaris has become much more appealing lately
+
+because
+
+of the tools and, at least in my perception, more robust handling in
+
+very
+
+heavy load and heavy hardware situations. If I were building up my own
+
+setup I’d be looking very seriously at it, in fact, I’d probably be
+
+using it
+
+automatically, if it weren’t for the fact that I simply don’t know the
+
+OS as
+
+well/I’m not as comfy with it as I am Linux. Obviously you’ve got folks
+
+like Google and others using commodity stuff, and Linux (and older Linux
+
+from what I understand), and working just fine, but it depends on what
+
+your
+
+situation is. Most folks aren’t building their own hardware, and can’t
+
+be
+
+slapping in new boxes all the time.
+
+As for available solutions and cases where you are hosting on someone
+
+else’s
+
+system, I think you have to factor in a lot more. I happen to be a
+
+Joyent
+
+customer, but based on my experience, I’m not sure I would choose them
+
+to
+
+host an important system. I would have to look at the accelerators more
+
+closely, and understand the support a lot better. My experience is
+
+solely
+
+based on shared hosting, and that has worked ok for me as I mostly
+
+experiment in that space, and want something cost effective, but for a
+
+production system I’d be looking at a lot more. EngineYard is very
+
+impressive to me, and I’d be looking at it very seriously for Rails
+
+apps.
+
+Part of that is not just technology and the available solution, but the
+
+people and approach. Having met several Engine Y. folks, and knowing
+
+who
+
+they have on staff, and their dedication to the particular market
+
+segment,
+
+they are absolutley a top choice IMHO. It likely just depends on your
+
+particular needs.
+
+On 5/28/07, Jesse P. removed_email_address@domain.invalid wrote:
+
+and other features in Solaris really make it shine for web applications.
+
+On May 28, 2007, at 9:46 AM, John W. wrote:
+
+Although I’m not the OP, I’ll take a stab at why Solaris’ VPS solution
+
+interests me over Xen at the moment.
+
+–
+
+Chris B.
+
+removed_email_address@domain.invalid

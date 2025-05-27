@@ -1,0 +1,137 @@
+The object of our study is a tower of a fortification located in the south of Spain. Both Carthaginians and Phoenicians settled in the Iberian Peninsula between 575 and 206 BC, establishing relations with the indigenous peoples known as Iberians. After the Punic Wars, the Romans ruled this territory from 206 BC, establishing provinces such as Hispania Ulterior, which later became a senatorial province called Baetica in 117 AD. The North African Muslims, known as the Moors, conquered much of Hispania between 711 and 715 AD. The fortification of Torre Benzalá is believed to have been built during the period AD 1242–1246 [1].
+
+During the period between 1242 and 1246, once the truces between the Christian King Ferdinand III and Ibn al-Ahmar, Sultan of Arjona, and Ibn Hud, Emir of the Taifa of Murcia, were over, the area of the Jaén countryside was conquered, more specifically the urban centres of Arjona and Jaén, which were in Muslim hands, Fig. 1. It was at this time that the Muslims built various fortifications in the areas of influence of these main population centres, hence the castles of El Berrueco, Torredelcampo, Fuentetetar, El Término, Torre Benzalá, etc. were built [2].
+
+The conquest of many of these fortifications by the Christians meant that they passed into the hands of encomiendasFootnote 1 such as those of Calatrava or Santiago, which reused some of the pre-existing constructions.
+
+Ximena Jurado (1639) documents and describes the situation of the fortification of Torre Benzalá at that time by means of text and freehand drawing [2], from which it can be deduced that the place was uninhabited, although a large part of the fortification was still standing, describing a triangular plan with a crenellated walled enclosure and towers at the corners, a circular one (the one at the right in the Fig. 2) that sheltered the entrance and another square one (which is still preserved). All of them had openings and arrow slits. A circular keep could also be seen inside the fortification, which would normally have been used as a garrison residence [3]. In short, there were three towers. The largest in the drawing would be in the centre of the fortification as drawn by Ximena Jurado. (In the back corner, which is not visible in the drawing, there would be no tower, as it is an area with greater height, due to the orography and easy defence from the walls). The third circular tower, on the right side of the drawing, does not exist today, but there are some remains of its foundations under a nearby olive tree.
+
+At present, Torre Benzalá is in a precarious state of conservation, as it has signs of ruin and possible collapse due to the effects of the weather and, above all, to the anthropic action that has been taking its toll on its battered structure over the centuries. The Benzalá tower, as part of a fortification, has suffered over the years the actions typical of defensive architecture, as stated in the international congress Defensive Architecture of the Mediterranean (FORMED2020) [4].
+
+In this sense, Digital technologies can be used to bring destructed cultural heritage sites back to life [5] and, specially, 3D technologies allow to access to the culture heritage elements that are difficult to reach in a real world. The use of digital techniques such as orthophotos, planimetries and digital terrain models help us to make an almost perfect copy of the real object at a given time, so it is no longer surprising that archaeological science uses these means to document, protect, reconstruct, restore, conserve [6], disseminate and spread the fragile archaeological record, therefore, obtaining a three-dimensional model of the heritage is considered ideal and necessary for a better archaeological scientific knowledge of our heritage, allowing a more in-depth a posteriori analysis such as those carried out in [7,8,9].
+
+There is work where the Digital Elevation Model (DEM) has been used to analyse the volumetric change of an area of interest, e.g. the Cauvery Delta [10]. For this purpose, freely available SRTM, PALSAR and Sentinel 1A DEMs of moderate spatial resolution were used, yielding a root mean square error (RMSE) of 3.33, 3.11 and 3.04 m respectively. However, in this work we aim to obtain values of a higher level of detail and geometric accuracy.
+
+Aerial photogrammetric measurement by means of UAS (Unmanned Aircraft System) is no stranger to archaeological science, as its use has been developing over the last decade. One of the advantages of the use of UAS is to be able to raise the point of view of the photograph in places that are difficult to access, such as rooftops and high areas, allowing a focus on a plane parallel to the horizontal and at the same time high, at a low cost, not being necessary to hire other means such as light aircraft or helicopters. In addition, the results obtained are usually better than those obtained with other systems such as the use of poles, scaffolding, ladders, etc. Photographic sensors installed in UAS are enabling the detection of archaeological sites, so that when sensors capable of capturing invisible light spectra such as infrared or ultraviolet are installed, the detection of underground structures belonging to settlements of past times is facilitated, as can be analysed in [11, 12].
+
+On the other hand, UAS have demonstrated their versatility in the creation of orthoimages and DEMs (Digital Elevation Models) that are allowing the reading and interpretation of the faces of the constructions carried out in the past, such as the one carried out in [13, 14]. The use of control points allows the georeferencing of the same allowing the precise study based on the three-dimensional models obtained [15]
+
+Archaeological science has been one of the disciplines that has applied the photogrammetric technique for the study and conservation of heritage, as it allows the reliable digitisation of structures or objects in an automated way with a reasonable economic cost compared to other digitisation systems [16]. This technique will obtain a three-dimensional model by taking overlapping photographs from various viewpoints surrounding the captured object [17]. In this study, the Structure from Motion (SfM) method was applied to obtain the 3D model of Torre Benzalá.
+
+The SfM photogrammetric method is an automated process that, makes it possible to reconstruct an object from a set of unoriented images (i.e. without data about spatial orientation or georeferencing) taken with uncalibrated cameras, without data about the location of the main point, radial distortion, focal length or distance to the object to be studied. SfM algorithms allow reconstructing the positions and orientations of the cameras simultaneously, as well as the 3D structure of the scene, from a set of feature correspondences obtained from the superposition of images. That is, it detects common or homologous points allowing the software to find their relative positions, placing them in a three-axis coordinate system, allowing, in this study case, the characterization of the medieval archaeological remains obtained to be studied.
+
+The aim of this study is to obtain a highly detailed and geometrically accurate 3D model of the ruins of the Torre Benzalá fortification. In this way a 3D visualisation and referencing is obtained which is useful for the identification of the materials used in the construction, reuse of previous materials,, as well as obtaining elements of analysis to be able to confirm or not the hypothesis of Ximena Jurado about the plan of the fortification, as well as the existence of the constructive elements described by him in the seventeenth century.
+
+This article is structured as follows: “Materials and methods” Section describes the flight planning, trajectories, camera parameters and processing workflow. Besides, it shows the proposed methods for data acquisition, 3D reconstruction, point cloud characterisation, orthophoto and DEM generation. In “Results” Section, the results are presented, including the interpretation of the results and the discussion of the main issues in “Discussion” Section. Finally, “Conclusions” Section presents the main conclusions.
+
+Study area
+
+The archaeological site of Torre Benzalá is located in the municipality of Torredonjimeno, at a distance of 9 km from the town centre (Fig. 3). Generally protected by the decree of 22 April 1949, the Spanish Historical Heritage Law 16/1985 of 25 June 1985 declared it an Asset of Cultural Interest (BIC). Despite its declaration as BIC, it has never been the object of an archaeoarchitectural study, archaeological intervention or consolidation works. In short, the Benzala Tower is a monument protected by the state authorities, but is located on a private estate.
+
+The site is located on the top of the Ben-Zala hill, 544 m above sea level, to the north of Cortijo del Marqués. This promontory is located in the area of Aldea Las Casas, surrounded by olive groves. The mound area may contains the remains of a mound and vestiges of an earthen fortification, of which we have limited historical information about its construction. At present only a trapezoidal masonry tower remains (Fig. 7). Given its precarious state of conservation, it is listed on the red heritage list promoted by the Hispania Nostra Association https://bit.ly/2ONecjm.
+
+Torre Benzalá is located in the extreme south-western part of the province of Jaén, in the depression of the River Guadalquivir, known as La Campiña Sur. The landscape surrounding the enclave is made up of hilly and/or moderately undulating slopes, forming a geomorphology of successions of hillocks, ridges and hills. This geomorphology accentuates its strategic importance from the point of view of territorial control, being one of the highest points in the southern countryside of Jaén (544 m above sea level), allowing visual communication with other fortifications located on hills of similar characteristics (Fig. 4).
+
+UAS-based and field data
+
+An Unmanned aircraft system (UAS) is, according to the definition given by the International Civil Aviation Organization (ICAO), an aircraft and its associated elements operated with no pilot on board [18]. Popularly known as drones, RPAs (remotely-piloted aircraft systems) or UAVs (unmanned aerial vehicles), the ICAO guidelines [18] reserve the use of UAVs just for the aircraft, while the term UAS will refer to the whole: aircraft and its associated elements.
+
+In recent years, the use of UAS in archaeology has become more widespread, since the possibility of obtaining data remotely is combined with the ability to capture it from a high vantage point. Having an elevated viewpoint provides archaeologists with an overview of the site under study, facilitating its understanding, and at a much larger scale than conventional aerial photogrammetry or artificial satellites. It is therefore a technology that is here to stay in the field of documentation and the detection of archaeological features. In addition to its versatility, efficiency and low cost [19], UAS can carry a wide variety of sensors (thermal, RGB or LIDAR, among others), allowing for high quality 2D and 3D products that meet the different needs of archaeological research Table 1.
+
+In this research, the aerial survey was conducted with a DJI Mavic PRO FC220, equipped with a camera with a nominal focal length of 4.74 mm, and a 1/2.3′′ 12.3-megapixel CMOS sensor with a nominal pixel size of 1.55 × 1.55 μm. The DJI Mavic PRO FC220 camera creates an image of 4000 × 3000 pixels corresponding to 6.16 × 4.55 mm. The characteristics of the camera are described in Table 2.
+
+To get the coordinates of the Ground Control Points (GCPs), we used a total station LEICA TS-06 solidly aimed (σEDM = 2 mm ± 2 ppm). To obtain the coordinates, the vertices of the National Geodetic Network were used, taking Torrevencela as the starting point. The topographic observation method used was the radiation method, taking Torrevenzalá as the station point of reference and orienting towards another geodetic vertex, Arjona. From there the control points were radiated. The accuracy of the coordinates obtained is less than one centimetre, which is considered acceptable, since the range of the uncertainty of the acquisition and measurement of the objects (e.g., vegetation, stones, loose soil) with the photogrammetric survey is greater than a centimeter [20].
+
+Methods
+
+Mission planning.
+
+Before capturing data in the field, it is necessary to visit the site in order to take notes and obtain a sketch showing the dimensions of the element to be surveyed by photogrammetric means, as well as the identification of elements that may hinder the photographic shots and/or the flight path of the drone, which is usually planned and programmed in advance. Regarding the trajectory of the drone, a circular trajectory was defined to capture the tower walls. In order to obtain maximum overlap in the images and maximum orthogonality in the camera shots, several vertical trajectories were also taken, running up and down each face of the tower and vice versa (Fig. 5).
+
+The following conclusions are drawn from the field visit:
+
+The object is an almost rectangular shaped tower, located in an olive farm.
+
+The proximity of olive trees to the tower may prevent the drone from having a clean flight path.
+
+The presence of a geodetic vertex close to the site, taking advantage of the strategic characteristics of the location, facilitates the georeferencing of the enclave with support points.
+
+The next step is to determine what the resolution of the survey should be, specifying a Ground Sampled Distance (GSD) appropriate to the characteristics of the object and the final product to be obtained (3D model and orthophotographs).
+
+Three of the four faces of the tower are seriously deteriorated on the lower part, due to the extraction of the exterior ashlars for use in the construction of the surrounding farmhouses. Therefore, it is necessary to take this into account in order to establish the GSD. Exploration in situ advises the use of two GSDs: one for the more regular part, where the original ashlars remain, and another for the more deteriorated part. Also the angle of the camera was always orthogonal to the faces of the tower.
+
+For photogrammetry at the typical architectural scales, [20] recommend the following values of ground sample distance (GSD): for 1:50 output scale, 3 mm maximum; and for 1:10 output scale, 1 mm maximum. Taking into account these recommendations and the characteristics of the object, it was decided to plan the shots with a general GSD of 5 mm and a GSD of 1 mm for the most deteriorated areas.
+
+Once the GSD has been defined and the characteristics of the camera to be used are known (Table 2), the shots are planned (Tables 3 and 4), following the recommendations of [20] for SfM photogrammetry (80% longitudinal overlap and 40% transversal overlap).
+
+Georeferencing. coordinates of support points.
+
+The photogrammetric model is georeferenced using 11 coded targets. Two-colour targets with a well-defined geometry have been used to mark them (Fig. 6). They have been placed, distributed on the four faces, two targets per each one and three of them in the most deteriorated part of the tower, as shown in Fig. 7. The size of the artificial support point (Table 5) is calculated according to the GSD established in the planning phase [20] of the general shots.
+
+The support points are provided with coordinates based on the creation of a closed polygonal with 4 sections, taking the trigonometric point/triangulation pillar “Torrevencela” as the initial and final point. This configuration makes it possible to give the support points three-dimensional coordinates in the ETRS89-UTM zone 30 N projection system (Tables
+
+6 and 7).
+
+In addition to georeferencing the model, the support points are necessary for the scaling of the photogrammetric model obtained in the initial phase. In the case of the SfM algorithm, the transformation from model coordinates to terrain coordinates is performed after the orientation process of the photographs, the result of which is a sparse point cloud. In this way, the generation of the dense point cloud is performed directly in georeferenced terrain coordinates.
+
+Point cloud generation.
+
+As a preliminary step to the generation of photogrammetric products, it is necessary to generate a dense point cloud. The result is a discrete representation of the real object, as the surface is not continuous.
+
+The image processing has been performed with the Agisoft Metashape Pro software (v.1.7.1 build 11797) [21]. The workflow (Fig. 8) facilitates the generation of a 3D point cloud automatically, using SfM algorithms. The shot configuration can be stereoscopic, convergent or a combination of both, depending on the type of object and its complexity. The only requirement is that a point must appear in at least three images to facilitate the reconstruction of the orientation of the cameras.
+
+The images obtained must be grouped in a subdirectory belonging to the project subdirectory, considered as root and where the software will store the results obtained during the processing.
+
+The generation of the dense point cloud and the application of the external orientation includes the following steps [21]:
+
+1. Loading images into Metashape.
+
+2. Estimating the metric quality of the images. To reduce the error in the detection of support points (markers), it is advisable to discard those whose quality is lower than 0.5.
+
+3. Orient the photographs. In this phase, the internal orientation parameters of the camera and the relative orientation between them are calculated in order to produce the intersection of the homologous rays. The result is a sparse point cloud, formed by the points that have been used in the calculations.
+
+4. Detect the markers, as coded targets are used.
+
+5. Check the markers and relocate them, if necessary.
+
+6. Import the coordinates of the markers.
+
+7. Check the error in the estimated coordinates of the markers.
+
+8. Optimise the cameras to perform the absolute orientation of the photogrammetric model.
+
+9. Dimension the working area, depending on the size of the object and the area of interest. This reduces the processing time in the following phases.
+
+10. Generate the dense point cloud.
+
+11. Remove the noise from the dense point cloud.
+
+Product generation: 3D model and Orthophoto
+
+The desired products are twofold: a textured 3D model of the object and orthophotographs of the four faces of the tower. Both products will allow archaeologists to study the object remotely.
+
+The creation of the 3D model can be done from the sparse point cloud, obtained by aligning the images, or from the dense point cloud. In the first case the result is of low quality while in the second case a high quality 3D model is obtained, but never higher than the GSD used to take the images. The processing time to obtain both products is low for the first case and quite high for the second, this depends on the size of the GSD defined in the mission planning section.
+
+Orthophotograph, given its metric nature, can be used to carry out architectural archaeological studies, delimit areas of special interest, etc.
+
+Existing image may be resampled to produce a new image that conforms to specific geometric properties. This may be a one-to-one process, where a single source image is modified into another resampled one, as is commonly the case when producing an orthophoto, or a many-to-one process, whereby a new image contains parts from multiple images as in the case in mosaicking [20] (p.963). As a complex object it is necessary to take more than one image, the orthorectified product being a composition of partial images. In Agisoft Metashape it is called an orthomosaic. The result is a resampled image where the effects of perspective and displacement due to relief have been eliminated, thus obtaining an orthoimage that has a uniform scale, as in a map. Agisoft Metashape expresses this scale in mm/pixel (Fig. 6), which is easily convertible into its normalised form (1:x).
+
+Both products are of particular interest from a conservation and restoration point of view.
+
+In this work a correct methodology and of possible application has been used to carry out an analysis and hypothesis proposal on the fortification of Torre Benzalá that allows a better interpretation of this medieval construction, determining the relationship between the written source and the preserved tower, with the aim of its future conservation and enhancement.
+
+The oldest and most decisive written source on the Benzalá tower is to be found in the text and drawing made by Ximena Jurado in 1639. It shows a walled fortification with a triangular ground plan and towers at two of its corners, one rectangular and the other circular, which contained openings and arrow slits. A circular keep can also be seen inside the enclosure with the same construction elements used to shelter the garrison. The entrance to the interior of the protected space would have been located in the wall between the towers. On the other hand, this drawing shows the completion of the merlons with a pyramid-shaped top, characteristic of the Mudéjar style known as albardilla. At the present time, one might wonder whether this triangular fortification was actually built, or whether there are fictitious elements that have no basis in the written source.
+
+The results obtained from the orthoimages generated corroborate the interpretation of a more complex construction than that of a simple medieval tower. This tower has a trapezoidal construction (Fig. 10.a). Irregular sandstone masonry is used for its construction, with the smoothest of its faces showing on the outside, with lime and sand mortar and reinforced at the corners with sandstone rocks with a rope-and-pound mortar. On the other hand, it can be seen that the empty spaces between these masonry blocks are filled with rubble or small stones, thus ensuring that the horizontality of the courses is not considerably altered. This type of Castilian construction is characteristic and comparable to that of other castles and fortifications that share a similar chronology and even greater geographical proximity, as can be seen in [12]. The use of masonry in the construction is the most reasonable technique, since the fortification is located in a frontier area and it is necessary to be as efficient as possible in its construction. Therefore, it could be determined that the construction would have taken place between 1242 and 1251, a period in which there is written evidence of the construction of the Castillo del Berrueco by the Order of Calatrava, which owned this commandery and that of Torre Benzalá [[21].
+
+The analysis of the resulting data shows a different hypothesis that contradicts the one put forward in her drawing by Ximena Jurado. According to the orthoimages, the tower was built in a solid form, lacking interior spaces or chambers where the saeteras drawn could be incorporated. However, we can confirm the hypothesis of the starting point of two walls from this tower that would defend the flanks in that part of the fortification, with parapets that would give access to the upper part of the tower. The dismantling and plundering carried out for the construction of nearby farmhouses at the end of the nineteenth century left their mark mainly on the north face of the tower itself, with a loss of material at its east end measuring 2.45 m high by 3.20 m wide and at its west end measuring 3.65 m high by 1.20 m wide (Fig. 11b). This difference in height and width indicates that the thicker east-facing section of the wall was the weakest defensive point. On the other hand, it would be defended by the flanking of the two towers (circular and square). The existence of different heights in the two walls that converge at this tower explains the difference in height between the wall facing north-east and the wall built facing north-west Figs. 12 and 13.
+
+The removal of material from the tower part reveals the interior appearance of the tower, which tells us about the construction process used in the tower. Firstly, the four sides of the wall were built with masonry, leaving the interior empty up to a certain height. Secondly, this core was filled with a mixture of mortar and masonry that was more irregular and smaller than that used on the outside. We cannot categorically dissociate Christian construction from possible Muslim construction in terms of materials and building techniques because they often influence each other. It is possible that the Christians occasionally employed Muslim builders and equipment and vice versa, in fact the completion of the merlons with pyramidal termination is more typical in the Mozarabic period, although it would continue to be used in later Castilian castles as can be seen in the castle of El Berrueco, of the same chronology and geographical proximity.
+
+The DEM and orthophoto of the upper surface of the tower (Fig. 10) do not reflect the real strength and height of the tower, which would have had a parapet to access its terrace flanked by a crenellated parapet with merlons that could have been perforated with arrow slits. This is supported by the existence of the need to defend this flank of the fortification and the arrangement of stones protruding from the tower in the upper northwest corner.
+
+The limited economy in the construction of the tower is confirmed by the reuse of stone material that had been carved earlier, such as a carved stone with a cylindrical perforation resembling a stone hinge (Fig. 14a) and another in the form of a portion of a stepped shaft (Fig. 14b), which confirms the hypothesis of economic savings, effort and time spent both in carving and in transporting the material. The absence of stonemason’s marks and the more than possible use of structures from the nearby Roman settlement “Ordo Batores” further confirm this hypothesis.
+
+This study could be completed with other subsequent studies using LIDAR and TLS techniques, as in [22,23,24,25], which could define the dimensions of the plan of the fortification, as well as the positioning of the wall sections that made up the fortification. Unfortunately, the structural loss of almost the entire fortification makes virtual reconstruction based on historical documentation and following the principles of the London Charter and Seville principles the basis for virtual archaeology unfeasible.
+
+Therefore, in our opinion, it is urgent to carry out the appropriate archaeological interventions, developing a documentation project to obtain relevant information, aimed at carrying out certain conservation and restoration works to prevent the deterioration of the monument. In this way, Torre Benzalá could be integrated into the circuit of cultural visits of the route of the Castles and Battles, thus contributing to the development and improvement of tourist competitiveness, within the framework of quality tourism, promoting the conservation and enhancement of the heritage and history of this territory, as well as the economic development of the area [26].

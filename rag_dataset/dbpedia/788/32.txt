@@ -1,0 +1,131 @@
+This thread is for SJS (and for those who find in-depth analysis of cricket statistics interesting). If any member doesn't like cricket statistics and/or proper in-depth analysis based on that he's kindly advised not to post in this thread as they'll find a lot other threads of their likings.
+
+SJS, you remember you asked me to compare the test batiing careers of Lara, Sobers and Hammond based on pure proper statistical analysis? Here it is...
+
+I shall explain it to you with the example of Sir Garfield Sobers. He played his first test on 30 March 1954 and his last test on 30 March 1974. First, I calculated the M.A. (Median of Average) of all bowlers except West Indian bowlers (of course, because he never faced West Indian bowlers at test level) during that period. It came out to be 34.53....Now, what is M.A.?
+
+It means 50% of all bowlers against whom Sobers played had bowling averages less than 34.53 (during that period only) and the other 50% greater than that...So, 34.53 was the bowling average of an 'average bowler' who bowled against Sobers during that period...
+
+Now, Sobers' batting average at test level was 57.78 you know. So, that means an 'average bowler' whose bowling average was 34.53 during that period had a bowling average of 57.78 when he bowled against Sobers.
+
+From there we can calculate D.F. (what I call Dominance Factor) of Sobers as (57.78/34.53) or 1.67 roughly...
+
+This measure D.F. is a measure which takes into account strength of opposition bowling and fielding, nature of pitches and grounds during that period and even the batting calibre of batsmen of that period (even you need to know that, otherwise how'll you measure the greatness of someone like Grace or Trumper?)...Here, I calculated the D.F.of the 3 batsmen you wanted...
+
+batting average M.A. D.F.
+
+Garfield Sobers 57.78 34.53 1.673327541
+
+Wally Hammond 58.45 37.89 1.542623383
+
+Brian Lara 52.88 38.11 1.38756232
+
+Now, how to interpret D.F.? An 'average batsman' will have a D.F. of 1...Anything above 1 means the batsman was batter than average...As we can see here all the 3 batsmen here were considerably better than average to be called greats....However, even though Sobers had a lower average than Hammond, he was a better test batsman (not by a huge margin though)...Similarly, Hammond was also better than Lara by a moderate margin...And also there is enough difference of points between Sobers and Lara for one to be termed better than the other...Interestingly, we also see (from M.A.) that the bowlers Sobers had to face were of better quality than the same for the other 2 and/or the pitches and conditions were more difficult for Sobers than the other two...That's why Sobers' average was a greater achievement which gets reflected in his D.F.
+
+Having said that, this only measures their batting achievement at test level (not F.C.). D.F., by any means doesn't measure their talent or for example doesn't say who was better in away matches against leg-spinners, or it doesn't say who was better on 'his day'...But it compares them on the basis of their overall batting achievements at test level...
+
+SJS, if you find any major limitation or way to improve in this method, kindly bring that to my notice...
+
+And one last thing...If you like it even in part then kindly keep my one request...Change your signature to something better and more meaningful because
+
+1. Statistics may be popular, but proper meaningful analysis based on statisics is not; and
+
+2. Statistics and cricket are not enemies, they are friends indeed.
+
+Edit: After Top Cat's advise I replaced medians in M.A.'s with means and found out a better measure...His advise was helpful indeed
+
+Batting Average M.A. D.F.
+
+Garfield Sobers 57.78 31.5 1.834285714
+
+Wally Hammond 58.45 33.86 1.726225635
+
+Brian Lara 52.88 32.59 1.622583615
+
+Though the rankings remain the same...
+
+Caution: Never use this method for any batsman who has been dismissed less than 30 times or any bowler who has had less than 70 wickets because with too few data points any statistical measure is flawed.
+
+Well, as it's a thread about statistics so I'll wade in. This is an inherently flawed use of data as one of the many invalid assumptions is makes is that an order of magnitude decrease or increase in the median = the same magnitude increase/decrease in the mean. Taking the median is only valid in a situation where something like the Law of Diminishing Returns doesn't apply (i.e. not in the case of bowling averages) and then dividing a mean by a median which is a median of a bunch of means, assuming they're all normally distributed? That batting averages are normally distributed about the mean is a somewhat shaky assumption too.
+
+Sorry to be so negative but the number of problems that popped into my head without thinking too hard means any conclusions drawn from this are pretty way off the mark.
+
+Well...You are right in part...Why not fully I shall let you know...I shall also tell you why my approximation doesn't harm the ranking in almost all cases...
+
+Here, you are taking run scored between each two dismissals as a random variable so batting average becomes a mean.
+
+But I took average itself as a variable...That way the measurement is of the form of X divided by median of Y, where X and Y are data with same units...
+
+Now comes the part you are correct about...The measurement ideally should've been X divided by mean of Y I totally agree...That way while calculating mean of bowling averages (the denominator) the weights assigned to each data point should be equal to the number of balls each bowler bowled to that specific batsman, right?
+
+So, D.F. = { X / (summation of wY/summation of w) }. Now, for calculating this for 3 batsmen you need years...(As w's are the balls each of the thousands of bowlers bowled to the batsmen)....In that place what I did was to replace mean by median (normality assumption of course as you pointed out)....
+
+Now, in case of batting or bowling averages you'll agree almost 99% of the times medians move with means (i.e. one rises with the rise in the other, though not by the same amount)...because averages, though don't follow normal distribution, are bell-shaped in nature and not much lepto-kurtic or meso-kurtic in nature...
+
+So, though the points (D.F.) will change (increase most of the times) if you take means, the rankings will, almost always remain the same...
+
+Now comes the part you are correct about...The measurement ideally should've been X divided by mean of Y I totally agree...That way while calculating mean of bowling averages (the denominator) the weights assigned to each data point should be equal to the number of balls each bowler bowled to that specific batsman, right?
+
+Bit more to it than that. A few things;
+
+- you cannot take a median of means because they're not all equally weighted. This, in the case of bowling averages, is a problem as it assumes all bowling averages are weighted equally. Does a bowler who bowl in one match and take 2 wickets averaging 30 = a bowler who (such as Brett Lee) bowls in 70-off Tests and average the same? The skill and effort required to maintain an average of 30 over 100 Tests is different to that required for less. There has to be normalisation of the data at some point and I'm pretty sure it should not end at mere number of matches either. You have to give each bowling average you use in a median calculation equal weighting somehow. This should take into account everything from pitch conditions to atmospheric conditions, time of innings the bowlers were operating in, bat technology, roped-in boundaries, etc. All factors which systemically impact on the number of runs a bowler conceded whilst taking wickets. Worse, even they aren't weighted equally.
+
+This is where the problem starts and not controlling for systematic effects on the bowling averages means the rest of the model falls to bits. Surely you would agree that merely using a bowling average to rank bowlers ignores all of the other factors at play which aren't smoothed out by random chance?
+
+If you take every factor into account and come up with some sort of score and then used it as a ranking, that's not bad. But there would be a lot of caveats associated with it.
+
+- Then you have to take into account that bowling averages are not linear in nature. As I said, the Law of Diminishing Returns needs to be taken into account. A difference of 5 runs between two bowlers who average 20 and 25 respectively != a difference of 5 runs between a bowlers who average 30 and 35 respectively. This is why, even if the medians and the means moved by similar magnitudes (which they don't and although the difference is small, I would guess it's statistically significant) they shouldn't.
+
+An example; Sobers' DF is around 1.6. To average the same if bowling averages averaged 25 (around a 30% decrease), his DF would be around 2.3 (a 40% increase). If you plot successively lower bowling averages against successively higher DF, you notice the two trends are different (one is linear, one is exponential). In that form, you cannot compare them without altering the bowling averages to more accurately reflect the exponential increase in difficulty with getting a lower average.
+
+Similar problem with the batting averages; averaging 57 in one era != averaging 57 in another. You'd have to control for all of the above factors before your 'score' was valid.
+
+Without solving these two problems, any further calculation is absolutely pointless.
+
+Bit more to it than that. A few things;
+
+- you cannot take a median of means because they're not all equally weighted. This, in the case of bowling averages, is a problem as it assumes all bowling averages are weighted equally. Does a bowler who bowl in one match and take 2 wickets averaging 30 = a bowler who (such as Brett Lee) bowls in 70-off Tests and average the same? The skill and effort required to maintain an average of 30 over 100 Tests is different to that required for less. There has to be normalisation of the data at some point and I'm pretty sure it should not end at mere number of matches either. You have to give each bowling average you use in a median calculation equal weighting somehow. This should take into account everything from pitch conditions to atmospheric conditions, time of innings the bowlers were operating in, bat technology, roped-in boundaries, etc. All factors which systemically impact on the number of runs a bowler conceded whilst taking wickets. Worse, even they aren't weighted equally.
+
+This is where the problem starts and not controlling for systematic effects on the bowling averages means the rest of the model falls to bits. Surely you would agree that merely using a bowling average to rank bowlers ignores all of the other factors at play which aren't smoothed out by random chance?
+
+If you take every factor into account and come up with some sort of score and then used it as a ranking, that's not bad. But there would be a lot of caveats associated with it.
+
+- Then you have to take into account that bowling averages are not linear in nature. As I said, the Law of Diminishing Returns needs to be taken into account. A difference of 5 runs between two bowlers who average 20 and 25 respectively != a difference of 5 runs between a bowlers who average 30 and 35 respectively. This is why, even if the medians and the means moved by similar magnitudes (which they don't and although the difference is small, I would guess it's statistically significant) they shouldn't.
+
+An example; Sobers' DF is around 1.6. To average the same if bowling averages averaged 25 (around a 30% decrease), his DF would be around 2.3 (a 40% increase). If you plot successively lower bowling averages against successively higher DF, you notice the two trends are different (one is linear, one is exponential). In that form, you cannot compare them without altering the bowling averages to more accurately reflect the exponential increase in difficulty with getting a lower average.
+
+Similar problem with the batting averages; averaging 57 in one era != averaging 57 in another. You'd have to control for all of the above factors before your 'score' was valid.
+
+Without solving these two problems, any further calculation is absolutely pointless.
+
+Ya ya I understood this and confessed this in the earlier post...Ok here I replace median with mean...The weightages taken as total balls bowled by each opposition bowler in the given period...Here it is
+
+Batting Average M.A. D.F.
+
+Garfield Sobers 57.78 31.5 1.834285714
+
+Wally Hammond 58.45 33.86 1.726225635
+
+Brian Lara 52.88 32.59 1.622583615
+
+See, as I told in the earlier post, the points will increase (Since the law of diminishing returns apply and so median will be greater than mean) but the ranking will remain the same almost in all cases (though not always)... But ya I agree this measure is much better than the previous one...
+
+Thanks for the advise...It was helpful really...
+
+Ya ya I understood this and confessed this in the earlier post...Ok here I replace median with mean...The weightages taken as total balls bowled by each opposition bowler in the given period...Here it is
+
+Batting Average M.A. D.F.
+
+Garfield Sobers 57.78 31.5 1.834285714
+
+Wally Hammond 58.45 33.86 1.726225635
+
+Brian Lara 52.88 32.59 1.622583615
+
+See, as I told in the earlier post, the points will increase (Since the law of diminishing returns apply and so median will be greater than mean) but the ranking will remain the same almost in all cases (though not always)... But ya I agree this measure is much better than the previous one...
+
+Thanks for the advise...It was helpful really...
+
+Bah, it's easy to sit on the sidelines and pick on something. You had the knackers to propose something in the first place and present it, more than most people do.
+
+For what it's worth, I do think your logic is fine. I just have issues with which numbers to use and how and, to be honest, this strikes me as one of those problems which no-one will never agree with the initial conditions someone presents so you'd be up against it right off the bat (so to speak).

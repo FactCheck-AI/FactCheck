@@ -1,0 +1,19 @@
+WAYF is Denmark's Identity Federation for Research and Higher Education (R&HE). It is run by the Danish NREN org, i.e. Danish e-Infrastructure Cooperation (DeIC), a virtual entity under the Ministry for R&HE, with WAYF staff (3.5 full-time employees) contributed by, and based at, the Technical University of Denmark (DTU).
+
+In operation since 2008, WAYF now has ~22M logins a year from ~1.6M unique identities. Around 60 identity providers (IdPs), counting all universities and university colleges; most business academies and maritime schools; a few other orgs; and the national ID for citizens and employees. More than 550 service providers (SPs), of which 150+ are imported from eduGAIN, a collaboration between 45+ federations world-wide enabling SPs to receive logins from IdPs in foreign federations.
+
+Service providers are let into WAYF on request by identity providers, and only pay a nominal fee annually. Identity providers with an NREN subscription get WAYF for free, while non-NREN identity providers pay a small fraction of their annual revenues for WAYF membership.
+
+WAYF started out with a so-called hub&spoke architecture, with each IdP and SP (each 'entity') connecting to a central hub and having all login traffic between them go through there. This makes for easy onboarding of new entities, and enables WAYF to handle data subject consent centrally on behalf of its entities. Another advantage of the hub is its ability to do protocol translation, allowing e.g. SAML-only SPs to receive logins from CAS-only IdPs. Hubbing the login traffic also allows WAYF to enforce various other aspects of federation policy, e.g. attribute release constraints and other restrictions on interaction between entities, and trivialises the collection of login traffic statistics.
+
+However, the demand for interoperability with other federations, notably through eduGAIN, has prompted the need for WAYF's hub&spoke architecture to be supplemented with a peer2peer (or 'mesh') interface, allowing WAYF entities to interact directly with those of other federations, seemingly without the hub's mediation, while still retaining the advantages of the hub&spoke architecture enumerated above. This 'hybrid' federation architecture was introduced July of 2018, with a new software platform written in Golang, thoroughly tested and, back in 2018, favourably reviewed by German XML security experts.
+
+WAYF as a 'federation operator' can be said to fill two distinct roles: that of hub opererator and that of metadata provider. Backed by a strong infrastructure for metadata management, WAYF has the capability to maintain, manage and publish any SAML2 or other metadata that anyone would need — and so would be able to maintain e.g. the metadata needed by all public-sector identity federations in Denmark, perhaps publishing this in a single, “national” XML feed.
+
+WAYF also runs a central IdP discovery service (DS), enabling the user to find his IdP very fast from among thousands of IdPs, possibly including foreign ones imported from eduGAIN. Only those IdPs relevant to the SP requesting the login are displayed to the user: special tags in the SP metadata fed to the DS define this set of IdPs.
+
+In WAYF metadata, any entity can be tagged as belonging to a particular 'sub-federation'. The hub blocks transactions between entities without at least one such tag in common; and the DS uses these tags for letting the user choose only from among the IdPs sharing tags with the requesting SP.
+
+All XML released by WAYF, both traffic and metadata, is signed using a hardware security module (HSM), with the capability to perform 2,400 signings a second (with 2K keys).
+
+Central and critical servers are hosted by NORDUnet at two distinct geolocs, in a high-availability setup with fail-over and load balancing. In near future, containers-based deployment will be introduced.

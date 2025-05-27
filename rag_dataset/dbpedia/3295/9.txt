@@ -1,0 +1,85 @@
+1. © 2024 Cloudera, Inc. All rights reserved. Adding Generative AI to Real-Time Streaming Pipelines Tim Spann Principal Developer Advocate May 1, 2024
+
+2. © 2024 Cloudera, Inc. All rights reserved.
+
+3. © 2024 Cloudera, Inc. All rights reserved. 3 TIM SPANN Twitter: @PaasDev // Blog: datainmotion.dev Principal Developer Advocate. Field Engineer. Princeton/NYC Future of Data Meetups. ex-Pivotal, ex-Hortonworks, ex-StreamNative, ex-PwC https://medium.com/@tspann https://github.com/tspannhw
+
+4. © 2024 Cloudera, Inc. All rights reserved. 4 This week in Apache NiFi, Apache Flink, Apache Kafka, ML, AI, Apache Spark, Apache Iceberg, Python, Java, LLM, GenAI, Vector DB and Open Source friends. https://bit.ly/32dAJft https://www.meetup.com/futureofdata- princeton/ FLaNK Stack Weekly by Tim Spann
+
+5. © 2024 Cloudera, Inc. All rights reserved. 5 Conﬁdential—Restricted @PaasDev https://www.meetup.com/futureofdata-princeton/ From Big Data to AI to Streaming to Containers to Cloud to Analytics to Cloud Storage to Fast Data to Machine Learning to Microservices to ... Future of Data - NYC + NJ + Philly + Virtual
+
+6. © 2024 Cloudera, Inc. All rights reserved. 6 Open Source Vector DBs Open Community & Open Models RAPID INNOVATION IN THE LLM SPACE Too much to cover today.. but you should know the common LLMs, Frameworks, Tools Notable LLMs Closed Models Open Models GPT3.5 GPT4 Llama2 Mistral7B Mixtral8x7B Claude2 ++ 100s more… check out the HuggingFace LLM Leaderboard (pretrained, domain ﬁne-tuned, chat models, …) Code Llama Popular LLM Frameworks When to use one over the other? Use Langchain if you need a general-purpose framework with ﬂexibility and extensibility. Consider LlamaIndex if you’re building a RAG only app (retrieval/search) Langchain is a framework for developing apps powered by LLMs ● Python and JavaScript Libraries ● Provides modules for LLM Interface, Retrieval, & Agents LLamaIndex is a framework designed speciﬁcally for RAG apps ● Python and JavaScript Libraries ● Provides built in optimizations / techniques for advanced RAG HuggingFace is an ML community for hosting & collaborating on models, datasets, and ML applications ● Latest open source LLMs are in HuggingFace ● + great learning resources / demos https://huggingface.co/
+
+7. © 2024 Cloudera, Inc. All rights reserved. 7 Enterprise Knowledge Base / Chatbot / Q&A - Customer Support & Troubleshooting - Enable open ended conversations with user provided prompts Code assistant: - Provide relevant snippets of code as a response to a request written in natural language. - Assist with creating test cases and synthetic test data. - Reference other relevant data such as a company’s documentation to help provide more accurate responses. Social and emotional sensing - Gauge emotions and opinions based on a piece of text. - Understand and deliver a more nuanced message back based on sentiment. ENTERPRISE WIDE USE CASES FOR AN LLM Classiﬁcation and Clustering - Categorize and sort large volumes of data into common themes and trends to support more informed decision making. Language Translation - Globalize your content by feeding web pages through LLMs for translation. - Combine with chatbots to provide multilingual support to your customer base. Document Summarization - Distill large amounts of text down to the most relevant points. Content Generation - Provide detailed and contextually relevant prompts to develop outlines, brainstorm ideas and approaches for content. L Adoption dependent upon an Enterprise’s risk tolerance, restrictions, decision rights and disclosure obligations.
+
+8. © 2024 Cloudera, Inc. All rights reserved. 8 WHICH MODEL AND WHEN? Use the right model for right job: closed or open-source Closed Source Usage can easily scale but so can your costs Rapidly improving AI models Most advanced AI models Excel at more specialized tasks Great for a wide range of tasks Open Source Better cost planning Compliance, privacy, and security risks More control over where & how models are deployed
+
+9. © 2024 Cloudera, Inc. All rights reserved. 9 APPLICATIONS CLOSED-SOURCE FOUNDATION MODELS MODEL HUBS OPEN SOURCE FOUNDATION MODELS FINE-TUNED MODELS PRIVATE VECTOR STORE MANAGED VECTOR STORE CLOUD INFRASTRUCTURE Milvus Meta (Llama 2) Applied Machine Learning Prototypes (AMPs) Hugging Face SPECIALIZED HARDWARE APIs: OpenAI (GPT-4 Turbo) Amazon Bedrock: Anthropic (Claude 2), Cohere… DATA WRANGLING REAL-TIME DATA INGEST & ROUTING AI MODEL TRAINING & INFERENCE DATA STORE & VISUALIZATION Open Data Lakehouse DATA WRANGLING REAL-TIME DATA INGEST & ROUTING AI MODEL TRAINING & SERVING DATA STORE & VISUALIZATION
+
+10. © 2019 Cloudera, Inc. All rights reserved. 10 CLOUDERA + LLMS Knowledge Repository Data Storage / Management Data Preparation Data Engineering LLM Fine Tuning Process Training Framework LLM Serving Serving Framework Key: CPU Task GPU Task CML CDE CDP Vector DB CDF Streaming Classification Real-Time Model Deployment
+
+11. © 2024 Cloudera, Inc. All rights reserved. 11 EVOLUTION OF LLM APP ARCHITECTURES RAG, MLOps, and Cache L5 App Text Embed. MLOps Cache Vector DB AuthR Base LLM P EFT RAG and MLOps L4 App Text Embed. MLOps Vector DB AuthR Base LLM P EFT Governed RAG L3 App Text Embed. Vector DB Base LLM AuthR Retrieval Augmented (RAG) L2 App Text Embed. Vector DB Base LLM Direct-to-LLM L1 App Base LLM Choose a cost-effective platform that provides all of the necessary components and integrations
+
+12. © 2024 Cloudera, Inc. All rights reserved. 12 ML OPS IN CLOUDERA MACHINE LEARNING Enabling Production ML At Scale MODEL & PREDICTION MONITORING ● UUID for each prediction ● Analyze metrics granularly to the feature level ● Ground truth to production environments MODEL DEPLOYMENT & HA SERVING ● One-click deployment of models ● Robust and HA model serving infrastructure SHARED DATA EXPERIENCE FOR MODELS ● Automatic model cataloging & lineage ● Governed and secure production workﬂows DISTRIBUTED AI COMPUTE ● Cutting Edge frameworks ● Support for Ray, Dask, Modin…
+
+13. © 2023 Cloudera, Inc. All rights reserved. 13 Live Q&A Travel Advisories Weather Reports Documents Social Media Databases Transactions Public Data Feeds S3 / Files Logs ATM Data Live Chat … HYBRID CLOUD INTERACT COLLECT STORE ENRICH, REPORT Distribute Collect Report REPORT Visualize Report, Automate AI BASED ENHANCEMENTS Predict, Automate VECTOR DATABASE LLM Machine Learning Data Visualization Data Flow Data Warehouse SQL Stream Builder Data Visualization Input Sentences Generated Text Timestamp Input Sentence Timestamps Enrichments Messaging Broker Real-time alerting Real-time alerting Aggregations
+
+14. 14 © 2023 Cloudera, Inc. All rights reserved. REAL-TIME CONTEXT FOR GEN AI Classic RAG Architecture Contextualized prompt Knowledge-base Context (continuously updated) User LLM Hallucinated Response RAG Optimized Response Initial Prompt LLM Raw Prompt ● Performance ● Factuality ● Interpretability ● Domain knowledge ● Eﬃciency Vector DB (continuously updated) Retrieve Augment Vectorize
+
+15. © 2024 Cloudera, Inc. All rights reserved. NLP / AI / LLM Generative AI
+
+16. © 2024 Cloudera, Inc. All rights reserved. 16 DataFlow Pipelines Can Help External Context Ingest Ingesting, routing, clean, enrich, transforming, parsing, chunking and vectorizing structured, unstructured, semistructured, binary data and documents Prompt engineering Crafting and structuring queries to optimize LLM responses Context Retrieval Enhancing LLM with external context such as Retrieval Augmented Generation (RAG) Roundtrip Interface Act as a Discord, REST, Kafka, SQL, Slack bot to roundtrip discussions
+
+17. © 2019 Cloudera, Inc. All rights reserved. 17 UNSTRUCTURED DATA WITH NIFI • Archives - tar, gzipped, zipped, … • Images - PNG, JPG, GIF, BMP, … • Documents - HTML, Markdown, RSS, PDF, Doc, RTF, Plain Text, … • Videos - MP4, Clips, Mov, Youtube URL… • Sound - MP3, … • Social / Chat - Slack, Discord, Twitter, REST, Email, … • Identify Mime Types, Chunk Documents, Store to Vector Database • Parse Documents - HTML, Markdown, PDF, Word, Excel, Powerpoint
+
+18. © 2019 Cloudera, Inc. All rights reserved. 18 CLOUD ML/DL/AI/Vector Database Services • Cloudera ML • Amazon Polly, Translate, Textract, Transcribe, Bedrock, … • Hugging Face • IBM Watson X.AI • Vector Stores Anywhere: Milvus, …
+
+19. © 2024 Cloudera, Inc. All rights reserved. https://medium.com/@tspann/building-a-milvus-connector-for-niﬁ-34372cb 3c7fa
+
+20. CLOUDERA DATAFLOW
+
+21. © 2024 Cloudera, Inc. All rights reserved. 21 CAPTURE ALL DATA Vector DB AI Model Unstructured ﬁle types DataFlow 450 + Processors Available Knowledge stores and other enterprise data Materialized Views Structured Sources Applications/API’s Streams Edge devices and Streams DataFlow Has a Vast Library of Processors to connect to ANYTHING Chat Bots
+
+22. © 2019 Cloudera, Inc. All rights reserved. 22 CAPTURE ALL DATA Multimodal data Structured Data Traditional ML pipelines: ● Structured ● Batch/Microbatch ● Highly engineered feature sets ● Clearly labeled data ● Metrics, KPI’s, etc Gen AI pipelines: ● Multimodal ● Real-time/Streaming ● Parsing, chunking required ● ELT tools poor suited DataFlow is built for MultiModal Data
+
+23. © 2023 Cloudera, Inc. All rights reserved. 23 PROVENANCE
+
+24. https://medium.com/cloudera-inc/getting-ready-for-apache-nifi-2-0-5a5e6a67f450 NiFi 2.0.0 Features ● Python Integration ● Parameters ● JDK 21+ ● JSON Flow Serialization ● Rules Engine for Development Assistance ● Run Process Group as Stateless ● ﬂow.json.gz https://cwiki.apache.org/confluence/display/NIFI/NiFi+2.0+Release+Goals
+
+25. © 2023 Cloudera, Inc. All rights reserved. 25 FLINK SQL -> NIFI -> HUGGING FACE GOOGLE GEMINI
+
+26. © 2023 Cloudera, Inc. All rights reserved. 26 SSB UDF JS/JAVA + GenAI = Real-Time GenAI SQL https://medium.com/cloudera-inc/adding-generative-ai-results-to-sql-streams-513e1fd2a6af SELECT CALLLLM(CAST(messagetext as STRING)) as generatedtext, messagerealname, messageusername, messagetext,messageusertz, messageid, threadts, ts FROM flankslackmessages WHERE messagetype = 'message'
+
+27. © 2024 Cloudera, Inc. All rights reserved. 27
+
+28. Python Processors
+
+29. Generate Synthetic Records w/ Faker ● Python 3.10+ ● faker ● Choose as many as you want ● Attribute output
+
+30. Download a Wiki Page as HTML or WikiFormat (Text) ● Python 3.10+ ● Wikipedia-api ● HTML or Text ● Choose your wiki page dynamically
+
+31. Extract Company Names ● Python 3.10+ ● Hugging Face, NLP, SpaCY, PyTorch https://github.com/tspannhw/FLaNK-python-ExtractCompanyName-processor
+
+32. CaptionImage ● Python 3.10+ ● Hugging Face ● Salesforce/blip-image-captioning-large ● Generate Captions for Images ● Adds captions to FlowFile Attributes ● Does not require download or copies of your images https://github.com/tspannhw/FLaNK-python-processors
+
+33. RESNetImageClassification ● Python 3.10+ ● Hugging Face ● Transformers ● Pytorch ● Datasets ● microsoft/resnet-50 ● Adds classiﬁcation label to FlowFile Attributes ● Does not require download or copies of your images https://github.com/tspannhw/FLaNK-python-processors
+
+34. NSFWImageDetection ● Python 3.10+ ● Hugging Face ● Transformers ● Falconsai/nsfw_image_detection ● Adds normal and nsfw to FlowFile Attributes ● Gives score on safety of image ● Does not require download or copies of your images https://github.com/tspannhw/FLaNK-python-processors
+
+35. FacialEmotionsImageDetection ● Python 3.10+ ● Hugging Face ● Transformers ● facial_emotions_image_detection ● Image Classiﬁcation ● Adds labels/scores to FlowFile Attributes ● Does not require download or copies of your images https://github.com/tspannhw/FLaNK-python-processors
+
+36. Extract Entities ● Python 3.10+ ● NLP, SpaCY ● Extract locations ● Extract organizations ● Extract money ● Extract time ● Extract events ● Extract countries ● Extract objects, food, people, quantities https://github.com/tspannhw/FLaNK-python-processors/blob/main/ExtractEntities.py
+
+37. Parse Addresses ● Python 3.10+ ● PYAP Library ● Simple Library if your text includes an address ● Address Parsing ● Address Detecting ● MIT Licensed ● Looking at other libraries, GenAI, DL, ML https://github.com/tspannhw/FLaNK-python-processors
+
+38. Address To Lat/Long ● Python 3.10+ ● geopy Library ● Nominatim ● OpenStreetMaps (OSM) ● openstreetmap.org/copyright ● Returns as attributes and JSON ﬁle ● Works with partial addresses ● Categorizes location ● Bounding Box https://github.com/tspannhw/FLaNKAI-Boston
+
+39. DEMO
+
+40. DEMO #1 - Cloudera Machine Learning - AMPs
+
+41. DEMO #2 - Cloudera DataFlow - Milvus
+
+43. CSP Community Edition ● Docker compose ﬁle of CSP to run from command line w/o any dependencies, including Flink, SQL Stream Builder, Kafka, Kafka Connect, Streams Messaging Manager and Schema Registry. ○ $>docker compose up ● Licensed under the Cloudera Community License ● Unsupported Commercially (Community Help - Ask Tim) ● Community Group Hub for CSP ● Find it on docs.cloudera.com (see QR Code) ● Kafka, Kafka Connect, SMM, SR, Flink, Flink SQL, MV, Postgresql, SSB ● Develop apps locally
+
+45. 45 TH N Y U

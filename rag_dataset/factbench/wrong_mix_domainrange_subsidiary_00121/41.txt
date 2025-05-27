@@ -1,0 +1,147 @@
+Jonathan Ellis chairs the Cassandra project at the Apache Software Foundation and is the co-founder of Riptano, a commercial entity that provides software, support, and training for Cassandra. Prior…
+
+Jonathan Ellis chairs the Cassandra project at the Apache Software Foundation and is the co-founder of Riptano, a commercial entity that provides software, support, and training for Cassandra. Prior to the founding of Riptano in the spring of 2010, Jonathan was a system architect at Rackspace, and before that, he designed and built a large-scale storage system at Mozy.
+
+In this interview, we cover:
+
+The Cassandra distributed database, originally developed by Facebook
+
+A critical benefit of the cloud; deferred capacity planning
+
+Before databases like Cassandra, the Web 2.0 forefathers were stuck using SQL databases in a NoSQL way
+
+Controversies and options for scaling with relational and distributed databases
+
+High-profile attempts to move to Cassandra, such as Reddit and Digg
+
+What’s in store for the future of Cassandra
+
+Robert Duffner: Jonathan, could you take a minute to introduce yourself and the Cassandra Project, and explain what Riptano offers on top of Cassandra?
+
+Jonathan Ellis: Sure. I’m project chair of Apache Cassandra, which graduated from the Apache incubator earlier this year and became a top-level project. We have contributors and committers from Riptano, Rackspace, Twitter, Digg, and a long tail of more than 100 people in the open source community who’ve contributed patches to the project.
+
+It’s really an open source success story, because when I started working on Cassandra, I was at Rackspace. Rackspace knew they needed a distributed database both to help customers who were deploying in the cloud, and also internally, because Rackspace is getting big enough that they have the need for that kind of scale internally.
+
+Facebook released the source to Cassandra in July of 2008, and I really picked it up and ran with it at Rackspace. Other companies got involved, with Digg and Twitter as a couple of the earliest ones, and the whole became greater than the sum of its parts.
+
+When Facebook open-sourced it, it had a very promising foundation, but it was clear that it was designed specifically to handle their use case. After being open-sourced, it grew to become a much more robust solution.
+
+I started Riptano in April with Matt Pfeil to provide commercial support and services around Cassandra. We’re about to have a beta of our performance suite for Cassandra called Ripcord, which will complement the support and services that we’re currently providing.
+
+Robert: Distributed databases clearly are fundamental to the cloud. Google developed BigTable, Amazon developed SimpleDB, Microsoft developed Azure Table Storage, and Facebook developed what ultimately has become Cassandra. Could you tell our Windows Azure community why this type of distributed, non-relational storage is so critical to cloud development?
+
+Jonathan: I think there are a couple of reasons. First, when people deploy in the cloud, they’re becoming used to the ability to scale on demand; they just make some API request calls, and they have 50% more capacity. Traditional databases don’t work that way.
+
+This ability to scale is part of the reason that the cloud is taking off. People can defer capacity planning until the last minute and just know that they’ll be safe because they have the ability to turn that switch.
+
+Traditional databases can’t scale on demand like that. You have two avenues for scaling: either vertical scaling by buying more and more expensive platforms to deploy on, or ad-hoc scaling by sharding, partitioning horizontally and vertically.
+
+The problem with that approach is that once you’ve decided that this is your partitioning strategy, it’s difficult to jump to the next order of magnitude of performance. It’s also very much a one-off for each application. eBay pioneered this approach, because way back in 2002, they outgrew the largest servers Sun could sell them to run Oracle on, so they partitioned across several dozen machines.
+
+They’ve had that technology for eight years now, but even if they wanted to open-source it, it couldn’t be usefully applied to other infrastructures, just because these kind of solutions by their nature are not application-transparent and are very tied closely to that one use case.
+
+Robert: Are you shocked by the scale of storage that these technologies enable? Flickr gets something like 3,000 photos uploaded every minute, and Facebook adds something on the order of 12 terabytes per day to a 21 petabyte data store. When did you first realize that the data stored by user-generated content sites could be so unimaginably large?
+
+Jonathan: My background before I started working on Cassandra was building a petabyte-scale storage system for a backup company called Mozy, so I was used to that idea.
+
+In a lot of ways, though, that’s an easier problem, because you’re dealing with unstructured data, whereas with databases, you need low latency and low volatility. Obviously, people using S3 like low latency as well, but the expectations are of a different order of magnitude than what you expect your database to respond in.
+
+Cassandra’s part of what’s been loosely termed the NoSQL movement. Most of the time when people think of NoSQL databases, they really mean something that’s targeted at structured data with very low latency requirements, as opposed to something like Hadoop and HTFS, which you could refer to as non-relational data stores. They’re just dealing with unstructured data, and it’s really more of a distributed file system than a database.
+
+Robert: Apparently, Facebook is still using MySQL, but they’re using it essentially in a NoSQL fashion.
+
+Jonathan: Right; a lot of Facebook’s infrastructure predates their work on Cassandra, and it’s a similar story at Twitter. eBay is using Oracle, also very much in a NoSQL fashion. I think that if those projects had been started today, they would make different decisions, but having made that investment and ironed out the problems, there’s low motivation to switch.
+
+As project chair of Cassandra, I’m a little bit of a Cassandra evangelist, but I’m not dogmatic about it. Part of being a mature CTO is keeping your engineers from chasing the new shiny for every project, although it would make sense to evaluate Cassandra very carefully for new projects. Cassandra will get you to the goal of having a scalable infrastructure for a new application, rather than taking the same approach you did five years ago for your legacy data.
+
+Robert: I often talk to newer Azure customers about when they would use a SQL store in the cloud. Google has SQL relational databases on their road map, we have SQL Azure, and Amazon offers a relational database service. Many people just load an existing RDBMS, whether it’s MySQL or something else onto Amazon EC2.
+
+But there still seems to be a need for relational storage in some scenarios. Do you see that as mainly to support legacy applications or even for new cloud development, or do you think relational databases will still be important in the context of the cloud?
+
+Jonathan: I think relational databases are going to stay important. They solve some important problems, and there’s a very rich ecosystem of tools around them, which keeps time to market low. I see Cassandra as particularly appealing to companies that started on something like SQL Server and then reached the point where favorable price/performance to buy larger machines isn’t there anymore. The pain they’re feeling from the pressure to scale is greater than the pain of learning a new technology like Cassandra.
+
+I was at JavaOne last month speaking about Cassandra, and two thirds of the audience said that, in the very near future, their data needs are not going to fit on a single machine anymore. Traditional relational databases are just not an option, and at that point you can start looking at something like Oracle RAC and its SAN-based solution or Exadata. Both of these start at millions of dollars, or you can start to explore a distributed system like Cassandra.
+
+So people using relational databases are looking to move to Cassandra, mostly because of the scaling aspect, also sometimes for the reliability aspect. Cassandra deals very well with multiple data centers, in terms of preparing for one or more of them failing and clients having to access a different one.
+
+To go back to your question, I do think that some applications are a good fit for relational databases just because of their nature. Scale is not a problem, either because the nature of the problem is limited in terms of a limited problem domain, a limited amount of data you expect to be in it, and a limited number of queries per second, or because the relational features are important enough to use.
+
+I think that in some cases, it’s worth throwing money at the problem with something like Exadata. I’m thinking in terms of situations like where JP Morgan Chase had an outage a couple of weeks ago because of Oracle replication getting corrupted, so they had to restore it from a backup.
+
+I don’t have any inside information, but from what I’ve read, that was complicated by this being basically their database for everything. I think we are going to see people more and more moving away from having a relational database as their universal repository.
+
+People are going to realize that lower complexity, lower total cost of ownership, and higher reliability are good reasons for putting data that is a good fit for Cassandra in that kind of system. That will let them pare back relational storage to just what it’s good at, in a relatively small core.
+
+Robert: Back in January of 2008, there was a blog post written by David DeWitt and Michael Stonebraker under the title, “MapReduce: A Major Step Backwards.” They characterized it as a sub-optimal implementation that was not novel but rather a specific implementation of well-known techniques. They also said it was incompatible with all the tools DBS users have come to depend on.
+
+On the other hand, a recent report from GigaOM states that between 15% and 40% of data that is currently stored in an RDBMS today would be better suited to non relational platforms such as Cassandra. How do you think that relationship between traditional relational data systems and NoSQL-focused DB models will evolve over time?
+
+Jonathan: This is a point of confusion for a lot of people; I’ve said several times that relational databases don’t scale, whereas Stonebraker is saying, “Well, Vertica scales just fine, thank you very much.” The difference is that things like Vertica, Teradata, and Greenplum present a relational model over an analytical database, meaning low query volume with very high latency. Data gets bulk loaded into the system every so often, but it’s not responding to user requests at the rate of thousands or millions of requests per second.
+
+So when Stonebraker’s talking about MapReduce versus relational, he’s speaking in the context of analytics. Honestly, Stonebraker has a history of using his position as an elder statesman of the database world as a platform for his commercial ventures.
+
+In this case, MapReduce is frankly kicking his company Vertica’s butt in terms of mindshare right now, and I think that’s what motivated that article. That mindshare relationship is especially true for Hadoop. Hadoop HTFS is more of an unstructured storage solution, but it works fine for analytics where you don’t really care about latency.
+
+That goes back to something I mentioned earlier: that some people lump Hadoop in with NoSQL, but if you’re talking about OLTP or transaction processing with requirements for low latency and millions of requests per second, that would not include something like Hadoop.
+
+Still, some of the modern NoSQL databases are starting to integrate analytics ability into their OLTP-focused products. Cassandra, for instance, added support for running Hadoop jobs against data that’s in Cassandra in January.
+
+If you started in the database world long enough ago, you remember the days when you had maybe one database machine running your live application, and then you had a slave that you ran your analytics queries against. It’s the same system. You don’t have to do an export and load, and that makes life really pleasant for your ops team.
+
+For a while, you couldn’t do that. You had to load your analytics data into something like Vertica or into a separate Hadoop cluster to do your analytics queries against, because you couldn’t do both of them in the same kind of system.
+
+So I think we’re coming full circle, where with Cassandra you can run your live application against your Cassandra cluster and replicate your data to several nodes for running Hadoop queries against so the two workloads don’t interfere with each other. People really like that story, where you’re able to do that in a single system.
+
+Robert: It really comes down to the underlying issue of picking the right tool for the job, and I think looking at MapReduce merely as a database produces the wrong impression. One of the comments I saw on that initial posting was that if you think of picking the right tool for the job, MapReduce is basically a mechanism for using lots of machines to process very large data sets.
+
+There have been some recent discussions around the struggles Digg has had with implementing Cassandra, and it’s led some to compare Digg’s efforts with Reddit’s more successful move to Cassandra, with their initial migration completed in 10 days.
+
+What do you think are some of the core concerns or changes in thinking that organizations need to address to be successful with that type of storage?
+
+Jonathan: First of all, I think Kevin Rose made Cassandra a bit of a scapegoat for Digg’s problems. In a Quora discussion, a couple of Digg engineers came out and said that Cassandra’s not responsible for the problems they had.
+
+From the outside looking in, it looked like Digg tried to change too much at once, which is a classic operational danger sign when you throw out the old system and put in a new syst
+
+m. In their defense, I’m not sure how they could have done it otherwise, because they’re moving to a new database with a new application design, but there’s always a danger when you make a transition like that.
+
+By contrast, the change Reddit made was a much simpler one. Their application stayed the same, and they just changed their caching layer from MemcacheDB to Cassandra. Especially with a new technology like Cassandra, an incremental approach is definitely easier to keep under control.
+
+I feel bad for the Digg guys, because it feels like they got hit by a perfect storm of things mostly out of their control. They did a pilot of Cassandra itself in June, I think, of ’09, and they ported part of their v3 site to Cassandra to get experience with it. It seems like they did everything right, but Murphy’s law got them anyway.
+
+Robert: Indeed. You’ve stated in the past that it’s basically a fiction that Cassandra is simply for data that you can afford to lose. Can you expand on what led you to post that on your blog a few months ago?
+
+Jonathan: People tend to paint not just Cassandra, but all modern NoSQL databases with that brush. The kernel of truth behind that is that a lot of NoSQL databases simply aren’t concerned with durability, meaning that if I send an update request to my database, the database acknowledges it, and then the database loses power and comes back online, that update may or may not actually be there.
+
+The fact that a lot of NoSQL databases don’t provide durability is partly because it’s a hard feature to implement, and partly because you can get higher performance if you ignore it. Still, Cassandra does provide durability, and its log-based storage nature means that Cassandra data files, once written, are never updated in place. They’re immutable until they’re no longer needed and they’re garbage-collected by Cassandra. So it’s actually a safer design under the hood than a traditional system that does overwrite in place.
+
+Robert: Thanks for that clarification. I’d like to shift gears a little bit and talk about the relationship between open source projects and the commercial entities affiliated with them. One issue that comes to mind is that, for example, people occasionally accuse Mark Shuttleworth and Canonical leadership in general with pursuing more of a Canonical-first strategy than a purely community-oriented one.
+
+I experienced a similar situation from the inside when I was at IBM and we acquired Gluecode, with which we acquired the major contributors of Apache Geronimo. There are a lot of questions around IBM’s motives there, as well. What are your thoughts about navigating those types of concerns that the Cassandra community might have around Riptano?
+
+Jonathan: The first thing to consider is that all the changes and improvements we make to Cassandra itself go back to the open source project and the Apache Foundation. Our committers on the project have signed contributor license agreements with Apache, so there are no issues in that respect.
+
+I think people will see that and realize that we’re trying to make this a win-win for everyone. I don’t doubt that if we’re successful enough, some people will be upset with something we do, and we’ll just have to deal with that as it comes up. Even with as well-intentioned a company as Red Hat, for instance, some people get pissed at things they do, and I think that just comes with the territory.
+
+Robert: I have definitely had my fair share of challenges in that area, but I believe there can be very healthy relationships between corporate entities and open source projects, notwithstanding cases like the direction Oracle’s moving with the MySQL and OpenOffice communities.
+
+Jonathan: Some companies have done a better job than others, and we’re trying to follow those examples.
+
+Robert: A recent comment in a Hacker News thread suggested that the reason Twitter didn’t move ahead with Cassandra as their data store was simply the time it was going to take for them to migrate all their data. Still, if Twitter could start from a clean slate today, I think they would go with Cassandra. Do you feel that’s a true statement?
+
+Jonathan: I think it’s a fair assumption that Twitter would indeed use Cassandra if they were starting from scratch today. I do recall that comment about the time requirements for migrating data, and I don’t think it’s correct. Basically, in a situation like that, you have your application start performing rights to both Cassandra and your existing data store. Then you fill in Cassandra with the previous data set.
+
+That would take some time, but it’s something they knew how to do. Ryan King has posted on their blog as well as on Quora about this. To paraphrase him, it goes back to what I said about one of the responsibilities of a CTO being to avoid spending time fixing a system that’s already working.
+
+They have a system that’s working well enough, and they realized correctly that their resources would be better spent on doing newer projects like geolocation in Cassandra, rather than moving something that’s already working.
+
+Robert: We are getting near the end of our time, so to wrap up, what are your thoughts about the future of Cassandra, and what are some scenarios or capabilities that you see Cassandra and Riptano evolving to support?
+
+Jonathan: We’re just about to release our 0.7 version of Cassandra, which is really exciting. It’s taken us longer than our earlier releases, partly because in 0.7 we said we’re willing to break backward compatibility to fix some problems that we’ve been carrying along for the last year and a half or so. We’ve wanted to get all those incompatibilities out of the way in one release so we can go back to guaranteeing backward compatibility for at least the next year.
+
+One of the exciting capabilities coming up is secondary index support. Cassandra has never been exactly a key-value database, because you can have multiple columns within a row, which lets you use rows as materialized views. You can have very large rows and can answer more complicated queries that way. You access data by a row key, and then you can request some subset of that row.
+
+Secondary indexes support, for example, instances where if I have a users table and I want to show users who were born in 1976, I can tell Cassandra to build an index on the birth date column and have it take care of building the data structures to support that query. It’s bringing us much closer to the kind of rich query support that people are used to, and that’s going to lower the barrier to entry a lot.
+
+Robert: Thanks for giving the Windows Azure customer and developer community an opportunity to hear your thoughts on Cassandra and Riptano.
+
+Jonathan: Thank you.

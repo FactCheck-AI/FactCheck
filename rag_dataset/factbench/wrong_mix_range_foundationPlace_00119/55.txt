@@ -1,0 +1,43 @@
+S3 Disk Groups require different configuration steps from other disk groups. Prior to configuring an S3 Disk Group, an S3 Provider must be configured for use. For information on configuring S3 Providers, see Configuring an S3 Provider. Additionally, if the S3 Disk Group is going to be used for any import processing, such as DIP or COLD, you must have an S3 Upload Cache Processing task configured. For more information on this task, see S3 Upload Cache Processing.
+
+To create an S3 Disk Group in the Configuration module:
+
+Select Disk Groups under Disk Mgmt. The Disk Group Configuration dialog box is displayed.
+
+Type the name of the new S3 Disk Group in the Disk Group Name field.
+
+Note:
+
+S3 Disk Groups must have unique names compared to other Disk Groups. An S3 Disk Group cannot have the same name as any other Disk Group, S3 or otherwise.
+
+Click Create. The Disk Group Type dialog box is displayed
+
+Select S3 Disk Group and click Next. The Disk Group Settings dialog box is displayed.
+
+Select an S3 provider for the Disk Group from the Provider drop-down list. If the provider is not listed, click Provider Configuration to configure the provider. For more information on configuring providers, see Configuring an S3 Provider.
+
+Select a bucket from the Bucket drop-down list. If the bucket you need is not included in this list, ensure that you have the proper S3 provider selected. If the bucket is still not available, contact your first line of support to have the bucket created.
+
+Note:
+
+Buckets cannot be created within OnBase. New buckets must be created directly with your S3 provider. Changing the bucket in an already active Disk Group forces the promotion of the Disk Group. Each bucket can only be used by one provider and a single implementation of OnBase.
+
+Select the Upload Cache option to enable the Upload Cache for use with the S3 Disk Group. The Upload Cache is required for any Disk Group that uses any form of processing in the OnBase Client such as COLD, Check Images, etc. For more information on the Upload Cache, see Configuring S3 Upload Cache Processing.
+
+Note:
+
+Prior to enabling an Upload Cache, you must have an S3 Upload Cache Processing task configured in the Unity Scheduler module. For more information on the Upload Cache Processor task, see Configuring S3 Upload Cache Processing. Any change made to the Upload Cache setting once an S3 Disk Group is in use will force the promotion of the Disk Group before the change takes place. Once an S3 Disk Group configured, changing the path for the S3 Upload Cache requires the use of the -ROMANZO switch and locking out the database.
+
+Enter a UNC location into the Cache Path field. This is the location where files are locally stored in the Upload Cache before being uploaded to the S3 server.
+
+Click Change Encryption to change the encryption on files both on the S3 server and within the Upload Cache. The Encryption Settings dialog box is displayed.
+
+Select the desired encryption from the drop-down select menu and click OK. Options for encryption are AES 128, AES 256 v2, and S3 KMS. For more information on S3 KMS encryption, see KMS Encryption.
+
+Note:
+
+AES 128 and AES 256 v2 can only be enabled during creation of a new S3 Disk Group. S3 KMS encryption can be enabled for an S3 Disk Group after configuration.
+
+Click OK in the Disk Group Settings dialog box to complete creating a new S3 Disk Group.
+
+If you want to migrate files from another Disk Group to the newly created S3 Disk Group, you must use the Disk Group Migration tool. For more information on this tool, see Disk Group Migration.

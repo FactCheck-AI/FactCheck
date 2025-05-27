@@ -1,0 +1,51 @@
+Welcome Waxy.org and Slashdot readers. I blog about JavaScript, like it’s my job, feel free to subscribe for a ton more posts like this.
+
+Related Posts:
+
+Running Java in JavaScript
+
+JavaScript Talk at Northeastern University
+
+State of ECMAScript 4
+
+The World of ECMAScript
+
+JavaScript As A Language
+
+Note: I’m not the creator of HotRuby, as mentioned elsewhere – it is the work of a highly-skilled Japanese developer.
+
+HotRuby is a project which aims to port the Ruby Virtual Machine over to ECMAScript (allowing it to run, directly, in a browser using JavaScript or indirectly using ActionScript in Flash).
+
+Currently the code works by using Ruby 1.9’s YARV (Yet Another Ruby VM) to compile down a Ruby script into opcodes, which are then serialized and passed to the browser for execution. It’s a little bit indirect but it still capable of creating a compelling result.
+
+If you were to run one of the examples in your browser the actual chain of execution would be something like this:
+
+Script finds <script type=”text/ruby”></script> tags and extracts the inline Ruby code from them.
+
+The Ruby code is sent to the server via an XMLHttpRequest.
+
+The server-side CGI script (in Ruby, using Ruby 1.9) compiles the incoming Ruby into its associated opcodes and serializes it into a JSON data structure.
+
+The browser consumes the opcodes, translating it into JavaScript, and executes it.
+
+To observe this full process we can take a look at the code in the provided benchmark and watch its full path through the server and final execution:
+
+startTime = Time.new.to_f sum = "" 50000.times{|e| sum += e.to_s} endTime = Time.new.to_f puts (endTime - startTime).to_s + ' sec'
+
+For example, observe this portion of the CGI script:
+
+#!/usr/local/bin/ruby # Requires Ruby 1.9.0 # The license of this source is "Ruby License" require 'json' require 'cgi' cgi = CGI.new puts "Content-type: text/plain\n\n" puts VM::InstructionSequence.compile(cgi['src'], "src", 1, {}).to_a.to_json
+
+and a sample of the opcode data returned by the server:
+
+["YARVInstructionSequence\/SimpleDataFormat",1,1,1,{"arg_size":0,"local_size":4,"stack_max":3},"","src","top",["startTime","sum","endTime"],0,[["break",null,"label_21","label_29","label_29",0]],[2,["putnil"],["getconstant","Time"],["send","new",0,null,0,null],["send","to_f",0,null,0,null],["setlocal",4],4,["putstring",""],["setlocal",3],"label_21",5,["putobject",50000],["send","times",0,["YARVInstructionSequence\/SimpleDataFormat",1,1,1,{"arg_size":1,"local_size":1,"stack_max":2},"block in ","src","block",["e"],[1,[],0,0,-1,-1,3],[["redo",null,"label_0","label_22","label_0",0],["next",null,"label_0","label_22","label_22",0]],["label_0",5,["getdynamic",3,1],["getdynamic",1,0],["send","to_s",0,null,0,null],["send","+",1,null,0,null],["dup"],["setdynamic",3,1],"label_22",["leave"]]],0,null],"label_29",["pop"],7,["putnil"],["getconstant","Time"],["send","new",0,null,0,null],["send","to_f",0,null,0,null],["setlocal",2],9,["putnil"],8,["getlocal",2],["getlocal",4],["send","-",1,null,0,null],["send","to_s",0,null,0,null],["putstring"," sec"],9,["send","+",1,null,0,null],["send","puts",1,null,8,null],8,["leave"]]]
+
+and you can find the full client-side virtual machine here: HotRuby.js.
+
+Perhaps most fascinating about this, though, is the speeds that are able to be achieved with this script. Granted, the above benchmark is rather contrived, but the end performance results are quite fascinating:
+
+Firefox 3.0b5 2.47s Firefox 2 6.71s Ruby 1.8.2 12.25s
+
+We can see a 2.71x speed improvement from Firefox 2 to Firefox 3 and a 5x performance improvement over regular Ruby 1.8.2, running on the command-line.
+
+It’s a fascinating time to be working with JavaScript. The performance improvements that are being provided to us by the browser afford us a realm of possibility that wasn’t, previously, viable. The fact that we’re even discussing running a virtual machine, implemented in JavaScript, is quite impressive. I’m curious to see what applications end up being built with this implementation – and within what context they end up using it.

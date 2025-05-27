@@ -1,0 +1,391 @@
+[NOTE: please read entire document before proceeding.]
+
+Upgrading all the Polycom phones across an entire location has been a mission. Again, there's so much mis-information and different setups it is hard to weed through it all.
+
+In short, you need first provision the phones.
+
+Secondly, you need to update the firmware and software. In older Polycom phones, called SoundPoint phones, you need 2 files uploaded to your phone-server for each model of phone-set. The 2 files are:
+
+the bootrom/bootloader/updater file.
+
+the sip/uc-software/application (sip.ld) file.
+
+In newer Polycom phone, called VVX phones, the bootrom/bootloader/updater file is automatically included in the sip/uc-software/application (sip.ld) file.
+
+STAGE 1: Provision Polycom Phones
+
+Polycom phones can boot with power or POE (hint, use POE). Without a configuration, they won't do anything except complain. Configurations are great because they determine nearly everything on the phone. You can set phone call features, backgrounds and even speakerphone volume. In fact, you can set just about everything.
+
+The configuration can be kept in one of the following locations:
+
+phone: settings set by the buttons on the phone.
+
+web: settings set by the web interface.
+
+server: central server that provides the configuration.
+
+We are interested in large deployments, so we will focus on central server deployments. This is important because the configuration of the setup is usually more than just the phone server and attention is needed elsewhere. If your phone are getting configurations and you don't see them in the phone set or on the phone server, the the DHCP server is where to look.
+
+Central server deployments can serve the configuration files through:
+
+FTP
+
+TFTP
+
+HTTP/HTTPS
+
+Most deployments will use FTP since it can be setup everywhere; meaning inside the office and outside the office. On the other hand, TFTP will only be available inside the office.
+
+Upon booting, phones will naturally try to get an IP address from a DHCP server. When they talk to the DHCP server, the server can respond with some options to tell the Polycom phones where to look for the configuration files.
+
+The options are:
+
+OPTION-066: this is a typical TFTP server option. However, it may already be in use by something else so Polycom had to put in a higher priority option customized just for Polycom phones.
+
+OPTION-160: this is a Polycom specific TFTP server option. Polycom phones are hard-coded to look for this option first. This will have to be added as an option on a MS DHCP server.
+
+To add the option to MS DHCP:
+
+-start the DHCP server-manager
+
+-right-click IPV4 or IPV6 (on the left-hand side).
+
+-click SET-PREDEFINED-OPTIONS
+
+-click ADD
+
+-type:
+
+NAME: Polycom Boot Server Name
+
+DATA: String
+
+CODE: 160
+
+DESCRIPTION: doesn't-matter
+
+To add the OPTION-160 to the DHCP scope:
+
+-expand IPV4.
+
+-expand the SCOPE.
+
+-right-click SCOPE-OPTIONS.
+
+-click SERVER-OPTIONS.
+
+-scroll down to 160.
+
+-checkmark 160.
+
+-for STRING-VALUE, type: ftp://PlcmSpIp: This e-mail address is being protected from spambots. You need JavaScript enabled to view it
+
+(replace with your IP phone server address)
+
+-click OK
+
+This is the secret sauce and test it out before roll-out on large deployments by rebooting just one phone. This will set the value on the phone. If the value is set incorrectly and is unable to find the central-server, the phone will not be able to obtain the configuration files and will use the cached configuration. The only way I know to clear the cache is to login to the web interface:
+
+-click UTILITIES > SOFTWARE-UPGRADE
+
+-click CLEAR-UPGRADE-SERVER
+
+If that doesn't work, factory default the phone. This can be harder than it sounds.
+
+-hold 1-3-5; type in 456 or type in the macaddress from the bottom of the phone (001122334455)
+
+-press HOME > SETTINGS > ADVANCED > ADMINISTRATOR-SETTINGS > RESET-TO-DEFAULTS > RESET-LOCAL-CONFIG
+
+(wipes macaddress-phone.cfg from server)
+
+-press HOME > SETTINGS > ADVANCED > ADMINISTRATOR-SETTINGS > RESET-TO-DEFAULTS > RESET-WEB-CONFIG
+
+(wipes macaddress-web.cfg from server)
+
+-press HOME > SETTINGS > ADVANCED > ADMINISTRATOR-SETTINGS > RESET-TO-DEFAULTS > RESET-TO-FACTORY
+
+(wipes all configuration containers on the device)
+
+-press HOME > SETTINGS > ADVANCED > ADMINISTRATOR-SETTINGS > RESET-TO-DEFAULTS > FORMAT-FILE-SYSTEM
+
+(wipes app from phone and will require provisioning server to work again)
+
+You can see if the provisioning worked by looking at the phone:
+
+-press HOME > SETTINGS > STATUS > PLATFORM > CONFIGURATION
+
+-see the boot server, boot type and configuration files.
+
+STAGE 2: THE BOOTROM/UPLOADER
+
+1-First, download the BOOTLOADER/BOOTROM/UPDATER files here for the SOUNDPOINT phones (the VVX phones have thier BOOTROM/UPDATER included in the sip.ld file):
+
+http://downloads.polycom.com/voice/voip/uc/SoundPoint_IP_BootROM_4_4_0_Upgrader_release_sig.zip
+
+(or if you have a SoundStation 6000/7000, you need the B version here:
+
+http://downloads.polycom.com/voice/voip/uc/SoundPoint_IP_BootROM_4_4_0B_Upgrader_release_sig.zip)
+
+2-unzip the download and inside the folder you will see the bootloader files like:
+
+2345-12560-001.bootrom.ld
+
+3-Take all the BOOTROM files and upload them to your phone-server (provisioning server) in the tftpboot directory.
+
+(fyi - the tftpboot directory will be at the root of the filesystem: /tftpboot.)
+
+The chart below will show what bootrom goes with what phone-set model.
+
+FILES DESCRIPTION bootrom.ld Concatenated BootROM 2345-12345-001.bootrom.ld ????? (Probably SoundPoint IP 300/302/320/330) 2345-12360-001.bootrom.ld SoundPoint IP 321 2345-12365-001.bootrom.ld SoundPoint IP 331 2345-12375-001.bootrom.ld SoundPoint IP 335 2345-12450-001.bootrom.ld SoundPoint IP 450 2345-12500-001.bootrom.ld SoundPoint IP 550 2345-12560-001.bootrom.ld SoundPoint IP 560 2345-12600-001.bootrom.ld SoundPoint IP 650 2345-12670-001.bootrom.ld SoundPoint IP 670 2345-17960-001.sip.ld VVX 1500 3111-15600-001.bootrom.ld SoundStation IP 6000 3111-17823-001.dect.ld VVX D60 Wireless Handset & Base Station 3111-19000-001.sip.ld SoundStation Duo 3111-30900-001.bootrom.ld SoundStation IP 5000 3111-33215-001.sip.ld SoundStructure 3111-36150-001.sip.ld SpectraLink 8440 3111-36152-001.sip.ld SpectraLink 8450 3111-36154-001.sip.ld SpectraLink 8452 3111-40000-001.bootrom.ld SoundStation IP 7000 3111-40250-001.sip.ld VVX 101 3111-40450-001.sip.ld VVX 201 3111-44500-001.sip.ld VVX 500 3111-44600-001.sip.ld VVX 600 3111-46135-002.sip.ld VVX 300 3111-46161-001.sip.ld VVX 310 3111-46157-002.sip.ld VVX 400 3111-46162-001.sip.ld VVX 410 3111-48300-001.sip.ld VVX 301 3111-48350-001.sip.ld VVX 311 3111-48400-001.sip.ld VVX 401 3111-48450-001.sip.ld VVX 411 3111-48500-001.sip.ld VVX 501 3111-48600-001.sip.ld VVX 601 3111-48810-001.sip.ld VVX 150 3111-48820-001.sip.ld VVX 250 3111-48830-001.sip.ld VVX 350 3111-48840-001.sip.ld VVX 450
+
+Great! You are halfway there.
+
+STAGE 3: THE SIP.LD FILE aka POLYCOM-UC-SOFTWARE aka APPLICATION)
+
+The SIP.LD file is the image that will be served by the TFTP/FTP central server. This is the same as the APPLICATION VERSION or the SIP APPLICATION VERSION.
+
+1-First, look at the Polycom Matrix for older phones (ie SOUNDPOINT/SOUNDSTATION phones) here:
+
+http://downloads.polycom.com/voice/voip/sip_sw_releases_matrix.html
+
+Or the Polycom Matrix for newer phones (ie VVX phones) here:
+
+http://downloads.polycom.com/voice/voip/uc_sw_releases_matrix.html
+
+2-Second, download the most recent version of the firmware (get the SPLIT-DOWNLOAD [not combined-download]). There are many options here but they should be boiled down to either "Current GA for Microsoft Lync" or "Current GA Release"
+
+(Hopefully it's obvious, the MS Lync is for MS Lync servers. If you do not know what that is, don't worry about it as it is not the one you need).
+
+(As of this writing the Current General Availability for SOUNDPOINT phone-sets is v4.0.11).
+
+3-unzip the download and inside the folder, you will see SIP.LD files like:
+
+2345-12560-001.sip.ld
+
+4-Take all the LD files and upload them to your phone-server (provisioning server) in the tftpboot directory. Overwrite any files that are currently there (even if they are from the bootrom zip from above).
+
+[This process is easier than figuring out if we need the files or not. Having everything will not hurt anything.]
+
+5-Once there, rename the file according to your system. Use the guide above as direction. I had to rename the files as such:
+
+sip.SPIP560.4.0.11.revc.ld
+
+sip.VVX410.5.7.0.revc.ld
+
+STAGE 4: CONFIG FILES
+
+----------From here, there might be some troubleshooting. Namely, some of the old config files may not work with the most recent firmware. Edit the files accordingly in the tftpboot directory.
+
+Each phone will have a MAC-address number on the back. Something like, 0004123EDT78.
+
+So, each phone will have a base-config file of mac-number.cfg. Something like, 0004123EDT78.cfg
+
+The phones are hard coded to look for this file.
+
+The first part of the file will dictate that SIP.LD/APPLICATON file. It will look like this:
+
+APPLICATION APP_FILE_PATH="sip.[PHONE_MODEL].3.2.3.revc.ld"
+
+With our directory structure in place, we can have the same model of phones use different APPLICATION versions at the same time. And we can have different models of phones use different APPLICATION versions at the same time. All of this is done by changing the base-config file.
+
+This file will determine what SIP.LD file to use and what further config files to use. Before the update, the contents will look something like this:
+
+<APPLICATION APP_FILE_PATH="sip.[PHONE_MODEL].3.2.3.revc.ld" CONFIG_FILES="deviceset-12345.cfg, phone-0004123EDT78.cfg, sip.3.2.3.revc.cfg" MISC_FILES="0004123EDT78-directory.xml" LOG_FILE_DIRECTORY="" OVERRIDES_DIRECTORY="" CONTACTS_DIRECTORY="" LICENSE_DIRECTORY="">
+
+</APPLICATION>
+
+After the update, you need to edit the file to look something like this:
+
+<APPLICATION APP_FILE_PATH="sip.[PHONE_MODEL].4.0.11.revc.ld" CONFIG_FILES="deviceset-12345.cfg, phone-0004123EDT78.cfg, sip.4.0.11.revc.cfg" MISC_FILES="0004123EDT78-directory.xml" LOG_FILE_DIRECTORY="" OVERRIDES_DIRECTORY="" CONTACTS_DIRECTORY="" LICENSE_DIRECTORY="">
+
+</APPLICATION>
+
+You can do this file-by-file if needed.
+
+Or you can run one command on the phone-server.
+
+1-make sure you are in the tftpboot directory
+
+2-make a directory for the backup of the files:
+
+mkdir cfgfiles
+
+3-copy all the base config files into this directory:
+
+cp ./000*.cfg ./cfgfiles
+
+(or cp ./6416*.cfg ./cfgfiles)
+
+4-change all the files at once:
+
+sed -i -e "s/3.2.3.revc.ld/4.0.11.revc.ld/g" ./000*.cfg
+
+This will update all the base-config files to tell the phone-sets to use the new SIP.LD/APPLICATION files.
+
+PHONE OVERRIDE FILES
+
+Phone override files are changes made from the phone-set and are named <MAC Address>-phone.cfg. So something like, 0004123EDT78-phone.cfg
+
+On my phone-server, the older phone override files were named phone-0004123EDT78.cfg
+
+If they have parameters older than v3.3.0, you will get an error message. To fix, see below in the "UPDATE CONFIG FILE WITH UTILITY" section.
+
+WEB OVERRIDE FILES
+
+If you change something via the phone-set web interface, it will save the settings in a web-override file named <MAC Address>-web.cfg. So something like, 0004123EDT78-web.cfg
+
+STAGE 5: REBOOT
+
+Now reboot the phone. It should upgrade the bootrom automatically. You do not need to do anything as the phone is hard coded to look for and use the newest bootrom available.
+
+After the bootrom is updated, the application/sip.ld will update. This process may take around 10 minutes per phone.
+
+If you have a POE switch, you can do this across the network by unplugging the POE switch. Wait about 1 minute. Plug the POE switch back in. Then wait about 15 minutes for all the phone to upgrade.
+
+(Of course, wait for after hours time period.)
+
+STAGE 6: UPDATE CONFIG FILE WITH UTILITY
+
+If you have an older config file, the Polycom phone-set will give an error. Something like, "phone-0004123EDT78.cfg is pre-3.3.0 params." Basically it is saying that you are trying to config a parameter that doesn't exist.
+
+You can see what config files are being used and which have errors by:
+
+-press HOME > SETTINGS > STATUS > PLATFORM > CONFIGURATION
+
+scroll down on the phone and it will show the number of PRE-3.3.0, ERRORS, DUPLICATES and OK's.
+
+Consequently, you will have to update your config files to remove those parameters.This can be done parameter-by-parameter by looking at the log file on the phone (or server) and manually adjusting for each.
+
+Or you can do this automatically with a Windows software utility called: CFCUtility. Your results may vary so be careful with the utility.
+
+-download it here:
+
+http://support.polycom.com/PolycomService/support/us/support/eula/ucs/UCConfig_agreement.html
+
+-unzip.
+
+-in the CFCUtiliy folder, create a folder called "config-files".
+
+-on the central-server, make sure you are in the tftpboot directory.
+
+-make a backup directory:
+
+mkdir cfgphonefiles
+
+-copy all the phone files to this directory (as a backup for safe keeping):
+
+cp ./*cfg ./cfgphonefiles/
+
+-gather all the config-files in the folder called "config-files".
+
+(this can be done by mounting usb drive, ftp, scp, etc)
+
+-from a Windows command-line change to the CFCUtiliy folder.
+
+-type: cfcUtility.exe -t ./config-files
+
+-it will ask you some generic questions and accept the defaults.
+
+Now you can transfer the files back to the phone-server in the tftpboot directory.
+
+-reboot the phone(s).
+
+(remember, if you have a POE switch unplug the switch and plug back in for a network-wide solution)
+
+-it will reboot 2 or 3 times on it's own.
+
+UNCOMPLICATING CONFIG FILES
+
+All the configuration for the phones can be done in one config file if we really wanted to. Or we could have one really long config file for each phone. But for sanity's sake, we break this out.
+
+In the tftpboot directory, you will have some files for each phone-set:
+
+0004123EDT78.cfg (the base config. The backup is in the cfgfiles directory)
+
+0004123EDT78-phone.cfg (the new phone override, used automatically)
+
+0004123EDT78-web.cfg (the new web override, used automatically)
+
+phone-0004123EDT78.cfg (the old phone override, used by the base-config file. This file is converted and a backup is in the cfgphonefiles directory. It can be deleted since it is not being used.)
+
+Other config files can be present as well (but not required). In the unzip folder of the Polycom UC Software from STAGE-3, you can find the generic config files:
+
+applications.cfg
+
+dect.cfg
+
+device.cfg
+
+features.cfg
+
+firewall-nat.cfg
+
+H323.cfg
+
+lync.cfg
+
+pstn.cfg
+
+reg-advanced.cfg
+
+reg-basic.cfg
+
+region.cfg
+
+sip-basic.cfg
+
+sip-interop.cfg
+
+site.cfg
+
+tr069.cfg
+
+video.cfg
+
+video-integration.cfg
+
+Each has it's own place in life. I usually see:
+
+64167f920093-reg-basic.cfg (for the line registration)
+
+64167f920093-features.cfg (for the features of the phone)
+
+polycom.UC5.7.0.sip-basic-11325.cfg (for the line registration of the location)
+
+polycom.UC5.7.0.device-11325.cfg (for device settings for the location)
+
+polycom.UC5.7.0.sip-interop-11325.cfg (for interoffice operation settings)
+
+polycom.UC5.7.0.site-11325.cfg (for site settings like timezone)
+
+You can see the entire list of options/values by inspecting the 73,000 line file in the unzip download:
+
+Polycom-UC-Software-5-7-0-rts18-release-sig-split\Config\polycomConfig.xsd
+
+FOR NEWER FIRMWARE VERSIONS, SINGLE PHONE
+
+For newer phone-sets with updated firmware versions, simply redirect the provisioning server to: voipt2.polycom.com/<version-number>
+
+go to phone
+
+press Menu > Settings > Advanced (default password: 456) > Administration Settings > Network Configuration > Provisioning-Server
+
+change Server Type to HTTP.
+
+type: voipt2.polycom.com (for Server Address)
+
+Example: to load the latest SIP 4.04 = voipt2.polycom.com/404
+
+Example: to load the latest SIP 4.0.11 = voipt2.polycom.com/4011
+
+reboot the phone-set
+
+wait 15 minutes
+
+once updated, change the server back to the local provisioning-server
+
+For a current live directory list go here:
+
+http://voipt2.polycom.com/WEBCONTENT/directory.html
+
+NOTES:

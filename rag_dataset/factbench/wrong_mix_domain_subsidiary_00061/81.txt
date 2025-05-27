@@ -1,0 +1,87 @@
+You may have already seen this popup when your Oracle Java Runtime (JRE) 1.7 is out-of-date.
+
+Your administrator may have already turned off the first mecanism of update using group policies to prevent update notifications’ balloons to pop out in the system tray.
+
+Guess what! Oracle introduced a 2nd update notification mechanism since version 1.7_10 that phones home to check whether it’s up-to-date or expired.
+
+If it’s unable to phone home, the expiry date is set using an hardcoded value that follows the CPU (Critical Patch Update) lifecycle. 😦
+
+JRE Expiration Date
+
+The JRE relies on periodic checks with an Oracle Server to determine if it (the JRE)is still considered up-to-date with all the available security fixes (above the security baseline). In the past, if the JRE was unable to contact the Oracle Server, it continued to behave as though it is still the most recent version with regard to security, for an indefinite period.
+
+To avoid this problem, a secondary mechanism, that does not rely on external communication, has been added to the JDK 7u10. From this release onwards, all JREs will contain a hard-coded expiration date. The expiration date is calculated to end after the scheduled release of the next Critical Patch Update.
+
+This means that JREs that are unable to contact Oracle Servers for an extended period of time, will now start offering additional protection after a reasonable period, and will not continue to behave as if they were still up-to-date with security fixes.
+
+Sources: http://docs.oracle.com/javase/7/docs/technotes/guides/jweb/client-security.html#secure and http://www.oracle.com/technetwork/java/javase/7u10-relnotes-1880995.html
+
+No, you’re not dreaming. We’re in 2013 and software developpers at Oracle launched this security awareness campaign using the above pop-up 😉
+
+The problem with this new feature is that Oracle didn’t provide guidance on how to turn off this notification in a corporate environment.
+
+You can of course click “Later” and tick “don’t ask again until next update” during a certain period of time. This will write some values in the registry and the current user deployment.properties file located in “%userprofile%AppData\LocalLow\Sun\Java\Deployment”. (Note that registry settings take precedence over the deployment.properties file content)
+
+Worse, when the expiry date is reached, the pop-up doesn’t rely anymore on the above registry settings.
+
+They are simply ignored and you start being nagged by this pop-up every time an applet is loaded by the browser.
+
+Here’s what I asked on twitter to Donald Smith who is a member of the Oracle Java SE PM team:
+
+The current situation is that we, I mean corporate administrators, have great hopes and may expect the JRE to really take fully advantages of Group Policies in a close future.
+
+Source: http://www.symantec.com/connect/forums/how-everyone-addressing-forced-java-dialog-java-update-needed-your-java-version-insecure
+
+As you can see, Donald was very kind and answered my questions very quickly.
+
+But, as a corporate administrator, I don’t deploy and manage software with hope.
+
+Now, let’s see how to defeat this new update notification feature.
+
+The idea is simple. I’ll just prevent the DLL file responsible for these notifications from being loaded in Internet Explorer.
+
+To achieve this, I need to identify the GUID (Global Unique identifiers) of the component and set its kill-bit value to COMPAT_EVIL_DONT_LOAD.
+
+Let me reintroduce 3 small helper functions I wrote last year and that I revisited:
+
+Function Get-KillBit { [CmdletBinding()] param( [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)] [ValidatePattern('^\{[A-Z0-9]{4}([A-Z0-9]{4}-){4}[A-Z0-9]{12}\}$')] [string[]]$GUID ) Begin{ $x86='Software\Wow6432Node' $x64='Software' $FLAGS = DATA { ConvertFrom-StringData @' 1=COMPAT_AGGREGATE 2=COMPAT_NO_OBJECTSAFETY 4=COMPAT_NO_PROPNOTIFYSINK 8=COMPAT_SEND_SHOW 16=COMPAT_SEND_HIDE 32=COMPAT_ALWAYS_INPLACEACTIVATE 64=COMPAT_NO_SETEXTENT 128=COMPAT_NO_UIACTIVATE 256=COMPAT_NO_QUICKACTIVATE 512=COMPAT_NO_BINDF_OFFLINEOPERATION 1024=COMPAT_EVIL_DONT_LOAD 2048=COMPAT_PROGSINK_UNTIL_ACTIVATED 4096=COMPAT_USE_PROPBAG_AND_STREAM 8192=COMPAT_DISABLEWINDOWLESS 16384=COMPAT_SETWINDOWRGN 32768=COMPAT_PRINTPLUGINSITE 65536=COMPAT_INPLACEACTIVATEEVENWHENINVISIBLE 131072=COMPAT_NEVERFOCUSSABLE 262144=COMPAT_ALWAYSDEFERSETWINDOWRGN 524288=COMPAT_INPLACEACTIVATESYNCHRONOUSLY 1048576=COMPAT_NEEDSZEROBASEDDRAWRECT 2097152=COMPAT_HWNDPRIVATE 4194304=COMPAT_SECURITYCHECKONREDIRECT 8388608=COMPAT_SAFEFOR_LOADING '@ } } Process{ $GUID | ForEach-Object -Process { $GUIDitem = $_ Write-Verbose "Testing GUID $GUIDitem" $x86,$x64 | ForEach-Object { Write-Verbose "Testing Hive $_" $RegPath = $_ $flag = $null if (Test-Path "HKLM:\$RegPath\Microsoft\Internet Explorer\ActiveX Compatibility\$GUIDitem") { try { $flag = Get-ItemProperty -Path "HKLM:\$RegPath\Microsoft\Internet Explorer\ActiveX Compatibility\$GUIDitem" -Name 'Compatibility Flags' -ErrorAction Stop } catch { Write-Warning "Failed because $($_.Exception.Message)" return } $Meaning = @() $FLAGS.Keys | ForEach-Object { if (($flag.'Compatibility Flags') -band $_) { $Meaning += $FLAGS["$_"] } } New-Object -TypeName PSobject -Property @{ Meaning = $Meaning GUID = $GUIDitem Path = $flag.PSPath Value = $flag.'Compatibility Flags' HexValue = -join ('0x',('{0:X0}' -f $flag.'Compatibility Flags')) DisplayName = (Get-ItemProperty -Path "HKLM:\$RegPath\Classes\CLSID\$GUIDitem" -Name '(default)' -ErrorAction Silentlycontinue).'(default)' } } else { Write-Verbose "Skipped HKLM:\$RegPath\Microsoft\Internet Explorer\ActiveX Compatibility\$GUIDitem as it doesn't exist" } } } } End{} } Function Set-KillBit { [CmdletBinding()] param( [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)] [ValidatePattern('^\{[A-Z0-9]{4}([A-Z0-9]{4}-){4}[A-Z0-9]{12}\}$')] [string[]]$GUID ) Begin { # Make sure we run as admin $usercontext = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent() $IsAdmin = $usercontext.IsInRole(544) if (-not($IsAdmin)) { Write-Warning "Must run powerShell as Administrator to perform these actions" return } } Process { $GUID | ForEach-Object -Process { $GUIDitem = $_ Write-Verbose "Handling GUID $GUIDitem" $null,"Wow6432Node" | ForEach-Object { $HiveLocation = $_ $flagged = $null try { if (-not(Test-Path "HKLM:\Software\$HiveLocation\Microsoft\Internet Explorer\ActiveX Compatibility\$GUIDitem")) { New-Item -Path "HKLM:\Software\$HiveLocation\Microsoft\Internet Explorer\ActiveX Compatibility" -Name $GUIDitem -Force -ErrorAction Stop | Out-Null New-ItemProperty -Path "HKLM:\Software\$HiveLocation\Microsoft\Internet Explorer\ActiveX Compatibility\$GUIDitem" -PropertyType DWORD -Name 'Compatibility Flags' -Value 1024 -Force | Out-Null } else { Set-ItemProperty -Path "HKLM:\Software\$HiveLocation\Microsoft\Internet Explorer\ActiveX Compatibility\$GUIDitem" -Name 'Compatibility Flags' -Value 1024 -Type DWORD -Force -ErrorAction Stop } $flagged = $true } catch { $flagged = $false Write-Warning "Failed because $($_.Exception.Message)" } if ($flagged) { Write-Verbose -Message "Successfully set kill-bit on $GUIDitem in hive $HiveLocation" } else { Write-Verbose -Message "Failed to set kill-bit on $GUIDitem in hive $HiveLocation" } } } } End{} } Function Clear-KillBit { [CmdletBinding()] param( [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)] [ValidatePattern('^\{[A-Z0-9]{4}([A-Z0-9]{4}-){4}[A-Z0-9]{12}\}$')] [string[]]$GUID ) Begin { # Make sure we run as admin $usercontext = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent() $IsAdmin = $usercontext.IsInRole(544) if (-not($IsAdmin)) { Write-Warning "Must run powerShell as Administrator to perform these actions" return } } Process { $GUID | ForEach-Object -Process { $GUIDitem = $_ Write-Verbose "Handling GUID $GUIDitem" $null,"Wow6432Node" | ForEach-Object { Write-Verbose "Setting it in hive $_" $HiveLocation = $_ $flagged = $null try { if (Test-Path "HKLM:\Software\$HiveLocation\Microsoft\Internet Explorer\ActiveX Compatibility\$GUIDitem") { Remove-Item -Path "HKLM:\Software\$HiveLocation\Microsoft\Internet Explorer\ActiveX Compatibility\$GUIDitem" -Force -ErrorAction Stop | Out-Null } else { # already removed } $flagged = $true } catch { $flagged = $false Write-Warning "Failed because $($_.Exception.Message)" } if ($flagged) { Write-Verbose -Message "Successfully cleared kill-bit on $GUIDitem in hive $HiveLocation" } else { Write-Verbose -Message "Failed to clear kill-bit on $GUIDitem in hive $HiveLocation" } } } } End{} }
+
+I found the meaning of the decimal/hexadecimal values on this MSDN page where it’s also mentioned that
+
+These enumeration members are bit masks that determine how ActiveX controls are used in Internet Explorer.
+
+My Set-KillBit function only uses the single value “COMPAT_EVIL_DONT_LOAD”.
+
+It doesn’t “merge” bit mask values although it should and note that it could overwrite any preexisting values, so use it with caution.
+
+Idem, my Clear-KillBit function doesn’t remove the 0x400 flag.
+
+Only my Get-KillBit function isn’t considered as written in quick and dirty mode 😛
+
+Step 1: Identify GUIDs
+
+$allJREGUIDs = @() $Nodes = @($null,'Wow6432Node') $WMI = [wmiclass]"root\default:stdRegProv" $allJREGUIDs += $Nodes | ForEach-Object { $WMI.EnumKey(2147483650,"SOFTWARE\$_\Classes\CLSID").sNames } | Where-Object { $_ -match "CAFEEFAC"} $allJREGUIDs | ? {$_ -match "-DEC"}
+
+Step 2: Set the kill-bit on filtered JRE GUIDs, only those related to the “Deployment Toolkit”
+
+$allJREGUIDs | ? {$_ -match "-DEC"} | Set-KillBit -Verbose
+
+Step 3: Check what was set
+
+$allJREGUIDs | ? {$_ -match "-DEC"} | Get-KillBit | ft GUID,DisplayName,Meaning
+
+To test, you need 4 things:
+
+an out-of-date JRE version
+
+a test URL
+
+http://www.java.com/en/download/testjava.jsp
+
+A way to revert back to the original state with no kill-bit set on the deployment kit component
+
+$allJREGUIDs | ? {$_ -match "-DEC"} | Get-KillBit | Clear-KillBit -Verbose
+
+Change your system clock to 31 days after the next CPU planned for 15 October 2013, i.e., after the 15th of November
+
+Happy testing until Oracle fixes its products and releases an official guidance about the new notification, a.k.a JRE expiration, feature 😎

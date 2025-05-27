@@ -1,0 +1,37 @@
+Hi
+
+Have set up two new 2008 Terminal Servers. Using Office 2003. From within Outlook, users got the following message if they tried to open an image:
+
+Picture printing is not available without the Desktop Experience Feature.
+
+If they save the images, the user can open them fine. With Microsoft Photo Gallery Viewer.
+
+Installed the Desktop Experience on one of the servers, but that led to other problems. It installed Windows Defender, and now users are getting messages that Outlook is not their default email client.
+
+Anyway, they can open the images now, but it uses Office Picture Manager. Even if I right click on the attachment, the Open With option does not show Photo Gallery Viewer.
+
+So, before this drives me mad, I like to know:
+
+Do I really have to install Desktop Experience?
+
+If so, how do I stop the Outlook default question?
+
+Where would I set it to use Photo Gallery Viewer for all images?
+
+Thanks
+
+This should set defaults for all users.
+
+Photo gallery is not a very good photo viewer/printer. E.g. you can not select a specific page of a TIFF to print, it is all or nothing.
+
+If you find a half decent image viewer, you would be much better installing that rather than the desktop experience . It is what we should do here.
+
+I have had an issue where my workplace policies dictate that you can not have desktop experience however windows photo viewer is required in some cases
+
+As so i was manually copying the file in from another computer, adding the reg keys and registering the service, but i got frusterated at wasting 10 min every time, so i made a batch file
+
+The following section, when added to a batch file, will create the directories, copy the files from the local install of windows SXS then it will register the service and add the reg entries for windows photo viewer to run.
+
+Then all you have to do is right click - open with - browse - c:\program files\windows photo viewer\windowsphotoviewer.dll and every thing will work a treat.
+
+@Echo off md "%ProgramFiles%\Windows Photo Viewer\" md "C:\Program Files\Windows Photo Viewer\en-US" Rem Copy to Windows Photo Viewer\EN-US copy "C:\Windows\winsxs\x86_microsoft-windows-i..trolpanel.resources_31bf3856ad364e35_6.1.7600.16385_en-us_d70b585133788ace\ImagingDevices.exe.mui" "C:\Program Files\Windows Photo Viewer\en-US" Copy "C:\Windows\winsxs\x86_microsoft-windows-photoacquire.resources_31bf3856ad364e35_6.1.7600.16385_en-us_e20fb7f468946724\PhotoAcq.dll.mui" "C:\Program Files\Windows Photo Viewer\en-US" Copy "C:\Windows\winsxs\x86_microsoft-windows-photoviewer.resources_31bf3856ad364e35_6.1.7600.16385_en-us_1f351a21979e0848\PhotoViewer.dll.mui" "C:\Program Files\Windows Photo Viewer\en-US" Rem Copy to Windows Photo Viewer Copy "C:\Windows\winsxs\x86_microsoft-windows-i..devicescontrolpanel_31bf3856ad364e35_6.1.7600.16385_none_247621f7aa7542ff\ImagingDevices.exe" "%ProgramFiles%\Windows Photo Viewer\" Copy "C:\Windows\winsxs\x86_microsoft-windows-imagingengine_31bf3856ad364e35_6.1.7601.17514_none_2df065c88c5d1cef\ImagingEngine.dll" "%ProgramFiles%\Windows Photo Viewer\" Copy "C:\Windows\winsxs\x86_microsoft-windows-photoacquire_31bf3856ad364e35_6.1.7601.17514_none_363dce826b046f1f\PhotoAcq.dll" "%ProgramFiles%\Windows Photo Viewer\" Copy "C:\Windows\winsxs\x86_microsoft-windows-photobase_31bf3856ad364e35_6.1.7600.16385_none_4056c935fc51ed50\PhotoBase.dll" "%ProgramFiles%\Windows Photo Viewer\" copy "C:\Windows\winsxs\x86_microsoft-windows-photoviewer_31bf3856ad364e35_6.1.7601.17514_none_de45f5282dfa523b\PhotoViewer.dll" "%ProgramFiles%\Windows Photo Viewer\" regsvr32 "%ProgramFiles%\Windows Photo Viewer\PhotoViewer.dll" reg add "HKCR\Applications\photoviewer.dll\shell\open" /v "MuiVerb" /t REG_SZ /d "@photoviewer.dll,-3043" /f reg add "HKCR\Applications\photoviewer.dll\shell\open\command" /ve /t REG_EXPAND_SZ /d "%%SystemRoot%%\System32\rundll32.exe \"%%ProgramFiles%%\Windows Photo Viewer\PhotoViewer.dll\", ImageView_Fullscreen %%1" /f reg add "HKCR\Applications\photoviewer.dll\shell\open\DropTarget" /v "Clsid" /t REG_SZ /d "{FFE2A43C-56B9-4bf5-9A79-CC6D4285608A}" /f reg add "HKCR\Applications\photoviewer.dll\shell\print\command" /ve /t REG_EXPAND_SZ /d "%%SystemRoot%%\System32\rundll32.exe \"%%ProgramFiles%%\Windows Photo Viewer\PhotoViewer.dll\", ImageView_Fullscreen %%1" /f reg add "HKCR\Applications\photoviewer.dll\shell\print\DropTarget" /v "Clsid" /t REG_SZ /d "{60fd46de-f830-4894-a628-6fa81bc0190d}" /f

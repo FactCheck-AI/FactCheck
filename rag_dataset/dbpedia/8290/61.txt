@@ -1,0 +1,9 @@
+xinetd is a program that listens for specific types of connections (SSH, Telnet, etc) and starts up the proper daemon for it in realtime.
+
+For instance. Normally an SSH daemon is not running on the MBWE. Since the MBWE has a slow processor, with limited RAM, and you won't be using SSH very often, it doesn't make sense to have an SSH daemon running all the time, taking up CPU cycles and valuable RAM. So, xinetd is setup to listen for connections on port 22 (SSH Port), and when it detects someone trying to connect on port 22, it'll load up an SSH daemon to accept that connection. Once you are done with your SSH session, it then closes down the SSH daemon, freeing up CPU time and RAM for the rest of the system.
+
+xinetd can be used for many different programs. SSH and Telnet are the most common, but it can be used for just about any program that will attempt to connect to a known port.
+
+Does this help?
+
+-ET

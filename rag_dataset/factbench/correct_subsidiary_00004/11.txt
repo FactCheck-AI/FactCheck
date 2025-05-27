@@ -1,0 +1,181 @@
+his chapter introduces you to the features and functionality of the Netscape Collabra Server. The Collabra Server makes Intranet and Internet collaboration a reality by bringing the full power of open standards technology to focused discussion groups. A discussion group is a collection of articles that reside on one or more news servers. A discussion group is related to a particular topic, which contains one or more articles of interest to a particular group of people. For example, someone might post an article to royal.pets.dogs asking about a particular brand of dog food. Someone reading the article replies with an answer; other people can reply with additional information.
+
+Introduction
+
+Netscape Collabra Server is part of Netscape SuiteSpot, an integrated suite of server software that lets you build a full-service network for rich communication, collaboration, information exchange, and application development. Built on open Internet protocols, SuiteSpot scales easily from a small LAN environment to the world-wide Internet. By using the Netscape Collabra Server for discussion groups and the Netscape Messaging Server for email, the people in your company can more easily communicate both within the company and across the Internet. Newsreader clients running on multiple platforms can access your Collabra Server to read and post articles. The Collabra component of Netscape Communicator is designed to take full advantage of the many benefits provided by the Collabra Server. For example, from Netscape Collabra, users with appropriate permissions can also create and manage discussion groups. Likewise, the Collabra Server can communicate with other news servers to share information, as shown in Figure 1.1.
+
+Communications Inside and outside of your company You can use the Collabra Server to facilitate communications both inside and outside of your company (depicted by the cloud). If your network communicates with networks outside of the company, your network is probably protected by a firewall (you'll learn about firewalls later in this guide).
+
+Features of the Collabra Server
+
+The Collabra Server provides the requisite features for enterprise discussion groups. These features, listed below, are described briefly in this section and in more detail throughout this manual:
+
+Support for standard protocols
+
+The ability to easily create and manage discussion groups
+
+The ability to search for information across multiple discussion groups
+
+The ability to specify access control at both the server level and at the discussion group level
+
+The ability to use SSL and client certificates that offer powerful security features
+
+The ability to replicate discussion groups with other news servers
+
+Support for standard protocols
+
+The Collabra Server supports the Network News Transport Protocol (NNTP), which defines the mechanism for supporting discussions over TCP/IP networks, such as local Intranets and the Internet. Consequently, the Collabra Server provides a single infrastructure for communicating inside and outside the company. The server can be used to participate in Usenet discussions. The NNTP protocol supports the following communications:
+
+NNTP-compliant clients (newsreaders) can connect to the Collabra Server to participate in discussion groups
+
+NNTP-compliant servers can connect to the Collabra Server to send discussion groups
+
+The Collabra server can connect to other NNTP-compliant servers to send discussion groups
+
+For directory services, the Collabra Server can connect to servers that support the Lightweight Directory Access Protocol (LDAP). The Collabra Server can be part of a Simple Network Management Protocol (SNMP) network. SNMP is the protocol used to remotely monitor and manage IP devices across a network.
+
+Creation and management of discussion groups
+
+You can easily create and manage discussion groups by using the discussion group management forms. These forms let you:
+
+Create discussion groups
+
+View properties of discussion groups
+
+Specify access control for discussion groups
+
+Modify properties of discussion groups
+
+Remove discussion groups
+
+Furthermore, these tasks are available to end users if you grant them the appropriate permissions. While end users manage discussion group content, you can focus more on managing the server. For information about delegating discussion group management tasks, see Chapter 3, "Controlling access to your server."
+
+For more information about creating and managing discussion groups, see Chapter 4, "Managing Discussion Groups."
+
+Searching across discussion groups
+
+You can specify full-text indexing of discussion groups for searching purposes. End users can specify search profiles to more easily monitor and track discussions on a wide variety of topics across multiple discussion groups. Results of the search are stored in a "virtual" discussion group. The virtual discussion group is refreshed periodically with updated search results. For more information about full-text indexing of discussion groups, see "Specifying indexing information" in Chapter 4.
+
+For information about enabling searching and profiling on your server, see "Specifying search options" in Chapter 2.
+
+Access control
+
+Some discussion groups might be for private use only. For example, a discussion group that contains sensitive business information must be a private discussion group. Other discussion groups might be available to anyone with access to your server. A discussion group can be one of the following:
+
+Private discussion groups are accessed by a limited number of people. Private discussion groups use access control to determine who can read articles in and post articles to the discussion group. Public discussion groups are available to anyone with access to your Collabra Server or to a news server that receives the discussion groups from your server. Public discussion groups don't use access control, so any user with access to your server can read and post to public discussion groups. Usenet newsgroups are newsgroups that are part of the Usenet hierarchy. These newsgroups are sent all over the world. Your Collabra Server gets Usenet news from another news server. (You'll read more about Usenet later.)
+
+The Netscape Collabra Server provides access control features that enable you to specify access control:
+
+On your entire server
+
+On your entire server and on certain discussion groups that reside on your server
+
+Only on certain discussion groups that reside on your server
+
+The access control features enable you to support both private and public discussion groups on the same Collabra Server. For more information about access control, see Chapter 3, "Controlling access to your server," and "Controlling access to a discussion group" in Chapter 4.
+
+Security
+
+The Collabra Server uses a protocol called the Secure Sockets Layer (SSL) to ensure privacy when communicating with other SSL-enabled products. SSL provides authentication and encryption. Authentication verifies the identity of the client or server using a digital certificate. Encryption ensures that data cannot be deciphered if it is intercepted during transmission or if it is received by the wrong parties. For more information about security features, see Chapter 6, "Understanding security."
+
+Discussion group replication
+
+Articles are propagated from server to server through discussion group replication. A news server can accept articles, send articles, or both. Discussion groups might be kept on several machines that send the discussion group articles to each other; for example, you could have servers in several different buildings that share discussion groups. This allows for fast response and high availability. For Usenet particularly, articles are stored on thousands of computers instead of one computer. For more information about replicating discussion groups, see Chapter 5, "Managing replication of articles."
+
+Planning your Collabra Server
+
+This section provides a brief overview of the steps you must perform to install and administer a Netscape Collabra Server:
+
+Choose your directory service
+
+Install the Netscape Collabra Server
+
+Determine your access control and security requirements
+
+Create discussion groups
+
+Plan and set up your discussion group replication sites
+
+Maintain your server
+
+Choosing your directory service
+
+Your directory service stores information about users and user groups, discussion groups, and access control. The Netscape Collabra Server provides a choice of directory services:
+
+The Netscape Directory Server, an LDAP-compliant directory service
+
+The local directory service that comes bundled with the administration server
+
+The local directory service is intended primarily for sites running a standalone Netscape server. Sites running multiple Netscape servers that need to share user and user group or discussion group information must use a Directory Server. The Collabra Server is compatible with other LDAP-compliant directory servers also. You should choose your directory service before you install your Collabra Server. For more information, see the Collabra Server Installation Guide for your platform.
+
+Installing the Collabra Server
+
+After you have chosen your directory service, you are ready to install your Collabra Server. When you install the Collabra Server, you automatically install the administration server. You use the administration server, included with all Netscape SuiteSpot servers, to configure all of your Netscape SuiteSpot 3.x servers. For information about the administration server, see the administration server online documentation and the printed manual, Managing Netscape Servers. You should read Managing Netscape Servers before you install and manage your Collabra Server. For information about installing your Collabra Server, including information about supported platforms, system requirements, and so on, see the Collabra Server Installation Guide for your platform.
+
+Determining your access control and security requirements
+
+You must first decide what type of access control your server requires by asking yourself the following questions:
+
+What type of information will be stored on your server?
+
+How critical is the privacy of this information to your organization?
+
+Who requires access to this information? Who does not?
+
+Will some information be private while other information will be public?
+
+Will you be sharing information with people outside of your company or organization?
+
+Your answers to these questions determine your access control and security requirements. By default, when you first install your server, access control is turned on and any user can read and post to your server. If you require other access control, you must modify the access control settings. After you decide what type of access control your server requires, you can determine what tasks you must perform to provide the appropriate level of access control. For more information, see Chapter 3, "Controlling access to your server."
+
+If your network communicates with networks outside of your company, depending on the sensitivity of the information you maintain, you might need to consider security requirements, such as authentication, encryption, and firewalls. For more information about security requirements, see Chapter 6, "Understanding security."
+
+Managing users and user groups
+
+Along with access control information, the directory service you choose stores information about users and user groups, including user IDs and passwords. You specify user IDs when creating access control rules. You manage users and user groups through the administration server interface. For more information, see the administration server online documentation or the printed manual, Managing Netscape Servers.
+
+Planning and creating discussion groups
+
+After you have installed the Netscape Collabra Server, you can create the discussion groups that your business requires. First you must decide what discussion groups you want your Collabra Server to provide to your users. You might create the initial discussion groups on your server and then delegate management tasks to end users who can create further discussion groups. For information about creating discussion groups, see Chapter 4, "Managing discussion groups."
+
+For information about delegating management tasks, see Chapter 3, "Controlling access to your server."
+
+Planning your replication sites
+
+Before you configure your server for discussion group replication, you need to ask yourself the following questions:
+
+What discussion groups you want to replicate with other sites? Your answer depends on the content your want to provide your users.
+
+Are your replication sites internal to your organization or will you also be replicating discussion groups with sites external to your organization?
+
+After you've decided what discussion groups you want to provide and who your replication sites will be, you must contact the administrators of any remote sites to set up the replication. For more information about planning and configuring your replication sites, see Chapter 5, "Managing replication of articles."
+
+Maintaining your server
+
+In general, your server will maintain itself. Each day, the server automatically runs the news.daily program, which performs necessary maintenance tasks and writes information to a set of log files. If necessary, it is possible to tune your server to improve performance or to correct an error situation. For more information about maintaining your server, see Chapter 8, "Maintaining your Collabra Server."
+
+About Usenet newsgroups
+
+The public collection of newsgroups is usually referred to as Usenet. These newsgroups are sent around the world, and their articles are stored on many servers. If you're new to the Internet or Usenet newsgroups, you might want to buy a book that lists and describes all the Usenet newsgroups (the list is very long). Or you can subscribe to one of the newsgroups that publishes lists (such as news.announce.newgroups and news.announce.newusers). (Note that not all news servers receive a full news feed; that is, they don't give you access to all Usenet newsgroups). Usenet addresses look similar to Internet addresses, but the most general category appears first instead of last (for example, rec.pets.cats is about cats, but the general category is recreational). Usenet newsgroups are organized into the following groups:
+
+The alt (alternative) group contains less formal topics
+
+The comp (computer) group contains topics about computers
+
+The misc (miscellaneous) group contains various topics
+
+The news (news) group contains topics about newsgroups
+
+The rec (recreational) group contains topics about recreational activities (arts, hobbies, sports, and so on)
+
+The sci (science) group contains topics on science (biology, chemistry, physics, math)
+
+The soc (social) group contains topics on social issues
+
+The talk (talk) group contains topics that are hotly debated (politics, religion)
+
+When creating your own local discussion groups on a news server that also contains Usenet newsgroups, you shouldn't use any Usenet group names, but you should still keep the convention of general to specific topic. For example, if your company is called Royal, you might create discussion groups such as:
+
+royal.hr.benefits royal.hr.bulletins royal.pr.pressrelease royal.engr.specs royal.mktg.pricing
+
+In these examples, the company name is always first, followed by a department name, and finally a topic name. [Previous][Next][Contents][Index]

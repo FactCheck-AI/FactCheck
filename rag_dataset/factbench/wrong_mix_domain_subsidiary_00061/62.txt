@@ -1,0 +1,23 @@
+If you are new to Java, I'd suggest going through the Java tutorials. They are pretty good, and once you've mastered the basics you can do Creating a GUI with Swing.
+
+Your life will probably be easier if you use an IDE with good GUI-building capabilities (similar to Visual Studio assuming that is where you are coming from). I'd recommend either Eclipse (the latest version has a decent GUI builder) or Netbeans.
+
+The good news is that writing a cross-platform Swing GUI is fairly simple. A minimal "Hello World" Swing app is something like this:
+
+package testswing; import javax.swing.JFrame; public class Basic { public static void main(String[] args) { JFrame f=new JFrame("Hello World"); f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); f.setVisible(true); } }
+
+You have a few options available for deployment:
+
+Package your application using Java Web Start. This is fully cross-platform and allows for single-click deployment over the web.
+
+Package everything into a runnable .jar file. Simple and effective, although it requires Java to be installed on the users computer and the correct file associations to be set up so that .jar is associated with the appropriate JRE.
+
+Create native application installers. See SO question: Java Application Installers
+
+Use Java Web Start.
+
+Java Web Start (JWS) is the Oracle Corporation technology used to launch rich client (Swing, AWT, SWT) desktop applications directly from a network or internet link. It offers 'one click' installation for platforms that support Java.
+
+JWS provides many appealing features including, but not limited to, splash screens, desktop integration, file associations, automatic update ..
+
+To ensure the user has the right version of Java (or later) needed to run the app., use the deployJava.js script. It is mentioned amongst the links at the bottom of that page.

@@ -1,0 +1,47 @@
+Let's look at a simple example of using the STDistance function in SQL Server 2008 (and later).
+
+I'm going to tell SQL Server that I'm in London, and I want to see how far away each of my offices are. Here's the results that I want SQL Server to give me:
+
+First, we'll need some sample data. We'll create a table containing a few locations of Microsoft offices, and we'll store their longitude & latitude values in a geography field.
+
+CREATE TABLE [Offices] ( [Office_Id] [int] IDENTITY(1, 1) NOT NULL, [Office_Name] [nvarchar](200) NOT NULL, [Office_Location] [geography] NOT NULL, [Update_By] nvarchar(30) NULL, [Update_Time] [datetime] ) ON [PRIMARY] GO INSERT INTO [dbo].[Offices] VALUES ('Microsoft Zurich', 'POINT(8.590847 47.408860 )', 'mike', GetDate()) INSERT INTO [dbo].[Offices] VALUES ('Microsoft San Francisco', 'POINT(-122.403697 37.792062 )', 'mike', GetDate()) INSERT INTO [dbo].[Offices] VALUES ('Microsoft Paris', 'POINT(2.265509 48.833946)', 'mike', GetDate()) INSERT INTO [dbo].[Offices] VALUES ('Microsoft Sydney', 'POINT(151.138378 -33.796572)', 'mike', GetDate()) INSERT INTO [dbo].[Offices] VALUES ('Microsoft Dubai', 'POINT(55.286282 25.228850)', 'mike', GetDate())
+
+Now, supposing we were in London. Here's how to make a geography value out of London's longitude & latitude values:
+
+DECLARE @latitude numeric(12, 7), @longitude numeric(12, 7) SET @latitude = 51.507351 SET @longitude = -0.127758 DECLARE @g geography = 'POINT(' + cast(@longitude as nvarchar) + ' ' + cast(@latitude as nvarchar) + ')';
+
+And finally, lets see how far each of our offices is.
+
+SELECT [Office_Name], cast([Office_Location].STDistance(@g) / 1609.344 as numeric(10, 1)) as 'Distance (in miles)' FROM [Offices] ORDER BY 2 ASC
+
+And this gives us the results we were hoping for.
+
+Obviously, you could slip in a TOP(1) if you just wanted to see the closest office.
+
+Cool, hey ?
+
+There's just one snag. When you have a lot of geography points to compare against, performance isn't brilliant, even if you add a SPATIAL INDEX on that database field.
+
+I tested a point against a table of 330,000 geography points. Using the code shown here, it found the closest point in about 8 seconds.
+
+When I modified my table to store the longitude and latitude values, and used the [dbo].[fnCalcDistanceMiles] function from this StackOverflow article, it found the closest point in about 3 seconds.
+
+However...
+
+All of the "distance between two points" samples I found on the internet either used the SQL Server STDistance function, or mathematical formulae involving the (CPU-intensive) cos, sin and tan functions.
+
+A faster solution was to travel back in time to high school, and remember how Pythagoras calculated the distance between two points.
+
+Supposing we wanted to know the distance between London and Paris.
+
+And here's my SQL Server function:
+
+CREATE FUNCTION [dbo].[uf_CalculateDistance] (@Lat1 decimal(8,4), @Long1 decimal(8,4), @Lat2 decimal(8,4), @Long2 decimal(8,4)) RETURNS decimal (8,4) AS BEGIN DECLARE @d decimal(28,10) SET @d = sqrt(square(@Lat1-@Lat2) + square(@Long1-@Long2)) RETURN @d END
+
+Now, remember this function doesn't return a value in miles, kilometers, etc... it's merely comparing the longitude & latitude values. And Pythagoras is meant to be used in 2D, and not comparing points on a round planet !
+
+However, in my tests, it found the closest point within 1 second, and produced the same results as using SQL Server's STDistance function.
+
+So, feel free to use this function for comparing relative distances, but don't use this function if you need the actual distance itself.
+
+Hope all this helps.

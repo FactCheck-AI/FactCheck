@@ -1,0 +1,109 @@
+1. JmDNS : Service Discovery for the 21st Century B r i a n S l e t t e n B o s a t s u C o n s u l t i n g , I n c b r i a n @ b o s a t s u . n e t N o F l u f f J u s t S t u f f 2 0 0 6
+
+2. Speaker Qualifications 12 years of software development experience Have own software consulting company for design, mentoring, training and development Work with Semantic Web, Aspect-Oriented Programming, Grid Computing
+
+3. Agenda Where We Have Been ZeroConf Bonjour JmDNS Brainstorming
+
+4. Where have we been?
+
+5. finding things in the past Conﬁguration Files (ick!) DNS (requires central authority, hostname only -- no ports) Directory Services AppleTalk (chatty “has been”) JINI (Java-only, central services) JXTA (steep learning curve)
+
+6. ad hoc networking too hard Law Ofﬁces, Schools, etc. do not always have sufﬁcient IT personnel Home networking is even worse! Could your grandma set up a DNS server? LDAP at home? What is so hard about two devices talking?
+
+7. Protocol Design Goals Internet Protocol (IP) was designed to be interoperable, extensible and scalable Propietary protocols (AppleTalk, NetBIOS/SMB, IPX) were designed around local network features and decentralized discovery
+
+8. AppleTalk Ahead of its time -- focused on services, not devices Too chatty for large networks Not based on IP Support persists but waned with Apple’s pre-OS X fortunes
+
+9. DHCP Solves some of the problem Dynamic address allocation Great for clients Client-Server sessions are easy to regenerate Not-so-great for servers
+
+10. DHCP (Cont) However, still focuses on hardware, not services (i.e. capabilities) Users care about ‘printing’ and ‘sharing ﬁles’ and listening to ‘music’ How to publish? ﬁnd? bind?
+
+11. JINI Showed a lot of early promise for ﬁnding devices and services on a network Problems: Required Java (harder to embed on devices, at least historically) Required Central Services Tried to proscribe service hierarchies
+
+12. JXTA Bill Joy Brain-Sibling to JINI Multi-language/Multi-Platform Huge Learning Curve Although it has languished, good things might still come from the JXTA world
+
+13. Publish/Find/Bind Hmmm... sounds familiar WebServices are hoping to solve some of these problems UDDI/WSDL/SOAP We’ll get back to you once WS-Whatever Draft is completed
+
+14. ZeroConf
+
+15. Zeroconf History Began out of discussions on a mailing list in 1997 Interested people got together at IETF BOFs ZeroConf WG was formed in 1999
+
+16. Zeroconf Goals Allocate addresses without a DHCP Server Translate names and IP addresses without a DNS Server Find services without a directory server Reuse existing technologies, infrastructure and expertise
+
+17. Zeroconf Technologies IPv4 Link-Local Addressing Multicast DNS DNS Service Discovery
+
+18. IPv4 link-local Addressing Uses 169.254/16 preﬁx for “local links” Between 169.254.1.0-169.254.254.255 Reserved by IANA for this purpose Links are local when Host A sends a packet that arrives unmodiﬁed (i.e. no TTL decrements)
+
+19. IPv4 link-local Addressing (cont) Hosts should not use “link-local” and routable addresses at the same time Will use an IP address from DHCP if one is available
+
+20. IPv4 Link-Local Process Generate an address using a PRNG (preferably seeded w/ MAC address or something uniqueish) ARP Probe for conﬂict Claim address on success Defend address on future conﬂict (ARP) Must relinquish if conﬂict persists
+
+21. multicast dns Designed to allow naming lookups without central server Introduces .local domain DNS is IETF technology so they are responsible, not ICANN
+
+22. Multicast DNS (Cont) Queries are sent to 224.0.0.251 on port 5353 Uses multicast broadcasts but is well- designed to minimize chattiness Hosts listen to changes and can cache results To avoid pig-piling new queries, mDNS responders delay responses by random value to see if someone else will respond
+
+23. Query Types One Shot “Just give me something” One Shot - Accumulate Results “Stick around for multiple results” Continuous Query “Keep on keepin’ on”
+
+24. Avoiding Chattiness Known Answer Suppression Passive Caching/Listening Exponential Decay Rates TTL Expirations New peers announce themselves
+
+25. Claiming the Name Pick a name (user-speciﬁed?) Put together a DNS A Record Perform T_ANY query to ﬁnd any other records with same name Upon success (no conﬂicts), announce to the world who you are
+
+26. Clients and Services Users care about relevant services not all that are available Printer around the corner My wife’s Excellent iTunes Music Collection SSH into development server
+
+27. dns service discovery (DNS-SD) No changes to DNS structures Use DNS PTR queries to ﬁnd SRV records that match service instance pattern <instance>._protoname._transport.<domain> Use TXT records for parameters
+
+28. DNS-SD Goals Service Instance Enumeration Service Name Resolution Somewhat persistent Here today, here tomorrow Simple to implement
+
+29. DNS-SD Service Instance Browsing Service Instances “Leaves in a tree” <domain>.<service>.<instance> Name compression in responses
+
+30. DNS-SD Txt Records Up to 65535 bytes Packed representation of zero or more strings
+
+31. DNS-SD TXT Records (Cont) Name=Value Pairs Not present No value (“Debug”) Empty value (“Debug=”) Non-Empty value (“Debug=verbose”)
+
+32. DNS-SD Query Example _ftp._tcp.example.org _http._tcp.example.org _ipp._tcp.example.org _daap._tcp.Carini.local _tivo_servemedia._tcp.Carini.local
+
+33. DNS-SD Meta-Query _services._dns-sd._udp.<domain> Returns a list of PTR records matching service type
+
+34. Registered DNS-SD Services http://www.dns-sd.org/ServiceTypes.html MYOB Adobe Axis Video Cameras Bootstrap Protocol Server Oracle Cluster Topology Server CodeWarrior Elgato EyeHome ebXML Messaging/Registry FAXstf H.323 A/V Communication Setup Roxio ToastAnywhere SubEthaEdit Protocol Kerberos Administration LDAP NFS Network Time Protocol PostgreSQL Server JINI Servicees PowerEasy POS Session Initiation Protocol Skype SliMP3 Server Interfaces Sun Grid Engine Sybase Server
+
+35. Bonjour (aka Rendezvous) (aka Opentalk)
+
+36. Bonjour History Open Source Apple’s Use of Bonjour Products Tools
+
+37. History AppleTalk released initially in mid-80’s Very popular on smallish networks Part of what made Macs ‘just work’ Apple wanted to replace functionality with protocol that ﬁts in modern networks (i.e. IP-based)
+
+38. Open Source Apple wants to encourage the use of Bonjour so it open sourced it Includes support for OS X, Windows, Windows CE, Linux, VxWorks http://developer.apple.com/networking/bonjour
+
+39. Apple’s use of Bonjour Name Service Name Service AppleTalk Filing Protocol (AFP) _afpovertcp._tcp Line Printer Daemon (LPD/LPR) _printer._tcp Network File System (NFS) _nfs._tcp Internet Printing Protocol (IPP) _ipp._tcp WebDAV File System (WEBDAV) _webdav._tcp PDL Data Stream (Port 9100) _pdl-datastream._tcp File Transfer Protocol (FTP) _ftp._tcp Remote I/O USB Printer Protocol _riousbprint._tcp Digital Audio Access Protocol Secure Shell (SSH) _ssh._tcp _daap._tcp (DAAP) Digital Photo Access Protocol Remote AppleEvents _eppc._tcp _dpap._tcp (DPAP) Hypertext Transfer Protocol _http._tcp iChat Instant Messaging Protocol _presence._tcp (HTTP) Trivial File Transfer Protocol _tftp._udp Airport Base Station _airport._tcp (TFTP) Remote Login (TELNET) _telnet._tcp Xserver RAID _xserveraid._tcp Remote Audio Output Protocol _raop._tcp Apple Remote Desktop (ARD) _net-assistant._tcp (RAOP)
+
+40. products TiVo, Asterisk VOIP PBX Printers (HP, Brother, Epson, Xerox, Lexmark, Canon) SubEthaEdit, Growl Axis Network Cameras Oracle, Roxio Toast Anywhere
+
+42. JmDNS
+
+43. JmDNS Open Source project started by Arthur van Hoff while at Strangeberry Renamed from JRendezvous for legal reasons, moved to SourceForge and taken over by Rick Blair and Werner Randelshofer Pure-Java implementation of ZeroConf
+
+44. JmDNS (cont) Progress has slowed but it is relatively stable and useful Passes Apple’s Rendezvous (Bonjour) Conformance tests Supports service registration and discovery
+
+45. JmDNS Class Main entry point to the JmDNS subsystem import javax.jmdns.JmDNS; . . . JmDNS jmdns = new JmDNS(); System.out.println(”Host: “ + jmdns.getHostName() ); System.out.println(”Interface: “ + jmdns.getInterface() ); ServiceInfo si[] = jmdns.list(”_http._tcp.local.”); jmdns.addServiceTypeListener( new MyServiceTypeListener() );
+
+46. ServiceInfo Class Encapsulates info about a JmDNS Service import javax.jmdns.ServiceInfo; . . . ServiceInfo System.out.println(”Host: “ + jmdns.getHostName() ); System.out.println(”Interface: “ + jmdns.getInterface() ); ServiceInfo si[] = jmdns.list(”_http._tcp.local.”); System.out.println(”Service 0 : “ + si[ 0 ].getServer() + “--” + si[ 0 ].getPort() + “--” + si[ 0 ].getNiceTextString() );
+
+47. Listener Interfaces ServiceListener Additions, Removals ServiceTypeListener New service type discovery Both listen for ServiceEvents
+
+49. Using a Service w/ JmDNS Example
+
+50. Registering a Service w/ JmDNS Example
+
+51. FOAFﬁnger Example
+
+52. What’s a FOAF? “The Friend of a Friend (FOAF) project is about creating a Web of machine-readable homepages describing people, the links between them and the things they create and do.”
+
+53. FOAF Based on RDF and is used to express things like: “My name is...” “I work for...” “I am interested in...” “Here’s my goofy picture...”
+
+54. FOAF and WebPages FOAF can help capture relationships, links, etc. for ﬁnding resources of interest, like- minded individuals, etc. Think Orkut + Craig’s List
+
+55. FOAFFinger Damian Steer put together a JmDNS- based app to ﬁnd people on local links Uses a custom application protocol: _foafcon._tcp.local. Reuses HTTP for transport -- good idea!
+
+56. Brainstorming
+
+57. References Cheshire, Steinberg, “Zero Conﬁguration Networking: The Deﬁnitive Guide”, O’Reilly and Associates, 2005. http://www.zeroconf.org http://www.multicastdns.org http://www.dns-sd.org http://jmdns.sourceforge.net http://developer.apple.com/networking/bonjour http://www.foaf-project.org/ http://rdfweb.org/people/damian/foafﬁnger http://tivohme.sourceforge.net/ http://avahi.org

@@ -1,0 +1,147 @@
+Author:“No Bugs” Hare Follow: Job Title:Sarcastic ArchitectHobbies:Thinking Aloud, Arguing with Managers, Annoying HRs,
+
+Calling a Spade a Spade, Keeping Tongue in Cheek
+
+[[This is Chapter 17(c) from “beta” Volume V of the upcoming book “Development&Deployment of Multiplayer Online Games”, which is currently being beta-tested. Beta-testing is intended to improve the quality of the book, and provides free e-copy of the “release” book to those who help with improving; for further details see “Book Beta Testing“. All the content published during Beta Testing, is subject to change before the book is published.
+
+To navigate through the book, you may want to use Development&Deployment of MOG: Table of Contents.]]
+
+As it was noted in the beginning of this Chapter, please keep in mind that
+
+in this book you will NOT find any advanced topics related to graphics.
+
+What you will find in this chapter, is the very very basics of the graphics, just enough to start reading the other books on the topic, AND (last but not least) to understand other things which are essential for networking programming and game development flow.
+
+Bottom line:
+
+if you’re a gamedev with at least some graphics experience – it is probably better to skip this Chapter to avoid reading about those-things-you-know-anyway.
+
+This Chapter is more oriented towards those developers who are coming from radically different fields such as, for example, webdev or business app development (and yes, a switch from webdev into gamedev does happen).
+
+2D Animations
+
+Sprites and Z-order
+
+Sprite In computer graphics, a sprite is a two-dimensional bitmap that is integrated into a larger scene.— Wikipedia —When speaking about 2D animation, the first thing which comes to mind, is “sprite”. Originally (as early as in 1977(!) [Wikipedia.Sprite]) sprites were implemented in hardware; these days, with CPUs being like 1000x more powerful than it was back then, hardware support for sprites is no longer necessary, and these days sprites are usually implemented purely in software.
+
+Technically, sprite is just an image-with-transparency rendered over whatever-is-below-it, at current sprite coordinates (X,Y); while usually sprites are rendered over background, they may overlap each other too. It was – and still is – common to represent all the moving objects within a 2D game, from characters to bullets, with sprites.
+
+“Z coordinate determines which of the sprites are “closer” to the viewer, and so determines which sprite is shown when two of them overlapAs sprites can overlap each other, to say “which sprite should be shown when overlap happens”, it is common to introduce so-called “Z-order” (or Z coordinate for sprite). Z coordinate determines which of the sprites are “closer” to the viewer, and so determines which sprite is shown when two of them overlap. Background can have its own Z coordinate (which often, though not always, has a pre-defined value).
+
+Last but not least, when speaking about sprites, we need to mention that when they’re rendered, they usually need to be anti-aliased; in XXI century, the most common technique for sprite anti-aliasing is using sprites with alpha channels (see [[TODO]] section above on alpha channels and anti-aliasing).
+
+Sprite Sheets
+
+Quite often, you will want to have your character animated when it is moving. This is often implemented as so-called “sprite sheets”. “Sprite sheet” is nothing more than a bunch of sprites packed within the same image; they are a bit easier to view visually, and tend to save a bit on size of the file, but other than that – there is no real difference in having “sprite sheet” and having a bunch of sprites.
+
+[[TODO: pivot point, per comments]]
+
+Animation
+
+It’s only lines on paper, folks!
+
+Ok, now we defined enough to start discussing animation. As much as animated images may look exciting within the game (and as much as they’re difficult to create), implementing animation is actually very simple. Paraphrasing Robert Crumb, we can easily say that
+
+2D animation is only sprites over background, folks!
+
+Indeed, making a character walk over the screen (AFTER the artist has done all the difficult job so the walk looks natural) is as simple as:
+
+Replacing sprite of your character with the next sprite from the sprite sheet
+
+Moving your sprite a bit
+
+Waiting for a few milliseconds
+
+Rinsing and repeating
+
+Double Buffering
+
+Ok, it is actually a little bit more complicated than that. The problem here is that actually, (at least without your 2D doing it for you behind the scenes) you’re not likely to have a device which allows you to “move your sprite a bit”. In practice, rendering of each of your frames is probably going to be implemented along the following lines:
+
+Rendering your background (effectively removing all your sprites)
+
+Rendering your selected sprite over the background in a new position
+
+“If implementing animation in a naïve manner, you’re likely to get problems with flickering.If implementing it in a naïve manner (as described above), you’re likely to get problems with flickering. Let me elaborate about it. If you’re doing all the stuff above right within your video RAM, then at a certain moment your player will be able to see the background without ANY character at all. Most likely, it won’t be easy to say what is going on (and observed effects will depend on the hardware, player eyes and brain included ;-)), but most of the time, it will feel as “flickering” (with severity of the flickering depending on lots of different stuff, so even if you cannot see it on your development box, somebody else may be able to see it on some other box).
+
+One common way to deal with this problem, is via using “double buffering”. Instead of one screen buffer (the one shown to the player), we have TWO of them (“front buffer”, displayed to the player, and “back buffer”). Then, we process our rendering as follows:
+
+Rendering background (effectively removing all the sprites) to “back buffer”
+
+Rendering all the sprites over the background in their respective positions – again, within “back buffer”
+
+At this point we have a complete new frame in the “back buffer”
+
+Now, we can either swap buffers (if it is supported in hardware), or just copy from “back buffer” to “front buffer”
+
+This will completely eliminate unpleasant effects when your player is able to see completely bare background (without any sprites on top of it); it also means eliminated “flickering” (though other effects, such as “screen tearing”, may stay). In practice, double buffering usually makes a HUGE difference for the animation quality.
+
+“Screen Tearing” and V-Sync
+
+Screen Tearing Screen tearing is a visual artifact in video display where a display device shows information from multiple frames in a single screen draw— Wikipedia —Let’s note that the double-buffering process doesn’t remove a different kind of visual artifacts (known as “screen tearing”). However, these artifacts are usually MUCH less severe than flickering which occurs without double buffering.1
+
+I would even go as far as saying that without double buffering, as a rule of thumb, your game is going to suck Really Bad, but
+
+quite a few games out there will work pretty well even with residual screen tearing
+
+On the other hand, for some other “quite a few games out there” (especially those with rapid horizontal movements of the view field), “screen tearing” can be easily a killer.
+
+To deal with screen tearing, it is usually necessary to perform that copying/swapping between the buffers in sync with screen refresh rate (for example, using V-Sync or G-Sync).
+
+“If you’re using double buffering AND perform buffer swap in sync with the V-Sync signal, your monitor will show your game just as a movie projector with shutter would show a cartoon in the cinemaIf you’re using double buffering AND perform buffer swap in sync with the V-Sync signal, you can eliminate related artifacts entirely. In fact, your monitor will show your game just as a movie projector with shutter would show a cartoon in cinema (with V-Sync blanking interval playing the role of movie projector shutter).
+
+On the other hand, using V-Sync / G-Sync has an attached price. When using V-Sync, the whole point is that we shouldn’t perform buffer swap before we get V-Sync from our monitor; therefore, if we’re done with rendering earlier than V-Sync comes in, we’ll be waiting for the V-Sync (doing nothing). This effectively “locks” your FPS rate to the refresh rate of the monitor (which is not a big deal). However, this method also has quite unpleasant effects, which happen when rendering of one specific frame is “missing” the V-Sync signal (which is completely external to your program); in such a case, you won’t be able to swap the buffers until the next V-Sync, making your animation “jerk” rather visibly (while each of the frames will still be “perfect”, timing between the frames will be skewed, leading to perception of “jerky” movement).
+
+Triple Buffering
+
+With triple buffering, there is one “front buffer” and two “back buffers”; “front buffer” is the one being displayed, and we’re drawing into one of the “back buffers”, while another one is already rendered.
+
+“From this point on, there are at least two different processing models which tend to live under the same umbrella name of “triple buffering”From this point on, there are at least two different processing models which tend to live under the same umbrella name of “triple buffering” 🙁 [Wikipedia.TripleBuffering].
+
+The first model is described in [AnandTech] and seems to be mostly about decoupling physics/rendering engine from the frame rate. In other words, physics/rendering is running at its own speed (300FPS in [AnandTech] (!)), and frames are rendered at their own pace (60FPS in [AnandTech]). It means that, given the numbers above, you’ll be throwing away 4 out of 5 frames, BUT – you don’t need to care which of the frames your player will really see, you just render at the highest possible rate, that’s it. On the positive side, this approach is rather simple; moreover, IF you’re using a very naïve rendering of “what will be the state of things in 1/300 second” (while having 60FPS refresh rate), you’ll get more precise rendering (which is described in [AnandTech] as a reduction in input latency) too. On the negative side, as soon as your frame rates are not that high, in this model (the one of physics and frame rate being decoupled) you’ll get quite a bit of “jerked” movement; this is not to mention that horrible waste of resources (4 out of 5 rendered frames thrown out of the window).
+
+The second model (described, for example, in [Hodgman], and known as “render ahead”) is using fixed frame rate and synchronizes physics with frames, so that physics calculations can be made precise to start with. With this model, any kind of additional buffering (beyond double-buffering) will have two-fold effects: (a) it will INCREASE input lag; (b) it will allow for a calculation of an occasional frame to take longer than usual (as long as the next frame takes shorter) – without missing the V-Sync deadline, reducing the risk of “jerking”. This is the model which is often used in games with heavy graphics – and it is “jerking” in case of missing V-Sync deadline which it helps to address, but – penalties to input lag are significant. When comparing this second model to decoupled-rendering-and-frame-rates one, we will see that:
+
+With double buffering, “render ahead” model will exhibit BETTER precision2 than “decoupled-rendering-and-frame-rates”
+
+With triple buffering, “render ahead” may have worse input lag – in exchange to being less sensitive to missing V-Sync deadline
+
+“render ahead” model doesn’t render frames which will be thrown away
+
+“Overall, an answer to “whether to use triple buffering” question is not that obviousOverall, an answer to “whether to use triple buffering” question is not that obvious (and depends on lots of things, including answering the question of “what kind of triple buffering your graphics library implements”). My current wild-guess-level suggestion (based on certain rather wild guesses about your game) would be to use double buffering with V-Sync for 2D (and any other game where you can render your next frame within 1/60 sec without any problems).
+
+For the games with heavier graphics – triple buffering (under “render ahead” model) MIGHT be necessary to provide a realistic movement. However, in the context of MOG you should think about organizing interactions of your incoming packets (the ones coming from Server-Side) with your triple buffering to reduce lag. In quite a few cases, you may be able to start rendering of the currently inactive “back buffer” as soon as a packet from the server arrives – effectively saving on the lag compared to a naïve implementation (the one which first buffers packets to compensate for packet jitter, and starts triple-buffered rendering only after the delays in that first packet buffer are processed).
+
+[[TODO: relation to game loop (mentioned in Chapters V-VI)]]
+
+Minimal DIY 2D Engine
+
+Ok, now, as we’ve described mechanics of 2D animation, a perfectly logical question arises – how difficult it is to implement such an engine? I can tell from experience, that 2D is not that difficult.
+
+“I’ve seen a pretty minimal 2D engine written from scratch at a cost of 4-6 person-weeksIn a real-world gamedev, I’ve seen a pretty minimal 2D engine (i.e. with animation, with anti-aliasing and with double buffering, but without stuff such as shaders etc.) written from scratch at a cost of 4-6 person-weeks (for only Windows, but it was easily portable further, see below). It should be noted that graphics, while animated, was quite limited:
+
+It was a classical “small sprites over background” thing. Sprites being small are essential to avoid “screen tearing” to be visible in absence of V-Sync
+
+Background was fixed, and no panoramic movements were necessary (and panoramic movements without V-Sync would look Really Bad)
+
+Further funny things about that engine included:
+
+It was using an absolute minimum of the system functionality; in fact, it used ONLY WM_TIMER for animation, and ONLY BitBlt() for rendering, that’s it 😉3
+
+This means that it worked absolutely everywhere
+
+This minimalistic approach allowed for easy porting later (it is pretty difficult to find a system which wouldn’t provide functionality equivalent to that of BitBlt())
+
+Anti-aliasing was implemented as simple as sprites with alpha channel
+
+Double buffering was implemented as a compatible bitmap, where all the rendering was done, with a simple BitBlt to copy the buffer to the screen; no V-Sync was involved.
+
+I am NOT arguing that you should implement your engine in such a way; what I am arguing is that
+
+On the other hand, let’s note that most of the time, two features present in this minimal engine – namely anti-aliasing and double-buffering – are necessary to produce acceptable results even if your animation and graphics are rudimentary.
+
+[[To Be Continued…
+
+This concludes beta Chapter 17(c) from the upcoming book “Development and Deployment of Multiplayer Online Games (from social games to MMOFPS, with social games in between)”. Stay tuned for beta Chapter 17(d), where we’ll try to speak about shaders in 2D context…]]
+
+Acknowledgement

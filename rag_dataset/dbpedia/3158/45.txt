@@ -1,0 +1,141 @@
+Microsoft Digital Employee Experience (MDEE) is building an integrated security controls strategy for Internet of Things (IoT) devices that interact with corporate data or that help ensure human life safety. The IoT consists of all the connected devices that can collect and process data. It represents a new and evolving landscape, in which technology is further integrated into our personal and work environments, driving productivity, efficiency, and convenience.
+
+As technology continues to evolve, groups across Microsoft are using the IoT to automate monitoring, work tasks, and accessing information. The IoT provides efficiency and convenience at Microsoft campuses by automating conference room devices, monitoring datacenters, monitoring and controlling smart building systems, and interacting with HoloLens devices. Other segments at Microsoft, including manufacturing, sales, and retail, use solutions that are built on IoT devices. Many employees regularly use the IoT outside of work for home appliances and smart vehicles.
+
+Our cloud-only future has new rules, including anything that can be connected, will be connected. We are designing security controls and practices to address the sheer number of devices and security paradigm shifts that come with moving our business assets to the intelligent cloud, using the intelligent edge and its millions of IoT devices.
+
+Business challenge
+
+Things are moving fast; the IoT industry is growing and evolving. There are thousands of different devices and manufacturers, which causes some industry-wide concerns about whether IoT devices can be managed securely and reliably. Our traditional methods for securing devices and data were based on the assumptions that devices can be monitored, information can be encrypted, and the flow of data could be monitored by human oversight. IoT devices often have no intelligence of their own and constantly collect and process small amounts of data, which makes them difficult to monitor.
+
+Implementing IoT security controls
+
+We have not yet implemented a dedicated tracking system for all IoT efforts at Microsoft, but we are working closely with known IoT initiatives, including:
+
+Automated meetings with Microsoft Graph and Surface Hub.
+
+Beacon devices in Microsoft facilities that offer peer geolocation information.
+
+Proximity-based meeting booking.
+
+Beacon-based asset tracking.
+
+Smart parking.
+
+Facility monitoring and optimization.
+
+We are creating comprehensive use cases that define the risks, impacts, and probability for each threat.
+
+Defining enterprise scenario risk levels
+
+We define and document threats and risks for each type of device, and we use the scope of impact to define the enterprise risk level for each enterprise scenario. A simple IoT sensor that can detect a person might be used to turn up the lighting in a walkway—it could also be used by a rescue and response team to find people in a disaster. Even the simplest sensor can be used in a critical scenario, so we needed to develop a strategy to help us define high-risk scenarios and how we can implement controls and policies to help mitigate risks. Appendix A contains a more comprehensive list of some known threats and our mitigation strategies.
+
+High-risk enterprise scenarios
+
+We decided to focus on establishing a standard and baseline set of controls high-risk enterprise scenarios first. These scenarios represent our core business functions. Any loss of these systems would have a substantial impact on the daily operation and business interest of the company. Other high-risk enterprise scenarios include the loss or misuse of devices that could result in physical harm to people, property, or equipment. For high-risk scenarios, we use the highest level of controls, including:
+
+IoT sensors that monitor or manipulate Highly Confidential resources should be classified as Highly Confidential and be treated appropriately.
+
+If the resource can affect the physical environment in a way that could harm a person, that resource should be classified as Highly Confidential and be treated appropriately.
+
+Information about the health and status of critical infrastructure, including employee health and welfare, should be trustworthy and reliable.
+
+Devices should be registered in a central location so that they can be assessed for security vulnerabilities, updated, tracked, and placed in a controlled physical environment to minimize the potential for tampering.
+
+These devices need a device management solution, via a gateway device, in the event a sensor is unable to function.
+
+Sensor integrity should be ensured by encrypted communications and verified by redundant backup sensors or other nearby devices, if possible.
+
+All devices must be linked to an owner to help assure accountability.
+
+Business needs and risks must be evaluated to decide if a device should connect via the internet or be segregated in a separate network.
+
+Devices should be logically separated to prevent device vulnerabilities from affecting the company’s main data processing services and information.
+
+All network communication should be device-initiated and outbound to minimize potential malicious interference.
+
+Medium-risk enterprise scenarios
+
+We are developing more medium-risk enterprise scenarios as we become more reliant on IoT data for planning, modeling, and developing app features. Compromise or loss of this type of data can lead to tangible business impacts. For medium-risk scenarios, we established recommendations for information security, including:
+
+Many of these devices have limited processing power and the ability to authenticate, monitor, patch, and control them directly is severely limited.
+
+No high-risk data should be generated, moved, or stored on these IoT solutions.
+
+These devices should connect to resources via Azure.
+
+IoT devices should be regulated via a trusted gateway device that can be managed in a traditional sense and connect to Azure IoT for data storage and access to corporate resources.
+
+Extra care needs to be taken to calibrate and validate data from medium-risk devices to ensure that interference (malicious or accidental) can be detected and remediated.
+
+Low-risk enterprise solutions
+
+While controls and mechanisms should be put in place for low-risk scenarios, they are not the focus of our IoT security standards. These items present minimal risk if they are rendered unusable. Low-risk IoT devices should not have substantial business efforts built upon their availability or data. For low-risk scenarios, we established recommendations for information security, including:
+
+At Microsoft, any IoT scenario that falls into this category should connect to corporate resources (with appropriate control mechanism) via Azure.
+
+No Microsoft classified data (Highly Confidential, Confidential, or General) should be generated, moved, or stored on these devices.
+
+The ability to encrypt, wipe, or revoke security certificates should be applied to all devices that are deployed in areas where physical security is not ensured.
+
+Classifying IoT devices
+
+To help us manage the diversity of IoT devices, we have settled on a few different ways to classify them, starting with how much we know about the device and how it works.
+
+Black box. The function of the device is understood. We can view the device in terms of its inputs and outputs (or transfer characteristics), and its function is understood, without any knowledge of its internal workings The OS, software, and security features are also unknown. One example in our enterprise scenario includes datacenter sensors and conference room devices.
+
+White box. We know how the devices is built, what operating system and software it is running, and its security features are known. Examples include HoloLens, a Surface Hub, or a Raspberry Pi running an operating system.
+
+Based on hardware capabilities, we identify the “smartness” of each device and classify it into one of four categories:
+
+Sensors. Sensors alone do not have computing capacity. These are basic units that provide data to a smarter device that can process the data.
+
+Devices with firmware. These devices have firmware and can provide basic computing power. They aggregate data from sensors and pass it on to smarter devices. These devices act as gateways.
+
+Devices with firmware and an operating system. These are smart devices that have computing power. These devices typically run an operating system, have storage, and connect to other network services.
+
+Field gateways. These are software-based components that reside on devices with firmware and an operating system. They act as gateways for the sensors by collecting data from sensors and sending that data to services, such as Azure IoT.
+
+Designing security standards and control procedures
+
+We are working to help ensure that developers follow best practices or guidance for building secure solutions while we work on developing specific guidance for securing IoT devices or management consoles. We are developing security standards and control procedures that will be embedded into current and future IoT projects. Until the efforts to publish our IoT standards and policies are complete, we are using additional baseline activities, including:
+
+Least functionality. Reduce the device’s attack surface by reducing the number of applications, daemons, and services or ports that operate on a device to only those that are required for basic operation.
+
+Least privilege. Grant only the minimum required access for people accomplish their tasks—and no more. Administrative access (root) must only be granted on a just-in-time
+
+Authorization and access control. Configure all systems to ensure that only authorized personnel can access the system. Configure all systems to ensure that only authorized personnel can access assets according to their permissions level.
+
+Auditing. Ensure all important systems events are securely logged into an authorized log collection system.
+
+Network security. Eliminate unnecessary network protocols or restrict server networking functionality to eliminate possible attack vectors. Systems must not route to and from the corporate network or connect any private network to a public network for inbound or outbound packets. Devices must not provide network relay or proxy services to other devices using technologies such as dual homing or connection sharing.
+
+Data handling. All data must be classified and handled appropriately. IoT devices must comply with privacy requirements and controls for the collection, use, and sharing of personal information. Data collected should only have a business purpose and be limited in scope and be necessary for solution functionality.
+
+Device hardening. To ensure firmware integrity, devices should be updated, encrypted, and have intrusion detection and antimalware configured.
+
+Management: A management solution should be used to centrally manage IoT devices
+
+As the importance of the IoT expands in the corporate environment, so does the need to expand and improve our security mechanisms. At Microsoft, we’re continuing to work internally and with our partners to develop better controls that will help address some of the risks that the IoT presents. Ongoing efforts to expand and improve our IoT baselines will ensure adherence to the practices outlined above.
+
+Internally, we’re expanding our efforts to generate and maintain a comprehensive asset inventory of IoT devices. We are coupling this effort with work related to our Supplier Solution Security Program that will help us manage the onboarding and procurement of secure IoT devices. This data will help us better understand the impact IoT has on our network and allow us to better respond to future incidents or risks.
+
+Additionally, network segmentation efforts are underway to help protect high-risk IoT implementations from informational works and non-critical devices. This network management ability can help is better monitor critical resources and turn off non-essential connections and protocols.
+
+As the IoT continues to accelerate and businesses realize the immense benefits, the next breakthrough capability from Microsoft will enable IoT devices to evolve—bringing intelligence to the edge. While the benefits of edge intelligence are exciting, it will pose new challenges in the way we develop, deploy, and manage IoT devices in a secure and scalable way.
+
+Microsoft Azure IoT Edge was introduced recently, and it brings together ways to help us extend our existing IoT gateway offering. Azure IoT Edge will help make the secure distribution of cloud intelligence easier.
+
+Read more about powering IoT experiences at Microsoft.
+
+Unpack Internet of Things with Microsoft Azure.
+
+Check out IoT Security Architecture.
+
+Explore new approach to IoT device integration enables employee experience at Microsoft.
+
+Discover empowering Microsoft employees to securely work anywhere with internet-first thinking.
+
+Unpack evolving the device experience at Microsoft.
+
+Appendix A: Known threats and mitigations

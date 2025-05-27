@@ -1,0 +1,31 @@
+The specification for Code 128 (ISO/IEC 15417) leaves the maximum length undefined and states that this is something that should be defined by any derivative application[*] standard:
+
+4.7.1 Symbology and data characteristics
+
+Application specifications should consider the following parameters.
+
+b) The number of data characters in the symbol, which may be fixed, variable or variable up to a defined maximum.
+
+For example the GS1 General Specification define that GS1-128 (the formal application of Code 128 to the supply chain industry) has a limits of 48 characters per symbol:
+
+5.4.1 GS1-128 Bar Code Symbol size characteristics:
+
+The characteristics of the GS1-128 Symbology are:
+
+GS1-128 Bar Code Symbol size characteristics:
+
+The maximum number of data characters in a single symbol is 48.
+
+Practically one should restrict the number of characters to whatever fits comfortably in a scanner's field of view. This will vary depending on the type and model of the device, e.g. handheld vs fixed, laser vs CCD, high-end vs budget, etc. In uncontrolled or open environments a high degree of tolerance should be budgeted for.
+
+It is especially worth noting that Code 128 supports double-density compression of numeric data ("mode C") which makes encoding long strings of digits much more efficient.
+
+Here is a 44-digit Code 128 containing 12345678901234567890123456789012345678901234:
+
+This is appropriately sized for most practical applications.
+
+However, here is the same Code 128 this time containing 44 alpha characters ABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCD:
+
+A barcode of this size will not be useful in as many applications since reading this reliably would require a scanner with a high resolution and wide field-of-view.
+
+So ultimately the maximum length of a Code 128 is dependant not only on the practical constraints of the application but also the type of data to be encoded.

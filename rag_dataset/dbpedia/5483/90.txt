@@ -1,0 +1,27 @@
+Hi all,
+
+I have purchased some new Cleaning tapes, and some labels for them.
+
+The problem is that Backup Exec 2012 detects the tape ok, but assigns it to the "Scratch Media"
+
+media set. I have set the slot to be a Cleaning Slot, but it still looks like it is treating the tape like a normal LTO5 tape.
+
+I'm thinking my issue is due to the labels.
+
+They have the following number sequence: C00001L5 to C00020L5
+
+I asked for Cleaning tape labels, so maybe these are not the correct ones?
+
+Trying to look into this, I found that it might be because there is no rule set up for the Label code specified above.
+
+I tried to add a rule, and entered:
+
+New-BEBarCodeRule -mediatype "CLN" -barcodeprefix "C"
+
+but it didn't seem to work. I have run both a Scan and Inventory on the Slot itself and the Library.
+
+Any ideas?
+
+Are there more commands I need to run to get the rule to be enabled?
+
+Do I have to restart the services?

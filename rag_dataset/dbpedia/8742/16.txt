@@ -1,0 +1,151 @@
+What is Contao?
+
+Contao is an open source content management system based on PHPâs popular Symfony framework.
+
+Why Docker?
+
+There are many reasons for running applications inside Docker containers. If youâre a developer dealing with lots of different technologies you may know the hassle of providing different runtime environments to different projects on your local machine. Docker gives you the ability to contain all of these inside of separate containers and keep your machine clean.
+
+Thatâs just one reason for Docker. Aside from that, docker makes deployment processes much more predictable while also providing an easy tool for the scalability of your applications.
+
+The Base Image
+
+Docker images are managed by Dockerfiles. I created a base image for Contao ready to use. It currently only supports Contaoâs 4.4 LTS version.
+
+Letâs break down the Dockerfile â if you just want to use the image and have no interest in its creation you can safely skip this part!
+
+The image is based on the official PHP 7 image:
+
+FROM php:7-apache
+
+We then prepare the environment:
+
+ENV COMPOSER_MEMORY_LIMIT -1 ENV APACHE_DOCUMENT_ROOT /var/www/html/contao/web WORKDIR /var/www/html
+
+We install all the necessary dependencies:
+
+RUN apt-get update RUN apt-get install -y \ libfreetype6-dev \ libjpeg62-turbo-dev \ libpng-dev \ libicu-dev \ && docker-php-ext-install -j$(nproc) iconv \ && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \ && docker-php-ext-install -j$(nproc) gd \ && docker-php-ext-install -j$(nproc) intl \ && docker-php-ext-install -j$(nproc) pdo_mysql RUN apt-get install -y git zip
+
+Install Contao itself:
+
+RUN curl -sS https://getcomposer.org/installer | php \ && mv composer.phar /usr/local/bin/composer \ && composer create-project --no-dev contao/managed-edition /var/www/html/contao '4.4.*'
+
+Make the Contao directory writable for the web server:
+
+RUN chown -R www-data:www-data /var/www/html/contao
+
+Enable apacheâs mod_rewrite:
+
+RUN a2enmod rewrite
+
+Change the web root:
+
+RUN sed -ri -e âs!/var/www/html!${APACHE_DOCUMENT_ROOT}!gâ /etc/apache2/sites-available/*.conf RUN sed -ri -e âs!/var/www/!${APACHE_DOCUMENT_ROOT}!gâ /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+Initialize php.ini â this is currently set to use in development mode:
+
+RUN mv â$PHP_INI_DIR/php.ini-developmentâ â$PHP_INI_DIR/php.iniâ
+
+Delete Contaoâs cache:
+
+RUN rm -rf /var/www/html/contao/var/cache/*
+
+And finally, expose port 80:
+
+EXPOSE 80
+
+The Docker Environment
+
+In order to run, Contao also needs a MySQL database. It would be bad practice running the database inside the same container as the web application. Therefore we need another container. Luckily for us, we can just go ahead and use the official MariaDB image. In order to orchestrate several images together I like to use Docker Compose. It allows us to easily combine multiple containers using a YAML file.
+
+As basic configuration for Contao may look like this:
+
+version: '3.1' services: database: image: mariadb ports: - 3306:3306 environment: MYSQL_ROOT_PASSWORD: root networks: - default contao: image: productionbuild/contao ports: - networks: - default networks: default:
+
+Here we have two services: a database service based on the official MariaDB image and a Contao service based on my Contao image. The database service exposes port 3306 for MySQL connections and the Contao service exposes port 80 for HTTP connections. They both share an internal network in order to allow for communication between the two.
+
+You can run this stack by executing:
+
+docker stack deploy -c docker-compose.yml contao
+
+You should now be able to connect the MySQL database on localhost:3306. Make sure thereâs no other MySQL instance running on that port or map this one to another port by modifying the file docker-compose.yml.
+
+Now, if you were to connect to the database and make some changes like, say, creating a new database those changes would be saved inside the running docker container. That would be bad because once you terminate the container the database would be lost.
+
+Persistence
+
+Docker containers are meant to be disposable. You should be able to create them and throw them away as you wish without any significant loss of data.
+
+Thatâs why we need to store the database files outside the container, so they can persist. You do this by using volumes:
+
+services: database: image: mariadb ports: - 3306:3306 environment: MYSQL_ROOT_PASSWORD: root volumes: - ./db:/var/lib/mysql networks: - default
+
+Adding these two lines allows us to map the directory /var/lib/mysql inside the container to a directory outside of it â in this case ./db. Make sure that directory actually exists.
+
+Make those changes, terminate the stack und re-deploy it:
+
+docker stack rm contao docker stack deploy -c docker-compose.yml contao
+
+Now you can connect to the database and safely create a new database for Contao. If you wish you can create a user for Contao, too.
+
+Before we now go ahead and complete Contaoâs installation, we need to be aware of a few things. Of course, Contao also needs to persist some data otherwise youâd have to set it up every time you start a container.
+
+I propose to map the following volumes to Contaoâs container:
+
+contao: image: productionbuild/contao ports: - volumes: - ./contao/composer.json:/var/www/html/contao/composer.json - ./contao/app/config:/var/www/html/contao/app/config - ./contao/system/config:/var/www/html/contao/system/config - ./contao/app/Resources:/var/www/html/contao/app/Resources - ./contao/templates:/var/www/html/contao/templates - ./contao/files:/var/www/html/contao/files - ./contao/src:/var/www/html/contao/src networks: - default
+
+What are these?
+
+composer.json is the core of Contaoâs (and Symfonyâs for that matter) dependency management. You need to get the one for your Contao version before you can map it to the container. An easy way may be to get the one thatâs currently inside your running container:
+
+docker exec [container id] cat contao/composer.json
+
+app/config will hold configuration files after the installation and will allow you to add additional files.
+
+app/Resources can include subdirectories like contao/config, contao/dca, contao/languages, contao/tempaltes as well as ContaoCoreBundle/views. How to use those directories is outside the scope of this post and may be covered at another time.
+
+system/config also holds configuration files after the installation.
+
+templates is where youâll put your custom templates.
+
+files will contain images, CSS, JS and other files.
+
+src is where Contao and Symfony recommend you to put your custom code.
+
+You may need to map other files and directories, too. For example, you may require a file contao/app/ContaoManagerPlugin.php. Depending on what you do you may also require less volumes. If you donât plan on creating custom code you can safely ignore contao/src for example.
+
+Your own Dockerfile
+
+Whatever your exact requirements are, try to separate between Contao core files and files that need customization. As an example, try to avoid putting the directory contao/vendor outside the container. Instead create a new image based on the Contao base image that respects your composer.json and installs its dependencies on creation, not on startup. You then use your new image in your Docker Compose configuration. Now, every time a dependency changes you need to update your image but thatâs okay as images are easily updated.
+
+Your own Dockerfile may look something like this:
+
+FROM productionbuild/contao:lts COPY ./contao/composer.json /var/www/html/contao/composer.json RUN composer update -d contao && \ composer install -d contao && \ composer dump-autoload -d contao RUN chown -R www-data:www-data /var/www/html/contao RUN rm -rf /var/www/html/contao/var/cache/* EXPOSE 80
+
+Now create your image:
+
+docker build -t my-own-contao-image .
+
+And update your docker-compose.yml:
+
+contao: image: my-own-contao-image ports: - â¦
+
+Version Control
+
+Make sure to put your Dockerfile and your docker-compose.yml in your Git repository alongside your code and youâve got yourself a complete setup to run your Contao application on any machine supporting Docker.
+
+Install and Configure Contao
+
+We still havenât actually configured Contao, have we?
+
+As you run your Docker stack, you can navigate to http://localhost/contao/install which will guide you through a short setup process.
+
+Youâll need to enter your database credentials. Note that the databaseâs host will be named after the corresponding service in your docker-compose.yml. In this case the hostâs name is database.
+
+After setting up Contao, all the database tables and configuration files will persist outside the containers. So, itâs safe to shut down the whole stack and run it again whenever you need it. Your Contao setup will be preserved.
+
+Conclusion
+
+Using this setup will allow you to easily create development environments for your different Contao projects and will enable you to share them with other developers.
+
+With some modification this setup may even be used to deploy Contao projects to production environments.

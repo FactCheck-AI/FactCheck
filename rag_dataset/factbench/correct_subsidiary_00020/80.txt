@@ -1,0 +1,27 @@
+Brenden - Yes. My web part has a field/property called "FileUpload" which is where I'm trying to upload the file to.
+
+(Ignore the misspellings in this screenshot. Just an example of the area I'm working in)
+
+What are you going to use the file for? Depending on the reason, it may be better to store the file in the folder structure of the site, and then have the property on the webpart just a file selector or url selector that links to the file. Let us know what you intend on doing with the file and that may help us give you a better answer.
+
+Joshua -
+
+It's going to be an XML file that then gets processed on the back end. Storing the file as part of the folder structure makes it publicly accessible, right? Assuming you have the URL of course.
+
+I've gotten it to work as an attachment on the page but I'm querying for the XML file by name which I'd prefer not to do.
+
+What you could use is a file system selector form control. This will allow you to get the files within the file system. You could then set a default path and simply place files in there. Yes the files would be publicly available if they know the URL. Other option would be to create your own form control which you can then upload a document to the database and store the xml in the database vs. the file system. I don't believe there is one for this already.
+
+Hi Ben,
+
+It depends a lot of what you want, but if you want to upload an XML and do directly something with it, then I agree with Brenden to build an custom form control.
+
+And is it necesary to upload the XML? Why not directly use it in memory. Like described here in Reading the xml file in server without saving it.
+
+You can also save the file on an temp location and then save the XML in de database like described here : Saving an XML file using Fileupload. Don't forget to remove the temp file.
+
+See here the documentation how to begin : Example - Developing custom form controls
+
+Good luck and if you get stuck you know where to find the answers :-)
+
+If this answer helped you, please vote for my answer :-)

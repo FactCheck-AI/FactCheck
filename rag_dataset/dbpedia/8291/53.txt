@@ -1,0 +1,15 @@
+5.4. The Extended Internet Daemon
+
+An alternative to inetd is the Extended Internet Daemon (xinetd). xinetd is configured in the /etc/xinetd.conf file, which provides the same information to xinetd as inetd.conf provides to inetd. But instead of using positional parameters with meanings determined by location on a configuration line (as inetd.conf does), xinetd.conf uses attribute and value pairs. The attribute name clearly identifies the purpose of each parameter. The value configures the parameter. For example, the third field in an inetd.conf entry contains the name of the transport protocol. In an xinetd.conf file, the name of the transport protocol is defined using the protocol attribute, e.g., protocol = tcp. Here is an example of an xinetd.conf tftp entry:
+
+# default: off # description: The tftp server uses the trivial file transfer \ # protocol. The tftp protocol is often used to boot diskless \ # workstations, download configuration files to network printers, \ # and to start the installation process for some operating systems. service tftp { socket_type = dgram protocol = udp wait = yes user = root server = /usr/sbin/in.tftpd server_args = -s /tftpboot disable = yes }
+
+Lines that start with # are comments. The actual entry begins with the service command. The attributes enclosed in the curly braces ({}) define the characteristics of the specified service.
+
+The service, socket_type, protocol, wait, user, server, and server_args values all parallel values shown in the tftp example from the Solaris inetd.conf file. These attributes perform exactly the same functions for xinetd that their positional counterparts did for inetd.
+
+One item, disable = yes, needs a little explanation. disable = yes prevents xinetd from starting tftp on demand. disable = yes is equivalent to commenting tftp out of the inetd.conf file. To enable tftp, edit this file and change it to disable = no.
+
+Red Hat 7 uses xinetd. However, you won't find the network services listed in the /etc/xinetd.conf file on a Red Hat system. In the Red Hat configuration, xinetd.conf includes by reference all of the files defined in the directory /etc/xinetd.d. The listing shown above is actually the contents of the /etc/xinetd.d/tftp file from our sample Red Hat system. Each service has its own configuration file.
+
+xinetd is used because it has enhanced security features. Security is one of the most important reasons for understanding the inetd.conf file or the xinetd.conf file. How to use the access control features of xinetd and inetd is covered in Chapter 12, "Network Security ".

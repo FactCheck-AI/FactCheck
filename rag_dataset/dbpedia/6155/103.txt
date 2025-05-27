@@ -1,0 +1,39 @@
+The software included in OpenBSD fits the typical UNIX server's need. But even the UNIX guru will miss many of his preferred software applications.
+
+OpenBSD 4.9: WindowMaker running Firefox and Gimp.
+
+Applications and programs are installed to a BSD system as packages. The administrator of the OpenBSD machine may install precompiled, ready-to-run packages from an OpenBSD CD-Rom or from the Internet or he may build these packages from the program's source code using the so called ports collection.
+
+Packages
+
+To install packages from the CD-Rom, simply mount it, walk to /cdrom/OpenBSD/4.9/packages/i386/ und run pkg_add package for each package you need. To install my favorite collection of packages directly from the Internet I do:
+
+# ftp -V ftp://ftp.openbsd.org/pub/OpenBSD/ftplist 100% |*******************************************************| 8190 00:00 # grep '^http.*Germany' ftplist http://openbsd.informatik.uni-erlangen.de/pub/OpenBSD Erlangen, Germany http://ftp.spline.de/pub/OpenBSD Berlin, Germany http://ftp.bytemine.net/pub/OpenBSD Oldenburg, Germany http://ftp.halifax.rwth-aachen.de/openbsd Aachen, Germany # export PKG_PATH=http://ftp-stud.fht-esslingen.de/pub/OpenBSD/4.9/packages/i386 # ftp -4 -V ${PKG_PATH}/index.txt 100% |*******************************************************| 508 KB 00:00 # less index.txt ... # list=' bzip2-1.0.6 unzip-6.0 zip-3.0 cups-1.4.6p1 wget-1.12p1 curl-7.21.2 dnsmasq-2.55 ntp-4.2.6pl2p4 openvpn-2.1.4 samba-3.5.6p4-ads socat-1.7.1.3 tightvnc-1.3.10p0 texlive_base-2009p9 a2ps-4.14p3-a4 gv-3.7.1 xpdf-3.02.5p0 textutils-2.0p0 fileutils-4.1p5 findutils-4.4.2 screen-4.0.3p2 mc-4.7.0.8 gnuplot-4.4.2 bash-4.1.9p0 nedit-5.5p15 mpg321-0.2.10p3 vorbis-tools-1.4.0 abcde-2.3.0 gimp-2.6.11 ImageMagick-6.4.5.6p0 gqview-2.1.5p3 firefox35-3.5.16p0 mozilla-thunderbird-3.1.7p3 mplayer-20101024p2 openbox-3.4.11.2 ' # for i in `echo $list`; do pkg_add $i ; done
+
+# chsh -s /usr/local/bin/bash jexss # su - jexss -bash-3.2$ echo '#!/usr/local/bin/bash' > .xsession -bash-3.2$ echo 'exec xterm -geometry +70+70 &' >> .xsession -bash-3.2$ echo 'xsetroot -solid DarkSlateGrey' >> .xsession -bash-3.2$ echo 'exec openbox' >> .xsession -bash-3.2$ chmod 755 .xsession
+
+Ports
+
+Besides installing binary packages directly it is also possible to compile those packages from source. This has some theoretical advantage such as optimized compile time flags or to learn how stable the hardware of your system is. But mainly it is cool! Every OpenBSD administrator should do this from time to time to keep cool...
+
+Installing the ports does not mean to try every piece of software to get compiled by your own. Instead it is a well defined procedure for every package. In fact the binary packages on the CD-Rom or on the OpenBSD mirrors are compiled exactly the same way.
+
+First you need to unpack the ports archive. It holds all necessary information for compilation besides the source code itself and has to be compatible to your OpenBSD version. You may find the file ports.tar.gz on the third CD-Rom or on every OpenBSD mirror:
+
+Every package is made by simply typing make install in the corresponding ports directory. But be warned: It is sometimes difficult to get all source code archives and patches from the Internet. The official OpenBSD distfiles collection is not always up to date.
+
+# cd /usr/ports/shells/bash # make install
+
+This will fetch the bash source code (/usr/ports/distfiles/bash/bash-4.1.tar.gz ) and some patches from one of the GNU or OpenBSD mirrors and will compile and install some dependencies such as gettext or libiconv. Finally it will complie bash, make a package (/usr/ports/packages/i386/all/bash-4.1.9p0.tgz) and install that package:
+
+Some packages may be tuned by selecting specific flavors, such as "a4" for all printing pakages. Sometimes this can be used to avoid unwanted building dependencies too. For example, when compiling The Gimp, one of the dependencies (poppler) requires the qt toolkit in the default setup. With the FLAVOR "no_qt" this may be skipped. Unfortunately, there seems to be no way to inherit flavors to dependencies (at least I could not find one). Therefore, I always build the dependencies before the applications, using my preferred flavors.
+
+Note that sometimes it is difficult to get the distfiles from Internet once an application's version is not supported anymore. A good lesson to get familiar with the ports system is getting OpenOffice or Sun JDK compiled and installed this way. Good luck!
+
+Subset of Ports
+
+These are the applications that I install from the ports collection for OpenBSD i386:
+
+This is the full list of ports which is needed to compile all my applications, the script I use for the build process, the list of distfiles used for compilation and the list of packages which are finally built:
+
+Creation of all ports takes many hours on my Phenom II X4 965. During built many packages are created and installed which are not needed anymore afterwards. So I usually remove all packages and install my favorite subset only:

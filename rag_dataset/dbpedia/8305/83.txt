@@ -1,0 +1,103 @@
+Hierarchical clustering is a popular method in data science for grouping similar data points into clusters. Unlike other clustering techniques like K-means, hierarchical clustering does not require the number of clusters to be specified in advance. Instead, it builds a hierarchy of clusters that can be visualized as a dendrogram. In this article, we will explore hierarchical clustering using Scikit-Learn, a powerful Python library for machine learning.
+
+Introduction to Hierarchical Clustering
+
+Hierarchical clustering is a method of cluster analysis that seeks to build a hierarchy of clusters. It is particularly useful when the number of clusters is not known beforehand. The main idea is to create a tree-like structure (dendrogram) that represents the nested grouping of data points.
+
+Types of Hierarchical Clustering
+
+There are two main types of hierarchical clustering:
+
+Agglomerative Clustering: Agglomerative clustering is a “bottom-up” approach. It starts with each data point as a single cluster and merges the closest pairs of clusters iteratively until all points are in a single cluster or a stopping criterion is met.
+
+Divisive Clustering: Divisive clustering is a “top-down” approach. It starts with all data points in a single cluster and recursively splits the clusters into smaller ones until each data point is in its own cluster or a stopping criterion is met.
+
+In this article, we will focus on agglomerative clustering, as it is more commonly used and is well-supported by Scikit-Learn.
+
+How Hierarchical Clustering Works?
+
+Hierarchical clustering involves the following steps:
+
+Calculate the Distance Matrix: Compute the distance between every pair of data points using a distance metric (e.g., Euclidean distance).
+
+Merge Closest Clusters: Identify the two closest clusters and merge them into a single cluster.
+
+Update the Distance Matrix: Recalculate the distances between the new cluster and all other clusters.
+
+Repeat: Repeat steps 2 and 3 until all data points are merged into a single cluster or a stopping criterion is met.
+
+Dendrograms: Visualizing Hierarchical Clustering
+
+A dendrogram is a tree-like diagram that shows the arrangement of clusters produced by hierarchical clustering. It provides a visual representation of the merging process and helps in determining the optimal number of clusters.
+
+How to Read a Dendrogram?
+
+Leaves: Represent individual data points.
+
+Branches: Represent clusters formed by merging data points or other clusters.
+
+Height: Represents the distance or dissimilarity between clusters. The higher the branch, the more dissimilar the clusters.
+
+Implementing Hierarchical Clustering with Scikit-Learn
+
+Scikit-Learn provides a straightforward implementation of hierarchical clustering through the AgglomerativeClustering class. Let’s walk through the steps to implement hierarchical clustering using Scikit-Learn.
+
+Step 1: Import Libraries
+
+Python
+
+import numpy as np import matplotlib.pyplot as plt from sklearn.datasets import make_blobs from sklearn.cluster import AgglomerativeClustering from scipy.cluster.hierarchy import dendrogram, linkage
+
+Step 2: Generate Sample Data
+
+For demonstration purposes, we will generate synthetic data using the make_blobs function.
+
+Python
+
+# Generate sample data X, y = make_blobs(n_samples=300, centers=4, cluster_std=0.60, random_state=0)
+
+Step 3: Perform Agglomerative Clustering
+
+Python
+
+# Perform agglomerative clustering agg_clustering = AgglomerativeClustering(n_clusters=4) y_pred = agg_clustering.fit_predict(X)
+
+Step 4: Plot the Clusters
+
+Python
+
+# Plot the clusters plt.scatter(X[:, 0], X[:, 1], c=y_pred, cmap='rainbow') plt.title('Agglomerative Clustering') plt.xlabel('Feature 1') plt.ylabel('Feature 2') plt.show()
+
+Output:
+
+Step 5: Plot the Dendrogram
+
+To plot the dendrogram, we need to use the linkage function from the scipy.cluster.hierarchy module.
+
+Python
+
+# Generate the linkage matrix Z = linkage(X, method='ward') # Plot the dendrogram plt.figure(figsize=(10, 7)) dendrogram(Z) plt.title('Dendrogram') plt.xlabel('Sample Index') plt.ylabel('Distance') plt.show()
+
+Output:
+
+Advantages and Disadvantages of Hierarchical Clustering
+
+Advantages:
+
+No Need to Specify Number of Clusters: Unlike K-means, hierarchical clustering does not require the number of clusters to be specified in advance.
+
+Dendrogram: Provides a visual representation of the clustering process and helps in determining the optimal number of clusters.
+
+Versatility: Can be used for various types of data and distance metrics.
+
+Disadvantages:
+
+Computational Complexity: Hierarchical clustering can be computationally expensive, especially for large datasets.
+
+Sensitivity to Noise: Can be sensitive to noise and outliers, which may affect the clustering results.
+
+Lack of Scalability: Not suitable for very large datasets due to its high time complexity.
+
+Conclusion
+
+Hierarchical clustering is a powerful and versatile clustering technique that builds a hierarchy of clusters without requiring the number of clusters to be specified in advance. Scikit-Learn provides an easy-to-use implementation of hierarchical clustering through the AgglomerativeClustering class. By following the steps outlined in this article, you can perform hierarchical clustering on your own datasets and visualize the results using dendrograms.

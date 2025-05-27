@@ -1,0 +1,837 @@
+Veracode auto-packaging automates the process of packaging your projects for Static Analysis and Software Composition Analysis (SCA) upload and scan. By automating packaging, you can reduce the burden on your teams to correctly package projects manually, while also ensuring more accurate and consistent scan results.
+
+Saves time and effort, compared to manual packaging, by eliminating manual steps, such as gathering files and dependencies, configuring build settings, and packaging artifacts.
+
+Ensures a consistent build process across different environments and platforms. This reduces the risk of discrepancies or errors that can occur when developers manually change the build configurations or there are variations across the configurations.
+
+Reduces human errors that can occur when developers package projects manually. This improves the accuracy and reliability of the generated artifacts, which ensures that the Static Analysis results are accurate.
+
+Enables scalability by facilitating the rapid and efficient generation of artifacts for analysis across multiple code repositories, projects, or teams. This scalability is essential for organizations managing large and complex codebases.
+
+Reduces the time and resources developers spend securing their code, which allows them to focus on writing new code, implementing features, or addressing critical issues. Developers can increase their productivity and accelerate the time-to-market for software products and updates.
+
+The auto-packager runs on your repository to package your projects into artifacts (archive files) that you can upload to the Veracode Platform. To correctly package a project for Static Analysis or SCA upload and scan, the auto-packager automatically detects the required components and configurations for each supported language.
+
+The auto-packager packages your projects into archive files, such as ZIP, JAR, WAR or EAR, called artifacts. During the packaging process, the auto-packager might create multiple artifacts that it includes in the final artifacts. For example, multiple DLL files inside the final ZIP file. The final artifacts are the complete, packaged archive files that you can upload to Veracode and scan separately.
+
+The following table lists examples of the filename format of the final artifacts for each supported language.
+
+Artifact languageLanguage tagLanguage suffix tagExample filename.NET assembliesdotnetNoneveracode-auto-pack-Web-dotnet.zip.NET with JavaScriptdotnetjsveracode-auto-pack-Web-dotnet-js.zipAndroidNoneNoneThe gradle.build file defines the filenames of Java artifacts.COBOLcobolNoneveracode-auto-pack-EnterpriseCOBOLv6.3-cobol.zipC/C++ Linuxc_cppNoneveracode-auto-pack-CppProjectLibsAndExecutables-c_cpp.zipC/C++ WindowsmsvcNoneveracode-auto-pack-$(SolutionName)-msvc.zipDart and FlutterNoneNoneThe project configuration for Flutter Android or Xcode defines the filenames.GogoNoneveracode-auto-pack-evil-app-go.zipiOS with Xarchiveiosxcarchiveveracode-auto-pack-duckduckgo-ios-xcarchive.zipiOS with CocoaPodsiospodfileveracode-auto-pack-signal-ios-podfile.zipJava with GradleNoneNoneDefined by your gradle.build file.Java with MavenNoneNoneDefined by your pom.xml file.JavaScriptjsNoneveracode-auto-pack-NodeGoat-js.zipKotlinNoneNoneThe filenames of Java artifacts are defined by your gradle.build file.PerlperlNoneveracode-auto-pack-bugzilla-perl.zipPHPphpNoneveracode-auto-pack-captainhook-php.zipPythonpythonNoneveracode-auto-pack-dvsa-python.zipReact NativejsNoneveracode-auto-pack-convene-js.zipRubyrubyNoneveracode-auto-pack-railsgoat-ruby.zipScalaNoneNoneThe filenames of Java artifacts are defined by your SBT build properties.
+
+Auto-packaging is integrated with the following products:
+
+Veracode CLI to integrate auto-packaging in your development environment.
+
+Veracode GitHub Workflow Integration to automate repo scanning with GitHub Actions. The auto-packager only supports Java, JavaScript, Python, Go, Scala, Kotlin, React Native, and Android repositories.
+
+Veracode Azure DevOps Workflow Integration to automate repo scanning using user's pipelines. The auto-packager supports Java, .NET, JavaScript, Python, Go, Kotlin, and React Native projects.
+
+Veracode Scan for JetBrains to auto-package applications, scan, and remediate findings in JetBrains IDEs.
+
+Veracode Scan for VS Code to auto-package applications, scan, and remediate findings in VS Code.
+
+You can integrate the auto-packager with your local build environment or CI/CD. For example, to add auto-packaging to your build pipelines, you could add the CLI command veracode package to your development toolchains or build scripts.
+
+You might need to install one or more of the following tools in your environment:
+
+A build automation tool that defines build scripts or configurations that specify how to manage dependencies, compile source code, and package code as artifacts.
+
+A dependency management system to effectively handle project dependencies.
+
+A compiler that builds source code into executable code.
+
+If the auto-packager does not support specific versions, or it relies on a version supported by your packager manager, the Versions column shows Not applicable.
+
+LanguageVersionsPackage managers.NET.NET 6, 7, or 8.
+
+.NET Framework 4.6 - 4.8.
+
+Not supported: MAUIAllAndroidA JDK version that you have tested to build your project.GradleCOBOLCOBOL-74, COBOL-85, COBOL-2002Not ApplicableC/C++ LinuxCentOS and Red Hat Enterprise 5-9, openSUSE 10-15Not ApplicableC/C++ WindowsC/C++ (32-bit/64-bit)Not ApplicableDart and FlutterDart 3.3 and earlier / Flutter 3.19 and earlierPubGo1.14 - 1.22Go ModulesiOSNot applicableAllJava (select from the Package managers column)A JDK version that you have tested to build your project.Gradle, MavenJavaScript and TypeScriptNot applicableNPM, YarnKotlinA JDK version that you have tested to build your project.Gradle, MavenPerl5.xNot ApplicablePHPNot applicableComposerPythonNot applicablePip, Pipenv, setuptools, virtualenvReact NativeNot applicableNPM, Yarn, BowerRuby on RailsRuby 2.4 or greaterBundlerScalaA JDK version that you have tested to build your project.Gradle, Maven, sbt
+
+Under each supported language, the Veracode CLI commands and output examples demonstrate the packaging process when you run the veracode package command. You can use the auto-packager with various integrations, but the CLI output examples help you visualize the packaging process. All examples assume the location of the CLI executable is in your PATH. You might see different output in your environment.
+
+Before you can run the auto-packager, you must meet the following requirements:
+
+Your environment must have:
+
+A supported version of .NET.
+
+PATH environment variable that points to the dotnet or msbuild command.
+
+Your projects must:
+
+Contain at least one syntactically correct .csproj file.
+
+Compile successfully without errors.
+
+The auto-packager completes the following steps, as shown in the example command output.
+
+Recursively searches your repo for all .csproj submodules.
+
+To publish an SDK-style project, runs the following command:
+
+dotnet publish -c Debug -p:UseAppHost=false -p:SatelliteResourceLanguages='en' -p:WasmEnableWebcil=false -p:BlazorEnableCompression=false
+
+To publish a .NET Framework project, runs a command similar to the following:
+
+msbuild Project.csproj /p:TargetFrameworkVersion=v4.5.2 /p:WebPublishMethod="FileSystem" /p:PublishProvider=FileSystem /p:LastUsedBuildConfiguration=Debug /p:LastUsedPlatform=Any CPU /p:SiteUrlToLaunchAfterPublish=false /p:LaunchSiteAfterPublish=false /p:ExcludeApp_Data=true /p:PrecompileBeforePublish=true /p:DeleteExistingFiles=true /p:EnableUpdateable=false /p:DebugSymbols=true /p:WDPMergeOption="CreateSeparateAssembly" /p:UseFixedNames=true /p:UseMerge=false /p:DeployOnBuild=true
+
+Filters out any test projects.
+
+Packages the published project and saves the artifacts of your packaged project in the specified --output location.
+
+veracode package --source path/to/project/bobs-used-bookstore-sample --output verascan --trust
+
+Packager initiated...
+
+Verifying source project language ...
+
+Packaging DOTNET artifacts for DotNetPackager project 'Bookstore.Data'. Publish successful.
+
+Packaging DOTNET artifacts for DotNetPackager project 'Bookstore.Web'. Publish successful.
+
+Project Bookstore.Web zipped and saved to: path\to\verascan\veracode-auto-pack-Bookstore.Web-dotnet.zip
+
+DotNet project Bookstore.Web JavaScript packaged to: path\to\verascan\veracode-auto-pack-Bookstore.Web-dotnet-js.zip
+
+Packaging DOTNET artifacts for DotNetPackager project 'Bookstore.Cdk'. Publish successful.
+
+Project Bookstore.Cdk zipped and saved to: path\to\verascan\veracode-auto-pack-Bookstore.Cdk-dotnet.zip
+
+Packaging DOTNET artifacts for DotNetPackager project 'Bookstore.Domain'. Publish successful.
+
+Successfully created 3 artifact(s).
+
+Created DotNet artifacts for DotNetPackager project.
+
+Total time taken to complete command: 11.656s
+
+Before you can run the auto-packager, you must meet the following requirements:
+
+Your environment must have:
+
+Correct Java or Kotlin version present in the environment for packaging the application.
+
+Correct Android SDK version present in the environment for packaging the application.
+
+Other dependencies installed based on the repository dependency.
+
+The auto-packager completes the following steps, as shown in the example command output.
+
+To build a Gradle project, runs the command gradlew clean build -x test
+
+Copies the artifacts of your packaged project to the specified --output location.
+
+veracode package --source path/to/project/sunflower --output verascan --trust
+
+Packaging code for project sunflowe. Please wait; this may take a while...
+
+Verifying source project language ...
+
+Copying Java artifacts for GradlePackager project.
+
+Copied artifact: path/to/verascan/app-benchmark.apk.
+
+Copied artifact: path/to/verascan/app-debug.apk.
+
+Copied artifact: path/to/verascan/macrobenchmark-benchmark.apk.
+
+Successfully created 3 artifact(s).
+
+Created Java artifacts for GradlePackager project.
+
+Total time taken to complete command: 1m35.117s
+
+Before you can run the auto-packager, you must meet the following requirements:
+
+Your COBOL programs must be in UTF-8 encoded files with one of the following extensions: .cob, .cbl, .cobol, or .pco.
+
+Your COBOL copybooks must be in UTF-8 encoded .cpy files. Veracode recommends you include all copybooks to generate the best scan results.
+
+The auto-packager completes the following steps, as shown in the example command output.
+
+Finds all the files matching the required extensions and packages them in a ZIP archive (artifact).
+
+Copies the artifacts of your packaged project to the specified --output location.
+
+veracode package --source path/to/project/EnterpriseCOBOLv6.3 --output verascan --trust
+
+Packaging code for project EnterpriseCOBOLv6.3. Please wait; this may take a while...
+
+Verifying source project language ...
+
+[GenericPackagerCobol] Packaging succeeded for the path path/to/project/EnterpriseCOBOLv6.3
+
+Successfully created 1 artifact(s).
+
+Created Cobol artifacts for GenericPackagerCobol project.
+
+Total time taken to complete command: 3.802s
+
+Before you can run the auto-packager, you must meet the following requirements:
+
+All project files and libraries have been compiled with debug information defined in the packaging guidelines.
+
+Auto-packaging must run on supported Linux OS architecture and distribution.
+
+For efficient packaging, all binaries and libraries have been collected in a single folder.
+
+The auto-packager completes the following steps, as shown in the example command output.
+
+Detects a Veracode-supported Linux OS architecture. If it does not detect a supported architecture, the auto-packager throws an error and exits packaging.
+
+Detects a Veracode-supported Linux OS distribution.
+
+Searches the prebuilt binary directory to find scan-supported binary files, then archives them in a single artifact.
+
+veracode package --source path/to/project/CppProjectLibsAndExecutables --output verascan --trust
+
+Packaging code for project CppProjectLibsAndExecutables. Please wait; this may take a while...
+
+Verifying source project language ...
+
+C/CPP project CppProjectLibsAndExecutables packaged to: /path/to/verascan/veracode-auto-pack-CppProjectLibsAndExecutables-c_cpp.zip
+
+Successfully created 1 artifact(s).
+
+Created CPlusPlus artifacts for GenericPackagerCPP project.
+
+Total time taken to complete command: 37.257s
+
+Before you can run the auto-packager, you must meet the following requirements:
+
+The project must contain at least one .sln file that is configured to build at least one supported C++ project. A supported C++ project is defined by a .vcxproj file where the following are true:
+
+Defines a supported project configuration:
+
+Targets a supported platform (x64 or Win32)
+
+Builds a supported binary (ConfigurationType is Application or DynamicLibrary)
+
+Is not a test Native Unit Test project or Google Unit Test project.
+
+msbuild command is available in the environment.
+
+Code can compile without errors.
+
+The auto-packager completes the following steps, as shown in the example command output.
+
+Searches the project directories to find supported .sln files. The search stops at each directory level where it finds supported files.
+
+For each .sln file found:
+
+Determines the solution configuration to use to build the top-level projects. If available, it uses the first solution configuration listed in the solution that has a supported project platform for a top-level C++ project, configured as a debug build.
+
+Determines the supported top-level C++ projects for that solution configuration. A top-level C++ project is a C++ project that is not a dependency of any other project configured to build for that solution configuration.
+
+Builds each supported top-level C++ project using compiler and linker settings required for Veracode to analyze Windows C/C++ applications:
+
+<ItemDefinitionGroup>
+
+<ClCompile>
+
+<DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+
+<Optimization>Disabled</Optimization>
+
+<BasicRuntimeChecks>Default</BasicRuntimeChecks>
+
+<BufferSecurityCheck>false</BufferSecurityCheck>
+
+</ClCompile>
+
+<Link>
+
+<LinkIncremental>false</LinkIncremental>
+
+<GenerateDebugInformation>true</GenerateDebugInformation>
+
+<ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
+
+</Link>
+
+</ItemDefinitionGroup>
+
+Creates an archive for each solution named veracode-auto-pack-$(SolutionName)-msvc.zip. Each archive contains a $(ProjectName) directory with all .exe, .dll, and .pdb build artifacts for each top-level project build target of the solution.
+
+veracode package --source path/to/project/example-cpp-windows --output verascan --trust
+
+Packaging code for project example-cpp-windows. Please wait; this may take a while...
+
+Verifying source project language ...
+
+Packaging Windows C/C++ artifacts for WinCppPackager publish path 'C:\Users\...\AppData\Local\Temp\2766238912731991934'. MSBuild commands successfully completed.
+
+Windows solution WS_AllSource packaged to: path\to\verascan\veracode-auto-pack-WS_AllSource-msvc.zip
+
+Packaging Windows C/C++ artifacts for WinCppPackager publish path 'C:\Users\...\AppData\Local\Temp\7662002083651398436'. MSBuild commands successfully completed.
+
+Windows solution allPepPCIF packaged to: path\to\verascan\veracode-auto-pack-allPepPCIF-msvc.zip
+
+Successfully created 2 artifact(s).
+
+Created Windows C/C++ artifacts for WinCppPackager project.
+
+Total time taken to complete command: 3m38.473s
+
+Before you can run the auto-packager, you must meet the following requirements:
+
+To ensure that Flutter installs successfully and validates all platform tools, successfully run flutter doctor.
+
+To generate an iOS Archive file, the project must be able to run the command: flutter build ipa --debug
+
+To generate an Android APK file, the project must be able to run the command: flutter build apk --debug
+
+The auto-packager completes the following steps, as shown in the example command output.
+
+Gathers APK and IPA files.
+
+Copies the artifacts of your packaged project to the specified --output location.
+
+veracode package --source path/to/project/flutter-wonderous-app --output verascan --trust
+
+Packaging code for project flutter-wonderous-app. Please wait; this may take a while...
+
+Verifying source project language ...
+
+Copying artifacts for Dart Flutter for FlutterPackager project.
+
+Copied artifact: path/to/verascan/app-debug.apk.
+
+Successfully created 1 artifact(s).
+
+Created Dart artifacts for FlutterPackager project.
+
+Total time taken to complete command: 54.731s
+
+Before you can run the auto-packager, you must meet the following requirements:
+
+Your environment must have a supported version of Go.
+
+Your projects must:
+
+Support Go Modules.
+
+Contain a go.sum file and a go.mod file.
+
+Compile successfully without errors.
+
+The auto-packager completes the following steps, as shown in the example command output.
+
+To build and package a project, including the source code and the vendor folder, runs the command go mod vendor.
+
+Copies the artifacts of your packaged project to the specified --output location.
+
+veracode package --source path/to/project/sftpgo --output verascan --trust
+
+Please ensure your project builds successfully without any errors.
+
+Packaging code for project sftpgo. Please wait; this may take a while...
+
+Verifying source project language ...
+
+Packaging GO artifacts for GoModulesPackager project 'sftpgo'. go mod vendor successful.
+
+Go project sftpgo packaged to: path/to/verascan/veracode-auto-pack-sftpgo-go.zip
+
+Successfully created 1 artifact(s).
+
+Created GoLang artifacts for GoModulesPackager project.
+
+Total time taken to complete command: 15.776s
+
+Before you can run the auto-packager, you must meet the following requirements:
+
+Your environment must have:
+
+Xcode and the xcodebuild command-line tool installed.
+
+gen-ir installed. For example:
+
+# Add the brew tap to your local machine
+
+brew tap veracode/tap
+
+# Install the tool
+
+brew install gen-ir
+
+pod installed, if your projects use CocoaPods or third party tools.
+
+Your projects must compile successfully without errors.
+
+The auto-packager completes the following steps, as shown in the example command output.
+
+Checks that the podfile or podfile.lock files are present.
+
+Runs the command pod install.
+
+Checks that the .xcworkspace or .xcodeproj files are present.
+
+To build and package the project, runs:
+
+xcodebuild clean archive -PROJECT/WORKSPACE filePath -scheme SRCCLR_IOS_SCHEME -destination SRCCLR_IOS_DESTINATION -configuration SRCCLR_IOS_CONFIGURATION -archivePath projectName.xcarchive DEBUG_INFORMATION_FORMAT=dwarf-with-dsym ENABLE_BITCODE=NO
+
+The SRCCLR values are optional environment variables you can use to customize the xcodebuild archive command.
+
+Runs gen-ir on the artifact of your packaged project and the log files.
+
+Saves the artifact in the specified --output location.
+
+veracode package --source https://github.com/signalapp/Signal-iOS --type repo --output verascan --trust
+
+Packager initiated...
+
+Verifying source project language ...
+
+Packaging iOS artifacts for IOSPackager project 'MyProject'.
+
+iOS Project MyProject zipped and saved to: path/to/verascan/veracode-auto-pack-MyProject-ios-xcarchive.zip
+
+Successfully created 1 artifact(s).
+
+Created IOS artifacts for IOSPackager project.
+
+Total time taken to complete command: 9.001s
+
+Before you can run the auto-packager, you must meet the following requirements:
+
+Your environment must have:
+
+A JDK version that you tested to successfully compile your application.
+
+Access to a gradlew command that points to the correct JAVA_HOME directory. If gradlew is not available, ensure the correct Gradle version is installed.
+
+Your projects must:
+
+Have the correct build.gradle file.
+
+Compile successfully without errors.
+
+The auto-packager completes the following steps, as shown in the example command output.
+
+To build the Gradle project and package it as a JAR file, runs the command gradlew clean build -x test.
+
+Copies the artifact of your packaged project to the specified --output location.
+
+veracode package --source path/to/project/example-java-gradle --output verascan --trust
+
+Packager initiated...
+
+Verifying source project language ...
+
+Copying Java artifacts for GradlePackager project.
+
+Copied artifact: path/to/verascan/example-java-gradle-1.0-SNAPSHOT.jar.
+
+Successfully created 1 artifact(s).
+
+Created Java artifacts for GradlePackager project.
+
+Total time taken to complete command: 7.174s
+
+Before you can run the auto-packager, you must meet the following requirements:
+
+Your environment must have:
+
+A JDK version that you tested to successfully compile your application.
+
+Access to a mvn command that points to the correct JAVA_HOME directory.
+
+Your projects must:
+
+Have the correct pom.xml file.
+
+Compile successfully without errors.
+
+The auto-packager completes the following steps, as shown in the example command output.
+
+To build and package the Maven project, runs the command mvn clean package.
+
+Copies the artifact, such as JAR, WAR, EAR, of your packaged project to the specified --output location.
+
+veracode package --source path/to/project/example-java-maven --output verascan --trust
+
+Packager initiated...
+
+Verifying source project language ...
+
+Copying Java artifacts for Maven project.
+
+Copied artifact: path/to/verascan/example-java-maven-1.0-SNAPSHOT.jar.
+
+Successfully created 1 artifact(s).
+
+Created Java artifacts for Maven project.
+
+Total time taken to complete command: 6.799s
+
+Before you can run the auto-packager, you must meet the following requirements:
+
+Your environment must have:
+
+The NPM or Yarn package manager installed.
+
+The correct Node, NPM, or Yarn version to package the project.
+
+Your projects must:
+
+Be able to resolve all dependencies with commands npm install or yarn install.
+
+Have the correct package.json file.
+
+Compile successfully without errors.
+
+The auto-packager completes the following steps, as shown in the example command output.
+
+To build and package the project, runs one of the following commands:
+
+For NPM, runs the command npm install.
+
+For Yarn, runs the command yarn install.
+
+Copies the artifact of your packaged project to the specified --output location.
+
+veracode package --source path/to/project/example-javascript --output verascan --trust
+
+Packager initiated...
+
+Verifying source project language ...
+
+Packaging Javascript artifacts for NPM project.
+
+Project example-javascript packaged to path/to/veracsan/veracode-auto-pack-example-javascript-js.zip.
+
+Successfully created 1 artifact(s).
+
+Created Javascript artifacts for NPM project.
+
+Total time taken to complete command: 3.296s
+
+Before you can run the auto-packager, you must meet the following requirements:
+
+Your environment must have:
+
+The correct Kotlin version for your projects.
+
+The Maven or Gradle package manager installed.
+
+A Java version that your packager manager requires.
+
+Your projects must:
+
+Have the correct pom.xml, build.gradle, or build.gradle.kts file.
+
+Compile successfully without errors.
+
+The auto-packager completes the steps shown in the following example command output.
+
+Verifies that your project language is supported.
+
+Uses Gradle to builds and packages the project.
+
+Copies the artifacts of your packaged project to the specified --output location.
+
+veracode package --source path/to/project/kotlin-server-side-sample/gradle --output verascan --trust
+
+Packager initiated...
+
+Verifying source project language ...
+
+Copying Java artifacts for GradlePackager project.
+
+Copied artifact: path/to/verascan/demo-0.0.1-SNAPSHOT-plain.jar.
+
+Copied artifact: path/to/verascan/demo-0.0.1-SNAPSHOT.jar.
+
+Successfully created 2 artifact(s).
+
+Created Java artifacts for GradlePackager project.
+
+Total time taken to complete command: 8.632s
+
+Before you can run the auto-packager, you must meet the following requirements:
+
+Your Perl project must be a version 5.x
+
+Your project must contain at least one file with the following extensions: of .pl, .pm, .plx, .pl5, or .cgi
+
+The auto-packager completes the following steps, as shown in the example command output.
+
+Finds all the files matching the required extensions and packages them in a ZIP archive (artifact).
+
+Copies the artifacts of your packaged project to the specified --output location.
+
+veracode package --source path/to/project/bugzilla --output verascan --trust
+
+Packaging code for project bugzilla. Please wait; this may take a while...
+
+Verifying source project language ...
+
+Packaging code for project bugzilla. Please wait; this may take a while...
+
+Verifying source project language ...
+
+[GenericPackagerPerl] Packaging succeeded for the path path/to/project/bugzilla.
+
+Successfully created 1 artifact(s).
+
+Created Perl artifacts for GenericPackagerPerl project.
+
+Total time taken to complete command: 9.965s
+
+Before you can run the auto-packager, you must meet the following requirements:
+
+Your environment must have:
+
+Correct PHP version for your projects.
+
+Composer dependency manager installed.
+
+Your projects must:
+
+Have the correct PHP composer.json file.
+
+Compile successfully without errors.
+
+The auto-packager completes the following steps, as shown in the example command output.
+
+To build and package the project source code and lock file with Composer, runs the command composer install.
+
+Saves the artifacts of your packaged project in the specified --output location.
+
+veracode package --source path/to/project/example-php --output verascan --trust
+
+Packager initiated...
+
+Validating output path ...
+
+Packaging PHP artifacts for Composer project.
+
+Project captainhook zipped and saved to path/to/verascan/veracode-auto-pack-captainhook-php.zip.
+
+Packaging PHP artifacts for Composer project.
+
+Project template-integration zipped and saved to path/to/verascan/veracode-auto-pack-template-integration-php.zip.
+
+Successfully created 2 artifact(s).
+
+Created PHP artifacts for Composer project.
+
+Total time taken to complete command: 3.62s
+
+Before you can run the auto-packager, you must meet the following requirements:
+
+Your environment must have:
+
+The correct pip and Python or pyenv version for packaging your project are installed.
+
+A package manager configuration file with the required settings to resolve all dependencies.
+
+Your projects must compile successfully without errors.
+
+The auto-packager completes the following steps, as shown in the example command output.
+
+To resolve all third party dependencies and generate the lock file, PIP install, runs the command pip install -r requirements.txt.
+
+Packages the project source code, lock file, and vendor folder.
+
+Saves the artifact of your packaged project to the specified --output location.
+
+veracode package --source path/to/project/example-python --output verascan --trust
+
+Packager initiated...
+
+Verifying source project language ...
+
+Packaging Python artifacts for PIP project.
+
+Project example-python zipped and saved to path/to/verascan/veracode-auto-pack-example-python-python.zip.
+
+Successfully created 1 artifact(s).
+
+Created Python artifacts for PIP project.
+
+Total time taken to complete command: 14.359s
+
+Before you can run the auto-packager, you must meet the following requirements:
+
+Your environment must have:
+
+Correct version of Node, NPM, or Yarn for your projects.
+
+NPM or Yarn installation resolves all dependencies.
+
+Have the correct package.json file.
+
+Package.json file has the React Native version as a dependency.
+
+The auto-packager completes the following steps, as shown in the example command output.
+
+For NPM applications, runs the npm install command.
+
+For Yarn applications, runs the yarn install command.
+
+For Expo build, runs the expo start command.
+
+veracode package --source path/to/project/example-javascript-yarn --output verascan --trust
+
+Packaging code for project example-javascript-yarn. Please wait; this may take a while...
+
+Verifying source project language ...
+
+Packaging Javascript artifacts for Yarn project.
+
+JavaScript project example-javascript-yarn packaged to: path/to/verascan/veracode-auto-pack-example-javascript-yarn-js.zip
+
+Successfully created 1 artifact(s).
+
+Created Javascript artifacts for Yarn project.
+
+Total time taken to complete command: 1m9.13s
+
+Before you can run the auto-packager, you must meet the following requirements:
+
+Your environment must have:
+
+The Bundler package manager installed with the correct Ruby version.
+
+The Veracode packager gemfile installed. This gemfile handles pre-processing of Rails projects for Static Analysis.
+
+The ability to run the command bundle install
+
+Your projects must compile successfully without errors.
+
+Optionally, to test your configured environment, run the command rails server.
+
+The auto-packager completes the following steps, as shown in the example command output.
+
+To configure the vendor path, runs the command bundle config --local path vendor.
+
+Runs the command bundle install without development and test: bundle install --without development test.
+
+To check for the Rails installation, runs the command bundle info rails. If Rails is not installed, the auto-packager assumes it is not a Rails project and exits.
+
+To install the Veracode packager gem, runs the command bundle add veracode.
+
+To package your project using the Veracode packager gem, runs the command bundle exec veracode.
+
+Saves the artifact of your packaged project to the specified --output location.
+
+veracode package --source path/to/project/rails --output verascan --trust
+
+Packager initialized...
+
+Verifying source project language ...
+
+Packaging Ruby artifacts for RubyPackager project 'veracode-rails-20240321225855.zip'.
+
+ArtifactPath: /rails/tmp/veracode-rails-20240321225855.zip
+
+ValidatedSource: /rails
+
+ValidatedOutput: /rails/verascan
+
+Project name: rails
+
+44824469 bytes written to destination file. Path: /rails/verascan/rails.zip
+
+temporary zip file deleted. Path: /rails/tmp/veracode-rails-20240321225855.zip
+
+Successfully created 1 artifact(s).
+
+Created Ruby artifacts for RubyPackager project.
+
+Total time taken to complete command: 1m27.428s
+
+Before you can run the auto-packager, you must meet the following requirements:
+
+Your environment must have:
+
+A JDK version that you have tested to successfully package your application.
+
+The Maven, Gradle, or sbt package manager installed with the correct Java version.
+
+Your projects must:
+
+Have the correct pom.xml, build.gradle, or build.sbt file.
+
+Compile successfully without errors.
+
+The auto-packager completes the following steps, as shown in the example command output.
+
+Runs the sbt assembly command sbt clean assembly. This command assists in creating a JAR file with dependencies in non-Spring projects, which improves SCA scanning.
+
+If sbt assembly fails, runs the sbt package command sbt clean package.
+
+Copies the artifacts of your packaged application to the specified --output location.
+
+veracode package --source path/to/project/packSample/zio-quill --output verascan --trust
+
+Packager initiated...
+
+Verifying source project language ...
+
+Copying Java artifacts for SbtPackager project.
+
+Copied artifact: path/to/verascan/quill-cassandra_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-cassandra-monix_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-cassandra-pekko_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-cassandra-zio_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-codegen_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-codegen-jdbc_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-codegen-tests_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-core_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-doobie_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-engine_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-jdbc_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-jdbc-monix_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-jdbc-test-h2_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-jdbc-test-mysql_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-jdbc-test-oracle_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-jdbc-test-postgres_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-jdbc-test-sqlite_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-jdbc-test-sqlserver_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-jdbc-zio_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-monix_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-orientdb_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-spark_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-sql_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-sql-test_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-util_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill-zio_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/quill_2.13-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Copied artifact: path/to/verascan/zio-quill-docs_2.12-4.8.2+3-d2965801-SNAPSHOT.jar.
+
+Successfully created 28 artifact(s).
+
+Created Java artifacts for SbtPackager project.
+
+Total time taken to complete command: 45.428s

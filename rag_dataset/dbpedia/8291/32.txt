@@ -1,0 +1,7 @@
+In general, xinetd is a good solution. For one-offs, I often use balance just because everything can be set up on the command line, but if you need to do it more than once, xinetd is a better choice.
+
+Redirection via iptables works just fine, but it suffers from a lack of transparency. If someone else has to maintain the system, they might be unaware of the redirect rules, whereas proxy solutions like xinetd show up in the output of various standard diagnostic commands like netstat and so forth.
+
+First of all - the Oracle-description sucks. The proper way to use SNMP for an application (java is a application with regards to the operating system) is to register it as sub-agent to the OS-snmp-service (in case of linux: snmpd).
+
+There has to be a way to accomplish that. Afterwards you can use the SNMPD-security settings (see the man-pages of snmpd) to restrict access to that part of the MIB.

@@ -1,0 +1,69 @@
+Introduction
+
+XINCOM Twin WAN Router Summary 4 port dual Ethernet WAN router with load balancing and auto-failover capability Update None Pros • Load balancing and auto-failover seems to work well
+
+• Large feature set
+
+• Good throughput Cons • No logging
+
+• Firmware still evolving
+
+• Documentation needs to better explain unique features
+
+When I was first approached by Xincom to review its Twin WAN router, I asked them to differentiate it from Hawking’s FR24 that I reviewed almost a year ago, and which is widely available for about a third of Xincom’s price. Xincom’s response was that they compare it more to Nexland’s pro800Turbo, which can still be found for under $250. (Symantec acquired Nexland back in May of this year and has renamed the pro800Turbo the Symantec Firewall/VPN 200 and doubled its price to about $900.)
+
+Reality lies somewhere in between. The 402’s hardware is essentially the same ARM-7 based design as the pro800Turbo’s, minus the pro800’s backup serial port and substituting a Kendin 8995 5 port 10/100 switch+PHY chip for the Broadcom 5317 8 port switch+PHY found in the pro800Turbo.
+
+The Hawking, on the other hand, uses a more highly integrated design based on the ADMtek 5106 / Conexant CX84200 Network processor, which probably allows Hawking to have such aggressive pricing. The Hawking’s four 10/100 LAN ports also are auto MDI/MDI-X, which eliminates the need for an Uplink port or Normal/Uplink switch for port expansion, while the Xincom just skips uplink capability. The Hawking’s twin WAN ports are also 10/100 vs. the Xincom’s 10BaseT, but given the sub-10Mbps speed of both routers, the Hawking has no real edge here.
+
+Admin and Setup” />
+
+Admin and Setup
+
+Admin is via a browser-based interface that uses multiple frames. Figure 1 shows a sample window.
+
+Figure 1: Load Balance Screen
+
+(click on the image for a full-sized view)
+
+The left frame is fixed size, but the right-hand frame resizes to track your browser window size. The interface has quick navigation from screen to screen and short pauses to save settings. You can have multiple admins logged in simultaneously without the router complaining and there’s no login timeout. I didn’t like, though, that the left-hand menu and overly-large top banner frames would display without being logged into the router.
+
+WAN-side remote admin and firmware update can be enabled and restricted to range of IP addresses, but I found response to be so slow as to be unusable when I tried out the feature.
+
+Firewall Features
+
+The 402 uses a NAT firewall and supports one DMZ host per WAN port. You can choose from 12 pre-defined Virtual Servers (Port Forwarding) for common services, define your own – specifying protocol, WAN and LAN port ranges and WAN interface, or use the Special Application feature for triggered port mappings. You can edit port forwarding settings and also temporarily disable them. Universal Plug and Play (UPnP) is not supported.
+
+The Access Filter feature lets you create four groups of IP addresses – complete with DHCP reservations and ability to bind individual clients to specific PPPoE sessions – and block all Internet access, or choose from 12 common and 10 user-defined services. You can also block up to 20 URLs, IP addresses, or keywords for each of the four user-defined groups. None of these features is day / date schedulable.
+
+There’s no logging, although Xincom plans to add this within a few months, but there’s an Email alert feature that’s supposed to send mail when a WAN port goes down. I never heard a peep from the router, however, even though I connected and disconnected WAN ports many times during testing.
+
+Routing Performance
+
+Routing performance was very good with peak throughput in the WAN-LAN direction just over 8Mbps and steady performance. The LAN-WAN UDP streaming test results are missing due to a problem with Qcheck’s newer endpoints and not due to any problem with the 402’s routing.
+
+I ran some tests using IXIA’s Chariot to see how well the router’s load-balancing and auto-failover worked. Figure 2 shows a test in which two pairs of computers were running LAN to WAN continuous transfers and I alternated disconnecting and reconnecting the WAN cable from each of the WAN ports.
+
+Figure 2: LAN-WAN throughput – Loadbalance enabled, alternate WAN drop
+
+(click on the image for a full-sized view)
+
+The plots show each port supporting over 7Mbps throughput when they are both connected. Since the transfers were continuous (think of two very large file transfers occurring simultaneously, pulling a WAN connection caused the transfer through that port to halt until the connection came back up, at which point the transfer resumed without hangs or other problems.
+
+NOTE! The behavior in the pull-the-plug test above doesn’t indicate a malfunction in the router, but is just a function of the way that networked connections work. Once a network data transfer starts, it will use the connection that it set up for the transfer until the transfer is completed. This is why dual-wan routers can’t provide peak speed on a single data transfer any higher than the fastest single WAN connection.
+
+Routing Performance Test Results
+
+Test Description Transfer Rate (Mbps) Response Time (msec) UDP stream Throughput (kbps) Lost data (%) WAN – LAN 7.8 1 (avg)
+
+1 (max) 499 0 LAN – WAN 7.4 1 (avg)
+
+1 (max) Firmware Version Ver 2.1 Rel 06
+
+See details of how we test.
+
+Closing thoughts
+
+My overall impression of Xincom’s first product was more positive than I’d expected. But it’s not clear to me whether it has enough real advantages to justify a 3X price premium over Hawking’s FR24, which performs many of the same functions, has had a year to shake out its bugs, and comes from a larger, more established company.
+
+The 402 seems like a decent product, and Xincom has a lifetime limited warranty on manufacturer defects, free lifetime tech support, 90 day return policy (with no physical defects), and even an introductory deal that bundles in a free game. However, all that may not be enough to entice buyers to try an unproven newcomer in a very competitive market.

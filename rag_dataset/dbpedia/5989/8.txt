@@ -1,0 +1,1569 @@
+EMS Series of Congress Reports
+
+EMS Congress Reports publishes volumes originating from conferences or seminars focusing on any field of pure or applied mathematics. The individual volumes include an introduction into their subject and review of the contributions in this context. Articles are required to undergo a refereeing process and are accepted only if they contain a survey or significant results not published elsewhere in the literature. Previously published: Trends in Representation Theory of Algebras and Related Topics, Andrzej Skowro´nski (ed.) K-Theory and Noncommutative Geometry, Guillermo Cortiñas et al. (eds.) Classification of Algebraic Varieties, Carel Faber, Gerard van der Geer and Eduard Looijenga (eds.)
+
+Surveys in Stochastic Processes Jochen Blath Peter Imkeller Sylvie Rœlly Editors
+
+Editors: Jochen Blath Institut für Mathematik Technische Universität Berlin Straße des 17. Juni 136 10623 Berlin Germany
+
+Peter Imkeller Institut für Mathematik Humboldt-Universität zu Berlin Unter den Linden 6 10099 Berlin Germany
+
+Sylvie Rœlly Institut für Mathematik der Universität Potsdam Am Neuen Palais, 10 14469 Potsdam Germany
+
+[email protected]
+
+[email protected]
+
+[email protected]
+
+2010 Mathematics Subject Classification: Primary: 60-06, Secondary 60Gxx, 60Jxx Key words: Stochastic processes, stochastic finance, stochastic analysis,statistical physics, stochastic differential equations
+
+ISBN 978-3-03719-072-2 The Swiss National Library lists this publication in The Swiss Book, the Swiss national bibliography, and the detailed bibliographic data are available on the Internet at http://www.helveticat.ch. This work is subject to copyright. All rights are reserved, whether the whole or part of the material is concerned, specifically the rights of translation, reprinting, re-use of illustrations, recitation, broadcasting, reproduction on microfilms or in other ways, and storage in data banks. For any kind of use permission of the copyright owner must be obtained. © 2011 European Mathematical Society Contact address: European Mathematical Society Publishing House Seminar for Applied Mathematics ETH-Zentrum FLI C4 CH-8092 Zürich Switzerland Phone: +41 (0)44 632 34 36 Email: [email protected] Homepage: www.ems-ph.org Typeset using the authors’ TEX files: I. Zimmermann, Freiburg Printing and binding: Druckhaus Thomas Müntzer GmbH, Bad Langensalza, Germany ∞ Printed on acid free paper 987654321
+
+Preface
+
+In this volume many of the plenary lecturers of the 33rd Conference on Stochastic Processes and Their Applications present their personal snapshots of recent important developments that they have been involved in within the area of stochastic processes and their applications. This reflects the idea leading us to compose this congress report: to present a collection of survey type articles that offer a glimpse of the state-of-the-art in many of the promising and thriving fields of the area of stochastic processes and their applications at the moment this SPA conference was held. One of our hopes is that this collection may help young scientists in setting up research goals in the wide scope of fields represented in this volume. To our knowledge, this is the first time that proceedings of an SPA conference has been published. The idea for this volume grew among the organizers in Spring 2009, and after a meeting with Professor Marta Sanz-Solé from the Bernoulli Society in Berlin and upon approval by both the CCSP1 and the publishing committee of the Bernoulli Society we decided to go ahead with it. As a particularly welcome effect of this volume we could imagine starting a tradition for forthcoming SPA events. We wish to thank all contributing plenary speakers, anonymous referees and the EMS publishing house for making this volume possible. On behalf of the 33rd SPA organizing committee: Enjoy reading! Berlin and Potsdam, June 2011
+
+1
+
+‘Committee for conferences on stochastic processes’ of the Bernoulli Society.
+
+Jochen Blath Peter Imkeller Sylvie Rœlly
+
+Contents
+
+Preface . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . v The 33rd SPA Conference 2009 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ix Plenary Lectures . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . xii Committees of the Conference . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . xiv List of Donors . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . xv Optimal switching, systems of reflected BSDEs and systems of variational inequalities with inter-connected obstacles by Saïd Hamadène . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1 The COGARCH: a review, with news on option pricing and statistical inference by Claudia Klüppelberg, Ross Maller and Alexander Szimayer . . . . . . . . . . . . . . . . . . 29 Some properties of quasi-stationary distributions for finite Markov chains by Servet Martínez and Jaime San Martín . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 59 The parabolic Anderson model with heavy-tailed potential by Peter Mörters . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 67 From exploration paths to mass excursions – variations on a theme of Ray and Knight by Etienne Pardoux and Anton Wakolbinger . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 87 Gaussian approximation of functionals: Malliavin calculus and Stein’s method by Gesine Reinert . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 107 Merging and stability for time inhomogeneous finite Markov chains by Laurent Saloff-Coste and Jessica Zúñiga . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 127 Some mathematical aspects of market impact modeling by Alexander Schied and Alla Slynko . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 153 The self-avoiding walk: A brief survey by Gordon Slade . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 181
+
+viii
+
+Contents
+
+Lp -independence of growth bounds of Feynman–Kac semigroups by Masayoshi Takeda . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 201 Some recent progress on functional inequalities and applications by Feng-Yu Wang . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 227 List of Contributors . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 247
+
+The 33rd SPA Conference 2009
+
+The 33rd Conference on Stochastic Processes and Their Applications (SPA) was held in Berlin from July 27 through July 31, 2009, with more than 600 participants from 49 countries1 . The conference continued a successful series of SPA conferences in this prospering field of mathematics, which is both reflected in the growing number and internationality of participants, as well as in the size of the program and the recognition for the field within mathematics. One indication of this might be seen in the felicitous fact that one of the plenary speakers, Professor Stanislav Smirnov from Geneva, was awarded with a Fields Medal in 2010. The main aim behind the selection of the 20 plenary lectures at this conference was to give an overview of recent developments in the rich current active research fields in Stochastic Processes and Their Applications, in particular aimed at younger participants. They were also chosen to reflect the variety of the current probability community with respect to research topics, scientific age and diversity with respect to geography and gender. We think that this has worked very well, and hence our thanks go to the members of the scientific committee (see below). We particularly encouraged young researchers and researchers from developing countries to participate. More than 300 talks and 40 poster presentations, many of them by young participants, reflected the vibrancy of the field and provided an international forum for scientific and cultural exchange. One further major aim of this conference was to make the stochastic processes community feel at home. Hence, we put particular emphasis on the social and public program of the conference, a few highlights of which we would like to report about briefly here. During a reception in the ‘Lichthof’ of TU Berlin on the first evening of the conference, following a welcome address by Staatssekretär Dr. Hans-Gerhard Husung on behalf of the Senate of the State of Berlin, Professor Alice Guionnet from Lyon was announced as winner of the 2009 Loève prize. The elegant musical background throughout the reception was provided by a classical trio with direct links to the probability community, namely Alice Adenot-Meyer2 (Mezzo-Soprano), Thérèse Dourdent (Piano) and Professor Sylvie Rœlly (Cello). Professor Ruth Williams from San Diego provided a personal obituary, remembering the recently deceased Professor Kai Lai Chung (1917 – 2009). On the second evening, Professor Marc Wouts from Paris was awarded with the Itô-Prize. The sad occasion of the recent passing away of one of the most influential probabilists, Professor Kiyoshi Itô (1915 – 2008), was remembered by a touching and 1 2
+
+Detailed conference information can be found at www.math.tu-berlin.de/SPA2009 Alice Adenot-Meyer is a daughter of Paul-André Meyer
+
+x
+
+The 33rd SPA Conference 2009
+
+charming presentation of his life and work by Professor Masatoshi Fukushima from Osaka. A large part of the evening was devoted to the work and tragic life of the Berlinborn mathematician Wolfgang Döblin. Wolfgang Döblin (1915 – 1940) was the second son of the famous Jewish-German novelist Alfred Döblin (‘Berlin Alexanderplatz’), an eminent figure in German intellectual life during the Weimarer Republik. In 1933, his family escaped the Nazis to Paris, where Wolfgang became a French citizen and studied probability at the Institut Henri Poincaré. He wrote a brilliant dissertation under the supervision of Maurice Fréchet in 1938. One year later, Wolfgang Döblin was drafted for French military service. In May 1940, facing imminent capture by the Wehrmacht, he took his own life in Housseras (Vosges, France). Before, however, he was able to mail his last mathematical manuscript “Sur l’équation de Kolmogoroff” in a sealed envelope to the Académie des Sciences, which remained unopened for 60 years. It has only recently been discovered and investigated by Bernard Bru and Marc Yor, and it turned out that it contains spectacular results, in particular related to the work of Itô. The screening of a recent documentary on Wolfgang Döblins life and mathematical legacy in the presence of the filmmakers Agnes Handwerk and Harry Willems followed an introduction to his mathematical work and life by Professor Hans Föllmer.
+
+Figure 1. During the Monday reception at TU Lichthof.
+
+The success of this conference would not have been possible without the tireless commitment of many people. First, we wish to thank all plenary, invited session and contributed session speakers and the poster presenters for their scientific contributions. We further wish to thank the scientific committee and the representatives of the Bernoulli
+
+The 33rd SPA Conference 2009
+
+xi
+
+Society, in particular Professors Ruth Williams and Marta Sanz-Solé, for all their effort, dedication and advice. Many students, staff and faculty at TU Berlin, HU Berlin and U Potsdam contributed greatly to the smooth running of this conference. A special heartfelt ‘thank you’ goes to Ms Jean Downes, running the conference secretariat. The TU Berlin and its Mathematical Institute provided support in many ways – we particularly thank the TU President Professor Kurt Kutzler. Finally, thanks go to the ‘TU Servicegesellschaft’ and in particular to Ms Lisa Hertel.
+
+Plenary Lectures
+
+Jinho Baik (Ann Arbor, MI) “Limit laws of directed last passage site percolation” Sourav Chatterjee (Berkeley) “Superconcentration” Freddy Delbaen (Zürich) “Monetary utility functions, BSDE and (non-) linear PDE” Amir Dembo (Stanford) Lévy Lecture “Statistical mechanics on sparse random graphs” Saïd Hamadène (Le Mans) “Switching problems and systems of reflected BSDEs” Claudia Klüppelberg (Munich) IMS Medallion Lecture “Lévy driven stochastic volatility models” James Martin (Oxford) “Multi-class particle systems, growth models, and queues” Servet Martinez (Santiago) “Quasi-stationary distributions in Markov chains and population models” Pierre Mathieu (Marseille) “Symmetric diffusions in a random environment: the Einstein relation” Jonathan Mattingly (Durham, NC) “What makes infinite dimensional Markov processes different?” Peter Mörters (Bath) “The parabolic Anderson model with heavy-tailed potential” Ed Perkins (Vancouver) Doob Lecture “Uniqueness and non-uniqueness in parabolic stochastic partial differential equations” Gesine Reinert (Oxford) “Gaussian approximation of functionals: Malliavin calculus and Stein’s method” Laurent Saloff-Coste (Ithaca, NY) “Merging properties of time inhomogeneous Markov chains” Alexander Schied (München) “On the mathematics of illiquid markets” Gordon Slade (Vancouver) IMS Medallion Lecture “The self-avoiding walk”
+
+Plenary Lectures
+
+Stanislav Smirnov (Genève) “Conformal invariance and universality in the 2D Ising model” Masayoshi Takeda (Tohoku) “Lp -independence of growth bounds of Feynman–Kac semigroups” Anton Wakolbinger (Frankfurt am Main) “Random genealogies in diffusion processes” Feng-Yu Wang (Beijing) “Functional inequalitites and applications”
+
+xiii
+
+Committees of the Conference Scientific Committee David Aldous Martin Barlow Gérard Ben Arous Mu-Fa Chen Hans Föllmer Nina Gantert Luis Gorostiza Dmitry Kramkov Russel Lyons Anna de Masi Sylvie Méléard Claudia Neuhauser Hirofumi Osada Youssef Ouknine Josef Teichmann Ed Waymire Wendelin Werner Ofer Zeitouni
+
+(Berkeley) (Vancouver) (New York) (Beijing) (Berlin) (Münster) (México) (Pittsburgh) (Bloomington) (L’Aquila) (Paris) (St Paul) (Kyushu) (Marrakech) (Wien) (Corvallis) (Paris) (Minneapolis)
+
+Bernoulli Society Liaison Persons Marta Sanz-Solé Ruth Williams
+
+(Barcelona) (San Diego)
+
+Organising Committee Dirk Becherer Jochen Blath (chair) Anton Bovier Jean-Dominique Deuschel Jürgen Gärtner Peter Imkeller (co-chair) Uwe Küchler Sylvie Rœlly Michael Scheutzow
+
+(HU Berlin) (TU Berlin) (U Bonn) (TU Berlin) (TU Berlin) (HU Berlin) (HU Berlin) (U Potsdam) (TU Berlin)
+
+Conference Secretariat Jean Downes
+
+(TU Berlin)
+
+List of Donors
+
+The Organizing Committee expresses its gratitude to all those who have supported the conference either financially or by providing services and goods. Without this support, the conference would not have been possible.
+
+Public and Academic Bodies Bernoulli Society IMS - Institute of Mathematical Statistics DFG - Deutsche Forschungsgemeinschaft BMS - Berlin Mathematical School DMV Fachgruppe Stochastik Französische Botschaft in Deutschland Institut für Mathematik, Technische Universität Berlin
+
+Private Coorporations LBB - Landesbank Berlin dbqpl - Deutsche Bank Quantitative Products Laboratory Elsevier Verlag Springer Verlag SPA Journal - Stochastic Processes and Their Applications Journal Illinois Journal of Mathematics TOTAL Deutschland GmbH
+
+Optimal switching, systems of reflected BSDEs and systems of variational inequalities with inter-connected obstacles Saïd Hamadène
+
+1 Introduction Optimal control of multiple switching models arise naturally in many applied disciplines. The pioneering work by Brennan and Schwartz [3], proposing a two-modes switching model for the life cycle of an investment in the natural resource industry, is probably first to apply this special case of stochastic impulse control to questions related to the structural profitability of an investment project or an industry whose production depends on the fluctuating market price of a number of underlying commodities or assets. Within this discipline, Carmona and Ludkosvki [5] suggest a multiple switching model to price energy tolling agreements, where the commodity prices are modeled as continuous time processes, and the holder of the agreement exercises her managerial options by controlling the production modes of the assets. All these applications seem agree that reformulating these problems in a multiple switching dynamic setting is a promising (if not the only) approach to fully capture the interplay between profitability, flexibility and uncertainty. The optimal two-modes switching problem is probably the most extensively studied in the literature starting with above mentioned work by Brennan and Schwartz [3], and Dixit [10] who considered a similar model, but without resource extraction – see Dixit and Pindyck [11] and Trigeorgis [30] for an overview, extensions of these models and extensive reference lists. Brekke and Øksendal [1] and [2], Shirakawa [27], Knudsen, Meister and Zervos [24], Duckworth and Zervos [12] and [13] and Zervos [31] use the framework of generalized impulse control to solve several versions and extensions of this model, in the case where the decision to start and stop the production process is done over an infinite time horizon and the market price process of the underlying commodity is a diffusion process, while Trigeorgis [29] models the market price process of the commodity as a binomial tree. Hamadène and Jeanblanc [20] consider a finite horizon optimal two-modes switching problem in the case of Brownian filtration setting while Hamadène and Hdhiri [19] extend the set up of the latter paper to the case where the processes of the underlying commodities are adapted to a filtration generated by a Brownian motion and an independent Poisson process. Porchet et al. [26] also study the same problem, where they assume the payoff function to be given by an exponential utility function and allow the manager to trade on the commodities market. Finally, let us mention the work by Djehiche and Hamadène [8] where it is shown that including
+
+2
+
+S. Hamadène
+
+the possibility of abandonment or bankruptcy in the two-modes switching model over a finite time horizon, makes the search for an optimal strategy highly nonlinear and is not at all a trivial extension of previous results. An example of the class of multiple switching models discussed in Carmona and Ludkovski [5] is related to the management strategies to run a power plant that converts natural gas into electricity (through a series of gas turbines) and sells it in the market. The payoff rate from running the plant is roughly given by the difference between the market price of electricity and the market price of gas needed to produce it. Suppose that besides running the plant at full capacity or keeping it completely off (the two-modes switching model), there also exists a total of m2 (m 3) intermediate operating modes, corresponding to different subsets of turbines running. Let `ij and ‰i denote respectively the switching costs from state i to state j , to cover the required extra fuel and various overhead costs and the payoff rate in mode i . A management strategy for the power plant is a combination of two sequences: (i) a nondecreasing sequence of stopping times .n /n1 , where, at time n , the manager decides to switch the production from its current mode to another one; (ii) a sequence of indicators .n /n1 taking values in f1; : : : ; mg of the states the production is switched to. At n , for n 1, the station is switched from its current mode n1 to n . The value 0 is deterministic and is the state of the station at time 0. When the power plant is run under a strategy † D ..n /n1 ; .n /n1 /, over a finite horizon Œ0; T , the total expected profit up to T for such a strategy is Z T X X J.†; i/ D E ‰n .s/1.n ;nC1 .s/ ds `n1 ;n .n /1Œn
+
+n0
+
+n1
+
+where we set 0 D 0 and 0 D i . The optimal switching problem we will investigate is to find a management strategy † such that J.† ; i / D sup† J.†; i /. This latter quantity is nothing else but the price of the power plant in the market. We first provide a Verification Theorem that shapes the problem, via the Snell envelope of processes. We show that if the Verification Theorem is satisfied by a vector of continuous processes .Y 1 ; : : : ; Y m / such that Z ˇ i j ˇ Y t D ess sup E ‰i .s/ds C max.`ij . / C Y /1Œ
+
+t
+
+j ¤i
+
+8 i D 1; : : : ; m, 8t T , then each Y ti is the value function of the optimal problem when the system is in mode i at time t , i.e., Z T X X ˇ i ˇ Y t D ess sup E `n1 ;n .n /1Œn
+
+t
+
+n0
+
+n1
+
+where Ait is the set of admissible strategies such that 1 t a.s. and 0 D i . An optimal strategy † is then constructed using the relation (1). Moreover, it holds that Y0i D sup† J.†; i /.
+
+Optimal switching, systems of reflected BSDEs and V.I.
+
+3
+
+The unique solution for theVerification Theorem is obtained as the limit of sequences of processes .Y i;n /n0 , where for any t T , Y ti;n is the value function (or the optimal yield) from t to T , when the system is in mode i at time t and only at most n switchings after t are allowed. This sequence of value functions will be defined recursively (see (9) and (10)). As a by-product, we obtain also existence and uniqueness of the solution of the system of backward stochastic differential equations (hereafter BSDEs for short) with oblique reflection (or inter-connected obstacles) associated with the switching problem. In the second part of this paper we deal with the optimal switching problem within the Markovian framework. Actually we assume that the processes ‰i (resp. `ij ) are given by i .t; X t / (resp. `ij .t; X t /) where X is an Itô diffusion and i .t; x/, `ij .t; x/ are deterministic continuous with polynomial growth functions. In this case the Verification Theorem of the switching problem can be expressed by means of a system of variational inequalities with inter-connected obstacles. We prove existence of m deterministic continuous functions v 1 .t; x/; : : : ; v m .t; x/ such that for any i 2 f1; : : : ; mg, Y ti D v i .t; X t /. Moreover the vector .v 1 ; : : : ; v m / is the unique viscosity solution of the Verification Theorem system. In the last part of the paper, we discuss the issue of existence and uniqueness of the solution for general systems of BSDEs with oblique reflection. Those systems are involved especially when dealing with optimal switching problems under Knightian uncertainty (see e.g. [22] for more details). At the end, the question of numerics for system of reflected BSDEs with oblique reflection, which is crucial for practitioners, is introduced.
+
+2 Formulation of the problem, assumptions and preliminary results Throughout this paper .; F ; P / will be a fixed probability space on which is defined a standard d -dimensional Brownian motion B D .B t /0tT whose natural filtration is .F t0 WD fBs ; s tg/0tT . Let F D .F t /0tT be the completed filtration of .F t0 /0tT with the P -null sets of F . Hence F satisfies the usual conditions, i.e., it is right continuous and complete. Furthermore, let: – P be the -algebra on Œ0; T of F -progressively measurable sets; – Mp;k be the set of P -measurable and Rk -valued processes D . t / tT such that the process .j t jp / tT is dt ˝ dP -integrable and p be the set of P -measurable, continuous, R-valued processes D . t / tT such that E sup0tT j t jp < 1 (p > 1 is, throughout this paper, fixed); – For any stopping time 2 Œ0; T , T denotes the set of all stopping times such that T , P -a.s. Next for 2 T0 , we denote by F the -algebra of events prior to , i.e., the set fA 2 F ; A \ t 2 F t ; 8t T g: The finite horizon multiple switching problem can be formulated as follows. First assume w.l.o.g that the plant is in production mode 1 at t D 0 and let J WD f1; : : : ; mg
+
+4
+
+S. Hamadène
+
+be the set of all possible activity modes of the production of the commodity. A management strategy of the project consists, on the one hand, of the choice of a sequence of nondecreasing F -stopping times .n /n1 (i.e., n nC1 ) where the manager decides to switch the activity from its current mode, say i , to another one from the set J i f1; : : : ; i 1; i C 1; : : : ; mg. On the other hand, it consists of the choice of the mode n to which the production is switched at n from the current mode i. Therefore, we assume that for any n 1, n is a random variable Fn -measurable with values in J. Assume that a strategy of running the plant † WD ..n /n1 ; .n /n1 / is given. We denote by .u t / tT its associated indicator of the production activity mode at time t 2 Œ0; T . It is given by X u t D 1Œ0;1 .t / C n 1.n ;nC1 .t /: (2) n1
+
+The strategy † will be called admissible if it satisfies limn!1 n D T P -a.s. and the set of admissible strategies is denoted by A. Now for i 2 J, let ‰i WD .‰i .t //0tT be a stochastic process which belongs to M p;1 . In the sequel, it stands for the payoff rate per unit time when the plant is in state i. On the other hand, for i 2 J and j 2 J i let `ij WD .`ij .t //0tT be a continuous process of p . It stands for the switching cost of the production at time t from its current mode i to another mode j 2 J i . For completeness we adopt the convention that `ij C1 for any i 2 J and j 2 J J i (j ¤ i). This convention is set in order to exclude the switching from the state i to another state j which does not belong to J i . Moreover we suppose that there exists a real constant > 0 such that for any i; j 2 J, and any t T , `ij .t / . This assumption means that switching from a state to another one costs at least . When a strategy † WD ..n /n1 ; .n /n1 / is implemented the optimal yield is given by Z J.†/ D J.1; †/ WD E
+
+0
+
+T
+
+‰us .s/ds
+
+X
+
+`n1 ;n .n /1Œn
+
+n1
+
+We can now formulate the multi-regime switching problem as follows. Problem. Find a strategy † ..n /n1 ; .n /n1 / 2 A such that J.† / D sup J.†/: †2A
+
+An admissible strategy † is called finite if, during the time interval Œ0; T , it allows the manager to make only a finite number of decisions, i.e., P Œ!; n .!/ < T; for all n 0 D 0. Hereafter the set of finite strategies will be denoted by Af . The next proposition tells us that the supremum of the expected total profit can only be reached over finite strategies .
+
+Optimal switching, systems of reflected BSDEs and V.I.
+
+5
+
+Proposition 2.1. The suprema over admissible strategies and finite strategies coincide: sup J.†/ D sup J.†/:
+
+†2A
+
+†2Af
+
+Proof. If † is an admissible strategy which does not belong to Af , then J.†/ D 1. Indeed, let B D f!; n .!/ < T; for all n 0g and B c be its complement. Since † 2 A n Af , then P .B/ > 0. Recall that the processes ‰i belong to M p;1 (with p > 1). Therefore, Z T J.†/ E max j‰i .s/j ds i2J 0 hn X o i o nX E `n1 ;n .n / 1B C `n1 ;n .n /1Œn
+
+n1
+
+since for any t T and i; j 2 J, `ij .t / > 0. This implies that J.†/ D 1 and then (2.1) is proved. We finish this section by introducing the key ingredient of the proof of the main result, namely the notion of Snell envelope of processes and its properties. We refer to El Karoui [16], Cvitanic and Karatzas [6], Appendix D in Karatzas and Shreve [23] or Hamadène [18] for further details. 2.1 The Snell envelope. In the following proposition we summarize the main results on the Snell envelope of processes used in this paper. Proposition 2.2. Let U D .U t /0tT be an F -adapted R-valued càdlàg process that belongs to the class [D], i.e., the set of random variables fU ; 2 T0 g is uniformly integrable. Then, there exists an F -adapted R-valued càdlàg process Z WD .Z t /0tT x t /0tT is such that Z is the smallest super-martingale which dominates U , i.e., if .Z x t Ut , another càdlàg supermartingale of class [D] such that for all 0 t T , Z x then Z t Z t for any 0 t T . The process Z is called the Snell envelope of U . Moreover it enjoys the following properties: (i) For any F -stopping time we have Z D ess sup EŒU jF (and then ZT D UT ). 2T
+
+(ii) The Doob–Meyer decomposition of Z implies the existence of a continuous martingale .M t /0tT and two nondecreasing processes .A t /0tT and .B t /0tT which are respectively continuous and purely discontinuous predictable such that for all t 2 Œ0; T , Zt D Mt At Bt
+
+(with A0 D B0 D 0):
+
+Moreover, for any 0 t T , f t B > 0g f t U < 0g \ fZ t D U t g:
+
+6
+
+S. Hamadène
+
+(iii) If U has only positive jumps then Z is a continuous process. Furthermore, if is an F -stopping time and D inffs ; Zs D Us g ^ T then is optimal after , i.e., Z D EŒZ jF D EŒU jF D ess sup EŒU jF :
+
+(iv) If .U n /n0 and U are càdlàg, of class [D] and such that the sequence .U n /n0 n converges increasingly and pointwisely to U then .Z U /n0 converges increasingly and pointwisely to Z U ; Z Un and Z U are the Snell envelopes of respectively Un and U . Finally, if U belongs to p then Z U belongs to p . For the sake of completeness, we give a proof of the stability result (iv), as we could not find it in the standard references mentioned above. Proof of (iv). Since, for any n 0, U n converges increasingly and pointwisely to U , it follows that for all t 2 Œ0; T , Z tUn Z tU P -a.s. Therefore, P -a.s., for any t 2 Œ0; T , n lim Z tUn Z tU . Note that the process . lim Z tU /0tT is a càdlàg supermartingale n!1 n!1 of class [D], since it is a limit of a nondecreasing sequence of supermartingales (see e.g. Dellacherie and Meyer [7], pp. 86). But U n Z Un implies that P -a.s., for all n n t 2 Œ0; T , U t lim Z tU . Thus, Z tU lim Z tU since the Snell envelope of U n!1 n!1 is the lowest supermartingale that dominates U . It follows that P -a.s., for any t T , n lim Z tU D Z tU , whence the desired result. n!1
+
+Assume now that U belongs to p . Since, for any 0 t T , ˇ ˇ E sup jUs jˇF t U t E sup jUs jˇF t ; 0sT
+
+0sT
+
+using the Doob–Meyer inequality, it follows that Z U also belongs to p .
+
+3 A Verification Theorem In terms of a Verification Theorem, we show that this switching problem is reduced to the existence of m continuous processes Y 1 ; : : : ; Y m solutions of a system of equations expressed via Snell envelopes. The process Y ti , for i 2 J, will stand for the optimal expected profit if, at time t, the production activity is in the state i . So for an F -stopping time and . t /0tT , . t0 /0tT two continuous F -adapted and R-valued processes let us set D . D 0 / WD inffs ; s D s0 g ^ T: We have the following: Theorem 1 (Verification Theorem). Assume there exist m processes .Y i WD .Y ti /0tT , i D 1; : : : ; m/ of p that satisfy (1). Then:
+
+Optimal switching, systems of reflected BSDEs and V.I.
+
+7
+
+(i) Y01 D sup J.†/:
+
+(3)
+
+†2A
+
+(ii) Define the sequence of F -stopping times .n /n1 by 1 D D0 Y 1 D max .`1j C Y j /
+
+(4)
+
+j 2J 1
+
+and, for n 2, n D Dn1 Y n1 D where • 1 D
+
+X j 2J
+
+j 1fmax
+
+k2J 1
+
+max
+
+k2J n1
+
+.`n1 k C Y k / ;
+
+j
+
+.`1k .1 /CYk1 /D`1j .1 /CY1 g
+
+• for any n 1 and t n , Y tn D
+
+X
+
+(5)
+
+I
+
+1Œn Dj Y tj ;
+
+j 2J
+
+• for n 2, n D l on the set ˚ max .`n1 k .n / C Ykn / D `n1 l .n / C Yln ; k2J n1
+
+where `n1 k .n / D
+
+X
+
+1Œn1 Dj `j k .n / and J n1 D
+
+j 2J
+
+X
+
+1Œn1 Dj J j :
+
+j 2J
+
+Then, the strategy † D ..n /n1 ; .n /n1 / is optimal, i.e., J.† / J.v/ for any v 2 A. (iii) The m-uplet of processes .Y 1 ; : : : ; Y m / is unique. Proof. Let us begin with points (i) and (ii). Assume that at the initial time t D 0 the system is in mode 1. For any t T , we have Z Z t ˇ Y t1 C ‰1 .s/ds D ess sup E ‰1 .s/ds C max .`1j . / C Yj /1Œ
+
+t
+
+j 2J 1
+
+0
+
+But Y01 is F0 -measurable, therefore it is P -a.s. constant and then Y01 D EŒY01 . On the other hand, according to Proposition 2.2 (iii), 1 as defined by (4) is optimal, and X 1 D j 1fmax j : .` . /CY k /D` . /CY g j 2J
+
+k2J 1
+
+1k
+
+1
+
+1
+
+1j
+
+1
+
+1
+
+8
+
+S. Hamadène
+
+Therefore, Y01 D E
+
+Z
+
+1
+
+‰1 .s/ds C max .`1j .1 / C Yj1 /1Œ1
+
+(6)
+
+0
+
+Next, we claim that P -a.s. for every 1 t T; Z ˇ Y t1 D ess sup E ‰1 .s/ds C max .`1 j . / C Yj /1Œ
+
+j 2J 1
+
+t
+
+(7)
+
+Rt To see this, remark that Eq. (1) means that the process .Y ti C 0 ‰i .s/ds/ tT is a supermartingale which dominates ²Z t ³ j ‰i .s/ds C max .`ij .t / C Y t /1Œt
+
+0
+
+Rt P Since J is finite, the process i2J 1Œ1 Di Y ti C 1 ‰i .s/ds , for t 1 , is a supermartingale which dominates Z t X j 1Œ1 Di ‰i .s/ds C max .`ij .t / C Y t /1Œt
+
+1
+
+i2J
+
+Thus the process Y t1 C than Z t
+
+1
+
+Rt
+
+1
+
+‰1 .s/ds, for t 1 , is a supermartingale which is greater
+
+‰1 .s/ds C max .`1 j .t / C Y tj /1Œt
+
+To complete the proof it remains to show that it is the smallest one which has this property and use the characterization of the Snell envelope given in Proposition 2.2. Indeed, let .Z t / t2Œ0;T be a supermartingale of class [D] such that for any t 1 , Z t Zt ‰1 .s/ds C max .`1 j .t / C Y tj /1Œt
+
+1
+
+It follows that for every t 1 , Z t j Z t 1Œ1 Di 1Œ1 Di ‰i .s/ds C max .`ij .t / C Y t /1Œt
+
+j 2J i
+
+But the process .Z t 1Œ1 Di / t2Œ0;T is a supermartingale for t 1 since 1Œ1 Di is F1 -measurable and non-negative. Again with (1) it follows that for every t 1 , Z t ‰i .s/ds : 1Œ1 Di Z t 1Œ1 Di Y ti C 1
+
+Optimal switching, systems of reflected BSDEs and V.I.
+
+Summing over i , we get for every t 1 , Zt Hence, the process Y t1 C Z
+
+t
+
+1
+
+Rt
+
+1
+
+Y t1
+
+Z
+
+C
+
+t
+
+1
+
+9
+
+‰1 .s/ds:
+
+‰1 .s/ds, t 1 , is the Snell envelope of
+
+‰1 .s/ds C max .`1 j .t / C Y tj /1Œt
+
+whence Eq. (7). Now from (7) and the definition of 2 in Eq. (5), we have Z 2 ˇ 1 j ˇ Y1 D E ‰1 .s/ds C max .`1 j .2 / C Y2 /1Œ2
+
+DE
+
+j 2J 1
+
+1 2
+
+ˇ ‰1 .s/ds C .`1 2 .2 / C Y22 /1Œ2
+
+1
+
+Setting this characterization of Y11 in (6) and noting that 1Œ1
+
+since Œ2 < T Œ1 < T . Repeating this procedure n times, we obtain Z n n X E ‰us .s/ds `j 1 j .j /1Œj
+
+j D1
+
+But the strategy .n /n1 is finite, otherwise Y01 would be equal to 1 since `ij > 0 contradicting the assumption that the processes Y j belong to p . Therefore, taking the limit as n ! 1 we obtain Y01 D J.† /. To complete the proof it remains to show that J.† / J.v/ for any other finite admissible strategy v WD ..n /n1 ; .n /n1 / .0 D 0 and 0 D 1/. The definition of the Snell envelope yields Z 1 Y01 E ‰1 .s/ds C max .`1j .1 / C Yj1 /1Œ1
+
+0
+
+Z E
+
+0
+
+1
+
+‰1 .s/ds C .`11 .1 / C Y11 /1Œ1
+
+10
+
+S. Hamadène
+
+But once more using a similar characterization as (7), we get Y11
+
+Z E
+
+2
+
+1
+
+Z E
+
+2
+
+1
+
+‰1 .s/ds C max .`1 j .2 / C j 2J 1
+
+‰1 .s/ds C .`1 2 .2 / C
+
+ˇ
+
+Yj2 /1Œ2
+
+Y22 /1Œ2
+
+:
+
+Therefore, Y01
+
+Z E
+
+1
+
+‰1 .s/ds `11 .1 /1Œ1
+
+0
+
+Z C E 1Œ1
+
+2
+
+1
+
+2
+
+0
+
+‰1 .s/ds `1 2 .2 /1Œ2
+
+‰vs .s/ds `11 .1 /1Œ1
+
+where vs , s T , is the indicator of the mode of the plant at s associated with the strategy v (see (2)). Repeat this argument n times to obtain Y01
+
+Z E
+
+0
+
+n
+
+‰vs .s/ds
+
+n X
+
+`j 1 j .j /1Œj
+
+j D1
+
+Ynn 1Œn
+
+:
+
+Finally, thanks to the dominated convergence theorem, taking the limit as n ! 1 yields Z T X 1 Y0 E ‰vs .s/ds `j 1 j .j /1Œj
+
+j 1
+
+since the strategy v is finite. Hence, the strategy † is optimal. Next, in order to prove uniqueness of the m-uplet .Y 1 ; : : : ; Y m / it is enough to show that Y ti , as defined by (1), is nothing but the expected total profit or the value function of the optimal problem, given that the system is in mode i at time t . More precisely we have Z T X ˇ Y ti D ess sup E ‰us .s/ds `j 1 j .j /1Œj
+
+†2A t
+
+t
+
+j 1
+
+where Af;i t is the set of finite strategies such that 1 t , P -a.s. and u t D i (at time t the system is in mode i ). The proof of this claim is obtained in the same way as we did above. This characterization implies in particular that the processes Y 1 ; : : : ; Y m are unique. The proof is now complete.
+
+11
+
+Optimal switching, systems of reflected BSDEs and V.I.
+
+4 Existence of the processes .Y 1 ; : : : ; Y m / We will now establish existence of the processes .Y 1 ; : : : ; Y m /. They will be obtained as a limit of a sequence of processes .Y 1;n ; : : : ; Y m;n /n0 defined recursively by means of the Snell envelope notion as follows: For i 2 J, let us set, for any 0 t T , Z T Z t ˇ i;0 ˇ Yt D E ‰i .s/ds F t ‰i .s/ds; (9) 0
+
+0
+
+and for n 1, Y ti;n D ess sup E t
+
+Z
+
+0
+
+Z t ˇ ‰i .s/dsC max .`ik . /CYk;n1 /1Œ
+
+0
+
+(10) In the next proposition we collect some useful properties of Y 1;n ; : : : ; Y m;n . In particular we show that the limit processes Yz i WD lim Y i;n exist and are only càdlàg but n!1
+
+have the same characterization (1) as the Y i ’s. Thus the existence proof of the Y i ’s will consist in showing that Yz i ’s are continuous and hence satisfy the Verification Theorem. This will be done in Theorem 2 below. Proposition 4.1. (i) For each n 0, the processes Y 1;n ; : : : ; Y m;n are continuous and belong to p . (ii) For any i 2 J, the sequence .Y i;n /n0 converges increasingly and pointwisely P -a.s. for any 0 t T and in M p;1 to a càdlàg processes Yz i . Moreover these limit processes Yz i D .Yzti /0tT , i D 1; : : : ; m, satisfy the following: (a) E sup jYzti jp < 1, i 2 J. 0tT
+
+(b) For any 0 t T we have, Z ˇ Yzti D ess sup E ‰i .s/ds C max .`ik . / C Yzk /1Œ
+
+t
+
+k2J i
+
+Proof. (i) Let us show by induction that for any n 0 and every i 2 J, Y i;n 2 p . For n D 0 the property holds true since we can write Y i;0 as the sum of a continuous process and a martingale w.r.t. to the Brownian filtration. Therefore Y i;0 is continuous and since the process .‰i .s//0sT belongs to M p;1 , using Doob’s inequality, we obtain that Y i;0 belongs to p . Suppose now that the property is satisfied for some n. By Proposition 2.2, for every i 2 J and up to a term, Y i;nC1 is the Snell Rt envelope of the process . 0 ‰i .s/ds C maxk2J i .`ik .t / C Y tk;n /1Œt
+
+tDT
+
+. max .`ik .t/ C Y tk;n /1Œt
+
+12
+
+S. Hamadène
+
+at T since Y n;k is continuous. Hence Y i;nC1 is continuous (Proposition 2.2 (iii)) and belongs to p . This shows that, for every i 2 J, Y i;n 2 p for any n 0. (ii) Let us now set ˚ Ai;n t D † D ..n /n1 ; .n /n1 / 2 A .0 D 0; 0 D i /; 1 t and nC1 D T : Using the same arguments as the ones of the Verification Theorem 1, the following characterization of the processes Y i;n holds true: Y ti;n
+
+Z D ess sup E †2Ai;n t
+
+T t
+
+‰us .s/ds
+
+n X
+
+ˇ ˇ `j 1 j .j /1Œj
+
+(11)
+
+j D1
+
+i;nC1 Since Ai;n , we have P -a.s. for all t 2 Œ0; T , Y ti;n Y ti;nC1 thanks to the t At i;n continuity of Y . Using once more (11) and since `ij > 0, we obtain for each i 2 J: Z T ˇ i;n ˇ max j‰i .s/jds F t : (12) 8 0 t T; Y t E t
+
+iD1;:::;m
+
+Therefore, for every i 2 J, the sequence .Y i;n /n0 is convergent and then let us set Yzti WD lim Y ti;n , for t T . The process Yz i satisfies n!1
+
+Y ti;0 Yzti E
+
+Z
+
+T t
+
+ˇ max j‰i .s/jds ˇF t ;
+
+iD1;:::;m
+
+0 t T:
+
+(13)
+
+Let us now show thatRYz i is càdlàg. Actually, for each i 2 J and n 1, by Eq. (10), t the process .Y ti;n C 0 ‰i .s/ds/0tT is a continuous supermartingale. Hence its R t limit process .Yzti C 0 ‰i .s/ds/0tT is càdlàg as a limit of increasing sequence of continuous supermartingales (see Dellacherie and Meyer [7], pp. 86). Therefore Yz i is càdlàg. Next using (13), the Lp -properties of ‰i and Doob’s Maximal Inequality yield, for each i 2 J, E sup jYzti jp < 1: 0tT
+
+By the Lebesgue dominated convergence theorem, the sequence .Y i;n /n0 also converges to Yz i in M p;1 . Finally, the càdlàg processes Yz 1 ; : : : ; Yz m satisfy Eq. (1), since they are limits of the increasing sequence of processes Y i;n , i 2 J, that satisfy (10). We use Proposition 2.2 (iv) to conclude. We will now prove that the processes Yz 1 ; : : : ; Yz m are continuous and satisfy the Verification Theorem 1. Theorem 2. The limit processes Yz 1 ; : : : ; Yz m satisfy the Verification Theorem.
+
+Optimal switching, systems of reflected BSDEs and V.I.
+
+13
+
+Proof. Recall from Proposition 4.1 that the processes Yz 1 ; : : : ; Yz m are càdlàg, uniformly Lp -integrable and satisfy (1). It remains to prove that they R t are continuous. Indeed note that, for i 2 J, the process .Yzti C 0 ‰i .s/ds/0tT is the Snell envelope of Z t ‰i .s/ds C max .`ik .t / C Yztk /1Œt
+
+0
+
+Of course the processes
+
+Rt
+
+‰i .s/ds
+
+0tT
+
+are continuous. Therefore from the property of the jumps of the Snell envelope (Proposition 2.2 (ii)), when there is a jump of Yz i at t (which is necessarily negative), there is a jump, at the same time t , of the process .maxk2J i .`ik .s/ C Yzsk //0sT . Since `ij are continuous, there is j 2 J i such j i that t Yz j < 0 and Yzt D `ij .t / C Yzt . Suppose now there is an index i1 2 J for which there exists t 2 Œ0; T such that
+
+t Yz i1 < 0. This implies that there exists another index i2 2 J i1 such that t Yz i2 < 0 i1 i2 and Yzt D `i1 i2 .t / C Yzt . But given i2 , there exists an index i3 2 J i2 such that i i3
+
+t Yz i3 < 0 and Yzt2 D `i2 i3 .t / C Yzt . Repeating this argument many times, we get a sequence of indices i1 ; : : : ; ij ; 2 J that have the property that ik 2 J ik1 , i i
+
+t Yz ik < 0 and Yztk1 D `ik1 ik .t / C Yztk . As J is finite there exist two indices m < r such that im D ir and im ; imC1 ; : : : ; ir1 are mutually different. It follows that 0
+
+0tT
+
+i i im D `im imC1 .t / C YztmC1 D `im imC1 .t / `imC1 imC2 .t / C YztmC2 Yzt ir D D `im imC1 .t / `ir1 ir .t / C Yzt :
+
+As im D ir we get
+
+`im imC1 .t / `ir1 ir .t / D 0
+
+which is impossible since for any i ¤ j , all 0 t T , `ij .t / > 0. Therefore there is no i 2 J for which there is a t 2 Œ0; T such that t Yz i < 0. This means that the processes Yz 1 ; : : : ; Yz m are continuous. Since they satisfy (1), then by uniqueness, Y i D Yz i , for any i 2 J. Thus, the Verification Theorem 1 is satisfied by Y 1 ; : : : ; Y m . Remark 1. As an immediate consequence of Dini’s theorem and the Lebesgue dominated convergence theorem, it holds true that 8i 2 J; E sup jYsi;n Ysi jp ! 0 as n ! C1: sT
+
+5 Connection with systems of BSDEs with oblique reflection In this section we take p D 2. Next let us introduce the notion of a reflected backward stochastic differential equation. For this let us consider:
+
+14
+
+S. Hamadène
+
+(i) f W Œ0; T R1Cd ! R such that the process .f .t; !; 0; 0// tT belongs to M 2;1 and the mapping .y; z/ 7! f .t; !; y; z/ is Lipschitz continuous uniformly in .t; !/; (ii) a square integrable FT -measurable random variable; (iii) S WD .S t / tT a process of 2 which satisfies also ST , P -a.s. Then we have the following result related to the existence and uniqueness of a solution of the reflected BSDE associated with .f; ; S/. Theorem 3 ([17], Thm. 5.2). There exists a unique triple of processes .Y t ; Z t ; K t / tT with values in R1Cd C1 such that 8 2 2;d ˆ
+
+Therefore from (15) and Theorem 2 we have the following result related the solution of the system of BSDEs obliquely reflected associated with the switching problem. Theorem 4. There exist processes .K i ; Z i /, i 2 J, such that the triples .Y i ; Z i ; K i /, i 2 J, is the unique solution of the following system of oblique reflected BSDEs: 8i 2 J, 8 i i Y ; K 2 2 and Z i 2 M 2;d I K i is non-decreasing and K0i D 0; ˆ ˆ RT RT i ˆ ˆ i i i i ˆ
+
+(16)
+
+j 2J i
+
+6 The Markovian framework of the optimal switching problem and its associated system of variational inequalities 6.1 Preliminaries. Let us introduce the following deterministic functions: (i) b W Œ0; T Rk ! Rk and W Œ0; T Rk ! Rkd are two continuous functions and there exists a constant C 0 such that for any t 2 Œ0; T and x; x 0 2 Rk jb.t; x/j C j .t; x/j C.1 C jxj/ and j .t; x/ .t; x 0 /j C jb.t; x/ b.t; x 0 /j C jx x 0 j:
+
+(17)
+
+Optimal switching, systems of reflected BSDEs and V.I.
+
+15
+
+(ii) For i; j 2 J D f1; : : : ; mg, `ij W Œ0; T Rk ! R and i W Œ0; T Rk ! R are continuous functions and of polynomial growth, i.e., there exist some positive constants C and such that for each i; j 2 J, j
+
+i .t; x/j
+
+C j`ij .t; x/j C.1 C jxj /;
+
+8.t; x/ 2 Œ0; T Rk :
+
+Moreover we assume that there exists a constant > 0 such that for any .t; x/ 2 Œ0; T Rk , minf`ij .t; x/; i; j 2 J; i ¤ j g : (18) We now consider the following system of m variational inequalities with interconnected obstacles: 8 i 2 J, 8 ˚ ˆ min vi .t; x/ max .`ij .t; x/ C vj .t; x//I ˆ < j 2J i (19) @ t vi .t; x/ Avi .t; x/ i .t; x/ D 0; ˆ ˆ : vi .T; x/ D 0; where, for the sake of simplicity, we take J i WD J fi g and A is the following infinitesimal generator: AD
+
+X 1 X . > /ij .t; x/@2xi xj C bi .t; x/@xi I 2 i;j D1;k
+
+(20)
+
+iD1;k
+
+here the superscript “>” stands for the transpose. This system is the deterministic version of the Verification Theorem associated with the optimal switching problem in the Markovian framework. The main objective of this part is to focus on the existence and uniqueness of the solution in viscosity sense of (19) whose definition is as follows: Definition 1. Let .v1 ; : : : ; vm / be a m-uplet of continuous functions defined on Œ0; T Rk , R-valued and such that vi .T; x/ D 0 for any x 2 Rk and i 2 J. The m-uplet .v1 ; : : : ; vm / is called: (i) a viscosity supersolution (resp. subsolution) of the system (19) if for each fixed i 2 J, for any .t0 ; x0 / 2 Œ0; T Rk and any function 'i 2 C 1;2 .Œ0; T Rk / such that 'i .t0 ; x0 / D vi .t0 ; x0 / and .t0 ; x0 / is a local maximum of 'i vi (resp. minimum), we have ˚ min vi .t0 ; x0 / max .`ij .t0 ; x0 / C vj .t0 ; x0 //; j 2J i (21) @ t 'i .t0 ; x0 / A'i .t0 ; x0 / i .t0 ; x0 / 0 .resp. 0/I (ii) a viscosity solution if it is both a viscosity supersolution and subsolution.
+
+16
+
+S. Hamadène
+
+Let .t; x/ 2 Œ0; T Rk and let .Xst;x /sT be the solution of the following standard SDE: dXst;x D b.s; Xst;x /ds C .s; Xst;x /dBs for t s T; and Xst;x D x for s t; (22) where the functions b and are the ones of (17). These properties of and b imply in particular that the process .Xst;x /0sT solution of the standard SDE (22) exists and is unique, for any t 2 Œ0; T and x 2 Rk . The operator A that is appearing in (20) is the infinitesimal generator associated with X t;x . In the following result we collect some properties of X t;x . Proposition 6.1 (see e.g. [25]). The process X t;x satisfies the following estimates: (i) For any q 2, there exists a constant C such that EŒ sup jXst;x jq C.1 C jxjq /:
+
+(23)
+
+0sT
+
+(ii) There exists a constant C such that for any t; t 0 2 Œ0; T and x; x 0 2 Rk , EŒ sup jXst;x Xst
+
+0 ;x 0
+
+0sT
+
+j2 C.1 C jxj2 /.jx x 0 j2 C jt t 0 j/:
+
+(24)
+
+We are going now to make the connection between solutions of reflected BSDEs of type (14) and viscosity solutions of variational inequalities. For this we introduce deterministic functions ' W Œ0; T RkC1Cd ! R, h W Œ0; T k R ! R and g W Rk ! R continuous, of polynomial growth and such that h.x; T / g.x/. Additionally we assume that for any .t; x/ 2 Œ0; T Rk , the mapping .y; z/ 2 R1Cd 7! '.t; x; y; z/ is Lipschitz continuous uniformly in .t; x/ 2 Œ0; T Rk . Then we have: Theorem 5 ([17], Thm. 8.5). For any .t; x/ 2 Œ0; T Rk , let .Y t;x ; Z t;x ; K t;x / be the solution of the reflected BSDE associated with .'.s; Xst;x ; y; z/; g.XTt;x /; h.s; Xst;x //, i.e., 8 t;x t;x Y ; K 2 2 and Z t;x 2 M 2;d I K t;x is non-decreasing and K0t;x D 0; ˆ ˆ ˆ ˆ rx u.t; x//g D 0; ˆ : u.T; x/ D g.x/ where rx is the gradient w.r.t. x.
+
+17
+
+Optimal switching, systems of reflected BSDEs and V.I.
+
+6.2 Existence of a solution for the system of variational inequalities (19). Let .Ys1;t;x ; : : : ; Ysm;t;x /0sT be the processes that satisfy the Verification Theorem 1 in the case when ‰i .s; !/ D i .s; Xst;x .!// and `ij .s; !/ D `ij .s; Xst;x .!//, s T and i; j 2 J. Note that in this case, thanks to the above assumptions on the deterministic functions i and `ij , the processes . i .s; Xst;x .!///sT and .`ij .s; Xst;x .!///sT , i; j 2 J, belong to Mp;1 and p respectively for any p > 1. Therefore using Theorem 4, there exist processes K i;t;x and Z i;t;x , i 2 J, such that the triples (Y i;t;x ; Z i;t;x ; K i;t;x /, i 2 J, is the unique solution of the following system of reflected BSDEs: 8i 2 J, 8 ˆ Y i;t;x ; K i;t;x 2 2 and Z i;t;x 2 M 2;d I K i;t;x is non-decreasing and K0i;t;x D 0; ˆ ˆ ˆ i;t;x R T RT ˆ ˆ ˆ D s i .r; Xrt;x /du s Zri;t;x dBr C KTi;t;x Ksi;t;x ; ˆYs ˆ < 8s T .YTi;t;x D 0/; ˆ ˆ Ysi;t;x max .`ij .s; Xst;x / C Ysj;t;x /; 8s T; ˆ ˆ i ˆ ˆ R T i;t;xj 2J ˆ ˆ ˆ max .`ij .r; Xrt;x / C Yrj;t;x //dKri;t;x D 0: : 0 .Yr j 2J i
+
+Moreover we have: Proposition 6.2. There exist deterministic functions v 1 ; : : : ; v m W Œ0; T Rk ! R such that 8.t; x/ 2 Œ0; T Rk ; 8s 2 Œt; T ;
+
+Ysi;t;x D v i .s; Xst;x /;
+
+i D 1; : : : ; m:
+
+Additionally the functions v i , i D 1; : : : ; m; are lower semi-continuous and of polynomial growth. Proof. For n 0 let .Ysn;1;t;x ; : : : ; Ysn;m;t;x /0sT be the processes constructed in (9) and (10) when ‰i .s; !/ D i .s; Xst;x .!// and `ij .s; !/ D `ij .s; Xst;x .!//, s T and i; j 2 J. Then using an induction argument and Theorems 3 and 5, there exist deterministic continuous with polynomial growth functions v i;n (i D 1; : : : ; m) such that for any .t; x/ 2 Œ0; T Rk , 8s 2 Œt; T , Ysn;i;t;x D v i;n .s; Xst;x /. Using now inequality (12) we get Z T ˚ n;i;t;x nC1;i;t;x t;x Yt Yt E max j i .s; Xs /j ds t
+
+iD1;:::;m
+
+since Y tn;i;t;x is deterministic. Therefore combining the polynomial growth of estimate (23) for X t;x we obtain
+
+i
+
+and
+
+v i;n .t; x/ v i;nC1 .t; x/ C.1 C jxj / for some constants C and independent of n. In order to complete the proof it is enough now to set v i .t; x/ WD limn!1 v i;n .t; x/; .t; x/ 2 Œ0; T Rk since Y i;n;t;x % Y i;t;x as n ! 1.
+
+18
+
+S. Hamadène
+
+We are now going to focus on the continuity of the functions v 1 ; : : : ; v m . For this we first deal with some properties of the optimal strategy which exist thanks to Theorem 1. Proposition 6.3. Let .ı; / D ..n /n1 ; .n /n1 / be an optimal strategy, then there exist two positive constant C and p which do not depend on t and x such that 8n 1;
+
+C.1 C jxjp / : n
+
+P Œn < T
+
+(25)
+
+Proof. Recall the characterization of (8) that reads as follows: Z T X 1;t;x t;x t;x D sup E `k1 k .k ; Xk /1Œk
+
+.ı;/2Af
+
+k1
+
+Now if .ı; / D ..n /n1 ; .n /n1 / .0 D 0; 0 D 1/ is the optimal strategy then we have Z T X t;x t;x .r; X /dr ` . ; X /1 Y01;t;x D E ur k1 k k Œk
+
+k1
+
+Taking into account that `ij > 0 for any i ¤ j we obtain i h X 1Œk
+
+Z E
+
+0
+
+T
+
+X
+
+t;x ur .r; Xr /dr
+
+knC1
+
+`k1 k .k ; Xt;x /1 Œk
+
+But for any k n, Œn < T Œk < T , so nP Œn < T C Y01;t;x E
+
+Z 0
+
+T
+
+t;x .r; X /dr : ur r
+
+and hence Z n P Œn < T E
+
+j
+
+t;x .r; X / j dr Y01;t;x ur r
+
+j
+
+t;x ur .r; Xr /
+
+0
+
+Z E
+
+T
+
+0
+
+T
+
+j dr Y01;0;t;x :
+
+Finally taking into account the facts that i and Y 1;0;t;x are of polynomial growth and estimate (23) for X t;x to obtain the desired result. Note that the polynomial growth of Y 1;0;t;x stems from (13). Remark 2. The estimate (25) is also valid for the optimal strategy if at the initial time the state of the plant is an arbitrary i 2 J.
+
+19
+
+Optimal switching, systems of reflected BSDEs and V.I.
+
+Next for i 2 J let .ysi;t;x ; zsi;t;x ; ksi;t;x /sT be the processes defined as follows: 8 ˆ y i;t;x ; k i;t;x 2 2 and z i;t;x 2 M 2;d I k i;t;x is non-decreasing and k0i;t;x D 0; ˆ ˆ Z T Z T ˆ ˆ ˆ i;t;x t;x ˆ ˆ D .r; X /1 dr zri;t;x dBr C kTi;t;x ksi;t;x ; 8 s T; y i s Œrt r < s
+
+s
+
+t;x / C ysj;t;x /g; 8s T; ysi;t;x lsi;t;x WD max f`ij .t _ s; X t_s ˆ ˆ i ˆ j 2J ˆ Z T ˆ ˆ ˆ ˆ : .yri;t;x lri;t;x /d kri;t;x D 0: 0
+
+The existence of .y i;t;x ; z i;t;x ; k i;t;x /; i 2 J, is obtained through Theorem 4. On the other hand, once more thanks to uniqueness in Theorem 4, for any .t; x/ 2 Œ0; T Rk , for any s 2 Œ0; t we have ysi;t;x D Y ti;t;x , zsi;t;x D 0 and ksi;t;x D 0. We are now ready to give the main result of this section. Theorem 6. For any i D 1; : : : ; m, the function v i W Œ0; T Rk ! R is continuous and .v 1 ; : : : ; v m / is solution in viscosity sense of the system of variational inequalities with inter-connected obstacles (19). Proof. First let us focus on continuity and let us show that v 1 is continuous. The same proof will be valid for the continuity of the other functions v i (i D 2; : : : ; m). First the characterization (8) implies that Z T X 1;t;x t;x t;x D sup E `n1 n .n _ t; Xn _t /1Œn
+
+.ı;/2Af
+
+n1
+
+; t;x / .ı t;x
+
+exists and satisfies the estimates (25) On the other hand an optimal strategy with the same constants C and p. Next let > 0 and .t 0 ; x 0 / 2 B..t; x/; / and let us consider the following set of strategies: z WD f.ı; / D ..n /n1 ; .n /n1 / 2 Af D such that 8n 1;
+
+P Œn < T
+
+.0 D 0; 0 D 1/
+
+C.1 C . C jxj/p / g: n z 0 ; 0 0 / belong to D and then we have
+
+; t;x / and .ı t0 ;x t ;x Therefore the strategies .ı t;x Z T 1;t;x t;x D sup E y0 us .s; Xs /1Œst ds z .ı;/2D
+
+0
+
+Z D sup E z .ı;/2D
+
+X
+
+n1 n
+
+0
+
+`n1 n .n _ t; Xt;x /1Œn
+
+t;x us .s; Xs /1Œst ds
+
+X 1kn
+
+`k1 k .t _
+
+t;x k ; Xt_ /1Œk
+
+C
+
+1Œn
+
+20
+
+S. Hamadène
+
+and
+
+Z
+
+0 0 y01;t ;x
+
+D sup E
+
+T
+
+0
+
+z .ı;/2D
+
+X
+
+n1 n
+
+Z D sup E
+
+0
+
+0
+
+`n1 n .n _ t 0 ; Xtn;x _t 0 /1Œn
+
+t 0 ;x 0 /1Œst 0 ds us .s; Xs
+
+0
+
+z .ı;/2D
+
+t 0 ;x 0 /1Œst 0 ds us .s; Xs
+
+X
+
+0
+
+`k1 k .t _
+
+1kn
+
+0 ;x 0 k ; Xtt0 _ /1Œk
+
+C
+
+0 0 1Œn
+
+:
+
+The second equalities are obtained in using the dynamical programming principle [14]. It follows that y01;t
+
+0 ;x 0
+
+y01;t;x
+
+Z
+
+sup E X
+
+f
+
+0
+
+z .ı;/2D
+
+n
+
+t 0 ;x 0 /1Œst 0 us .s; Xs 0
+
+t;x us .s; Xs /1Œst gds
+
+0
+
+;x t;x f`k1 k .t 0 _ k ; Xtt0 _ / `k1 k .t _ k ; Xt_ /g1Œk
+
+1kn
+
+C
+
+0 0 1Œn
+
+(26)
+
+ynn ;t;x g
+
+:
+
+Next w.l.o.g. we assume that t 0 < t . Then from (26) we deduce that y01;t
+
+0 ;x 0
+
+y01;t;x Z sup E
+
+n
+
+f.
+
+0
+
+z .ı;/2D
+
+X
+
+t 0 ;x 0 / us .s; Xs
+
+t;x us .s; Xs //1Œst 0
+
+C Z 0
+
+T
+
+t 0 ;x 0 /1Œt 0 s
+
+0
+
+;x t;x f`k1 k .t 0 _ k ; Xtt0 _ / `k1 k .t _ k ; Xt_ /g1Œk
+
+1kn
+
+E
+
+C
+
+max j.
+
+j D1;m
+
+C max j j D1;m
+
+0 0 1Œn
+
+t 0 ;x 0 / j .s; Xs
+
+ynn ;t;x g
+
+t;x j .s; Xs //j1Œst
+
+t 0 ;x 0 /j1Œt 0 s
+
+0
+
+;x t;x C n max fsup j`ij .t 0 _ s; X tt0 _s / `ij .t _ s; X t_s /jg i¤j 2J sT
+
+1
+
+C sup .P Œn < T / 2 .2EŒ.ynn ;t z .ı;u/2D
+
+0 ;x 0
+
+1 /2 C .ynn ;t;x /2 / 2 : (27)
+
+21
+
+Optimal switching, systems of reflected BSDEs and V.I.
+
+In the right-hand side of (27) the first term converges to 0 as .t 0 ; x 0 / ! .t; x/. Next let us show that for any i ¤ j 2 J, 0
+
+0
+
+;x t;x / `ij .t _ s; X t_s /j ! 0 EŒsup j`ij .t 0 _ s; X tt0 _s
+
+as .t 0 ; x 0 / ! .t; x/:
+
+sT
+
+Actually for any % > 0 we have 0
+
+0
+
+;x t;x / `ij .t _ s; X t_s /j j`ij .t 0 _ s; X tt0 _s 0
+
+0
+
+;x t;x j`ij .t _ s; X tt0 _s / `ij .t _ s; X t_s /j 0
+
+0
+
+0
+
+0
+
+;x ;x C j`ij .t 0 _ s; X tt0 _s / `ij .t _ s; X tt0 _s /j1ŒjX t 0 ;x0 j% 0
+
+C j`ij .t _
+
+0 ;x 0 s; X tt0 _s /
+
+t 0 _s
+
+`ij .t _
+
+0 ;x 0 s; X tt0 _s /j1ŒjX t 0 ;x0 j% : 0 t _s
+
+Therefore we have 0 ;x 0 t;x E sup j`ij .t 0 _ s; X tt0 _s / `ij .t _ s; X t_s /j sT
+
+˚ 0 ;x 0 0 ;x 0 / `ij .t _ s; X tt0 _s /j1ŒjX t 0 ;x0 j% E sup j`ij .t 0 _ s; X tt0 _s sT
+
+˚
+
+0
+
+0
+
+0
+
+0
+
+t 0 _s
+
+;x ;x C E sup j`ij .t 0 _ s; X tt0 _s / `ij .t _ s; X tt0 _s /j 1Œsup sT
+
+˚ 0 ;x 0 t;x / `ij .t _ s; X t_s /j 1Œsup C E sup j`ij .t _ s; X tt0 _s
+
+sT
+
+˚
+
+C E sup j`ij .t _ sT
+
+0 ;x 0 s; X tt0 _s /
+
+`ij .t _
+
+t;x s; X t_s /j 1Œsup
+
+t 0 ;x 0 sT jX t 0 _s j% 0
+
+0
+
+0
+
+0
+
+sT
+
+;x jX tt0 _s jCsupsT jX tt;x _s j%
+
+sT
+
+;x jX tt0 _s jCsupsT jX tt;x _s j%
+
+But since `ij is continuous then it is uniformly continuous on Œ0; T fx 2 Rk ; jxj %g: Henceforth for any 1 > 0 there exists 1 > 0 such that for any jt t 0 j < 1 we have ˚ 0 ;x 0 0 ;x 0 sup j`ij .t 0 _ s; X tt0 _s / `ij .t _ s; X tt0 _s /j1ŒjX t 0 ;x0 j% 1 : t 0 _s
+
+sT
+
+(28)
+
+Next using Cauchy–Schwarz’s inequality and then Markov’s one with the second term we obtain ˚ 0 ;x 0 0 ;x 0 1 0 0 /`ij .t _s; X tt0 _s /j 1Œsup C.1Cjx 0 jp /% 2 ; E sup j`ij .t 0 _s; X tt0 _s jX t ;x j% sT
+
+sT
+
+t 0 _s
+
+(29) where C and p are real constants which are bound to the polynomial growth of `ij and estimate (23). In the same way we have: ˚ 0 ;x 0 t;x / `ij .t _ s; X t_s /j 1Œsup E supsT j`ij .t _ s; X tt0 _s 1
+
+C.1 C jxjp C jx 0 jp /% 2 :
+
+sT
+
+0
+
+0
+
+;x jX tt0 _s jCsupsT jX tt;x _s j%
+
+(30)
+
+22
+
+S. Hamadène
+
+Finally using the uniform continuity of `ij on compact subsets, the continuity property (24) and the Lebesgue dominated convergence theorem to obtain that ˚ 0 ;x 0 t;x 0 0 E sup j`ij .t _ s; X tt0 _s / `ij .t _ s; X t_s /jg1Œsup !0 jX t ;x jCsup jX t;x j% sT
+
+sT
+
+t 0 _s
+
+sT
+
+t _s
+
+as .t 0 ; x 0 / ! .t; x/. Taking now into account (28)–(31) we have
+
+(31)
+
+0 ;x 0 1 t;x / `ij .t _ s; X t_s /j 1 C C.1 C jxjp /% 2 : lim sup E sup j`ij .t 0 _ s; X tt0 _s
+
+.t 0 ;x 0 /!.t;x/
+
+sT
+
+As 1 and % are arbitrary then making 1 ! 0 and % ! C1 to obtain that 0 ;x 0 t;x lim E sup j`ij .t 0 _ s; X tt0 _s / `ij .t _ s; X t_s /j D 0: .t 0 ;x 0 /!.t;x/
+
+sT
+
+Thus the claim is proved. z then: Finally let us focus on the last term in (27). Since .ı; / 2 D
+
+sup z .ı;/2D
+
+P Œn < T 1
+
+n 2
+
+12
+
+sup
+
+1 0 0 2E .ynn ;t ;x /2 C .ynn ;t;x /2 2
+
+z .ı;/2D
+
+1 0 0 2E .ynn ;t ;x /2 C .ynn ;t;x /2 2
+
+1
+
+C n 2 .1 C jxjp C jx 0 jp /; where C and p are appropriate constants which come from the polynomial growth of t;x and inequality (13). Going back now to i , i 2 J, estimate (23) for the process X 0 0 (27), taking the limit as .t ; x / ! .t; x/ we obtain lim sup y01;t
+
+0 ;x 0
+
+.t 0 ;x 0 /!.t;x/
+
+1
+
+y01;t;x C C n 2 .1 C 2jxjp /:
+
+As n is arbitrary then putting n ! C1 we obtain lim sup y01;t
+
+0 ;x 0
+
+.t 0 ;x 0 /!.t;x/
+
+y01;t;x :
+
+This implies that lim sup y01;t
+
+.t 0 ;x 0 /!.t;x/
+
+0 ;x 0
+
+D
+
+lim sup Y t1;t 0
+
+.t 0 ;x 0 /!.t;x/
+
+0 ;x 0
+
+D
+
+lim sup v 1 .t 0 ; x 0 / y01;t;x D Y t1;t;x
+
+.t 0 ;x 0 /!.t;x/
+
+and then v 1 is upper semi-continuous since Y t1;t;x D v 1 .t; x/. But v 1 is also lower semicontinuous, therefore it is continuous. In the same way we can show that v 2 ; : : : ; v m are continuous. As they are of polynomial growth, then taking into account Theorem 5 to obtain that .v 1 ; : : : ; v m / is a viscosity solution for the system of variational inequalities with inter-connected obstacles (19).
+
+Optimal switching, systems of reflected BSDEs and V.I.
+
+23
+
+Remark 3. The solution in viscosity sense of the system of variational inequalities with inter-connected obstacles (19) is unique in the space of continuous functions on Œ0; T Rk which satisfy a polynomial growth condition, i.e., in the space C WD f' W Œ0; T Rk ! R; continuous and for any .t; x/; j'.t; x/j C.1 C jxj / for some constants C and g: Therefore for any i 2 J, v i has the following representation: 8.t; x/ 2 Œ0; T Rk , Z T X i t;x t;x `n1 n .n ; Xn /1Œn
+
+f;i
+
+.ı;/2A t
+
+n1
+
+For more details one can see [14].
+
+7 Extension and numerical schemes 7.1 General systems of BSDEs with oblique reflection. The problem which we deal with now is to what extent can we provide a solution for systems of types (16) where the generators i , which depend only on .t; !/, are replaced by functions which depend also on y i ; z i , i 2 J. Namely let us consider the following system of BSDEs with oblique reflection: for i 2 J, 8 i i Y ; K 2 2 ; Z i 2 M 2;d I K i non-decreasing and K0i D 0; ˆ ˆ Z T Z T ˆ < fi .s; Ys1 ; : : : ; Ysm ; Zsi /ds Y ti D i C Zsi dBs C KTi K ti ; t T; ˆ t t ˆ ˆ :Y ti max hi;j .t; Y tj /I ŒY ti max hi;j .t; Y tj /dK ti D 0: j 2Ai
+
+j 2Ai
+
+(32) Here i are FT -measurable, the coefficients fi , hi;j can depend on !, and Ai f1; : : : ; mg fj g. For simplicity we denote YÅt WD .Y t1 ; : : : ; Y tm /, and similarly for other vectors. The constraint Ai means that from mode i the plant can only be switched to those modes in Ai . We emphasize that Aj can be empty and if so we take the convention that the maximum over the empty set, denoted as ;, is 1. Then in this case Y i has no lower barrier and then we take K i D 0. Consequently, Y i satisfies the following BSDE without reflection: Z T Z T fi .s; YÅs ; Zsi /ds Zsi dBs ; 0 t T: Y ti D i C t
+
+t
+
+Also, for any i we define
+
+hi;i .t; y/ WD y:
+
+Then a solution of (32) always satisfies Y ti
+
+max hi;j .t; Y tj /:
+
+j 2Ai [fig
+
+24
+
+S. Hamadène
+
+The general barrier hi;j allows one to consider more general switching costs. In fact, even if the original cost takes the form hi;j .t; !; y/ D y `i;j .t; !/, in the risksensitive switching problem (see e.g. [21]) one needs to take the standard exponential transformation and then the barrier becomes hQ i;j .t; y/ Q WD e `i;j y. Q Finally let us point out that systems of types (32) are involved when dealing with optimal switching problems under Knightian uncertainty (see e.g. [21], [22]). Let us now introduce the following assumptions: Assumptions [A]. For any i D 1; : : : ; m, it holds that ˚RT (i) E 0 .supyWy E 0/j2 /dt C ji j2 < 1: E i D0 jfi .t; y; (ii) fi .t; y; E z/ is uniformly Lipschitz continuous in .yi ; z/ and is continuous in yj for any j ¤ i ; and hi;j .t; y/ is continuous in .t; y/ for j 2 Ai . (iii) fi .t; y; E z/ is increasing in yj for j ¤ i , and hi;j .t; y/ is increasing in y for j 2 Ai . (iv) For j 2 Ai , hi;j .t; y/ y. Moreover, there is no sequence i2 2 Ai1 ; : : : ; ik 2 Aik1 , i1 2 Aik , and .y1 ; : : : ; yk / such that y1 D hi1 ;i2 .t; y2 /; y2 D hi2 ;i3 .t; y3 /; : : : ; yk1 D hik1 ;ik .t; yk /; yk D hik ;i1 .t; y1 /: (v) For any i D 1; : : : ; m, i max hi;j .T; j /. j 2Ai
+
+We note that (i), (ii) and (v) are standard. The assumption (iv) means that it is not free to make a circle of instantaneous switchings. Our main result, stated by Hamadène–Zhang in [22] where we can find all the details, is: Theorem 7. Assume Assumptions [A] hold. Then the system of RBSDEs (32) has a solution. The solution is unique if we strengthen slightly the assumptions on the data of the problem. Actually we have: Theorem 8 ([22]). Besides Assumptions [A], assume moreover that (i) fi is uniformly Lipschitz continuous in all yj . (ii) If j 2 Ai ; k 2 Aj , then k 2 Ai [ fi g. Moreover, hi;j .t; hj;k .t; y// < hi;k .t; y/: (iii) For any j 2 Ai , jhi;j .t; y1 / hi;j .t; y2 /j jy1 y2 j: Then the solution of system (32) is unique.
+
+Optimal switching, systems of reflected BSDEs and V.I.
+
+25
+
+7.2 Numerical schemes. As it has been pointed out previously, those systems of reflected BSDEs with oblique reflection arise in several applied disciplines of mathematics especially in finance. Therefore the issue of finding their solution becomes crucial but a tough task as well. An alternative is to provide numerical schemes which converge to the solution of the system with a good rate. There are actually some works in this sense of which we can quote [4] where the authors deal with numerics of the following system: 8 i;t;x RT ˆ Ys D gi .XTt;x / C s fi .r; Xrt;x ; Yrt;x ; Zrt;x /du ˆ ˆ RT ˆ ˆ s Zri;t;x dBr C KTi;t;x Ksi;t;x ; ˆ < (33) Ysi;t;x max .`ij .s; Xst;x / C Ysj;t;x /; ˆ ˆ j 2J i ˆ ˆ RT ˆ j;t;x ˆ //dKri;t;x D 0: : 0 .Yri;t;x max .`ij .r; Xrt;x / C Yr j 2J i
+
+They have introduced a discrete time system of reflected BSDEs associated with (33) in using an oblique projection operator. Further they provide a control of the error which is especially significant in the case when the coefficients .fi /iD1;:::;m do not depend on z since they show that it is of order 12 , > 0. The case m D 2 is particular and has been considered in [20]. Finally note that there is another point of view which uses the link of the solutions of the above system and minimal solutions of constrained BSDEs with jumps, which is developed in [15]. Acknowledgement. This paper, whose results are extracted from the articles [9], [14], [22] quoted below, is based on the talk of the author during the 33rd SPA Conference, Berlin, July 27–29, 2009. The hospitality of the organizers is greatly appreciated.
+
+References [1] K. A. Brekke and B. Øksendal, The high contact principle as a sufficiency condition for optimal stopping. In Stochastic models and option values, D. Lund and B. Øksendal, eds., North-Holland, Amsterdam 1991, 187–208. 1 [2] K. A. Brekke and B. Øksendal, Optimal switching in an economic activity under uncertainty. SIAM J. Control Optim. 32 1994, 1021–1036. 1 [3] M. J. Brennan and E. S. Schwartz, Evaluating natural resource investments. J. Business 58 (1985), 135–137. 1 [4] J. F. Chassagneux, R. Elie, and I. Kharroubi,A note on existence and uniqueness for solutions of multidimensional reflected bsdes. Electron. Comm. Probab. 16 (2011), 120–128. 25 [5] R. Carmona and M. Ludkovski, Pricing asset scheduling flexibility using optimal switching. Appl. Math. Finance 15 (2008), 405–447. 1, 2 [6] J. Cvitanic I. and Karatzas, Backward SDEs with reflection and Dynkin games. Ann. Probab. 24 (1996), no. 4, 2024–2056. 5
+
+26
+
+S. Hamadène
+
+[7] C. Dellacherie and P. A. Meyer, Probabilités et potentiel. Chapitres V–VIII, Actualites Sci. Indust. 1385, Hermann, Paris 1980. 6, 12 [8] B. Djehiche and S. Hamadène, On a finite horizon starting and stopping problem with risk of abandonment. Int. J. Theor. Appl. Finance 12 (2009), no. 4, 523–543. 1 [9] B. Djehiche, S. Hamadène, and A. Popier, A finite horizon optimal multiple switching problem. SIAM J. Control Optim. 48 (2009), no. 4, 2751–2770. 25 [10] A. Dixit, Entry and exit decisions under uncertainty. J. Political Economy 97 (1989), 620– 638. 1 [11] A. Dixit and R. S. Pindyck, Investment under uncertainty. Princeton University Press, Princeton, N.J., 1994. 1 [12] K. Duckworth and M. Zervos, A problem of stocahstic impulse control with discretionary stopping. In Proceedings of the 39th IEEE conference on decision and control, IEEE Control Systems Society, Piscataway, NJ, 2000, 222–227. 1 [13] K. Duckworth and M. Zervos, A model for investment decisions with switching costs. Ann. Appl. Prob. 11 (2001), no. 1, 239–260. 1 [14] B. El Asri and S. Hamadène, The finite horizon optimal multi-modes switching problem: the viscosity solution approach. Appl. Math. Optim. 60 (2009), no. 2, 213–235. 20, 23, 25 [15] R. Elie and I. Kharroubi, Probabilistic representation and approximation for coupled systems of variational inequalities. Statist. Prob. Lett. 80 (2010), 1388–1396. 25 [16] N. El Karoui, Les aspects probabilistes du contrôle stochastique. In Ecole d’été de probabilités de Saint-Flour Lecture Notes in Math. 876, Springer-Verlag, Berlin 1981, 73–238. 5 [17] N. El Karoui, C. Kapoudjian, E. Pardoux, S. Peng, and M. C. Quenez, Reflected solutions of backward SDEs and related obstacle problems for PDEs. Ann. Probab. 25 (1997), no. 2, 702–737. 14, 16 [18] S. Hamadène, Reflected BSDEs with discontinuous barriers. Stochastics Stochastics Rep. 74 (2002), 571–596. 5 [19] S. Hamadène and I. Hdhiri, On the starting and stopping problem with Brownian and independant Poisson noise. Ph.D. Thesis, 2006, Université du Maine, Le Mans, France. 1 [20] S. Hamadène and M. Jeanblanc, On the starting and stopping problem: application in reversible investments. Math. Oper. Res. 32 (2007), 182–192. 1, 25 [21] S. Hamadène and Wang, H., Optimal risk-sensitive switching problem under knightian uncertainty and its related systems of reflected BSDEs. Ph.D. Thesis, 2009, Université du Maine, Le Mans, France. 24 [22] S. Hamadène and J. Zhang, Switching problem and related system of reflected backward SDEs. Stochastic Process. Appl. 120 (2010), no. 4, 403–426. 3, 24, 25 [23] I. Karatzas and S. E. Shreve, Methods of mathematical finance. Appl. Math. (N.Y.), Springer Verlag, New York 1998. 5 [24] T. S. Knudsen, B. Meister, and M. Zervos, Valuation of investments in real assets with implications for the stock prices. SIAM J. Control Optim. 36 (1998), 2082–2102. 1 [25] D. Revuz and M. Yor, Continuous martingales and Brownian motion. Grundlehren Math. Wiss. 293, Springer Verlag, Berlin 1991. 16
+
+Optimal switching, systems of reflected BSDEs and V.I.
+
+27
+
+[26] A. Porchet, N. Touzi, and X. Warin, Valuation of power plants by utility indifference and numerical computation. Math. Methods Oper. Res. 70 (2009), no. 1, 47–75. 1 [27] H. Shirakawa, Evaluation of investment opportunity under entry and exit decisions. Surikaisekikenky N usho N Koky N uroku N (987) (1997), 107–124. 1 [28] S. Tang and J. Yong, Finite horizon stochastic optimal switching and impulse controls with a viscosity solution approach. Stochastics Stochastics Rep. 45 (1993), 145–176. [29] L. Trigeorgis, Real options and interactions with financial flexibility. Financial Management 22 (1993), 202–224. 1 [30] L. Trigeorgis, Real options: managerial flexibility and startegy in resource allocation. MIT Press, Cambridge, MA, 1996. 1 [31] M. Zervos, A problem of sequential enty and exit decisions combined with discretionary stopping. SIAM J. Control Optim. 42 (2003), no. 2, 397-421. 1
+
+The COGARCH: a review, with news on option pricing and statistical inference Claudia Klüppelberg, Ross Maller and Alexander Szimayer
+
+1 Introduction Mathematical Finance and Econometrics can be viewed as two sides of a coin. Econometrics concentrates on finding optimal models concerning statistical properties like correlations and prediction. Mathematical Finance, on the other side is mainly concerned with finding good models which allow for hedging and derivatives pricing. Two major innovations revolutionised the theory and practise of econometrics in the latter part of the last century. The first was the development of the unit root and related cointegration concepts in the analysis of time series data, and the associated Dickie–Fuller test (cf. [11]) and its various generalisations. Soon after came the idea of conditional heteroscedasticity models to capture the empirically observed feature of apparently randomly varying volatility1 fluctuations in time series. Landmark models include Taylor’s stochastic volatility model [47] and the ARCH and GARCH models of Engle [16] and Bollerslev [4]. These innovations and their subsequent rapid development and application in many directions were particularly appropriate for high frequency time series financial data, which became easily accessible in large quantities over the period, with the introduction of modern computer technology. Rigorous hedging and pricing of financial derivatives started with the seminal paper by Black and Scholes [3] using the complete model of geometric Brownian motion and its explicit unique option price. After it became clear that this model cannot capture all realistic features of market conditions, incomplete models entered the scene. Characterization of no arbitrage pricing by martingale measures came into focus in the important papers by Harrison and Kreps [22] and Harrison and Pliska [23]. The problem of non-unique martingale measures was met by a specific approach of Föllmer and Schweizer [18]. Exponential Lévy models were a first step towards more realistic modelling promoted early on by Eberlein and collaborators; cf. Eberlein [15] for a review. Pricing measures were suggested for normal mixture models such as the variance gamma model due to Madan and Seneta [35] and the normal inverse Gaussian model, which was originally suggested by Barndorff-Nielsen [1]. This paper aims at a reconciliation between certain econometric models and pricing models. Our econometrics motivation comes from the availability of high frequency data, which are often sampled at irregular time points, making continuous-time modelling necessary. Our motivation for derivatives pricing originates in the need for more realistic pricing models. 1
+
+The “volatility” is simply the square root of the variance.
+
+30
+
+C. Klüppelberg, R. Maller and A. Szimayer
+
+The paper is organised as follows. In Section 2 we recall the discrete time ARCH and GARCH models and some of their properties. We further summarize some continuoustime limits of such models from the literature and explain their drawbacks. Section 3 is devoted to the continuous time GARCH (COGARCH) model as suggested in Klüppelberg, Lindner and Maller [30]. Section 4 presents new material on option pricing within the COGARCH model. As an explicit example we treat the variance gamma driven COGARCH and compare it to the Heston model via implicit volatilities. It turns out that the COGARCH can produce higher implied volatilities for short maturities deep in-the-money and far out of-the-money; desirable properties in applications. Section 5 is devoted to statistical estimation of the COGARCH parameters. Besides classical moment estimators we also present a method to obtain a GARCH skeleton within the COGARCH model, which allows for the use of existing software for estimation. This involves functional limit theorems in various modes of convergence.
+
+2 Background in discrete time ARCH and GARCH models AutoRegressive Conditional Heteroscedasticity (ARCH) models were introduced by Engle [16] and soon generalised to GARCH (Generalised AutoRegressive Conditional Heteroscedasticity) models by Bollerslev [4]. Nowadays they are seen as particular kinds of stochastic volatility models, in which the variance of time series innovations is itself assumed to vary randomly, conditional on past information. A special feature of ARCH and GARCH models is that they incorporate feedback between an observation and its volatility, whereby a large fluctuation in an innovation triggers a corresponding large fluctuation in the variance of the series, which in the absence of further large fluctuations, then reverts to a steady state level, as long as the process is in a stationary regime. This is an attractive concept, which accords well with intuition and empirical observation of, especially, financial time series. As it turns out, the models also display further desirable features from the modelling point of view. In particular, they typically induce long tailedness of marginal distributions, and serial correlations, not in the innovations themselves, but in the squared innovations. These features again accord well with empirical observation. We expand further on them later. The simplest GARCH model, the GARCH.1; 1/, is a discrete time process with three parameters, ˇ > 0, 0, ı 0, specifying the variance as a discrete time stochastic recursion, or difference equation. We write it using two equations, one specifying the “mean level” process (the observed data, perhaps after removal of trend or other deterministic feature, to approximate stationarity) and the other specifying the variance process, which is time dependent and randomly fluctuating. Thus, for i D 1; 2; : : : ,
+
+with
+
+Y i D " i i ;
+
+(2.1)
+
+2 2 2 i2 D ˇ C Yi1 C ıi1 D ˇ C ."2i1 C ı/i1 :
+
+(2.2)
+
+Here the starting values "0 and 0 are given quantities, possibly random, and usually assumed independent of the ."i /iD1;2;::: , which are the sole source of variation in the
+
+The COGARCH: a review, with news on option pricing and statistical inference
+
+31
+
+model. The "i , i D 1; 2; : : : , are assumed to be independent identically distributed (i.i.d.) random variables (rvs) centered at 0. Serial dependence between the Yi is introduced via the dependence of the i2 on their past values. Conditional on i , Yi simply has the distribution of "i , scaled by i , which in general (as long as ; ı > 0) is time dependent, hence the “conditional heteroscedasticity” part of the terminology. 2 The “autoregressive” aspect refers to the form of the dependence of i2 on i1 , as in an autoregressive time series model. 2 disappears, but volatility remains stochastic via the When ı D 0 this term in i1 2 dependence of i on Yi1 , as long as > 0. We then have the ARCH.1/ model of Engle [16]. Such a model was generally found to be inadequate, however, to describe observed data, in which variance tends to be highly persistent and mean reverting. 2 The introduction of the i1 term in (2.2) when ı > 0 improves the modelling of such data substantially, and gives rise to the highly successful GARCH.1; 1/ model of Bollerslev [4]. A very natural extension of this model is to add further autoregressive terms to (2.2), thus defining a GARCH.p; q/ model, and, similarly, the ARCH.p/ model is defined. Of course if D ı D 0 in (2.2) the model simply reduces to one of i.i.d. observations for the Yi , with variance ˇ > 0. 2.1 Stationarity and tail behaviour in GARCH models. Often, in a practical regression situation, the "i might be assumed N.0; 1/ for the purposes of model fitting. Such a short tailed distribution for the "i , however, does not necessarily translate into a short tailed marginal distribution for the observations Yi . Eq. (2.2) specifies the sequence .i2 /iD1;2;::: as a stochastic recurrence equation, studied in some depth in the probability literature, especially, see Kesten [28], Vervaat [49] and Goldie [19]; see also the readable overview paper by Diaconis and Freedman [10]. In a stationary regime, or otherwise, the resulting Yi will usually have a heavy tailed distribution. This comes about as follows. Necessary and sufficient conditions for the “stability” (existence of an almost sure (a.s.) limit for large times) of a discrete time stochastic perpetuity given in Goldie and Maller [20] can be applied directly to give necessary and sufficient conditions in terms of log moments of the "i and the parameters and ı, for the stability of the ARCH(1) and GARCH.1; 1/ models. Specifically, Theorem 2.1 of Klüppelberg, Lindner and Maller [30] shows that we have stability of the mean and variance proD
+
+D
+
+cesses, that is, Yi ! Y1 and i ! 1 as i ! 1, for finite rvs Y1 and 1 , if and only if Ej log.ı C "21 /j < 1 and E log.ı C "21 / < 0: These then constitute conditions for stationarity of .Yi ; i2 /iD1;2;::: if the sequence is started with the values .Y1 ; 1 /. Then, further results transferable from the theory of stochastic difference equations show that, under certain fairly general conditions, Y1 will have a long tailed distribution, specifically, a distribution with a Pareto (power law) tail. A good exposition of this is in Lindner [32]. Thus, even with a short tailed distribution such as the normal assumed for the innovations "i , we may expect a heavy tailed marginal distribution for the Yi . This
+
+32
+
+C. Klüppelberg, R. Maller and A. Szimayer
+
+accords with observed features of, especially, financial data, cf. Klüppelberg [29], Mikosch [37]. More recently, Platen and Sidorowicz [42], for example, in a very extensive investigation, suggest that much financial returns data has a very heavy tailed distribution, such as a t -distribution with 4 degrees of freedom. 2.2 Continuous time limits of GARCH models. Motivated, in particular, by the availability of high-frequency data and by a need for option pricing technologies, classical diffusion limits have been used in a natural way to suggest continuous time limits of discrete time processes, including for the GARCH models. The best known of these is due to Nelson [40]. His limiting diffusion model is: dY t D t dB t.1/ ;
+
+t 0;
+
+(2.3)
+
+where t , the volatility process, satisfies d t2 D ˇ t2 dt C t2 dB t.2/ ;
+
+t > 0;
+
+(2.4)
+
+with B .1/ and B .2/ independent Brownian motions, and ˇ > 0, 0 and 0 constants. Unfortunately, in these situations, the limiting models can lose certain essential properties of the discrete time GARCH models. It is surprising and counter-intuitive, for example, that Nelson’s diffusion limit of the GARCH process is driven by two independent Brownian motions, i.e. has two independent sources of randomness2 , whereas the discrete time GARCH process is driven only by a single white noise sequence. One of the features of the GARCH process is the idea that large innovations in the price process are almost immediately manifested as innovations in the volatility process; but this feedback mechanism is lost in models such as the Nelson continuous time version. Further, the appearance of an extra source of variation can have implications for completeness considerations in options pricing models, for example. The phenomenon that a diffusion limit may be driven by two independent Brownian motions, while the discrete time model is given in terms of a single white noise sequence, is not restricted to the classical GARCH process. Duan [13] has shown that this occurs for many GARCH-like processes. On the other hand, Corradi [8] modified Nelson’s method to obtain a diffusion limit depending only on a single Brownian motion - but then the equation for t2 degenerates to an ordinary differential equation. Using a Brownian bridge between discrete time observations, Kallsen and Taqqu [26] found a complete model driven by only one Brownian motion. Moreover, the continuous time limits found in such a way can have distinctly different statistical properties to the original discrete time processes. As was shown by Wang [50], parameter estimation in the discrete time GARCH and the corresponding continuous time limit stochastic volatility model may yield different estimates (see also Dependence has been introduced in the literature in an ad hoc way by allowing B .1/ and B .2/ in (2.3) and (2.4) to be correlated, but such models still rely on two sources of randomness. 2
+
+The COGARCH: a review, with news on option pricing and statistical inference
+
+33
+
+Brown, Wang and Zhao [6]). Thus these kinds of continuous time models are probabilistically and statistically different from their discrete time progenitors. See Lindner [31] for a recent overview of continuous time approximations to GARCH processes. In Klüppelberg, Lindner and Maller [30], the authors proposed a radically different approach to obtaining a continuous time model. Their “COGARCH” (continuous time GARCH) model is a direct analogue of the discrete time GARCH, based on a single background driving Lévy process, and generalises the essential features of the discrete time GARCH process in a natural way. In the next section we review this model. Throughout this article, by the “COGARCH” model we will always mean the COGARCH.1; 1/ model.
+
+3 The COGARCH model The COGARCH model is specified by two equations, the mean and variance equations, analogous to (2.1) and (2.2). The single source of variation is a so-called background driving Lévy process L D .L t / t0 with characteristic triplet .; 2 ; …/; we refer to Sato [43] for background on Lévy processes. The continuous time process L has i.i.d. increments, which are analogous to the i.i.d. innovations "i in (2.1) and (2.2). Then the COGARCH process .G t / t0 is defined in terms of its stochastic differential, dG, such that (3.1) dG t D t dL t ; t 0; where t , the volatility process, satisfies 2 2 dt C t dŒL; L t ; d t2 D ˇ t
+
+t > 0;
+
+(3.2)
+
+for constants ˇ > 0, 0 and 0. Here ŒL; L t denotes the quadratic variation process of L, defined for t > 0 by X ŒL; L t WD 2 t C .Ls /2 D 2 t C ŒL t ; L t d ; (3.3) 0<st
+
+with ŒL t ; L t d denoting the pure jump component of ŒL; L. (There should be no confusion between the constant 2 specifying the variance of the Gaussian component of L and the COGARCH variance process . t2 / t0 . In (3.3), L t D L t L t for t 0 (with L0 D 0) and similarly for other processes throughout. All processes are cádlág) To see the analogy with (2.1) and (2.2), note from (2.2) that 2 2 2 i2 i1 D ˇ .1 ı/i1 C i1 "2i1 ;
+
+which corresponds to (3.2) (with a reparameterisation from to ı D 1 ) when the time increment dt is taken as a unit, or at least fixed, interval of time. But an advantage of the continuous time setup is that non-equally spaced observations are easily catered for, as we demonstrate later (Section 5.4).
+
+34
+
+C. Klüppelberg, R. Maller and A. Szimayer
+
+Just as an understanding of discrete time perpetuities is the key to stability, stationarity and tail behaviour of the discrete time GARCH, so kinds of continuous time perpetuities are instrumental in the analysis of the COGARCH. The solution of the stochastic differential equation (SDE) (3.2) can be obtained with the help of an auxiliary Lévy process X D .X t / t0 defined by X
+
+X t D t
+
+log.1 C .Ls /2 /;
+
+t 0:
+
+0<st
+
+X is a spectrally negative Lévy process of bounded variation arising in a natural way in Klüppelberg et al. [30], where the COGARCH.1; 1/ is motivated directly as an analogue to the discrete time GARCH.1; 1/ process. Using Ito’s lemma, it can be verified that the solution of (3.2) can be written in terms of X as Z t 2 X t Xs 2 t D e e ds C 0 ; t 0; ˇ 0
+
+which reveals t2 as a kind of generalised Ornstein–Uhlenbeck (GOU) process, parameterised by .ˇ; ; '/, and driven by the Lévy process L. For results on the GOU, and associated studies of Lévy integrals, see Lindner and Maller [33] and their references. An understanding of stability, stationarity and tail behaviour properties for the GOU is essential for such issues relating to G. Klüppelberg et al. [30], Theorem 3.2, show that the variance process . t2 / t0 for the COGARCH is a time homogeneous Markov process, and, further, that the bivariate 2 process .G t ; t2 / t0 is Markovian. A finite random variable 1 exists as the limit in 2 distribution of t as t ! 1 if and only if Z log 1 C y 2 ….dy/ < log ı: (3.4) ı R R1 2 has the same distribution as ˇ times the stochastic integral 0 e X t dt , which exists 1 as a finite rv a.s. under (3.4) (see Theorem 3.1 of [30]). If this is the case and . t2 / t0 is 2 2 , i.e., 02 is taken to have the distribution of 1 , independent of L, started with value 1 2 then . t / t0 is strictly stationary and .G t / t0 is a process with stationary increments (Theorem 3.2 and Corollary 3.1 of [30]). Moments of the COGARCH process can be calculated using the Laplace transform of the auxiliary process X , which satisfies Ee X t D e t‰./ , with Z ‰. / D C (3.5) .1 C x 2 / 1 ….dx/; 0: R
+
+Returns over time intervals of fixed length r > 0 we denote by Z G t.r/ WD G t G tr D s dLs ; t r; .tr;t
+
+(3.6)
+
+35
+
+The COGARCH: a review, with news on option pricing and statistical inference
+
+.r/ so that .Gri /i2N describes an equidistant sequence of non-overlapping returns. Calculating the corresponding quantity for the volatility yields Z 2.r/ 2 2 2 ri WD ri r.i1/ D .ˇ s2 / ds C ' s dŒL; Ls .r.i1/;ri Z Z 2 D ˇr s2 ds C ' s dŒL; Ls : (3.7) .r.i1/;ri
+
+.r.i 1/;ri
+
+Note that the stochastic process Z Z t X 2 2 2 2 s dŒL; Ls D s ds C s .Ls /2 ; .0;t
+
+0
+
+t 0;
+
+0<st
+
+is the quadratic variation ŒG; G t of G, which satisfies Z t 2 ŒG; G t D s d ŒL; Ls ; t 0I 0
+
+R
+
+2 dŒL; Lds in (3.7) corresponds to the jump part of the quadratic thus .r.i1/;ri s variation of G accumulated during .r.i 1/; ri . The following result (Proposition 2.1 of Haug et al. [24]) shows that the COGARCH has a similar moment structure as the GARCH model; in particular, increments are uncorrelated, but squared increments are positively correlated. We shall need these results in Section 5.1 when we present a method of moment estimation of the COGARCH parameters.
+
+Proposition 3.1. Suppose that .L t / t0 has finite variance and zero mean, and that the Gaussian component has variance 2 . Suppose also that ‰.1/ < 0 for ‰ as given in (3.5). Let . t2 / t0 be the stationary volatility process, so that .G t / t0 has stationary increments. Then E.G t2 / < 1 for all t 0, and for every t; h r > 0 we have E.G t.r/ / D 0;
+
+E.G t.r/ /2 D
+
+ˇr EL21 ; j‰.1/j
+
+.r/ Cov.G t.r/ ; G tCh / D 0:
+
+If, further, E.L41 / < 1 and ‰.2/ < 0, then E.GRt4 / < 1 for all t 0 and, if, additionally, the Lévy measure … of L is such that R x 3 ….dx/ D 0, then for every t; h r > 0, we have
+
+2 2 ˇ2 1 C 2 2 EL21 2 ‰.1/ ' j‰.2/j j‰.1/j rj‰.1/j 2 1e 2 3ˇ 2 2ˇ 1 r rC .EL21 /2 r 2 ; C 2 j‰.1/j ' j‰.2/j j‰.1/j ‰.1/2
+
+E.G t.r/ /4 D 6E.L21 /
+
+and Cov
+
+.r/ 2 .G t.r/ /2 ; .G tCh /
+
+E.L21 /ˇ 2 2 1 2 C 2 2 EL21 D 3 j‰.1/j ' j‰.2/j j‰.1/j hj‰.1/j rj‰.1/j rj‰.1/j 1e 1 e > 0: e
+
+36
+
+C. Klüppelberg, R. Maller and A. Szimayer
+
+Motivated by the generalization of the GARCH.1; 1/ to the GARCH.p; q/ model, Brockwell, Chadraa, and Lindner [5] introduced a COGARCH.p; q/ model. In it, the volatility follows a CARMA (continuous-time ARMA) process driven by a Lévy process (cf. Doob [12], Todorov and Tauchen [48]). In Stelzer [45] multivariate COGARCH.1; 1/ processes are introduced, constituting a dynamical extension of normal mixture models and again incorporating such features as dependence of returns (but without autocorrelation), jumps, heavy tailed distributions, etc. Stelzer’s definition agrees for d D 1 with the COGARCH.1; 1/ process. As in the univariate case, the model has only one source of randomness, a single multivariate Lévy process. The time-varying covariance matrix is modelled as a stochastic process in the class of positive semi-definite matrices. In [45] Stelzer analyses the probabilistic properties of the model and gives a sufficient condition for the existence of a stationary distribution for the stochastic covariance matrix process, and criteria ensuring the finiteness of moments.
+
+4 A COGARCH option pricing model A potentially important application of the COGARCH model is to option pricing. Traditionally, and for mathematical tractability, option pricing models are based on continuous time models for an underlying stock price process. The discrete-time GARCH reproduces features commonly observed in financial data, especially relating to the socalled stylized facts (volatility clustering, mean reversion of volatility, negative skew, and heavy tails). Consequently, the COGARCH, as a continuous time limit of the discrete GARCH (see Section 5.3), can be expected to result in more accurate option valuation than standard models. In this section we propose an option pricing framework, where the stock price return is driven by COGARCH, thus allowing for stochastic volatility, and we also include the possibility of default in the model. Combining these features is not new; however, our framework is parsimonious in its parameterisation and as we will see can reproduce observed kinds of volatility smile and skew quite well. Further, the default probability in the model can be expressed as a function of the volatility.3 The financial market is defined on a filtered probability space . ; F ; P; .F t / t0 / satisfying the usual hypothesis, which is large enough to support a Lévy process L D .L t / t0 with characteristic function given for every t 0 by EŒe izL t D e t .z/ for z 2 R where Z 2 2 .z/ D i z 1 e izx izh.x/ ….dx/: z C 2 Rnf0g As usual .; 2 ; …/ is the characteristic triplet, with related truncation function h.x/ D x 1fjxj1g . As a technical prerequisite we assume that the fourth moment of L exists, 3 As is also the case with the expected default frequency in Moody’s KMV (Kealhofer, McQuown and Vasicek) EDF (Expected Default Frequency) proprietary credit measures model, the KMV EDFTM ; see, e.g., www.moodyskmv.com/newsevents/files/EDF_Overview.pdf.
+
+The COGARCH: a review, with news on option pricing and statistical inference
+
+37
+
+R i.e. x 4 ….dx/ < 1. The investment opportunities considered here are the riskfree money market account and the risky company stock. The risk-free money market account has the price process B D .B t / t0 with dynamics dB t D rB t dt;
+
+B0 D 1;
+
+where r 2 R is the instantaneous risk-free rate; hence B t D e r t for t 0. The stock price process is denoted by S D .S t / t0 and bears two kinds of related risks. The stock price fluctuation is driven by a COGARCH process G D .G t / t0 with its accompanying volatility process . t / t0 , and, further, the stock price is assumed to fall to zero at a default time , if default occurs, after which it stays at that level. Before default the stock price process satisfies dS t D S t dR t ;
+
+S0 > 0;
+
+where R D .R t / t0 , the cumulative return process, is driven by the COGARCH process G in the following sense: dR t D Œr C . t / t dt C t dL t :
+
+(4.1)
+
+Here the scaled innovation t dL t is a COGARCH increment, dG t , W Œ0; 1/ ! R is the risk premium, and the volatility . t2 / t0 follows the dynamics in (3.2), namely 2 2 d t2 D ˇ t dŒL; L t ; t > 0: (4.2) dt C t The default time is defined as the first time at which the cumulative return R exhibits a jump R t below 100% D 1:
+
+D infft > 0 W R t 1g D infft > 0 W t L t 1g: At default the stock price drops to zero and stays there, thus we can write S t D S0 E.R/ t 1ft<g ; where E.X / denotes the stochastic exponential of X . 4.1 Relationship to other stochastic volatility models. To compare our model to other SV models, we reparameterise (4.1) and (4.2) as follows. Let us first assume that L in (4.1) is an error term satisfying EL t D 0 and EŒL2t D t , or, equivalently, Z Z x ….dx/ D 0; and 2 C x 2 ….dx/ D 1: (4.3) C jxj>1
+
+R
+
+This assumption is in fact no restriction, but ensures that the parameters can be identified. (Note that the function can be adjusted when centering L, and the scaling to unit variance of L affects only the variance parameters.)
+
+38
+
+C. Klüppelberg, R. Maller and A. Szimayer
+
+The bracket process ŒL; L drives the volatility process . We center and scale ŒL; L to a martingale M with unit variance rate R ŒL; Ldt t R x 2 ….dx/ ŒL; L t EŒL; L t ; t 0: Mt D p D qR 4 ….dx/ E Œ.ŒL; L1 EŒL; L1 /2 x R Then we can write the variance equation (4.2) as 2 2 d t2 D N 2 t dM t ; dt C t
+
+D ;
+
+ˇ N D
+
+(4.4)
+
+sZ
+
+where 2
+
+t > 0;
+
+and
+
+D
+
+R
+
+x 4 ….dx/:
+
+The variance process is thus seen to be mean-reverting with mean level N 2 , meanreversion speed , and volatility . t2 / t0 , implying an average volatility of the variance process of N 2 . This enables us to benchmark our model to other SV models. We compare the COGARCH with the stochastic volatility model of Heston [25] (other related models include a Heston extension allowing for jumps of Bates [2], the SABR model of Hagan et al. [21], etc.). The dynamics of the Heston model are H;1 H H H dS tH D H ; t S t dt C t S t dW t q d. tH /2 D H .N H /2 . tH /2 dt C H . tH /2 dW tH;2 ;
+
+with expected return rate H , mean-reversion speed H , mean level .N H /2 , volatility of volatility parameter H , and leverage H . Here, the leverage H is in fact the correlation of the standard Brownian motions W H;1 and W H;2 . Our model features the so-called option pricing leverage effect that is also included in the Heston model. However, in our setup leverage is not a free parameter, but is determined by the skew and kurtosis of the jump measure of L. Formally, leverage is quantified by the instantaneous correlation between the increments of the price equation dR t and the increments of the variance equation d t2 . By scaling this reduces to the correlation of L t and M t , and leverage is given by R 3 x ….dx/ EŒL t M t 1 : (4.5) D cor.L t ; M t / D D E ŒŒL; M t D qR R t t x 4 ….dx/ R
+
+We see that is restricted by more than just jj 1; the Cauchy–Schwarz inequality implies sZ p jj x 2 ….dx/ D 1 2 .cf: (4.3)/: R
+
+The COGARCH and Heston models are compared in Table 1.
+
+The COGARCH: a review, with news on option pricing and statistical inference
+
+39
+
+Table 1. Specifications of the variance processes for COGARCH and Heston models (“f.v.” stands for “finite variation”).
+
+Drift
+
+N
+
+COGARCH
+
+Heston
+
+2
+
+H
+
+H 2
+
+Volatility
+
+t2
+
+.N /
+
+Noise
+
+Leverage R
+
+. tH /2
+
+H
+
+t2
+
+q
+
+f.v. pure jump
+
+tH
+
+2
+
+qR R
+
+Brownian
+
+x 3 ….dx/
+
+R
+
+x 4 ….dx/
+
+H 2 Œ1; 1
+
+4.2 Default time and default adjusted return dynamics. The default time admits a predictable intensity O D .O t / t0 driven by the variance process . t2 / t0 . Using the Markov property of . t2 /2t0 and the independent and stationary increments property O t /, where the function O is given by of L, we can establish that O t D . Z 1=x 1 ….dy/; x > 0: (4.6) D .x/ O D … 1; x 1 Then the process N D .N t / t0 defined by Z N t D 1ftg
+
+t^
+
+0
+
+. O u / du
+
+is a martingale. The unconditional probability PD D .PD t / t0 of default prior to time t can then be calculated as Z t . O u / du ; t 0: PD t D P . t / D 1 E exp 0
+
+We now turn to the effect of the default on the dynamics of the driving Lévy process L. Theorem 4.1. The bivariate process .S; 2 / is a Markov process and the stochastic differential of S is given by yt; dS t D S t Œr C . t / t dt C S t t dL y is the stopped version of L with default adjustment where L y t D Lt C 1ftg .L 1= /; L
+
+t 0:
+
+With O defined by O .x/ D
+
+Z
+
+yt the compensated version .L
+
+1=x 1
+
+R t^ 0
+
+yC
+
+1 ….dy/; x
+
+x > 0;
+
+O u / du/ t0 is a martingale. .
+
+40
+
+C. Klüppelberg, R. Maller and A. Szimayer
+
+y D .R y t / t0 by Next, define the default adjusted return process R Z t^ Z t y y u: .r C .u / u / du C Rt D u dL 0
+
+(4.7)
+
+0
+
+y where E denotes the stochastic By construction it is clear that that S D S0 E.R/, exponential. It follows that the discounted price process Z D S=B is a local martingale y t r .t ^ // t0 is a local martingale. (Note that the processes R y and if and only if .R S are both stopped at .) The next theorem states the semimartingale characteristics of y and is useful for identifying martingale measures. In our setting, the characteristics R y y y 2 y .B tR ; C tR ; …R t / t0 of R can be expressed as functions of t using the Markov property, see also Kallsen and Vesenmayer [27]. y
+
+y
+
+y
+
+y Theorem 4.2. The semimartingale characteristics .B tR ; C tR ; …R t / of R for the truncation function h.x/ D x 1fjxj1g are for t 0 given by Z 1 y O t / B tR D 1ft<g r C t . t / C . x ….dx/ ; 1= t
+
+y C tR
+
+2 D 1ft<g t 2; Z y …R 1f t x2.A\.1;1//g ….dx/ C 1ft<g 1f12Ag . O t /; t .A/ D 1ft<g
+
+for Borel sets A R n f0g. y has to reduce to Under a martingale measure Q, the drift of R Z 1 y B tR;Q D 1ft<g r t x …Q t 0; t .dx/ ;
+
+(4.8)
+
+1= t
+
+where …Q t is the jump measure of L t , and the correction results from our choice of truncation function h.x/ D x 1fjxj1g . Remark 4.3. In the following we adopt the martingale modeling approach. Madan, Carr, and Chang [34] and Panayotov [41] also use this approach in related settings. Formally, the market model can be investigated for arbitrage using the results provided by Delbaen and Schachermayer [9]. Such a thoroughgoing investigation is beyond the scope of this paper. 4.3 The risk-neutral dynamics and option pricing. In the following we assume we are given a measure Q P such that L is a Lévy process with characteristic triplet . Q ; . Q /2 ; …Q / and finite fourth moment. Further, assume that . t2 / t0 follows the dynamics given in (4.4). (Note that we can assume without loss of generality that L is centered to 0 and scaled to have a unit variance rate.) The Q-dynamics of . t2 / t0 are given by the risk-neutral version of (4.4), i.e., 2 2 d t2 D Q .N Q /2 t dM tQ ; t > 0; (4.9) dt C Q t
+
+The COGARCH: a review, with news on option pricing and statistical inference
+
+41
+
+where Q , .N Q /2 , and Q are the potentially adjusted parameters, and M Q is the bracket process of L centered to 0 and scaled to unit variance rate. With O Q defined as in Theorem 4.1 by O Q .x/ D
+
+Z
+
+1=x
+
+1
+
+1 yC …Q .dy/; x
+
+R y t t^ O Q .u / du is then a Q-martingale. The riskthe compensated version L 0 neutral return process is then given by the risk-neutral version of (4.7), i.e., Z t Z t^ yt D y u: R r O Q .u / u du C u dL (4.10) 0
+
+0
+
+The expression O Q . t / t can be conceptualised as the premium for the limited liability option, i.e. the premium paid by equity for protecting it from losses larger than y 100%. The stock price process is given by S D S0 E.R/. Under the measure Q, denote by Q .I / the price process of a T -claim that is suitably integrable, i.e. the random variable is FT -measurable and EQ jj < 1. Then Q is given by Q .tI / D e r .T t/ EQ Œ j F t : 4.4 Variance-Gamma COGARCH. In this section we take the Variance-Gamma (VG) process proposed by Madan and Seneta [35] and Madan, Carr, and Chang [34], and construct the VG-COGARCH model directly under a martingale measure Q, see discussion in the previous section. We examine the model for its suitability to reflect stylized facts, such as volatility clustering, leptokurtosis and skew, and incorporate as a new feature, possible default. We then compute option prices, and, using the implied Black–Scholes volatility, compare the results to those obtained from a corresponding Heston model. Finally, we discuss our stochastic exponential setup in relation to the exponential VG-COGARCH of Panayotov [41], see Remark 4.4 below. Under the martingale measure Q the VG process L is defined by L t D V G t C V G W t for t 0, where is a Gamma process with variance rate VG and unit mean rate carrying the market time. W is a standard Brownian motion independent of , VG > 0 the volatility, and VG 2 R the drift. The VG process is a pure jump process having characteri

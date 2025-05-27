@@ -1,0 +1,107 @@
+Prem,
+
+It looks like your tape are not even 60% utilized which would mean reclamation would not run. Either you have to set reclamation very low or do some 'move data' commands on tape that might fit together.
+
+When you query volumes in a stgpool, they will show how much they are utilized. If you see any that say 'empty' you could delete them and they will be scratch. If reclamation runs for a long time, it will leave the tapes in empty status until the reclamation job completes. If you need them immediately, you could either delete them manually or cancel the reclamation job and start it over. As the job finishes, it release all of the empty tapes.
+
+Q vol stgp=xxxx
+
+If you show some tapes in the pool as only partially full and in filling status, you could do the 'move' data command. This will only move data onto another volume within the same stgpool. It helps to consolidate the tapes though and will free up some tapes.
+
+Move data volume_name
+
+This is another concern regarding your stgpool: Delay Period for Volume Reuse: 3 Day(s)
+
+Everyone has different reasons for using this and it may be of value in not wanting your tapes used again immediately after being scratched. I have never found value in this myself and have in too many situations with small tape libraries so I set this to 0. If you have a large library and lots of tapes and space for tapes, you can get by with having a delay. If you have a small library and are cramped for space, you are just creating a delay for tapes to be reused again. I would be curious how many tapes are in your library that are empty but have not met this 3 day criteria. You should be able to see this by doing 'q vol stgp=* status=empty'
+
+I hope these tips help some.
+
+Brenda Collins,
+
+Sr. Principal Systems Admin | Technical Operations Team
+
+Medtronic, Inc. | MVC63 | 8200 Coral Sea Street NE | Mounds View, MN 55112
+
+763.505.6057
+
+Brenda.s.collins@medtronic.com|
+
+medtronic.com | Facebook | LinkedIn | Twitter | YouTube
+
+LET'S TAKE HEALTHCARE
+
+FURTHER, TOGETHER
+
+[CONFIDENTIALITY AND PRIVACY NOTICE] Information transmitted by this email is proprietary to Medtronic and is intended for use only by the individual or entity to which it is addressed, and may contain information that is private, privileged, confidential or exempt from disclosure under applicable law. If you are not the intended recipient or it appears that this mail has been forwarded to you without proper authority, you are notified that any use or dissemination of this information in any manner is strictly prohibited. In such cases, please delete this mail from your records. To view this notice in other languages you can either select the following link or manually copy and paste the link into the address bar of a web browser:
+
+Prem,
+
+It looks like your tape are not even 60% utilized which would mean reclamation would not run. Either you have to set reclamation very low or do some 'move data' commands on tape that might fit together.
+
+When you query volumes in a stgpool, they will show how much they are utilized. If you see any that say 'empty' you could delete them and they will be scratch. If reclamation runs for a long time, it will leave the tapes in empty status until the reclamation job completes. If you need them immediately, you could either delete them manually or cancel the reclamation job and start it over. As the job finishes, it release all of the empty tapes.
+
+Q vol stgp=xxxx
+
+If you show some tapes in the pool as only partially full and in filling status, you could do the 'move' data command. This will only move data onto another volume within the same stgpool. It helps to consolidate the tapes though and will free up some tapes.
+
+Move data volume_name
+
+This is another concern regarding your stgpool: Delay Period for Volume Reuse: 3 Day(s)
+
+Everyone has different reasons for using this and it may be of value in not wanting your tapes used again immediately after being scratched. I have never found value in this myself and have in too many situations with small tape libraries so I set this to 0. If you have a large library and lots of tapes and space for tapes, you can get by with having a delay. If you have a small library and are cramped for space, you are just creating a delay for tapes to be reused again. I would be curious how many tapes are in your library that are empty but have not met this 3 day criteria. You should be able to see this by doing 'q vol stgp=* status=empty'
+
+I hope these tips help some.
+
+Brenda Collins,
+
+Sr. Principal Systems Admin | Technical Operations Team
+
+Medtronic, Inc. | MVC63 | 8200 Coral Sea Street NE | Mounds View, MN 55112
+
+763.505.6057
+
+Brenda.s.collins@medtronic.com|
+
+medtronic.com | Facebook | LinkedIn | Twitter | YouTube
+
+LET'S TAKE HEALTHCARE
+
+FURTHER, TOGETHER
+
+[CONFIDENTIALITY AND PRIVACY NOTICE] Information transmitted by this email is proprietary to Medtronic and is intended for use only by the individual or entity to which it is addressed, and may contain information that is private, privileged, confidential or exempt from disclosure under applicable law. If you are not the intended recipient or it appears that this mail has been forwarded to you without proper authority, you are notified that any use or dissemination of this information in any manner is strictly prohibited. In such cases, please delete this mail from your records. To view this notice in other languages you can either select the following link or manually copy and paste the link into the address bar of a web browser:
+
+Prem,
+
+It looks like your tape are not even 60% utilized which would mean reclamation would not run. Either you have to set reclamation very low or do some 'move data' commands on tape that might fit together.
+
+When you query volumes in a stgpool, they will show how much they are utilized. If you see any that say 'empty' you could delete them and they will be scratch. If reclamation runs for a long time, it will leave the tapes in empty status until the reclamation job completes. If you need them immediately, you could either delete them manually or cancel the reclamation job and start it over. As the job finishes, it release all of the empty tapes.
+
+Q vol stgp=xxxx
+
+If you show some tapes in the pool as only partially full and in filling status, you could do the 'move' data command. This will only move data onto another volume within the same stgpool. It helps to consolidate the tapes though and will free up some tapes.
+
+Move data volume_name
+
+This is another concern regarding your stgpool: Delay Period for Volume Reuse: 3 Day(s)
+
+Everyone has different reasons for using this and it may be of value in not wanting your tapes used again immediately after being scratched. I have never found value in this myself and have in too many situations with small tape libraries so I set this to 0. If you have a large library and lots of tapes and space for tapes, you can get by with having a delay. If you have a small library and are cramped for space, you are just creating a delay for tapes to be reused again. I would be curious how many tapes are in your library that are empty but have not met this 3 day criteria. You should be able to see this by doing 'q vol stgp=* status=empty'
+
+I hope these tips help some.
+
+Brenda Collins,
+
+Sr. Principal Systems Admin | Technical Operations Team
+
+Medtronic, Inc. | MVC63 | 8200 Coral Sea Street NE | Mounds View, MN 55112
+
+763.505.6057
+
+Brenda.s.collins@medtronic.com|
+
+medtronic.com | Facebook | LinkedIn | Twitter | YouTube
+
+LET'S TAKE HEALTHCARE
+
+FURTHER, TOGETHER
+
+[CONFIDENTIALITY AND PRIVACY NOTICE] Information transmitted by this email is proprietary to Medtronic and is intended for use only by the individual or entity to which it is addressed, and may contain information that is private, privileged, confidential or exempt from disclosure under applicable law. If you are not the intended recipient or it appears that this mail has been forwarded to you without proper authority, you are notified that any use or dissemination of this information in any manner is strictly prohibited. In such cases, please delete this mail from your records. To view this notice in other languages you can either select the following link or manually copy and paste the link into the address bar of a web browser:

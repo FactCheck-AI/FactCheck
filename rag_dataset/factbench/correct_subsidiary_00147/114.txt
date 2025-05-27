@@ -1,0 +1,1173 @@
+Release 12.1
+
+Part Number E13395-04
+
+Contents
+
+Previous
+
+Next
+
+Introduction to Oracle Advanced Inbound Telephony
+
+This chapter covers the following topics:
+
+Overview of Oracle Advanced Inbound TelephonyOverview of Integration TypesOracle Advanced Inbound Telephony IntegrationSupported ModesSupported Modes and Certified Switch and Middleware CombinationsFeatures Architecture Oracle Telephony Adapter ServerResponsibilities Active Mode Priority Queueing for Web CallbacksActive-Standby Mode ConfigurationLoad BalancingInteraction KeysCustomer Data LookupWeb Callback Routing and ClassificationsClassificationsWeb CallbacksWeb Callback RoutesReroutingCall ScenariosScreen PopsIVR IntegrationAccess to Oracle Advanced Inbound Telephony
+
+Overview of Oracle Advanced Inbound Telephony
+
+Oracle Advanced Inbound Telephony is fully integrated with Oracle TeleSales, Oracle TeleService, and Oracle Advanced Collections, thereby minimizing integration time and deployment costs. Oracle Advanced Inbound Telephony also provides the Oracle Telephony Adapter SDK, which can be used to integrate other automatic call distribution/private branch exchange (ACD/PBX) and computer-telephone integration (CTI) middleware combinations that are not supported by an Oracle telephony adapter.
+
+Overview of Integration Types
+
+This section describes three primary integration types.
+
+Prebuilt Server-Side Adapters
+
+The prebuilt adapters made available to customers are also referred to as server-side adapters. Server-side adapter integration utilizes a collection of servers that facilitate the communication between the Oracle E-Business Suite forms—Service Request, Contact Center, and eBusiness Center—and the telephone system. The adapters are available for specific switch middleware combinations, and they have been tested with middleware from Genesys, Envox’s CT Connect, and Cisco ICM. With this integration, agents use the Oracle softphone.
+
+The call data is passed from the switch to the middleware and then to the Oracle Telephony adapter server, which acts as a translator between Oracle E-Business Suite and the middleware. The call information then passes through a series of servers and finally reaches icworkcontroller, which is the softphone for the Oracle E-Business Suite. Based on the setup and the call parameters, the appropriate form—Service Request, Contact Center, or eBusiness Center—is launched for the agent who is assigned to the call. In addition to the Contact Center form being refreshed with the correct record, the softphone also displays information about the customer and the call parameters.
+
+Each of the adapters supports certain preconfigured modes of call routing. Depending on the specific adapter, one, the other, or both of these two modes can be supported for the switch and middleware combination that a customer uses.
+
+Software Development Kit (SDK) to Universal Work Queue (UWQ)
+
+This integration is also referred to as Basic integration because it integrates the Oracle Universal Work Queue (UWQ) client to the third-party switch or middleware softphone that uses the Basic Telephony Adapter SDK.
+
+In addition to the server-side adapters, organizations can leverage the Telephony Adapter SDK to integrate the UWQ client with the third-party softphone, thereby bypassing all the servers used in server-side adapters. This integration type is referred to as client-side integration because it involves direct communication between two client applications: the third-party softphone and the UWQ client.
+
+This integration option is less complex than the server-side adapter integration described in the previous section. Because fewer servers are involved in the integration, it scales better and has fewer performance degradation issues.
+
+In cases where a preconfigured adapter is not available for the particular version of switch or middleware with which a customer desires an integration, the Oracle Telephony Adapter SDK can be utilized to build a client-side integration. Because this is a custom solution, it requires additional effort to build the adapter to establish the integration between the UWQ client and the third-party softphone.
+
+As part of this integration, the third-party softphone passes the data related to the incoming call to the UWQ client. The UWQ client uses this information to launch the context sensitive screen pop for the agent. The Oracle E-Business Suite softphone, icworkcontroller, can be suppressed, and the agents can use the third-party softphone as their primary softphone.
+
+For details on how to build this integration, see Oracle Telephony Adapter SDK Developers Reference Guide.
+
+Direct Client-Side Integration with Oracle E-Business Suite Forms
+
+Direct integration allows a third-party CTI client or softphone to trigger a screen pop in Oracle E-Business Suite forms: Contact Center, Service Request, and eBusiness Center. To support this integration method, additional code in the form of a Java bean is included as part of the respective form for it to establish communication with the third-party softphone. This enables the form to accept data from the softphone. With this approach, customers can build the integration directly into the form from the (middleware) softphone without having to go through the UWQ client.
+
+This integration approach establishes communication between the third party and the form. This solution requires an adapter, whose purpose is to facilitate communication between the form and the third-party softphone. This integration has neither the overhead of the additional servers in the server-side integration nor the need to pass through the UWQ client as in the Basic integration. For these reasons, this integration approach scales better than they do and has fewer performance issues.
+
+For details on how to build this integration, see Oracle Telephony Adapter SDK Developers Reference Guide.
+
+Oracle Advanced Inbound Telephony Integration
+
+Oracle Advanced Inbound Telephony is designed to consistently and effectively handle customer interactions by intelligently routing, queuing, and distributing media items. Oracle Advanced Inbound Telephony offers CTI support for market-leading traditional ACD/PBX and Internet protocol (IP) telephony platforms. The application also provides enhanced screen pops on customer data into the Oracle E-Business Suite application.
+
+Oracle Advanced Inbound Telephony is required to telephony enable business applications in the Oracle E-Business Suite. "Telephony-enabled" means that the application can communicate with a telephone system for inbound calls, outbound calls, or both by way of the CTI middleware that handles the messaging between a customer's ACD/PBX and the business application.
+
+The Oracle Advanced Inbound Telephony bundle consists of the following products and services: Oracle Interaction Center Server Manager, Oracle Universal Work Queue (UWQ), Oracle Telephony Manager, Oracle Interaction Center Intelligence, and Oracle Interaction Blending.
+
+Supported Modes
+
+Depending upon the supported switch and middleware combination in use, Oracle Advanced Inbound Telephony can run in enhanced passive mode or passive mode, and in active mode for Web callbacks.
+
+Enhanced Passive Mode
+
+In enhanced passive mode, Oracle Advanced Inbound Telephony not only uses standard ACD/PBX routing and distribution of calls to interaction center agents, but also monitors ACD/PBX route points. The monitoring checks for inbound telephony queue counts, classification of calls for targeted screen pops, and tracking and reporting by Oracle Interaction Center Intelligence of calls that are abandoned at the route point. Enhanced passive mode requires specific ACD/PBX configurations to ensure that inbound calls pass through a ACD/PBX route point monitored by Oracle Advanced Inbound Telephony.
+
+Passive Mode
+
+In passive mode, Oracle Advanced Inbound Telephony uses standard ACD/PBX routing and distribution of calls to interaction center agents. Oracle Advanced Inbound Telephony becomes aware of the call through CTI when the call rings at the agent's teleset. In passive mode, Oracle Advanced Inbound Telephony does not monitor or control any ACD/PBX route points.
+
+Active Mode for Web Callbacks
+
+In active mode, Oracle Advanced Inbound Telephony controls the routing and distribution of incoming Web callbacks to interaction center agents by using business data and rules that are configured in Oracle Advanced Inbound Telephony. Active mode requires specific ACD/PBX configurations to grant Oracle Advanced Inbound Telephony full control of an inbound Web callback when it reaches a ACD/PBX route point that Oracle Advanced Inbound Telephony monitors.
+
+Supported Modes and Certified Switch and Middleware Combinations
+
+In the current release, Oracle certifies the following switch and CTI middleware combinations and the Oracle Advanced Inbound Telephony modes that they support.
+
+Switch/ACD CTI Middleware Supported Modes and Features Alcatel 4400 r5.0 w/ CCS r5.0 Envox CT Connect Passive Aspect Call Center v.9.0 Aspect Contact Server v5.2 w/ CMI Server Client API v705.01
+
+Enhanced passive
+
+Passive
+
+Avaya MultiVantage v1.1.1 (w/ EAS) Envox CT Connect
+
+Enhanced Passive
+
+Passive IVR Integration
+
+Multisite
+
+Cisco CallManager v3.3. (3) w/IP-IVR 3.1 Cisco ICM v6.0 Passive Ericsson MD110 BC12 w/ App. Link v4.0 + Envox CT Connect
+
+Passive
+
+Enhanced Passive
+
+Passive IVR Integration
+
+Genesys Genesys Interaction Connector v6.5.602.11
+
+Enhanced passive
+
+Passive
+
+Nortel Meridian Succession 3 w/ Meridian Link Services v5 Envox CT Connect
+
+Enhanced passive
+
+Passive
+
+IVR Integration
+
+Nortel Meridian 1, r25 with Meridian Link Services v4.2 Envox CT Connect
+
+Enhanced passive
+
+Passive
+
+IVR Integration
+
+Nortel Meridian Succession 3 with Symposium Call Center Server v5 Envox CT Connect
+
+Enhanced Passive
+
+Passive
+
+IVR Integration
+
+Nortel Meridian Succession 3 with Symposium Call Center Server v4.2 Envox CT Connect
+
+Enhanced Passive
+
+Passive
+
+IVR Integration
+
+All PBXs supported by the Genesys Interaction Connector interface. Genesys defines PBXs, PBX releases and all CTI prerequisites, which may include PBX platforms from Alcatel, Aspect, Avaya, Cisco, Ericsson, NEC, Nortel, Siemens and others. For a current list see the Genesys Support Web site in the Genesys Supported Media Interfaces document. Genesys Interaction Connector v7.0
+
+Enhanced Passive
+
+Passive
+
+Features
+
+Oracle Advanced Inbound Telephony has the following features.
+
+CTI
+
+Preconfigured computer telephony integration to third-party telephony platforms.
+
+IVR Integration
+
+Collect data from interactive voice response (IVR) units for call classification, routing, and screen pops .
+
+Interaction queuing and distribution
+
+Queue and route web callbacks for distribution to appropriate agents.
+
+Screen Pops
+
+Collect and send customer data for pop-up windows called screen pops into Oracle E-Business Suite applications.
+
+Warm Transfer
+
+Transfer or conference a call and its application data from one agent to another agent.
+
+Web Callbacks
+
+Integrate Oracle Advanced Inbound Telephony with Oracle iStore and Oracle iSupport to support Web callbacks.
+
+Oracle Enterprise Routing
+
+Route and queue web callbacks arriving at any site to agents at any site in a multi-site configuration. This feature is available only in active mode for Web callbacks.
+
+Enterprise Call and Data Transfer
+
+Transfer or conference a call and its application data to an agent who is at another site in a multi-site configuration. Transferred internal calls do not generate a screen pop at the target agent.
+
+Server Load Balancing
+
+The distribution of teleset and route point loads spreads tasks among servers to avoid some servers being idle while others have tasks queueing to run.
+
+Middleware-Based Multi-Site Functionality
+
+CTI middleware such as Aspect Enterprise Contact Server and Cisco ICM may provide multi-site functionality through their software suite. In these cases, the CTI middleware vendor directly provides enterprise routing and call and data transfer functionality. Oracle Advanced Inbound Telephony is typically only available in passive or enhanced passive modes, due to middleware vendor limitations and middleware controlled routing. For Oracle Advanced Inbound Telephony integrations to these CTI middlewares (Aspect, Cisco), customers should directly contact their CTI middleware vendor for ACD/PBX-specific configurations and requirements for supporting multi-site. Oracle Advanced Inbound Telephony requires the use of an Oracle certified or supported switch that interfaces to an Oracle certified or supported CTI middleware.
+
+Click-to-Dial
+
+Click-to-dial is a feature that automatically dials a telephone number when an application user clicks a hyperlink. Call center administrators can use click-to-dial to update an existing click-to-dial-enabled user by adding devices for the user. Administrators can set up multiple devices for users and mark one of the devices as a default device for initiating a click-to-dial call.
+
+Architecture
+
+The server architecture of Oracle Advanced Inbound Telephony is scalable to run interaction centers with a single physical site or multiple sites. It can also be configured to integrate IVR data.
+
+Three-Layer Server Architecture
+
+The Oracle Advanced Inbound Telephony solution consists of a three-layer server architecture outlined below.
+
+Telephony platform layer consisting of ACD/PBX switches and CTI middlewares provided by third-party vendors
+
+Oracle Advanced Inbound Telephony server processes:
+
+Oracle Telephony Adapter Server normalizes telephony platform-specific messages and events.
+
+Inbound Telephony Server monitors inbound calls arriving at ACD queues and route points.
+
+Oracle Telephony Manager manages agent state information.
+
+Interaction Queuing and Distribution queues and distributes web callbacks.
+
+Oracle Routing Server classifies and routes inbound calls and web callbacks to an agent group based on user-defined rules.
+
+Universal Work Queue displays call queues to the agent and launches business applications when a call is delivered to an agent.
+
+Interaction Blending provides service-level management of calls and can blend inbound and outbound calls.
+
+Switch Simulator simulates a switch for verification of an Oracle Advanced Inbound implementation.
+
+Business and agent desktop applications
+
+Oracle Universal Work Queue desktop (agent desktop work queue)
+
+Oracle TeleService, Oracle TeleSales and Oracle Advanced Collections
+
+Media Desktop ( softphone)
+
+Single-Site Architecture
+
+A typical Oracle Advanced Inbound Telephony server architecture for a single interaction center site consists of the following components:
+
+One PBX and CTI middleware combination
+
+One Oracle Telephony Adapter Server
+
+One Oracle Inbound Telephony Server
+
+One Oracle Interaction Queuing and Distribution server
+
+One or more Oracle Routing Servers for scalability
+
+One or more Oracle Telephony Managers for scalability
+
+One or more Oracle Universal Work Queues for scalability
+
+Server Architecture for a Single Interaction Center Site with All Functionality Available for Oracle Telephony Manager
+
+As the previous figure illustrates, when all of Oracle Advanced Inbound Telephony's functions, such as active mode, Web callbacks and scalability, are available in a single site, mutual interaction occurs between the following processes:
+
+Third-party IVR to Oracle Telephony Adapter Server with IVR integration
+
+Third-party CTI middleware and Oracle Telephony Adapter Server
+
+Oracle Telephony Adapter Server and Oracle Inbound Telephony Server
+
+Oracle Telephony Adapter Server and Oracle Telephony Manager Server
+
+Oracle Inbound Telephony Server to Interaction Queuing and Distribution
+
+Oracle Interaction Queuing and Distribution and Oracle Routing Server
+
+Oracle Interaction Queuing and Distribution and Oracle Telephony Manager
+
+Oracle Telephony Manager to Oracle Inbound Telephony Server
+
+Oracle Telephony Manager and Oracle Universal Work Queue
+
+Multi-Site Architecture
+
+The Oracle Advanced Inbound multi-site server architecture is required to support multiple ACD/PBXs that could be geographically dispersed.
+
+The following figure illustrates the multiple PBX, multi-site architecture.
+
+Oracle Advanced Inbound Telephony Multi-Site Server Logical Architecture
+
+As the previous figure illustrates, in the multi-site Oracle Advanced Inbound Telephony server architecture each site is configured as a server group that includes the following components:
+
+One certified PBX and CTI middleware combination
+
+One Oracle Telephony Adapter Server
+
+One Oracle Inbound Telephony Server
+
+One or more Oracle Telephony Managers for scalability
+
+One or more Oracle Universal Work Queues for scalability
+
+The global server group includes the following servers:
+
+One Oracle Interaction Queuing and Distribution server
+
+One or more Oracle Routing Servers for scalability
+
+Each site-specific server group associates with a global server group using the super group relationship that is defined in the Interaction Center Server Manager HTML Administration.
+
+IVR Integration Architecture
+
+Oracle Telephony Adapter Server has IVR integration in enhanced passive mode, which makes IVR-collected data available as screen pops. The single-site architecture diagram illustrates the Oracle Advanced Inbound Telephony server architecture that includes IVR integration.
+
+Oracle Telephony Adapter Server
+
+Oracle Telephony Adapter Server is installed as part of the standard Oracle Advanced Inbound Telephony installation. Oracle Telephony Adapter Server is part of the Interaction Center Server Group, which you can administer and launch in the Interaction Center HTML Administration, ICSM page.
+
+If a C-based adapter is in use, such as Adapter for Cisco ICM or Custom C Adapter Server, then Oracle Telephony Adapter Server can run only on the Microsoft Windows NT platform. If a Java-based adapter is in use, such as Adapter for NetMerge Call Processing Software or Adapter for Aspect Contact Server, then Oracle Telephony Adapter Server can run on any operating system that Oracle Applications support, such as Hewlett-Packard UX11, IBM AIX, Linux, Microsoft Windows NT and Sun Solaris.
+
+Responsibilities
+
+The necessary Oracle Application Responsibility for the Oracle Advanced Inbound Telephony HTML Administration is "Call Center HTML Administration."
+
+Note: Assign administrative responsibilities to trusted users only. The Call Center HTML Administration responsibility is required to implement and administer Oracle Interaction Center for use at an enterprise. This responsibility gives administrators the ability to modify routing and classification rules. Dynamic routes with PL/SQL code and dynamic groups with SQL code can access sensitive database tables. The resulting information, if misused, can introduce liability issues for the enterprise. For these reasons, Oracle strongly recommends that only trusted users be provided with the Call Center HTML Administration responsibility.
+
+Agent Responsibilities
+
+Agents have the following responsibilities:
+
+Customer Support, Vision Enterprises (for customer care) Telesales (for telesales)
+
+Telesales (for telesales)
+
+Set up the following roles in the Resource tab, Roles page.
+
+Callcenter, Call Center Agent
+
+Telesales, Telesales Agent
+
+Agent is part of the group Sales and Marketing, Telesales Agent in the Resource tab, Groups page.
+
+Administrator Responsibilities
+
+The following pages are only available to users who have the "Resource Self Service Administrator" responsibility.
+
+Resource, Employee, Summary
+
+Resource, Employee, Details
+
+Resource, Groups, Static Group Summary
+
+Resource, Groups, Static Group Details
+
+Resource, Groups, Static Group Hierarchy
+
+Active Mode Priority Queueing for Web Callbacks
+
+In active mode for Web callbacks, Oracle Telephony manager does three media functions:
+
+Maintains a queue of incoming media
+
+Routes the media using defined route rules
+
+Assigns the media to an agent who is a part of the route result
+
+Prior to Release 11.5.8.3.7, Oracle Telephony Manager assigned media items in first-in first-out order (FIFO). Release 11.5.8.3.7 and onward has the capability to prioritize rerouted media items. The agents who are included in the first route result have a higher priority than the agents in the subsequent reroute result. In each successive reroute result, the set of agents is at a lower priority than the agents in the previous route result.
+
+When an agent attempts to get work, a media item that has the agent as a part of the higher priority route result will be serviced before a media item that has the agent as a part of the lower priority route result. This arrangement allows a media item to first be available to agents with a better fit or skill level for handling the item, before being offered to agents who have a lesser fit or skill level.
+
+By default, the priority queuing feature is turned off, and first-in first-out order is implemented.
+
+The following scenario describes priority queuing.
+
+Media item M1 arrives.
+
+M1 is routed to two agents - A1 and A2. Queue State is:
+
+M1={Route1=A1,A2}
+
+Route timeout occurs. M1 is rerouted to agents A3 and A4. Queue State is: M1={Route1=A1,A2:Route2=A3,A4}
+
+A1, A2, A3, A4 are still unavailable. M1 is rerouted again. This time M1 is rerouted to agents A5 and A6. Queue State is:
+
+M1={Route1=A1,A2: Route2=A3,A4: Route3=A5,A6}.
+
+Another media item M2 arrives.
+
+M2 is routed to two agents - A3 and A5. Queue State is:
+
+M1={Route1=A1,A2: Route2=A3,A4: Route3=A5,A6};
+
+M2={Route1=A3,A5}.
+
+Route timeout occurs. M2 is rerouted to agents A2 and A4. Queue State is: M1={Route1=A1,A2: Route2=A3,A4: Route3=A5,A6}; M2={Route1=A3,A5: Route2=A2,A4}
+
+Note that for agents A3, A5, media item M2 is at higher priority than M1. For agent A2, media item M1 is at a higher priority than M2. For agent A4, media item M1 and M2 are both at the same priority level. For agents A1, A6 media item M1 is the only available media item.
+
+For the given state of the queue indicated in step 7,, suppose the following conditions.
+
+A1 becomes available, A1 will be assigned M1, because M1 is the only media item eligible for A1.
+
+A2 becomes available, A2 will be assigned M1, because M1 is at higher priority than M2.
+
+A3 becomes available, A3 will be assigned M2, because M2 is at higher priority than M1.
+
+A4 becomes available, A4 will be assigned M1, because M1 and M2 have equal priority but M1 arrived before M2.
+
+A5 becomes available, A5 will be assigned M2, because M2 is at higher priority than M1.
+
+A6 becomes available, A6 will be assigned M1, because M1 is the only media item eligible for A6.
+
+A7 becomes available, A7 will be put in the wait queue, because neither M1 nor M2 are eligible for A7.
+
+Priority Queuing Modes
+
+The following modes are available with priority queueing:
+
+Priority Queueing with a Default Priority Timeout for All Media Items
+
+In this mode, a Default Priority Timeout is associated with all media items. It specifies the amount of time that an item is in queue ready for an agent who is a part of a higher priority route result to get the media item. After the Default Priority Timeout occurs, any agent who is a part of any route result for the media item will be able to get the media item. Use this mode when you want to define a uniform time period before route priorities expire for all media items.
+
+To set up Priority Queueing with Default Timeout, define the following parameters in the Interaction Queuing and Distribution server.
+
+Priority Queueing default = false. When set to true, priority queueing is enabled.
+
+Default Priority Timeout default = 300 seconds. Any specified value (in seconds) will override the default.
+
+The following example explains how Default Priority Timeout affects priority queueing. In this scenario, consider the state of the queue from step 7 in Example 1.
+
+Queue State is:
+
+M1={Route1=A1,A2: Route2=A3,A4: Route3=A5,A6};
+
+M2={Route1=A3,A5: Route2=A2,A4}
+
+Default Priority Timeout occurs for M1. Queue State is:
+
+M1={Route1=A1,A2,A3,A4,A5,A6};
+
+M2={Route1=A3,A5: Route2=A2,A4}
+
+All route results have been merged into a single route result for M1.
+
+Route Timeout occurs again for M1, and M1 is re-routed to A7 and A8. Queue State is:
+
+M1={Route1=A1,A2,A3,A4,A5,A6,A7,A8};
+
+M2={Route1=A3,A5: Route2=A2,A4}
+
+Any subsequent re-route results are merged into a single route result for M1 because Default Priority Timeout has occurred for M1.
+
+For the state of the queue in step 9 suppose:
+
+A1, A2, A3, A4, A5, A6, A7 or A8 become available. They will be assigned M1 because M1 has all agents in Route1, which is the highest priority route, and M1 arrived before M2.
+
+A10 becomes available. A10 will be put in the wait queue because neither M1 nor M2 are eligible for A10.
+
+Priority Queueing with a Timeout based on Media item Classification
+
+The advantage of this mode is that you can associate a different value for priority timeout with each classification value. The time that an item waits in queue for an agent who is a part of a higher priority route result that gets the media item is different for media items that have different classifications. After the timeout occurs, any agent that is a part of any route result for the media item will be able to get the media item. Use this mode when you want to define different time outs for media items, based on the classification of the media item.
+
+To set up Priority Queueing with Classification Timeout, define the following parameters.
+
+Interaction Queuing and Distribution Server
+
+Priority Queueing. Default = false. When set to true, priority queueing is enabled.
+
+Default Priority Timeout. Default = 300 seconds. If a value (in seconds) is specified, it will override the default.
+
+Routing Server
+
+On the Classification Detail page, ReRoute/Priority Time Out. Use this parameter to override the Default Priority Timeout and set different priority timeout values for different classification values.
+
+Reroute Priority Timeout
+
+If, ReRoute/Priority Time out = 60 seconds for Gold Classification.
+
+ReRoute/Priority Time out = 180 seconds for Silver Classification.
+
+Then, all media items that are classified Gold will wait sixty seconds before giving up priority-based queueing. All media items that are classified Silver will wait 180 seconds before giving up priority-based queueing.
+
+The Priority Time out based on classification overrides the Default Priority Timeout for the media item.
+
+Routing Server Enhancement for Active Mode Priority Queueing for Web Callbacks
+
+The value of the ReRoute/Priority Time Out (Seconds) field represents the Routing Server ReRoute Time Out and the Priority Queue Time Out of the Interaction and Queuing Distribution Server.
+
+Active-Standby Mode Configuration
+
+You can assign servers to more than one node by selecting from a list of nodes in the Call Center HTML Administration. Administrators can prioritize the nodes, so that if the first node is not available, then the server starts on the next available node. If the server goes down, the active-standby mode configuration feature restarts the server on the next available node according to the prioritized order.
+
+In active-standby mode configuration, one ICSM node is used while the other nodes act as standby. A standby node is a duplicate of, or has same load capacity as, the primary node. In the event a failure occurs, the standby node takes over the role of the primary node. You can pre-configure a primary node and up to three backup nodes. At any given time, a particular server process is running on only one of the nodes.
+
+Oracle recommends that you use active-standby for Interaction Queuing and Distribution and Inbound Telephony Server server types.
+
+Load Balancing
+
+An interaction center server group can have multiple Inbound Telephony Servers and Oracle Telephony Adapter Server processes of the same type within the same server group. In this way, the load is shared between two or more physical servers. When Load Balancing is configured, if a particular Service is lost, then the load shifts to the remaining Services.
+
+Multiple Oracle Telephony Adapter Servers
+
+If more than one Oracle Telephony Adapter Server is configured, the Oracle Telephony Manager server determines which Oracle Telephony Adapter Server has the smallest load, and then balances the load.
+
+Multiple Inbound Telephony Servers
+
+If you configure more than one Inbound Telephony Server to support load balancing, then ensure that available Route Points are assigned exclusively to one or the other Inbound Telephony Server process, but not to both.
+
+When assigning a route point to an Inbound Telephony Server, the validity of the assignment is verified to ensure that the route point is not already assigned to be monitored by another Inbound Telephony Server of the same server group. If the verification fails, then the following error message appears: "If using one Inbound Telephony Server, and therefore no load balancing, you do not need to manually select route points for the Inbound Telephony Server."
+
+Interaction Keys
+
+An interaction key is a flexible, multipurpose facility used to maintain information about a call and caller during a customer transaction. You can use this information for the following purposes:
+
+Customer lookup
+
+Call classification
+
+Intelligent routing
+
+Customized softphone display
+
+Screen pops
+
+Caller information can come from various sources:
+
+IVRs
+
+Telephony networks
+
+CTI middleware
+
+Voice portals
+
+Interaction keys have two sources:
+
+Out-of-the-box, as part of the Oracle Advanced Inbound installation
+
+Custom-made, created by interaction center administrators as needed
+
+An interaction key must be one of three data types:
+
+String
+
+Integer
+
+Date
+
+The data type is specified in the Create/Update Interaction Keys page.
+
+Using Interaction Keys
+
+The following example demonstrates how to use interaction keys. In this scenario, an interaction center administrator wants to collect Account Balance from customers through an IVR system and use Account Balance for the following purposes:
+
+Classification of Customers as Gold, Silver or Bronze based on Account Balance
+
+Routing of calls to Gold Service Agent Group, Silver Service Agent Group or Bronze Service Agent Group based on Account Balance.
+
+Display of Account Balance in the agent softphone
+
+Because Account Balance is not available as an out-of-the-box Interaction Key, the interaction center administrator can create a new Interaction Key for Account Balance.
+
+Creating a New Interaction Key for Account Balance
+
+Create a new Interaction Key for Account Balance using the Call Center Interaction Keys Page.
+
+Code = Account_Balance
+
+Meaning = Account Balance
+
+Description = Account Balance for the Customer
+
+Data Type = Integer
+
+Add to IVR Oracle Field List = Yes
+
+Add to Routing/Classification Rule Key List = Yes
+
+Add to Softphone Display Available Keys List = Yes
+
+Mapping an IVR Field to Account Balance (Oracle Field)
+
+If the interaction center administrator uses the IVR field "acctBalance" to collect the "Account Balance" from the Customer in IVR, map the acctBalance field to the newly-added Oracle Field "Account Balance" in the Call Center IVR page so that when a customer enters a value for Account Balance in IVR, Oracle Telephony Manager passes the value of acctBalance to the Oracle Field "Account Balance."
+
+Defining Classification Rules Using Account Balance as a Rule Key
+
+In the Classification Rules page, assuming that the Classification Values (Gold Service, Silver Service, Bronze Service) are defined, administrators can set up the following rules for Classification.
+
+Gold Service Rule: If DNIS=8008881111 and Account Balance>=100000, then classify the interaction as Gold Service
+
+Silver Service Rule: If DNIS=8008881111 and Account Balance<100000 and Account Balance>=50000, then classify the interaction as Silver Service
+
+Bronze Service Rule: If DNIS=8008881111 and Account Balance<50000, then classify the interaction as Bronze Service
+
+Defining Routing Rules Using Account Balance as a Rule Key
+
+In the Routing Rules Page, assuming that the Agent Groups (Gold Service Agent Group, Silver Service Agent Group, Bronze Service Agent Group) have been defined, administrators can set up the following rules for Routing.
+
+Gold Service Route: If Classification equals Gold Service, then route the call to Gold Service Agent Group.
+
+Silver Service Route: If Classification equals Silver Service, then route the call to Silver Service Agent Group.
+
+Bronze Service Route: If Classification equals Bronze Service, then route the call to Bronze Service Agent Group.
+
+Displaying Account Balance in Softphone
+
+In the Call Center Softphone Display Configuration Detail page, from the list of Available Keys select Account Balance and add it as Displayed Key Without Prompt.
+
+Service Applications Interaction Keys
+
+Contact Center generates screen pops by the interaction keys: AccountNum, ContractNum, ServiceRequestNum, InvoiceNum, PhoneNumber (IVR-entered digits, rather than ANI), SerialNum and TagNumber, Party (Customer) ID, AccountCode.
+
+Oracle TeleService generates screen pops by the interaction keys: SerialNum, TagNumber, RMANum, AccountNum, PhoneNumber, ANI and ContactNum, Service Request Number.
+
+Customer Data Lookup
+
+Customer Data Lookup is a process in which the Routing Server gathers Customer Details, such as Customer/Party ID or Customer Name, from the Oracle E-business Suite Database based on inbound call information, such as ANI, IVR data, and so on. The collected customer data can be used in classifications, routing, screen pops, and soft phone display.
+
+For web callbacks, an incoming request is passed through the Routing Server in turn to the Customer Data Lookup process, the Classification process, and then the Routing Process, to be routed accordingly.
+
+The Customer Data Lookup process derives additional data to be passed to the business application, such as Contact Center or eBusiness Center, but does not determine how the business application uses the data to screen pop a record. Additional customizing may be necessary in the business application to use the data that is passed to it.
+
+Telephony-enabled Oracle e-Business Suite applications can use collected customer data for the following purposes:
+
+Set up classification rules and routing rules: Customer Data gathered from the Customer Data Lookup process can be used to set up Classification and Routing Rules. Because classification and routing occur after Customer Data Lookup, data gathered from the Customer Data Lookup can be used to set up rules in Classification and Routing. A sample Classification Rule is: If Customer Name is like 'OracleCustomer', then set the Classification value to Gold Service.
+
+Enable faster screen pops: The Customer Data Lookup process in Oracle Routing Server derives Customer/PartyID from ANI or other call data as a server side process (even before the call reaches the agent desktop) and allows the business application form to proceed directly to screen pop the customer information based on Customer/Party ID. This process results in considerably faster screen pops arriving at the agent desktop.
+
+Display customer name and information in the agent softphone. If a phone number matches more than one customer or contact, for example, if two contacts for a customer use the same telephone number, then the Routing server will not be able to derive a unique Customer Name.
+
+Customer Data Lookup has the following functional options:
+
+Default Customer Data Lookup
+
+Custom Customer Data Lookup
+
+No Customer Data Lookup
+
+Default Customer Data Lookup
+
+Use the default customer data lookup option when information that is used for customer lookup is available with the call, such as account number and ANI. The default mode for Customer Data Lookup does not require setting up in the Call Center HTML Administration page. It is implemented as a PL/SQL package (CCT_Default_Lookup_Pub) in the database.
+
+Note: Do not attempt to customize the default Customer Data Lookup at a customer site. To implement a customized Customer Data Lookup, use the Custom Customer Data Lookup package.
+
+Default Customer Data Lookup mode derives the following customer data:
+
+Party (Customer) ID
+
+Customer Name
+
+The following list shows the order in which various keys are used to derive Party(Customer) ID and Customer Name.
+
+Service Request Number
+
+Party Number
+
+Quote Number
+
+Order Number
+
+Collateral Request Number
+
+Account Number
+
+Event Registration Code
+
+Marketing PIN
+
+Service Key
+
+ANI (Caller Phone Number)
+
+For example, if Service Request Number is available, then it is used to derive the Party(Customer) ID. If Party Number is available, then Party(Customer) ID is derived from Party Number, and so on.
+
+Custom Customer Data Lookup
+
+Use the custom customer data lookup when some information that is used to identify customers is not a part of the standard lookup procedure. In this case, it is necessary to implement a SQL function. Administrators can use the Custom Customer Data Lookup mode to customize the data that the Customer Data Lookup process gathers.
+
+Programmers who use this mode must meet the following requirements:
+
+Working knowledge of PL/SQL programming
+
+Knowledge of Oracle Applications Schema and APIs
+
+Access to a SQLPLUS session of Oracle Applications Database with PL/SQL compiling permissions
+
+To use this mode, select Custom as the type of Customer Lookup in the Classification Rules Details page.
+
+Function CCT_CUSTOM_LOOKUP_PUB.GetData(x_key_value_varr IN OUT NOCOPY cct_keyvalue_varr) must be implemented to return the desired Customer Data.
+
+If Custom is the selected option in the Call Center HTML Administration, then when an inbound Web collaboration request is received, the routing server calls CCT_Custom_Lookup_Pub.GetData() with all the available call and interaction data, including IVR and other customer interaction-specific data.
+
+The collected customer data may also be used for classification and routing, as demonstrated in the following sequence:
+
+Custom is selected as the type of Customer Lookup in the HTML Administration page
+
+Routing Server starts
+
+Routing Server receives a route request for an inbound phone call (for example)
+
+Routing Server executes CCT_Custom_Lookup_Pub.GetData() with the inbound phone call data (including IVR data)
+
+Routing Server collects the data from the above function and may use it for classification and routing
+
+When an agent is identified for the inbound call, the collected customer data is sent to Agent Desktop for faster screen pop and display in softphone (if configured in the Softphone Configuration Administrator)
+
+No Customer Data Lookup
+
+Use no customer lookup when the implementation has no data to identify the customer.
+
+Web Callback Routing and Classifications
+
+The routing engine classifies calls and routes Web callbacks. Classifications allow different media actions for an inbound call, and occur before routing. Routing determines which agent receives an inbound call. You can use the determined classification name in a route rule.
+
+Classifications
+
+Classifications assign a specific string value to incoming calls for identification. The specific string value is called a classification value. Classification values specify how incoming calls are identified and which business applications should be used to screen pop caller data. Oracle Universal Work Queue uses classification values to identify the telephony call queues. Classification values are also used in reporting and blending.
+
+Choose from the following topics:
+
+Classification Values
+
+PL/SQL Functions
+
+Classification Rules
+
+Example Scenario
+
+Classification Values
+
+A classification value is a string value that is the end point of classifying a call. Interactions can be classified as one of the classification values defined in the Classification Values page. A classification value determines which screen to pop in an Oracle Universal Work Queue media action. It is used to display the queue count (active mode for Web callbacks only) in Oracle Universal Work Queue and is used in Oracle Interaction Center Intelligence to report data such as the number and type of calls.
+
+PL/SQL Functions
+
+A classification value may also be derived dynamically from a PL/SQL function by using the interaction and call data during the classification process. Such PL/SQL functions are defined in the Call Center > PLSQL Functions page and must return any one of the classification values that are defined in the Classification Values page. If the PL/SQL function returns a value that is not in the Classification Values page, then the call is identified as "unClassified." The PL/SQL function may return the classification value in one of the following ways.
+
+Return value for the PL/SQL function.
+
+OUT parameter for the PL/SQL function. The OUT parameter takes precedence over the return value, as specified by the user in the Oracle Call Center HTML Administration.
+
+Classification Rules
+
+Classification rules determine how a call gets classified and determine the Classification value to be assigned to a call. A classification rule consists of the following:
+
+ReRoute Time Out value in seconds which specifies the time after which the call will be rerouted if it has not been serviced by an agent (The ReRoute Time Out value overwrites the Default Route Time Out routing server parameter.)
+
+Set of conditions under which the classification rule is satisfied
+
+Condition of whether the user needs all conditions to be satisfied or any one condition to be satisfied
+
+Classification value to be assigned to the call if the set of conditions is satisfied
+
+OR
+
+PL/SQL function from which the classification value must be derived if the set of conditions is satisfied
+
+Ability to add additional key-value pairs to the incoming call if the set of conditions is satisfied
+
+Ability to assign the classification rule to specific media types
+
+Ability to assign the classification rule to specific server groups
+
+Example Scenario
+
+In a hypothetical scenario, a business corporation provides its interaction center customers with three levels of service: Gold Service, Silver Service, and Bronze Service. To access the appropriate level of service, customers dial one of the following numbers:
+
+Gold Service customers call 123-456-7890.
+
+Silver Service customers call 123-456-7891.
+
+Bronze Service customers call 123-456-7892.
+
+General enquiry customers call number (800 800 8000), which any customer may call. When customers call this number, they are prompted by the IVR to enter their account number, which is then used to determine the service level for the customer.
+
+To provide the best possible service to customers and to utilize interaction center resources most efficiently, the business corporation's interaction center administrator uses the Call Center HTML Administration Classification page to set up the classification process described in the following paragraphs.
+
+Classification Values
+
+In the Classification Values page, define the following classification values: Gold Service, Silver Service and Bronze Service.
+
+Because unClassified is a seeded value, the administrator does not need to define it again.
+
+PL/SQL Functions
+
+A PL/SQL function that accepts Account Number as the parameter and returns the classification value based on average account balance is created in the database. The administrator defines the function in the PLSQL Functions page as follows:
+
+FUNCTION Get_Classification_Value_From_Account_Number(AccountNumber IN VARCHAR2) returns VARCHAR2
+
+The above function returns a classification value according to the following business logic.
+
+If account number is not provided then return unClassified
+
+Else if average account balance for the account number is >=100000 then return Gold Service
+
+Else if average account balance for the account number is >=50000 and <100000 then return Silver Service
+
+Else if average account balance for the account number is <50000 then return Bronze Service
+
+Classification Rules
+
+Define the following classification rules in the Classification Rules page. They are assigned to all media types and all available server groups.
+
+Gold Service Rule
+
+Time Out: 30 seconds
+
+If DNIS=8008008001
+
+Classify the call as Gold Service.
+
+Silver Service Rule
+
+Time Out: 60 seconds
+
+If DNIS=8008008002
+
+Classify the call as Silver Service.
+
+Bronze Service Rule
+
+Time Out: 120 seconds
+
+If DNIS=8008008003
+
+Classify the call as Bronze Service.
+
+Other Calls Service Rule
+
+Time Out: 120 seconds
+
+If DNIS=8008008000
+
+Derive the classification Value from Get_Classification_Value_From_Account_Number.
+
+Web Callbacks
+
+Oracle Routing Server supports Web callbacks, which are customer requests that originate from Oracle eCommerce products, such as Oracle iStore or Oracle iSupport. These applications provide a method for customers to request a telephone call from an interaction center agent.
+
+Basic WebCallback
+
+Customers who have integration with Basic Telephony should consider extending support for Basic Web Callback. Integration with Basic Web Callback enables Call Center agents to service Web callback requests made through either Oracle iStore or Oracle iSupport. Web Callback requests are queued in first-in, first-out (FIFO) order and are routed to all available agents. When an agent does Get Work for Basic WebCallback, the agent is assigned a Web callback request from the FIFO queue and receives a screen pop. In Basic WebCallback, all requests are routed to all agents, Oracle Routing server is not used, and you cannot set up route rules for actively routing Basic WebCallback requests.
+
+To support Basic WebCallback integration, the new media type Basic Web Callback has been added.
+
+Display of Basic WebCallback media type on the agents' desktops is controlled by the profile options:
+
+IEU: Queue: Basic WebCallback. When set to Yes, an agent can get work for Web callback media items.
+
+IEU: Queue Order: Basic WebCallback. Used to determine the order of display for Basic WebCallback media type.
+
+Call Center Administrators should note that if your system supports Basic integration, only the media types Basic Telephony and Basic WebCallback are supported. Therefore, enable only those profile options for media.
+
+Additionally, the following profile options may be defined for the Web. Basic Telephony Integration must be extended to support Basic WebCallback by implementing the dialCanonical method.
+
+The following modes are supported with Basic WebCallback.
+
+Basic WebCallback Mode
+
+This is the default mode. In this mode, when agents have selected GetWork for Basic WebCallback, the system successively assigns Web callback requests to the agents. If no Web callback request is currently available, the system poll until a Web callback request becomes available. The polling interval can be set as the profile value: CCT: Basic WebCallback: Polling Interval (in seconds). The default polling interval is 30 seconds. When a Web callback request is assigned to an agent, a screen pop occurs at the agent's desktop and the callback phone call is automatically dialed out immediately.
+
+Basic WebCallback with Preview Dialing Mode
+
+In this mode, when a Web callback request is assigned to the agent, a screen pop will occur, but the callback phone call is not dialed out. Instead, the callback phone number is displayed and the agent is required to click Dial on the soft phone for the dial out to occur. Use this mode when the agents require time to read the customer information in the screen pop before they dial out. To set up preview dialing, set the profile option CCT: Basic WebCallback: Enable Preview to Yes.
+
+Basic WebCallback with Timed Preview Dialing Mode
+
+In this mode, when a Web callback request is assigned to an agent, a screen pop occurs for the agent to preview. When the specified preview time interval expires, the callback phone call is dialed out automatically.
+
+Use this mode when it is necessary to limit the amount of time an agent can preview customer information. To set up Timed Preview Dialing, first enable Preview Dialing, and then specify the preview time interval in the profile option CCT: Basic WebCallback: Maximum Preview Interval.
+
+Preview Mode and Timed Preview Mode for Web Callback
+
+Oracle Advanced Inbound Telephony supports the following modes for WebCallback.
+
+WebCallback with Preview Dialing Mode
+
+In this mode, when a Web callback request is assigned to an agent, a screen pop occurs, but the callback phone call is not dialed out. Instead, the callback phone number is displayed and the agent is required to click Dial on the soft phone for the dial out to occur. Use this mode when the agents require time to read the customer information in the screen pop before they dial out.
+
+Preview mode is a site level parameter. To enable preview mode, set the Oracle Telephony Manager server parameter Preview Web Callback = true. By default, the preview mode is disabled.
+
+WebCallback with Timed Preview Dialing Mode
+
+In this mode, when a Web callback request is assigned to an agent, a screen pop occurs for the agent to preview. When the specified preview time interval expires, the callback phone call is dialed out automatically.
+
+Use this mode when it is necessary to limit the time an agent can preview customer information. To set up Timed Preview Dialing, first enable Preview Dialing, and then specify the preview time interval in the Oracle Telephony Manager server parameter Maximum Web Callback Preview Time (seconds).
+
+When Preview Dialing or Timed Preview Dialing is not set up, and a Web callback request is assigned to the agent, a screen pop occurs and the Oracle Telephony Manager server automatically dials the callback phone call.
+
+Web Callback Routes
+
+Administrators can control routing for Web callbacks by using simple, optimized rules or by a comprehensive workflow that combines data from the eBusiness Application suite. Routing for Web callbacks is business-driven, thereby enabling interactions of high quality and saving money by handling customers correctly. You can also use Oracle Workflow to create sophisticated routing flows.
+
+Oracle Advanced Inbound Telephony routes incoming Web callbacks according to whether the route is dynamic or static, which are explained in the following topics.
+
+Static Routes
+
+A static route is based on agents derived from Resource groups configured in the Call Center HTML Administration Resource tab and cached by the Routing Server.
+
+Dynamic Routes
+
+A dynamic route is a route that is based on a PL/SQL function or workflow function. Dynamic routes return a list of agents that is derived from a seeded routing workflow or custom PL/SQL function or procedure.
+
+For dynamic routes, Database Function could return a list of AgentIDs separated by the “;:;” delimiter as the function return value. If you use the AgentID interaction key as one of the function Out parameters, the AgentID interaction key takes precedence over AgentIDs that are returned by Function as a return value. For procedures, the AgentID interaction key is used as one of the procedure Out parameters to return the list of agents.
+
+Parameters for Dynamic Routes
+
+The Procedure and Function Parameters fields are visible only if the selected Route Type is Dynamic. In the following example,
+
+GET_AGENTS_FROM_CUSTOMER_PRODUCT(p_customer_id IN VARCHAR2,p_product_id IN NUMBER) returns VARCHAR2
+
+the PL/SQL function GET_AGENTS _FROM_CUSTOMER_PRODUCT returns a list of agents as a VARCHAR2 from P_Customer_ID.
+
+In the HTML Routing Administration, the above PL/SQL function can be defined as a target as stated below.
+
+Function Name: GET_AGENTS_FROM_CUSTOMER_PRODUCT
+
+Description: a function which returns agents from customer_id and product_id
+
+Parameter: p_customer_ID
+
+Value: can either be a string value or a value from the list of values
+
+Direction: IN
+
+Data Type: VARCHAR2
+
+Sequence: generated by the Admin=1
+
+Parameter: p_product_ID
+
+Value: can either be a numerical value or a value from the list of values
+
+Direction: IN
+
+Data Type: INTEGER
+
+Sequence: generated by the Admin=2
+
+Route Rules
+
+Oracle Routing Server determines which agents or agent groups receive a new interaction based on route rules that use the following types of routing.
+
+Customer Information-Based Routing
+
+Rule-Based Routing
+
+Skill-Based Routing
+
+Customer Information-Based Routing
+
+In customer information-based routing, Oracle Routing Server routes calls based on data that is supplied by the database instead of by the PBX. For example, if a customer places a call for computer technical support, the ACD receives the call and the customer enters an account number that is captured by the IVR and sent to Oracle Routing Server. A dynamic route in Oracle Routing Server could search the eBusiness database to check the number of open service requests for this customer. If the acceptable threshold for open service requests has been exceeded, then the account can be placed in the front of the call queue and handled by the most experienced customer service representative.
+
+Rule-Based Routing
+
+Rule-based routing uses variables such as time of day, IVR data, ANI or DNIS to associate user-defined rules with agent groups. For example, a rule could specify to route calls from a particular telephone area code to a designated agent group.
+
+Skill-Based Routing
+
+Skill-based routing is a dynamic call routing intelligence that delivers inbound calls to an agent who is appropriately skilled to meet the needs of the caller. Skill-based routing can be set up by using the seeded routing workflow, dynamic groups or dynamic routes.
+
+Skill-based routing leverages data derived from Oracle Human Resources Management System. Agent skill information can be used as a routing variable to send a call to the most appropriate agent. A skill can be a singular ability, such as language fluency, or multiple abilities, such as product competency, license level, or certification status. Any skill that can be tracked in the human resources database can be used as search and routing criteria to route the call.
+
+For example, in routing based on language skill, when a caller presses the prompt indicating a preference to speak French, the routing server queries the human resources database to find all agents who speak French, compares agents who are logged in and available to take calls, and then routes the call to an available French-speaking agent. The administrator does not need to assign the agent to a specific telephone. Oracle Advanced Inbound Telephony knows both the agent's location (because the agent has logged on to the system) and the agent's skills (by accessing the human resources database).
+
+Rerouting
+
+Rerouting is based on the priority and reroute time out value of routes. When an incoming media item reaches the reroute time out value, the call is rerouted and the Interaction Queuing and Distribution server sends another route request to the Routing Server. When the Routing Server receives the media item for a second routing, the routing server tries to find two matching route rules and then selects a route that is of lower priority, because the route with the higher priority was already selected during the first route request.
+
+For example, suppose the route "Get Agent from Party(Customer) ID" has a priority of 3, and "Get Route Point from Party(Customer) ID" has a priority of 4, and both routes have the same rule "ANI = 6506070195." During the first route request from a caller whose ANI = 6506070195, "Get Agent from Party(Customer) ID" will be selected and the call will be queued to the agents who are returned by that route. If agents do not answer this call within the reroute time out period, then a reroute request for the same call is sent. The routing server will select the route with the next highest priority, which in this case is "Get Route Point from Party(Customer) ID."
+
+Reroute Time Out works according to the following hierarchy:
+
+Set a value for the Default ReRoute Time Out in the Routing Server Parameter page. If a value is not set, then 300 seconds is used as the default value. If classification or route time outs are not set, then the Default ReRoute Time Out is effective.
+
+The Classification ReRoute Time Out value overrides the Default ReRoute Time Out. If necessary, administrators can set this parameter for each classification rule by selecting Classification Rule Details and entering the time out value in the ReRoute Time Out field. If an incoming media item is classified with a given classification rule that has a positive time out value, the media item is assigned the classification rule time out value.
+
+The Route Details page ReRoute Time Out value overrides the Create Classification Rule page ReRoute Time Out value. If necessary, you can set the route time out for each route rule by selecting the Routes tab > Route Rule Details sub tab and entering a time out value in the ReRoute Time Out field. For an incoming media item that is sent as a route request to the routing server, route rules are evaluated in accordance to their priority to find a matching route rule. The time out of the selected route rule is the effective route time out for a given media item.
+
+Note: To prevent a media item from being rerouted, enter a negative value in the ReRoute Time Out field. After receiving the agent list for this route, the Oracle Interaction Queuing and Distribution server will not send a reroute request for the call.
+
+Call Scenarios
+
+The following use cases describe typical call scenarios in interaction center environments.
+
+Call and Data Transfer Scenarios
+
+Enterprise Routing Scenarios
+
+Call and Data Transfer Scenarios
+
+The following table lists and describes call and data transfer scenarios.
+
+Call and Data Transfer Scenarios Scenario Definition Single-Site Transfer to Agent Agent A transfers a call to Agent B. Agent A and Agent B are both logged into the same PBX. Multi-Site Transfer to Agent Agent A is logged into PBX 1 and transfers a call to Agent B who is logged into PBX 2. The call from A to B can be through a tie-line or the PSTN. Single-Site Transfer to Route Point Agent A is logged into PBX 1 and transfers a call to a route point that is also on PBX 1. The call is then routed to an available agent on PBX 1. Multi-Site Transfer to Route Point Agent A is logged into PBX 1 and transfers a call to a route point on PBX 2. The call is then routed to an available agent on PBX 2. Warm Transfer Agent A is logged into PBX 1 and transfers or conferences a call and its application data, usually customer data, to Agent B, who is logged in to PBX 1 or PBX 2, or another PBX.
+
+Enterprise Routing Scenarios
+
+The following table lists and defines interaction center enterprise routing scenarios.
+
+Enterprise Routing Scenarios Scenario Definition Single-Site Routing A call is at a route point on PBX 1. Oracle Routing Server returns a list of agents on PBX 1. The call is routed to first available agent in the list. Multi-Site Routing with Direct Inward Dialing (DID) Numbers A call is at a route point on PBX 1. Oracle Routing Server returns a list of agents on PBX 2 and any other PBXs. The call is routed directly to the first available agent on the list. Multi-Site Routing without Direct Inward Dialing (DID) Numbers A call is at a route point on PBX 1. Oracle Routing Server returns a list of agents on PBX 2 and any other PBXs. The first available agent (on PBX 2) does not have a DID number. The call is routed to a route point on PBX 2. The route point on PBX 2 immediately routes the call to the destination agent. Multi-Site Routing to a Label In the first three scenarios, Oracle Routing Server can return a label in the same or a different interaction center, and the call is routed to the label as if it were an agent extension.
+
+Screen Pops
+
+Telephony-enabled business applications, such as Oracle Customer Care and Oracle TeleSales, can visually display customer, service and sales records, called "screen pops," when a phone call is delivered to an agent's desktop. Oracle Telephony Manager delivers to the business applications the data that is associated with a call that queries the applications database for the screen pop. The call data can be collected from the IVR or from a Web site in Web callbacks.
+
+IVR Mapping in the HTML Administration
+
+Out-of-the-Box Screen Pops
+
+IVR Mapping in the HTML Administration
+
+Use the IVR Mapping page of the Call Center HTML Administration to map the IVR keys to Oracle Fields, which the business applications use to generate screen pops. For example, if an interaction center administrator uses the value “custno” to collect Customer Number in the IVR, then that value must be mapped to the Oracle Field “Customer Number” in the IVR Mapping page. After you map the value to the corresponding Oracle Field, then the business application can generate a screen pop that is based on Customer Number.
+
+Customers can customize the business application form to generate screen pops that are based on keys other than those in the preceding tables.
+
+Note: Customers who customize business application forms do so at their own risk. To do so, consultants should have a thorough understanding of the Oracle Application schema.
+
+You can map IVR Keys to any of the Oracle fields that can be used for customizing screen pops. The interaction keys, which are supported by Interaction Center IVR Mapping, are used to send the call data. Depending on IVR Mapping, a media item delivery to the business application might consist of the following key-value pairs:
+
+{occtANI=373333,occtDNIS=8008822222,CustomerID=3888,ContractNum=1001,AccountCode=2999}.
+
+Out-of-the-Box Screen Pops
+
+The following keys in the order of precedence are used for out-of-the-box screen pops by Oracle Customer Care and Oracle TeleSales.
+
+Oracle Customer Care Screen Pop Precedence
+
+Oracle TeleSales Screen Pop Precedence
+
+Oracle Customer Care Screen Pop Precedence
+
+The following table lists Oracle Customer IVR fields and their mappings.
+
+Oracle Customer Care Screen Pop Precedence IVR Oracle Field Description Column (Table) Mapping Party(Customer) ID Party ID of the customer party PARTY_ID (HZ_PARTIES) Customer Number Party number of the customer party CUSTOMER_NUMBER (HZ_PARTIES.PARTY_NUMBER) Account Code Account number of the customer party ACCOUNT_NUMBER (HZ_CUST_ACCOUNTS) Contact Number Party number of the contact party PARTY_NUMBER in HZ_PARTIES, Contacts) (HZ_PARTIES.PARTY_NUMBER) ANI If none of the above parameters are available, then the ANI of the contact party is used. ANI (Telephone number) (HZ_CONTACT_POINTS)
+
+Oracle TeleSales Screen Pop Precedence
+
+The following table lists and describes Oracle TeleSales IVR fields and their database mappings.
+
+Oracle TeleSales Screen Pop Precedence IVR Oracle Field Description Mapping to Database Party(Customer) ID Party ID of the contact party PARTY_ID (HZ_PARTIES) ANI Customer phone number ANI (Telephone number) (HZ_CONTACT_POINTS) Account Code Account number of the customer party ACCOUNT_NUMBER (HZ_CUST_ACCOUNTS) Event Code Event registration confirmation code CONFIRMATION_CODE (AMS_EVENT_REGISTRATIONS_V) Collateral Request Number Collateral request number / quote number QUOTE_NUMBER(ASO_QUOTE_HEADERS_ALL) Customer Number Number of the customer party CUSTOMER_NUMBER (HZ_PARTIES.PARTY_NUMBER) Contact Number Party number of the contact party PARTY_NUMBER in HZ_PARTIES, Contacts) (HZ_PARTIES.PARTY_NUMBER)
+
+IVR Integration
+
+Oracle Advanced Inbound Telephony provides the IVR Integration functionality to integrate IVR data for routing and screen pops when Oracle Advanced Inbound Telephony is configured in either active or enhanced passive modes. IVR Integration is available for specific PBX and ACD CTI middleware combinations.
+
+IVR Integration enables Oracle Advanced Inbound Telephony to use IVR-collected data, such as account number and order number, for sophisticated call routing, call classification, and customer or transaction-specific screen pops in Oracle TeleSales or Oracle TeleService business applications. IVR Integration also reports customers' interactions with the IVR to the database as part of Oracle Customer Interaction History. IVR Integration records the calls' start time, end time, the duration in the IVR and calls abandoned while in the IVR.
+
+IVR Integration was introduced in Release 11.5.6 as a replacement for the Windows NT-based IVR Integrator product. IVR Integration is a built-in feature of Oracle Advanced Inbound Telephony, which administrators can enable or disable by configuring the appropriate middleware parameters in the Call Center HTML Administration Call Center tab > Middleware sub tab.
+
+Oracle no longer supports Microsoft Windows NT-based Oracle IVR Integrator.
+
+IVR Integration Call Flows
+
+The following scenario describes the progress of a call from the time it arrives at the PBX until it reaches an interaction center agent.
+
+The PBX receives an incoming call and sends the call to the IVR system.
+
+When the call reaches an IVR port or extension, the IVR immediately sends a START packet to Oracle Telephony Adapter Server. The START packet contains the IVR extension, time, date, ANI and DNIS.
+
+The IVR plays recorded messages and prompts the caller to enter additional digits, such as an account number, as defined by an IVR script that is programmed in the IVR.
+
+The caller enters digits as prompted by the IVR recording. The IVR needs to send an END packet to Oracle Telephony Adapter Server before sending the call back to the PBX. If the caller hangs up before the IVR sends the call back to the PBX, the IVR should still send an END packet if possible. The END packet contains the IVR extension, time, date, ANI and DNIS, plus any additional data that is collected by the IVR.
+
+The IVR sends the call to a route point of the PBX.
+
+The call is routed from the route point to an agent's extension.
+
+A screen pop appears on the agent's desktop.
+
+IVR Data Packets
+
+Data packets are ASCII text streams and can be written in any software language. The IVR data packets are in the following key/value pair format,
+
+KEY1:VALUE1;KEY2:VALUE2;KEY3:VALUE3;\n
+
+where the key/value separator is “:”, the field delimiter is “;” and the packet delimiter is “\n.”
+
+IVR sends data packets to the IVR Integration as key/value pairs in the format described in the following table.
+
+Data Packet Format PBXEXTN TYPE TIME DATE ANI DNIS IVR Data The PBX extension for the IVR port S=Start
+
+E=End In seconds since January 1, 1970 Format: yyyymmdd IVRINFO1 through IVRINFO4 for user-defined values, for example: Cust ID, Name, Account (The number of fields is variable.)
+
+The following examples demonstrate the IVR start and end data packets.
+
+IVR Start Data Packet
+
+PBXEXTN:7203;TYPE:S;TIME:988239405;DATE:20020425;ANI:1234567890;DNIS:Unknown;
+
+IVR End Data Packet
+
+PBXEXTN:7203;TYPE:E;TIME:988239411;DATE:20020725;IVRINFO1:1111;IVRINFO2:1234567;IVRINFO3:Unknown;IVRINFO4:Unknown;
+
+Timing of Start and End Data Packets
+
+If the IVR dialog of a customer is less than the number of seconds specified in the IVR Abandon Threshold parameter, it is possible that the call will pick up a previously sent START/END combined packet that had no call associated with it, but which is still valid because the IVR Abandon Threshold for it has not yet elapsed for it.
+
+Oracle recommends that the IVR script should issue a pause command before sending the END packet, to make sure that the current IVR dialog lasts at least as long as the value for the parameter IVR Abandon Threshold. You can also achieve the same result by playing a message that lasts at least as long as the value for the parameter IVR Abandon Threshold. Ensure that the customer cannot skip this message. By doing this, the script ensures that any previous packets from the same IVR port time out in the Oracle Telephony Adapter and are discarded before the current call arrives at the Route Point.
+
+See the following packet discarding rules.
+
+Scenario 1
+
+Start Packet (SP1) arrives for IVR Port 1000.
+
+Start Packet (SP2) arrives form IVR Port 1000.
+
+SP1 is discarded
+
+Scenario 2
+
+Start Packet (SP1) arrives for IVR port 1000
+
+End packet (EP1) arrives for IVR port 1000
+
+3. IVR abandon threshold is set to 'x' seconds
+
+If no call arrives on a monitored route point from IVR port 1000 after 'x' seconds, then SP1 and EP1 are discarded.
+
+Scenario 3
+
+Start Packet (SP1) arrives for IVR port 1000.
+
+End packet (EP1) arrives for IVR port 1000.
+
+IVR abandon threshold is set to 'x' seconds.
+
+Start Packet (SP2) arrives for IVR port 1000 before 'x' seconds.
+
+End packet (EP2) arrives for IVR port 1000 before 'x' seconds.
+
+Call C2 (that sent SP2 and EP2) is routed from IVR port 1000 before 'x' seconds.
+
+Required Data Packet Fields
+
+The following four fields are required in data packets.
+
+PBXEXTN
+
+TYPE
+
+TIME
+
+DATE
+
+Optional Data Packet Fields
+
+The following six fields are optional in data packets.
+
+ANI
+
+DNIS
+
+IVRINFO1
+
+IVRINFO2
+
+IVRINFO3
+
+IVRINFO4
+
+In Steps 2 and 4 above, if two or more Oracle Telephony Adapter Servers are running concurrently in load balancing mode, then the IVR must send the same START/END packet to all Oracle Telephony Adapter Servers.
+
+External Data Variable Processing
+
+A simpler alternative to the IVR Integration feature is external data variable processing. You can use external data variable processing for capturing data that is collected in an IVR or ACD/PBX built-in call processing system (such as the call vectoring capability of Avaya Call Center) and passing that data to Oracle Advanced Inbound for call classification, routing and screen pops. Oracle Advanced Inbound Telephony supports external data variable processing for the following switch and CTI middleware combinations:
+
+Avaya MultiVantage and Nortel Meridian with Envox CT Connect
+
+An inbound media item may contain one or more key-value pairs passed to Oracle by way of the Intel Application Data field of the Call Event Information. Make sure that this Application Data is present in the InboundCall event when the call arrives at a monitored route point or agent extension. Store the key-value pairs in the following format:
+
+KEY1:VALUE1;KEY2:VALUE2;KEY3:VALUE3;
+
+Aspect Call Center with Aspect Contact Center
+
+An inbound media item contains five additional call data keys that correspond to the Aspect variables A through E.
+
+CallManager with Cisco ICM
+
+An inbound media item may contain up to ten additional call data keys that correspond to the Cisco ICM Peripheral/Call Variables. Any Cisco ICM Extended Call Context (ECC) variables are also passed to the media item with the same names that are defined in the Cisco ICM administration.
+
+Access to Oracle Advanced Inbound Telephony
+
+Log in to Oracle Advanced Inbound Telephony at the Oracle Interaction Center HTML Administration. Use the responsibility "Call Center HTML Administration". Configure and administer by way of the following tabs: Call Center, Route, and Classification.

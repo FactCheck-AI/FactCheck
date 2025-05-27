@@ -1,0 +1,177 @@
+NuGet is a free, open-source Microsoft development framework package manager (formerly known as NuPack). NuGet is a Visual Studio 2010 extension that makes it simple to add, delete, and upgrade libraries and resources in.NET Framework-based Visual Studio projects. NuGet is available as a Visual Studio add-on. NuGet is pre-installed by default in Visual Studio 2012 and later. SharpDevelop also has a NuGet integration. NuGet can also be run from the command line, and scripts can be used to simplify the process. It supports a variety of programming languages, including packages for the .NET Framework and the native packages written in C++.
+
+Uses of NuGet:
+
+The Flow of Packages:
+
+A NuGet package takes the form of a single ZIP file with the .nupkg extension that contains compiled code (DLLs), related files, and a descriptive manifest that provides details such as the package’s version number. Developers who want to share their code build packages and upload them to a public or private server. Package consumers receive packages from appropriate hosts, use them in their projects, and then use the functionality of the packages in their project code. The intermediate specifics are then handled by NuGet.
+
+You can use NuGet packages to distribute code that is unique to a company or a workgroup since NuGet supports private hosts in addition to the public nuget.org host. You can also use NuGet packages to factor your own code so that it can only be used in your own projects. In summary, a NuGet package is a shareable unit of code that does not involve or imply any specific sharing mechanism.
+
+Package Targeting Compatibility:
+
+Package developers who need APIs that aren’t part of the.NET Standard framework, on the other hand, build separate assemblies for each target framework they want to support and bundle them all together in one package (which is called “multi-targeting”). NuGet extracts only the assemblies required by the project when a consumer installs such a package. This reduces the size of the package in the project’s final application and/or assemblies. Of course, maintaining a multi-targeting package is more challenging for its developer.
+
+Managing Dependencies:
+
+One of the most powerful advantages of a package management system is the ability to quickly build on the work of others. As a result, a large part of NuGet’s job is to manage a project’s dependency tree or “graph.” Simply put, you just need to worry about the packages you’re directly using in a project. NuGet takes care of all down-level dependencies if any of those packages consume other packages (which can, in turn, consume even others).
+
+NuGet manages the overall dependency graph within a single project, which involves resolving multiple references to various versions of the same package. It’s very common for a project to rely on one or more packages that have the same dependencies as the project itself. Many other packages use some of the most useful utility packages on nuget.org. NuGet sorts out which single version can be used by all users to prevent bringing different versions of the package into the application itself.
+
+Tracking References and Restoring Packages:
+
+NuGet, on the other hand, keeps a concise reference list of all the packages that a project relies on, including both top-level and down-level dependencies. NuGet records the package identifier and version number in the reference list whenever you install a package from a host into a project. Then, as defined in Package restore, NuGet provides a way to restore all referenced packages on demand.
+
+NuGet can then reinstall — that is, restore — all of those packages from public and/or private hosts at any time using only the reference list. You only use the reference list and remove any package binaries when committing a project to source control or sharing it in any other way.
+
+NuGet Tools:
+
+Working:
+
+Managing packages:
+
+To make installation and reinstallation easier, NuGet keeps track of a package cache and a global packages folder. The cache prevents the installation of a package that is already loaded on the computer. Multiple projects will share the same installed package in the global packages folder, minimizing NuGet’s overall size on the device. When restoring a large number of packages regularly, such as on a build server, the cache and global packages folder come in handy.
+
+When NuGet is asked to find a package, it searches in the global packages folder first. NuGet searches all non-HTTP package sources if the exact version of the package is not available. Unless you declare — no-cache with dotnet.exe commands or -NoCache with nuget.exe commands, NuGet searches for the package in the HTTP-cache if it is still not identified. NuGet retrieves the package over HTTP if it isn’t in the cache or if the cache isn’t being used.
+
+Monitoring References and Restoring Packages:
+
+When a computer receives a project, it simply asks NuGet to restore dependencies as required. When it comes to developers, NuGet’s primary function is to preserve the reference list on your behalf and provide a way to quickly restore (and update) those referenced packages. Either of two package management formats is used to keep track of this list:
+
+PackageReference: Holds a list of a project’s top-level dependencies in the project file itself, eliminating the need for a separate file. obj/project.assets.json is a dynamically generated file that manages the overall dependency graph of a project’s packages, as well as all down-level dependencies. .NET Core projects still use PackageReference.
+
+packages.config: An XML file that keeps a flat list of all the project’s dependencies, including those of other installed packages. Packages that have been installed or restored are saved in a packages folder.
+
+Dependency Resolution:
+
+with PackageReference:
+
+NuGet adds references to a flat package graph in the required file and addresses conflicts ahead of time while installing packages into projects using the PackageReference format. The term “transitive restore” refers to this procedure. The installation of the packages specified in the graph is then used to reinstall or restore packages, resulting in faster and more predictable builds.
+
+Prior to a build, the NuGet restore process resolves dependencies in memory first, then writes the resulting graph to a file named project.assets.json. If the lock file feature is allowed, it also writes the resolved dependencies to a lock file called packages.lock.json. MSBuildProjectExtensionsPath, which defaults to the project’s ‘obj’ folder, contains the assets file. MSBuild then reads this file and converts it to a series of files containing possible references, which it then attaches to the project tree in memory. The project.assets.json file should not be added to source control because it is only temporary. Both.gitignore and.tfignore include it by default.
+
+with packages.config
+
+A project’s dependencies are written to packages.config as a flat list with packages.config. Those packages’ dependencies are also included in the same list. NuGet can change the.csproj file, app.config, web.config, and other individual files when installing packages.
+
+NuGet tries to overcome dependency conflicts during the installation of each individual package using packages.config. That is, if Package X is being installed and depends on Package Y, and Package Y is already described as a dependency of something else in packages.config, NuGet compares the versions of Package Y being requested and tries to find one that meets all version constraints. NuGet specifically chooses the lower major. minor edition that satisfies dependencies.
+
+For larger dependency graphs, the packages.config method for resolving dependencies becomes difficult. Each new package installation necessitates a full traversal of the graph, increasing the risk of version conflicts. When a conflict exists, installation is halted, leaving the project in an uncertain state, particularly if the project file itself has been modified. When using other package management formats, this is not a problem.
+
+NuGet Installation:
+
+You don’t need to install NuGet if you’re using Visual Studio 2012 or higher because it’s already installed. If you’re using Visual Studio 2010, you can install it by going to the Tools menu and selecting Visual Studio Extension Manager. Then, under the Online Gallery tab, look for NuGet Package Manager and install it. Run the Visual Studio installer and check the option under Individual Components > Code tools > NuGet package manager to see if the Package Manager is installed.
+
+To support NuGet features in the IDE, you can use either the dotnet CLI or the nuget.exe CLI. Some Visual Studio workloads, such as.NET Core, include the dotnet CLI. A separate installation of the nuget.exe CLI is needed.
+
+dotnet.exe CLI
+
+dotnet.exe, the .NET Core 2.0 CLI, runs on all platforms (Windows, Mac, and Linux) and includes core NuGet functionality including package installation, restoration, and publishing. Direct integration with .NET Core project files (such as.csproj) is available in dotnet, which is useful in most scenarios. dotnet is also designed specifically for each platform, so you won’t need to install Mono.
+
+Install the .NET Core SDK on developer computers. The dotnet CLI has now been installed automatically with any.NET Core-related workloads in Visual Studio 2017.
+
+nuget.exe CLI
+
+The nuget.exe CLI, also known as nuget.exe, is a command-line tool for Windows that offers all NuGet capabilities; it can also be run on Mac OS X and Linux with some limitations using Mono.
+
+Windows:
+
+Select the nuget.exe version of your choice for downloading. Each download contains only the nuget.exe file. Instruct your browser to save the file to a specific folder. You won’t see anything if you run the file directly from the browser because it isn’t an installer.
+
+To use the CLI tool from anywhere, add the folder where nuget.exe is located to your PATH environment variable.
+
+macOS/Linux:
+
+Get Mono 4.4.2 or later installed.
+
+The following command to be executed at a shell prompt:
+
+# The latest stable `nuget.exe` to be downloaded to `/usr/local/bin`
+
+sudo curl -o /usr/local/bin/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
+
+Add the script below to the required file for your operating system to create an alias.(typically ~/.bash_aliases or ~/.bash_profile):
+
+# Create an alias for the nuget
+
+alias nuget = “mono /usr/local/bin/nuget.exe”
+
+The shell is to be reloaded. Verify the installation by entering nuget with no parameters. NuGet CLI help should be displayed.
+
+Using NuGet from GUI:
+
+Adding a package to your project:
+
+To add a package,
+
+Right-click the References node in the Solution Explorer and select Manage NuGet Packages.
+
+It will open a dialogue box; in the search text box on the top right side, type the desired package name. When you select a package, the right side pane displays package details such as Created By, Id, Version, Downloads, Description, Dependencies, and so on.
+
+Now, click on the Install button, and the package, as well as any dependencies, will be downloaded and installed in your application.
+
+If installed, it makes a few changes to your project, such as creating a file called packages.config if you’re adding a package for the first time. This file keeps track of all the packages installed in your project. It also generates a packages folder in the same directory as your solution (.sln) file. Each installed package has its own subfolder with its own version number in the Packages folder. NuGet will automatically add the library’s reference and make the required adjustments to the config file. You don’t have to do anything and can start using the kit in your application right away.
+
+Updating a package in your project:
+
+To update a project,
+
+Open the Manage NuGet Packages dialog box and click on the Updates node featuring in the left pane. A list of packages that have the new version will appear.
+
+Click on the Update button that appears next to the package name. It will update the latest package along with the dependencies of that package if there exists any.
+
+Uninstalling a package from your project:
+
+Open the Manage NuGet Packages dialog box and select Installed Packages appearing in the left section. It will display the entire list of installed packages.
+
+Click on the package name that you want to uninstall and it will show a button named Manage. Click on that Manage button and a Select Project dialog box will appear.
+
+Uncheck the checkbox of the project from which you want to uninstall the package. Click on the OK button. The package will be removed from your project.
+
+Using NuGet through Command Line:
+
+To control NuGet packages, Visual Studio also offers a command-line interface. The “Package Manager Console” is a Power Shell-based console.
+
+In order to open the NuGet PowerShell Console, Go to Tools > Library Package Manager > Click “Package Manager Console”.
+
+This will open the PowerShell console, which you can use to add or delete packages using commands. Following is the list of all NuGet commands, which are available for you to use.
+
+get-help NuGet
+
+This command will load all the available commands that support Nuget.
+
+Get-Package
+
+It gets the set of packages available from the package source.
+
+Install-Package
+
+It will install a package and its dependencies into the project.
+
+Uninstall-Package
+
+It will uninstall a package. The command will fail if other packages depend on this package unless the Force option is specified.
+
+Update-Package
+
+It updates a package and its dependencies to a newer version.
+
+Sync-Package
+
+It gets the installed package’s version from the specified/default project and syncs it with the rest of the solution’s projects.
+
+New-Package
+
+It creates a new package when a Nuspec package specification file is supplied along.
+
+Add-BindingRedirect
+
+It examines all assemblies within the output path for a project and also adds binding redirects to the application (or web) configuration file wherever required.
+
+Get-Project
+
+It returns a reference to the DTE (Development Tools Environment) for the active or specified project.
+
+Conclusion:
+
+We hope that this article has helped you learn more about NuGet and using NuGet packages in.NET projects.

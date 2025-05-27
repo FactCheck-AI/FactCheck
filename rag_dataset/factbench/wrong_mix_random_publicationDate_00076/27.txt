@@ -1,0 +1,803 @@
+Terry Gray University of Washington Rev 99.08.13.22
+
+EXECUTIVE SUMMARY
+
+Enterprise Quality of Service (QoS) concerns the transformation of current best-effort, single-class-of-service internets into systems that can offer one or more levels of preferred service to certain classes of users or applications. The goal of having a network with preferred service levels is to increase the probability that critical or demanding applications will receive enough bandwidth (and absence of delay) to succeed. The importance of having preferred service levels depends on the amount of (instantaneous) congestion in the enterprise network. The term QoS is susceptible to many different definitions, and a wide spectrum of implementation approaches. Choosing the "best" one will require making decisions about the relative costs of network capacity and the machinery to manage it.
+
+There are three kinds of people with respect to network QoS: optimists, pessimists, and fence-sitters. Optimists believe that the cost of bandwidth is or soon will be less than the cost of complex mechanisms for managing it. Pessimists believe that bandwidth will always be scarce and therefore complex end-to-end QoS mechanisms will be essential in order for advanced applications to succeed in a shared Internet infrastructure. The fence-sitters want to believe the optimists (and indeed do believe them with respect to campus/enterprise bandwidth) but aren't so sure about wide-area bandwidth (notwithstanding advances such as DWDM). In any case, the fence-sitters figure they better have a contingency plan in case the pessimists are, at least partially, right.
+
+This paper attempts to identify key issues in enterprise QoS, and then outlines a "fence-sitter" strategy that emphasizes operational simplicity but also tries to hedge bets. Key points include:
+
+The problem focus is providing support for different classes of service in a campus or enterprise network infrastructure. The principal concerns are recurring costs and network reliability.
+
+While attempting to provide a specific level of service for certain applications or users, real-world QoS solutions must also preserve some minimum amount of bandwidth for baseline or best-effort service. (Network managers can die at the hands of the few or the many :)
+
+Different QoS strategies are appropriate for different parts of a network, depending on probabilities of congestion (as well as non-technical issues.) Three different "congestion zones" are identified: local subnet, enterprise backbone, and border/wide-area.
+
+Within a particular "congestion zone", the desireability of using admission control or other "heavy weight" QoS mechanisms depends on the answers to several key questions, in particular: a) Is the cost of bandwidth greater or less than the cost of managing it? b) Is the prevailing economic environment such that a revenue stream exists to allow adding capacity? c) If capacity is insufficient, do you prefer to disappoint users via poor session performance, or via denial of service (busy signals)?
+
+One conclusion: IF bandwidth costs more than managing it, AND there is inadequate revenue for adding capacity, AND busy signals are preferable to degraded sessions, THEN admission control is necessary and desirable (but probably not otherwise).
+
+If different portions of a network may have different (or no) packet prioritization mechanisms, what differentiation info should be carried in each packet? As a model for thinking about packet prioritization requirements consider the following taxonomy: Differentiation by a) application type/need, b) user/application desire, and c) user/application privilege. These three criteria can be mapped to distinct sets of bits in a frame (specifcally: port number, TOS/DS byte, and 802.1p/Q priority/VLAN bits).
+
+Avoiding the use of heavy-weight QoS mechanisms (e.g. per-session authentication/authorization/accounting/reservation and admission control) within the enterprise network is very appealing in order to avoid their impact on recurring operational costs and reliability.
+
+We worry about any scheme that makes an organization's most important strategic infrastructure asset (the ability to forward packets) dependent on authentication and policy servers that are not now needed for per-packet forwarding decisions.
+
+Perhaps the most important network design objective for the future will be to minimize "policy jitter", that is, the rate-of-change of QoS policies over time and their associated costs. There is evidence that the only way to accomplish this goal is to seriously limit the number of available policy options.
+
+In summary, UW's specific network QoS infrastructure goals include:
+
+Avoid doing things that reduce network reliability (e.g. making packet forwarding path dependent on auth or policy servers.)
+
+Avoid doing things that cost a lot, especially on a recurring basis (e.g. adding policy management complexity).
+
+Provide near-congestion-free network service on campus via a switched 10/100/1000Mbps Ethernet hierarchy.
+
+Provide capacity for high-bandwidth experiments in such a way that they will not interfere with baseline production services, e.g. via separate fibers or lambdas, or MPLS circuit emulation.
+
+Have a low-overhead way to take advantage of the multiple queues inherent in comtemporary switches if/when needed.
+
+Provide appropriate interfaces to WAN QoS mechanisms.
+
+Said differently, our strategy is to build a network infrastructure that can support multiple classes of service without introducing the complexity of per-session admission control (via per-user authentication or per-packet or per-flow lookups or reservations). It should be amenable to several different premium service policy models, e.g. charging per-port subscription and/or usage fees and/or support for differential queuing based on application need, especially delay-sensitivity. The UW model also allows for end-systems to signal campus border routers acting as bandwidth brokers (e.g. via RSVP) if necessary to negotiate for wide-area premium service, and for "very long term" reservations (i.e. segregated bandwidth) or MPLS virtual circuits among enterprise sites for IP telephony, IP videoconferencing, etc.
+
+OUTLINE
+
+01. INTRODUCTION
+
+01.1 Goal 01.2 Context 01.3 Definitions
+
+02. FUNDAMENTALS
+
+02.1 Congestion 02.2 Tools in the QoS Toolbox 02.3 Managing scarcity 02.4 Prioritization Criteria 02.5 The Odds of Congestion 02.6 Details 02.7 Axioms 02.8 Conundrums 02.9 An Imperfect World 02.10 Differences between LANs and WANs
+
+03. ENVIRONMENT
+
+03.1 Context 03.2 Application Drivers 03.3 Usage Scenarios 03.4 Subnet Congestion: How Much QoS Is Needed? 03.5 Border Crossings 03.6 Integrated Services, Take Two. 03.7 Capacity Planning and Cost Recovery 03.8 Reality Check
+
+04. REQUIREMENTS
+
+04.1 Success Criteria 04.2 Goals for Congested Links 04.3 Scheduling and Reservations 04.4 Segregation or Reservation? 04.5 Is User Authentication a Must? 04.6 Using Multiple Queues 04.7 Reliability is Job One
+
+05. ADMINISTRATION
+
+05.1 Campus Economies and the QoS Policy Space 05.2 Practical Prioritization Policies 05.3 Pricing 05.4 Gaming the System 05.5 Support Costs 05.6 Inbound vs. outbound traffic. 05.7 Moderating demand for wide-area bandwidth.
+
+06. SUMMARY/CHOICES
+
+06.1 The QoS Toolkit 06.2 Key Assumptions 06.3 Key Questions 06.4 Key Choice Matrix
+
+07. STRAWMAN
+
+07.1 Applicability 07.2 Selected Requirements 07.3 General Approach 07.4 Premium-port Subscriptions 07.5 Functional Responsibilities 07.6 Alternatives Considered
+
+08. CONCLUSIONS
+
+09. ACKNOWLEDGMENTS
+
+01. INTRODUCTION
+
+The purpose of this section is to explain the goals of this document, the context in which it was written, and the definitions and conventions used in the rest of the document.
+
+01.1 Goal
+
+The goal of this document is to explore the problem of developing and deploying Quality of Service (QoS) mechanisms for enterprise networks that are reliable, manageable and cost-effective. More specifically, it will attempt to make the case that a "minimalist" approach to QoS is both adequate and advantageous within enterprise nets. In other words, we will argue that the best way to balance the tradeoffs among efficient bandwidth utilization, application performance requirements, and the cost of enterprise/campus QoS mechanisms is to focus on maximizing network capacity and minimizing the complexity of the QoS solution itself.
+
+01.2 Context
+
+This document is written from the perspective of a network administrator concerned about providing the best possible network services while at the same time trying to come to terms with the complexities of QoS and its impact on campus/enterprise network design and operation. It is essentially a case study of the University of Washington's efforts to design and define requirements for a major campus network upgrade project.
+
+A crucial assumption of this discussion is that the "on-campus" QoS problem is quite different from the "off-campus" QoS problem because of the extraordinary difference in the cost of local vs. wide-area bandwidth. Even though both share many characteristics and management requirements, the economics of adding capacity on-campus make QoS there amenable to simpler solutions than off-campus QoS. The same fundamental principles apply to both problems, however, and although the emphasis here is on campus QoS, the wide-area problem must be considered as well, to make sure that the campus solution does not undermine the wide-area QoS approach, and to make sure a compatible management and policy framework exists. (This is the point where a real optimist would postulate that wide-area bandwidth will be just as inexpensive as on-campus bandwidth in the not-distant future, but we prefer not to count those chickens until they've hatched.)
+
+01.3 Definitions
+
+The term "QoS" is susceptible to a wide spectrum of definitions, ranging from the simplest priority-queuing strategy to full-out reservation-based, per-flow, user-authenticated, admission control and end-to-end bandwidth/delay guarantees. That continuum reflects increasing probability that an application, if allowed to proceed at all, will have the network resources it needs for the duration of the session. It also reflects increasing development, deployment, and on-going implementation costs and complexity.
+
+We will use the term "hard QoS" for mechanisms that seek to provide specific network performance guarantees to applications (actually, bandwidth/delay reservations for an imminent or future data flow). Such Quality of Service is usually characterized in terms of ability to guarantee to an application specified peak and average bandwidth, delay, jitter, packet loss, and packet error rates.
+
+The term "Class of Service" represents the less ambitious approach of giving preferential treatment to certain kinds of packets, but without making any performance guarantees. One particular Class of Service approach is called "DiffServ" for "Differentiated Services". The DiffServ goal is to provide not only the traditional "best effort" service, but something better than "best effort" as well. It attempts to avoid the cost of maintaining per-flow state in core routers by treating similar types of traffic in the same way, that is, by aggregating individual flows into equivalence classes. If the diff-serv approach can meet application requirements, at least within the enterprise, then it follows that the added cost and complexity of "hard" QoS mechanisms can be avoided. The IETF DiffServ working group has defined several "Per Hop Behaviors" to support the differentiated services model. Various groups are working on adding the concept of "Bandwidth Brokers" --essentially admission controllers-- to enhance the DiffServ model in hopes of being able to give some performance assurances to applications using DiffServ.
+
+In this paper, "QoS" will be used in the most general sense, not just in reference to "hard" QoS mechanisms, and "eQoS" will sometimes be used as shorthand for "enterprise QoS". Further, "enterprise" and "campus" will be used interchangeably, even though large enterprises will undoubtedly have multiple locations connected by relatively low-bandwidth links --presenting essentially the wide-area QoS problem to those remote sites.
+
+The term "preferred service" will be used in the generic "better than best-effort" sense, rather than as the name for any specific or precise queuing discipline.
+
+Some of the terms that will be used in the context of resource management include:
+
+Quotas: "You can use this much, over this interval"
+
+Open-Loop Feedback: "take whatever you want, we'll send the bill later"
+
+Closed-Loop Feedback: "I've only got this much available right now."
+
+Scheduling: "If no one beats you to it, you can sign up"
+
+Auction: "Highest bidder wins a seat on the bus"
+
+TOS refers to the "Type Of Service" header field in an IP packet, which is now used in support of the "DiffServ" specification. The term "integrated services" refers to efforts to combine voice, video, and data traffic over the same network infrastructure. And "CBQ" means "Class-Based Queuing", the methodology behind "Class of Service" provisioning.
+
+Finally, "Layer-2 authentication" refers to a mechanism where network access, or "Ethernet dialtone" is available only after the user has been successfully authenticated.
+
+02. FUNDAMENTALS
+
+The purpose of this section is to identify some fundamental issues that may impact one's approach to QoS decisions. In particular, we'll discuss the 3 parts of the QoS equation: capacity, demand, and allocation mechanisms.
+
+02.1 Congestion and Capacity
+
+QoS is all about controlling what happens to packets when there is congestion in a network, i.e. when there is insufficient capacity in the network to deliver all of the offered load without any noticeable queuing delays. This is true both in a datagram-oriented DiffServ context, where individual packets specify a desired "per hop behavior", and also in a "hard" QoS context, where virtual circuits are dynamically created and resources throughout the circuit path are sequestered at call-setup time.
+
+Network congestion results from mismatches between network supply (capacity) and network demand. The mismatch may be a long-term one, or at nano-second time scales. Remember that at any instant in time, a network link is either full or empty... any value in between is a function of averaging interval. The averaging interval is crucial. Network capacity may appear to be ample if one is looking at long-term traffic averages; and while the world is full of leased lines running continually at maximum capacity, the more subtle problem is with short bursts of packets, or peak demand.
+
+Note also that a hard QoS virtual circuit model may protect packets in a particular flow (for the duration of the flow), but it does not mean that packets belonging to other flows will avoid congestion while traversing the very same nodes in the network. If a node is congested, such packets might end up being "tossed on the floor" or, in a hard QoS model, the virtual circuit may not be able to be established; i.e. the user gets a busy signal.
+
+What causes congestion?
+
+When a packet reaches a switch or router port, it may not be possible to forward it immediately to the appropriate output port because the output port (really, the associated link) is busy. This can happen when the output link is slower than the input link and/or when there are multiple flows arriving on different input ports all feeding into one particular output port.
+
+Congestion control.
+
+Whenever a packet cannot be forwarded, it is queued, and if the queue reaches a certain threshold (length), one or more packets must be dropped. Which packets in the queue get dropped depends on the queue management algorithm. Proactive congestion control by a router usually involves a more sophisticated algorithm than just dropping the packets that arrive after queue space is exhausted. Moreover, queue lengths must be bounded in order to keep latency under control.
+
+In some contexts, it's OK for packets to be dropped; indeed it may be necessary, as when TCP searches for the best flow rate for current conditions and uses a dropped packet as an implicit congestion notification. At some point, however, dropped packets translate directly to poor performance, and then the owners/originators/users of those packets come gunning for the network manager. So, in general, dropped packets are not a Good Thing.
+
+In a congestion situation, when premium traffic is given precedence, best-effort traffic must be dropped and/or slow-down (generally as a result of TCP rate adaptation).
+
+Congestion avoidance.
+
+To avoid dropping packets, we need to avoid congestion. Avoiding congestion can be done by:
+
+Adding capacity
+
+Reducing demand
+
+If a network link is continually saturated, there is little to be done except either increase capacity or reduce demand. However, it is often the case that a particular link would have sufficient capacity for the offered load if the load was more evenly spaced in time; alas, when demand peaks at certain times, the link is not capable of handling the instantaneous demand. In these situations, some form of "demand shaping" may help. Demand shaping involves shifting demand from peak times to off-peak times, but you could say it is the same thing as demand reduction that is focused on peak intervals. Moreover, the timescale for the peaks might be macro or micro: that is, daily or seasonal peaks based on normal human patterns of usage, vs. nanosecond-timescale peaks due to the fractal nature of Ethernet traffic. Specifically:
+
+long-term average demand
+
+medium-term/session-level demand
+
+very-short-term/packet-level demand
+
+Congestion zones
+
+Differentiated services have to do with real-time prioritization of packets and queuing disciplines in switches and routers such that, when congestion occurs, preferred traffic will make it thru the network unscathed. Hard QoS goes beyond that to try to make statements about network behavior in the future, and preserving a specified level of performance for the duration of the flow. Either way, without congestion, the QoS problem is a non-problem, so it is useful to think about where congestion is likely to occur in a real network.
+
+Some parts of a network are more likely to experience congestion than others. While "all generalizations are false", it is easier to stay ahead of network congestion (some call it "over-provisioning") in a local subnet using contemporary Fast and Gigabit Ethernet switches than in a wide area network. The enterprise backbone is somewhere in between. The network topology shown in Figure1 illustrates these three "congestion zones". Different QoS strategies are appropriate for different congestion zones, i.e. portions of the network architecture with significantly different probabilities of congestion.
+
+02.2 Tools in the QoS Toolbox
+
+Ways to increase capacity include:
+
+Contracting for additional dedicated capacity
+
+Obtaining additional on-demand capacity, e.g. telco switched services
+
+Re-allocation of existing bandwidth currently sequestered or staticlly allocated to other services
+
+Ways to reduce or shape demand include:
+
+Traffic authorization (Preferred-access demand control)
+
+Eligibility control or
+
+Admission control, via:
+
+Advance scheduling
+
+Auction
+
+Allocation plan
+
+First-come, first-served policy
+
+Traffic modification (Instantaneous demand control)
+
+Traffic shaping or
+
+Traffic policing
+
+Traffic adaptation (Feedback-based demand control)
+
+Protocol adaptation
+
+Application adaptation (closed-loop feedback)
+
+User adaptation (open-loop behavior shaping)
+
+Under the TRAFFIC AUTHORIZATION category, the term "Eligibility control" has to do with who or what can ask for the resource being managed, and under what circumstances. For example, an edge switch might be configured to mark incoming packets from specified (subscribed) ports so that the first router encountered can use that information in making queuing decisions. For example, the router might be configured to ignore the TOS/DiffServ bits in the packet header generated by the end-system unless the packet is from a premium port, or both values might be used in setting the packet priority. (These TOS or DiffServ bits would typically be requesting preferential treatment.) In a class-based-queuing environment, the expectation is that such requests will be acted on by the network as best it can (though there may certainly be policing and ex post facto monitoring/billing.) In a "hard" QoS environment, i.e. one with real-time call-setup reservations, such requests from "eligible" users, stations, or ports are also subject to admission control...
+
+"Admission control" is a the term used in "integrated services" discussions to describe whether or not a request for preferential (or specific) treatment will be honored "by the network". (Although sometimes it is defined to include what we've called eligibility control as well as admission control.) The result of an admission control request might be a "no" (i.e. a busy signal) or it might be part of a negotiation in which a network device responds with the amount of bandwidth that can be made available to the application. In the latter case, we might think of admission control as another form of "quota enforcement by degradation", similar to the result of traffic policing. Except that even with admission control, you'll probably want to do traffic policing to keep the end-system honest.
+
+The TRAFFIC MODIFICATION category includes shaping and/or policing, as described in the following paragraphs.
+
+"Traffic shaping" means modifying the timing of a sequence of packets so as to reduce burstiness. It does not reduce total network demand, but it smooths out the peaks, and in reasonably-provisioned networks, congestion results from the peaks. So traffic shaping can be a very important part of the QoS solution. Unfortunately, traffic shaping is easier said than done, but the capabiity is promised for next-generation routers.
+
+"Traffic policing" is a form of dynamic usage control; think of it as a way of enforcing short-term quotas on a stream of packets. It's a bit like putting a governor on an automobile engine to limit how fast it can go. A common term for a policing mechanism is Committed Access Rate (CAR), or sometimes Committed Information Rate (CIR). These are often defined as the minimum amount of bandwidth made available to the customer, who can --when network conditions permit-- burst traffic at higher rates, usually at extra cost, if we're talking about commercial network services.
+
+CARs are expressed in some number of bits per second and are enforced by some variant of a token-bucket algorithm. The CAR "quota" can typically be applied to either a physical port or by addresses in the packets. What happens to packets that exceed the CAR is another policy question: they might be dropped, or in the wide-area context, they might result in additional charges. In the context of preferred-service access, these "extra" packets might be downgraded to best-effort status, or since that model doesn't provide the user with much incentive to regulate their flow, is harder to implement, and is likely to result in out-of-order packets, the above-quota packets might just be dropped.
+
+Under the TRAFFIC ADAPTATION category, we have these three concepts:
+
+"Protocol adaptation" refers to the rate-adaptive nature of transport protocols such as TCP. Such protocols detect congestion in the network, either explicitly, or --as in the case of TCP-- implicitly (by noticing that packets are getting lost) and slow down their rate of sending accordingly.
+
+"Application adaptation" refers to applications which sense congestion in a network and back off. This is a particularly important property for applications that do not use an adaptive protocol. For example, streaming video applications generally do not use TCP, because it is better to drop a video packet than delay the sequence by retransmitting.
+
+"User adaptation", or "behavior shaping" has to do with changing/shaping behavior of those eligible to make requests for the presumably scarce network resource. Assuming that, in general, people may want more network capacity than is currently available, the goal is to moderate demand to match available capacity by providing feedback to user in the form of psychological, social, or economic cost.
+
+In terms of timescale, these techniques can be ordered thusly:
+
+Short timescale:
+
+traffic shaping (to reduce burstiness)
+
+traffic policing (to enforce quotas by degradation)
+
+adaptive protocols, e.g. TCP
+
+adaptive applications
+
+Medium timescale:
+
+admission control (to enforce quotas by busy signals)
+
+eligibility control via application need/type
+
+Long timescale:
+
+eligibility control via subscription
+
+user adaptation (behavior shaping via feedback)
+
+The short timescale techniques are generally either inherent in the nature of the technology (e.g. TCP rate adaptation) or may be treated so after initial configuration (e.g. traffic policing). The essence of the eQoS debate will revolve around the medium and long timescale techniques. In particular, whether to use post-audit feedback (e.g. top-ten usage lists, usage pricing), or prior-restraint reservations, or neither one!
+
+Here is another cut on these techniques. Suppose we start with the design premise of pure provisioning, no demand control (shaping or reduction), no diff-serv prioritization... just raw bandwidth. How might we motivate the addition of various demand control techniques?
+
+Subscription-based eligibilty control
+
+Provides headroom for premium traffic by limiting the number of users who can ask for preferred service.
+
+Need-based eligibility control via application type (tcp/udp port)
+
+Provides headroom for delay-sensitive traffic by limiting the type of traffic (from premium subscribers) that can get preferred treatment.
+
+Quota-based demand control via premium traffic policing
+
+Incents subscribers to constrain demand to a subscribed level or fair share, while protecting network from peak congestion.
+
+Availability-based admission control (call setup)
+
+Makes sure resources are available for a session before it begins, subject to arbitrarily complex policy constraints, e.g. user quotas.
+
+Advance-reservation-based admission control
+
+Makes sure that resources will be available at some future time, subject to arbitrarily complex policy constraints, e.g. user quotas.
+
+Feedback-based behavior shaping
+
+Moderates long-term demand.
+
+The assumption here would be that even with eligibility controls on who/what can ask for high-priority treatment, one may need to do demand shaping to deal with peaks.
+
+These approaches can generally be grouped according to when the load control decisions occur:
+
+At port setup time
+
+eligibility control based on physical port subscription
+
+At session "login" time (if any)
+
+eligibility control in conjunction with layer-2 authentication
+
+Prior to application startup
+
+user adaptation based on prior experience and/or costs
+
+At application initiation time
+
+eligibility control based on physical port or address
+
+admission control via application "setup" signalling protocol
+
+When application data is flowing
+
+traffic shaping
+
+traffic policing
+
+adaptive applications
+
+adaptive protocols
+
+And after the application terminates, there may be post-audit data collection that turns into feedback for behavior shaping (user adaptation); that is, a mechanism to encourage the user to think carefully about his/her need next time they are about to fire up a demanding application!
+
+02.3 Managing scarcity
+
+QoS could perhaps more properly be called simply "bandwidth and queue management" (or perhaps "bandwidth and latency administration"), and it is essentially a problem of allocating a scarce (or potentially scarce) resource. Unlike notoriously finite resources such as laptop batteries, in an enterprise network, the application of money can almost always increase the amount of bandwidth available (at least, the amount of aggregate bandwidth; peak bandwidth will be limited to whatever current technology makes available, e.g. Gigabit Ethernet.) This is good news. Were it otherwise, the only choice would be to devise control or feedback mechanisms to constrain usage ever more aggressively, with no hope of keeping up with demand. Nevertheless, the "tragedy of the commons" applies here. That is, unconstrained demand for a finite and shared resource ends up destroying that resource, or in the case of a network, renders it unusable for everyone.
+
+More on congestion avoidance.
+
+In the previous section on congestion, seven approaches were mentioned for keeping demand in line with currently-available network capacity. These approaches can be applied either to a single-class-of-service network, or to congestion within one of multiple service classes. Three of them require the cooperation of the end-system and/or application:
+
+Adaptive protocols
+
+Adaptive applications
+
+Admission control
+
+The other four can be used even without cooperating end-systems and applications (although traffic shaping could also be done in the end-system):
+
+Traffic shaping
+
+Traffic policing
+
+Eligibility control
+
+Behavior shaping (user adaptation)
+
+Given some form of behavior shaping, it may be possible to be more relaxed about eligibility control, and perhaps forego it entirely; but even with eligibility and/or admission controls in place, behavior shaping (e.g. cost feedback) may be an important adjunct.
+
+Note that admission control implies a "reservation" or "call setup" mechanism for each flow, whereas the other approaches will work either with or without call setup. While all of the mechanisms have a policy component, traffic shaping may be done as a low-level network congestion avoidance mechanism that is defined by the characteristics of the egress path and is oblivious to the kind of packets being shaped or where they came from. Admission control can be based on arbitrarily complex advance reservation systems and policy databases, or it can simply be a method for dynamic bandwidth reservation for the duration of a flow on a first-come-first-served basis. In contrast, policing, eligibilty and behavior shaping are clearly explicit policy mechanisms that relate to specific users, ports, or end-systems.
+
+Matching supply and demand
+
+Even with the option of adding capacity, there still needs to be a way to keep usage within current limits (both total bandwidth and bandwidth available within each service class). The tools for avoiding congestion listed above are complementary, but not without controversy. The primary debate concerns whether per-flow admission control, especially in the form of advance reservations, is necessary when eligibility controls, quotas (enforced by traffic policing) and/or behavior shaping mechanisms are in place.
+
+Congestion avoidance methods which use price to moderate demand have the side effect of generating revenue that can be useful for expanding network capacity. Clearly campus demand for bandwidth is growing, and accommodating this demand requires investment in additional capacity. Enterprise QoS design decisions are inextricably linked to enterprise funding models.
+
+Key admission control questions
+
+Within any particular "congestion zone", the desireability of using admission control or other "heavy weight" QoS mechanisms depends on the answers to several key questions, in particular: a) Is the cost of bandwidth greater or less than the cost of managing it? b) Is the prevailing economic environment such that a revenue stream exists to allow adding capacity? c) If capacity is insufficient, do you prefer to disappoint users via poor session performance, or via denial of service (busy signals)?
+
+One conclusion: IF bandwidth costs more than managing it, AND there is inadequate revenue for adding capacity, AND busy signals are preferable to degraded sessions, THEN admission control is necessary and desirable (but probably not otherwise).
+
+Granularity
+
+Or "degree of aggregation". QoS may not always be implemented on a per application basis. Rather, there are many cases where network administrators need to apply different prioritization rules to aggregate traffic flows having particular characteristics. Aggregate flow QoS is one tool available to deal with "traffic engineering" problems. An example might be allocating a certain amount of bandwidth on a campus backbone or remote office link for Voice-over-IP traffic. Another example might be the need to establish a limit for all "preferred" traffic so that it does not completely starve all best-effort traffic. But there might still be a specific instance of an application that needed per-user, per-flow resource allocations. Thus, the needs of an individual user and the needs of network administrators may differ with respect to bandwidth allocation granularity.
+
+Nested bandwidth allocations
+
+The differing requirements of administrators and end-users may lead to a need for "nested" bandwidth allocation policies and mechanisms. For example, consider a researcher who requests ten percent of the available bandwidth of a network in order to conduct a particular experiment. Within that ten percent allocation, the experiment may call for differentiating the priority of several classes of traffic. Likewise, in the remaining 90% of the available bandwidth, there may well be other prioritization policies. The result can be complex, because "expedited" traffic that is part of the experiment's 10% allocation would not rightly share the same queue as "expedited" traffic that is part of the "baseline" production traffic profile. Relatively little attention has been given to this problem, even though allocating percentages of channel capacity to different traffic classes, and allowing for different priorities within those classes, is likely to be a very common requirement.
+
+02.4 Prioritization Criteria
+
+Given a set of policies and mechanisms that result in a particular offered load to the network, the next question is how the network should prioritize those packets entering the system. Said differently, network managers (and network equipment designers) must decide what criteria will be used by switches or routers in deciding which packets will be given preferential treatment. Some possibilities are:
+
+QoS by user desire: Giving packets preferential treatment whenever the user decides s/he would like preferred service. This assumes that application or OS vendors will provide "QoS knobs" for users to select service levels. Obviously, there could be an abuse problem with this strategy if it is not accompanied by other demand-shaping mechanisms, e.g. admission or eligibility control, "post audit" feedback mechanisms, etc.
+
+QoS by user privilege: Giving packets preferential treatment if they are associated with an entity that has been designated as eligible for priority treatment. The entity might be user ID, physical port ID, MAC address, IP address, etc. The reason a particular user (or user's end-system) might be entitled to such privilege could be related to the user's rank, or affiliation with a special project, or by virtue of having subscribed to a preferred/premium network service level.
+
+QoS by application need: Giving packets preferential treatment if they are sent by an application whose designer asserts, or is globally known to have, a need for certain network characteristics, e.g. minimum delay for IP telephony. Such requests for preferential treatment might be conveyed by TCP/UDP port numbers or TOS/DS bits. Sometimes source or destination IP address is used, e.g. for a Voice IP gateway.
+
+Prioritization decisions are ultimately made on a per-packet basis, but it is possible to associate specific forwarding priorities with a packet stream or "flow" --or even an aggregation of many packet flows. If the flow of packets is associated with specific reserved resources in the switches and routers that are traversed, the flow is similar to a virtual circuit established at the time an application is initiated (or even at session login time) via either static configuration or a dynamic call-setup protocol such as RSVP. Criteria for such virtual circuit priorities generally fall into the same three categories as above. The same is true for QOS reservations, wherein bandwidth is sequestered for a particular session, perhaps on a First-Come-First-Served basis, or perhaps based on privilege, price, or programmatic considerations.
+
+Problems with prioritizing based on application type
+
+One problem with having network devices make queuing decisions based on application type (which loosely corresponds to its "need") is that the information needed to make such decisions might be encrypted. The IPSec standard for end-to-end packet security offers a mode in which TCP and UDP port numbers are opaque, thus precluding network switches from making queuing decisions based on them.
+
+Even if a packet stream is not encrypted, there are other challenges to using an application's type for prioritization decisions: not all applications use globally agreed-upon TCP or UDP port numbers. For example, two people trying to subvert a QOS scheme based on port number could bilaterally choose a particular port for a specific application or experiment-- and worse, some of the most network-demanding applications are port-agile; that is, the data is sent over a port number that is negotiated in real-time via a control channel. Applications implementing the H.323 desktop conferencing protocol are examples of this. Finally, it should be noted that application need is a relative and not an absolute concept. The actual need for any particular application may differ with circumstances. For example, high quality for a desktop video app may be more important in a tele-medicine context than in the case of a college student checking in with parents.
+
+Is physical port eligibility control sufficient?
+
+Suppose a campus network QoS system was designed using only eligibility control based on physical port subscriptions. For argument's sake, suppose that all packets from eligible ports, and only such packets, are treated as high-priority. How well would this scheme work?
+
+If the subscription cost is low, a high percentage of users would choose premium status, and the network would again become best-effort, (though with a subscription revenue stream to permit adding capacity.)
+
+Even a well-provisioned campus net is unlikely to be totally non-blocking; i.e. the statistical multiplexing nature of datagram packet nets will continue to be important. This implies that a single user connected to the switched campus infrastructure could still adversely affect others on the campus net, especially if the end-system did not do any traffic shaping.
+
+Nevertheless, it is easy to imagine that a price-point exists for preferred service that would avoid the problem of everyone subscribing (and the consequence of the network once again having a single service level). Moreover, if subscriptions are combined with an indication from the application that perferred service is needed or desired (e.g. via the TOS/DS bits) then the odds of achieving a successful multi-class network are even better. In fact, it might even turn out that an unrestricted or laissez faire approach to requesting preferred service --without any subscriptions or eligibility control-- might prove to be sufficient, especially if combined with some form of ex post facto feedback to deal with abusive users. We will return later to the question of whether physical port eligibility control is even necessary.
+
+02.5 The Odds of Congestion
+
+Modern data networks depend on statistical multiplexing. Very few are provisioned to be totally non-blocking. Accordingly, the liklihood of congestion is a function of network topology and access speeds as well as usage patterns. If most users are connected to the network at (switched) 10Mbps, but the backbone is provisioned with 100Mbps and/or Gigabit Ethernet links, it is entirely plausible that congestion within the campus net will be rare --even without implementing any specific congestion avoidance techniques. However, if a substantial fraction of users are connected at (switched) 100Mbps or Gigabit Ethernet, with end-systems and applications capable of driving those rates, it will be much more difficult --though not necessarily impossible-- to avoid peak congestion via pure provisioning.
+
+Could we build a non-blocking campus net? Would we want to?
+
+Consider this: if all 40,000 of UW's network-connected end-systems sent a maximum of 10Mbps into the campus net, the total incoming traffic, gated by the speed of the access ports, would be 300 gigabits/sec or the equivalent of 300 GE router ports and a non-blocking interconnect between them! This is a large number, and the actual need is going to be much smaller, but even the worst-case "non-blocking" design could actually be implemented with products available now or in the near future. Fortunately, statistical multiplexing comes to our rescue here because the probability of all 40,000 of our networked devices sending 10Mbps simultaneously is zero (especially since a growing number of these devices are printers :)
+
+If everyone had a 100Mbps (Fast Ethernet) connection instead of 10Mbps, and actually used it to the max, the non-blocking aggregate bandwidth requirement would obviously increase by an order of magnitude. Here we are saved not only by statistical multiplexing among all the users, but the fact that most desktop systems are not likely to take advantage of a 100Mbps connection, either because of hardware/OS limitations, or because the applications being used don't need it.
+
+We conclude therefore that it would be possible to build a non-blocking campus network, at least at the switched 10Mbps level, but that would be serious overkill, even if one seeks to provide an almost-always congestion-free campus network experience.
+
+Ratios of different traffic classes
+
+In the specific context of avoiding congestion for premium traffic, an additional parameter in the congestion equation is the ratio of non-premium to premium traffic. The larger that ratio, the lower the probability of premium traffic congestion on average --although the specific topology and usage must be examined to understand peak behaviors. Reducing the ratio of premium traffic is a function of eligibility criteria, e.g. subscription to the premium service, specific application need, and/or user desire.
+
+The bottom line here is that an enterprise net consisting of switched 10Mbps access connections linked by Fast and Gigabit Ethernet backbone links might well be effectively non-blocking, but as more and more users connect at 100Mbps, and run applications that need it (i.e. either very advanced or very dumb applications), then some form of demand shaping may be needed to avoid peak congestion for premium traffic, or some additional eligibility discriminant besides physical port subscription (e.g. application type, or TOS/DS bits) might be needed to determine which packets actually receive premium treatment. Or combinations. In all probability, the 80-10 rule will apply to desktop connection speed. Most people will be well-served by switched 10 for several more years; a relatively small fraction will have a legitimate need for much faster speeds. Opinions vary on how that demand curve will evolve over time.
+
+If pure "over" provisioning (no attempt to avoid congestion via demand shaping or admission control) is deemed insufficient, i.e. congestion is expected, then the campus network designer must choose among demand control strategies such as the following:
+
+Premium subscriptions to control eligibility
+
+Subscriptions plus CAR quotas (and traffic policing)
+
+Usage-based pricing
+
+Per-flow reservations (and associated traffic policing)
+
+The foregoing approaches are listed in order of increasing complexity and management overhead. Whether the frequency of congestion on a well-provisioned campus net will be sufficiently low to forego the added complexity of quota enforcement or feedback-based demand shaping remains to be seen. If faster connection speeds and growing usage lead to on-campus congestion even with a well-provisioned backbone, the question becomes "what is the least-complicated demand-shaping technique that will do the job?"
+
+02.6 Details
+
+The role of traffic policing.
+
+Traffic policing is a way of enforcing a quota on one or more senders. The technique involves comparing incoming traffic against a pre-defined profile or specification and dropping (or downgrading) packets that are "out of spec". It is specifically targeted at controlling traffic peaks. Reasons traffic policing could be important in a campus/enterprise net include:
+
+In either a laissez-faire or subscription-based scenario, end-systems may be allowed to mark any or all packets as requesting preferred treatment. Establishing either implicit or subscription-based peak traffic quotas, enforced by policing, provides some incentive for the end-system to moderate its demands on the network.
+
+Even in situations where end-systems do traffic shaping to smooth out peak demand, the network needs to "trust but verify" by doing policing.
+
+Even in a design using reservations, policing will be needed.
+
+Policing can be done on a physical port basis, so that if multiple machines are connected to the same port, the aggregate traffic flow is subject to the quota.
+
+Policing can also be done based on the characteristics of the output link, rather than requiring specific knowledge of every incoming flow.
+
+Policing is generally considered a "must have" for implementing QoS on wide-area networks; however, its importantance or effectiveness for eQoS is harder to assess. Some routers already support it, and if the capability becomes generally available, with acceptable performance and manageability characteristics, it is likely to be widely used.
+
+Congestion within protected classes.
+
+In an environment where there are different classes of network service, it is important to distinguish between the case where there is insufficient total capacity for all of the offered traffic, vs. the case where each class is allocated a portion of the total capacity, and there is contention within one of those classes. For example, if the problem is specifically loss or delay of high-priority traffic, one may need to target a demand control technique at that specific class. Alternatively, one could change the eligibility equation, i.e. the ratio of those who are eligible to request/generate high-priority traffic (vs. those who are not) by, say. increasing the price of subscription to the high-priority service. Implicit in this model is the idea that multiple classes of service are not likely to be served via simple priority queuing. More sophisticated queuing algorithms are needed to prevent any one queue from being completely starved of service, with resulting packet loss for that service class. Even the best-effort queue had better get reasonable service if angry mob scenes are to be avoided.
+
+What about servers?
+
+Most of the time we think of traffic flows and network congestion from the perspective of the desktop computer user. Servers represent a somewhat different problem than desktop systems in that they generally don't initiate traffic flows... they respond to requests. Usually the response contains much more data than the request. Under what circumstances should responses from servers have packets marked for priority treatment? In the absence of a receiver-based QoS reservation and compensation system, the server owner would need to take responsibility for providng excellent performance to clients, either via premium subscription, traffic charges, programatic capacity allocation, etc. One simplistic approach that might just work on campus: If incoming requests are marked for preferential treatment, then configure the server to mark responses in the same way. Another choice: Make the decision based on the type of server app, and if it is, for example, a streaming content server, then mark outgoing packets to request preferential treatment. This could be done either in lieu of or in addition to a priority boost based on a premium-port subscription.
+
+What about incoming traffic?
+
+Trying to decide which packets originating on campus desktop and server computers deserve to receive priority treatment is hard enough... deciding what to do with incoming packets (coming from outside the campus) that are marked for priority treatment is even harder. We presume that in most cases there is not going to be any way to charge the sender for high-priority traffic, though there may be a settlement arrangement with the external network service provider wherein inbound and outbound traffic offset each other. However, UW is currently a net consumer of commodity Internet traffic, and regardless of settlements or cost model, something must be done with those packets. We shall return to this issue later.
+
+02.7 Axioms
+
+There are some networking truisms that relate to QoS design. Some of them include:
+
+QoS doesn't create bandwidth --it just determines who will get poor service at congestion points.
+
+For those who advocate a reservation-based QoS strategy, the most important question is: how many "busy" signals constitute success for your network? Said differently, if a bandwidth reservation scheme leads to success for some sessions, and failure for others, one had better provision the network with enough capacity to make the failure rate very low --or risk revolt from network users.
+
+Given a network "busy" signal to an application's request for priority treatment, users will want to proceed anyway on a "best effort" basis, if they have the choice to do so. This fact has profound implications for pricing models.
+
+Unless the stakes are trivial, network managers will not trust end systems. Period. Consequently, end-systems must present authenticatable credentials when requesting special treatment, or the QoS system must be designed to allow for arbitrary requests.
+
+The biggest need for QoS is on WAN links, because of their (relatively) limited bandwidth, and that is where it is technically hardest to do it, because of scaling, settlements, and signalling interoperability concerns.
+
+Multiplexing multiple priorities of traffic on a single channel improves efficiency, but at the cost of certainty. However, some studies have shown that even a switch with only two queues can provide near-constant latencies for high-priority traffic over a wide-range of loads. The inflection point where best-effort latency begins to grow rapidly may vary from 30% to 80% of switch capacity, depending on the burstiness of the traffic, but the constant delay for high-priority traffic gives cause for optimism. The basic idea is illustrated in Figure2.
+
+The QoS-relevant actions a router can take on a flow of packets include: police, shape, queue, and dequeue. The algorithms controlling these actions can be arbitrarily complex. The identification of a flow can likewise be arbitrarily complex, with current routers offering so-called "layer 4" functionality for identifying particular application streams, in addition to the use of source and destination addresses, IP port number, etc. (MPLS and IPSEC offer other flow identification options and constraints.)
+
+02.8 Conundrums
+
+Guaranteed reservation vs. Preemption. QoS is often discussed in the context of providing bandwidth and/or delay guarantees to applications. At the same time, there is often discussion of priorities and pre-emption. The typical scenario described is that a CEO (or nobel laureate) needs to make an important presentation, and there are too many bandwidth guarantees already booked for the same time. Guess what? Somebody with a "guarantee" get's pre-empted.
+
+Sender vs. Receiver control. Most of the QoS literature describes mechanisms that permit an application with data to send to reserve network resources. However, in many cases the sending station is not in the best position to make a request for privileged treatment. To illustrate this point, consider a web service accessed via a network with differential charging for different service levels. In this case, the receivers of the data are the ones with the incentive for paying extra to receive the web data more quickly. The same would be true of live or on-demand media servers. Mechanisms for handling receiver-initiated reservations have been proposed, but they are a bit more complex.
+
+Simplex vs. Duplex channels. Collaboration tools require full-duplex communication channels. In a QoS environment, it doesn't make much sense to arrange for the session initiator to have preferred treatment for packets sent, while other participants have only a best-effort path back. However, arranging for bandwidth reservations in two directions, often with asymmetric routing, greatly complicates the problem. Even imagining a suitable policy database schema for this problem is non-trivial.
+
+Busy signals vs. getting through. People are used to busy-signals in the telephone system when the called party is already using their phone. Less frequently, phone users experience circuit-busy signals, but the concept of "circuit busy" does not yet exist in the Internet. Moreover, in the Internet with multiple clases of service, a "circuit busy" at one level of service does not preclude attempting to communicate on a "best effort" basis. A hard QoS request that cannot be satisfied at the moment is the Internet equivalent of a busy signal, and almost certainly when confronted with an "Internet busy signal" many will wish to attempt the session on a best-effort basis.
+
+Subscription vs. session pricing. A corollary of the above is that if premium service were to be charged on a per-session basis (ala telephone toll calls), then Internet users would often try a "best effort" "connection" first, and only if the current network conditions precluded adequate performance would they pay for a premium session. Therefore, it is widely held that a per-call-reservation QoS pricing model will not work very well, and users will need to pay for the right to access premium bandwidth on a subscription basis, that is, whether they use it or not. But in the subscription case, there must also be some incentive to not use the premium bandwidth all the time, or the economics may again fail to add up.
+
+Per-flow state vs. scalability. Increasing peak bandwidth requirements and ever-increasing aggregate bandwidth requirements continue to stress both enterprise backbones and national backbones. The number of flows a backbone node will see is a function of the number of end-systems served. Some QoS schemes require routers to maintain per-flow state. Clearly this becomes more difficult as the scope of the network --the number of end-systems served-- grows. A solution that might be tractable in an enterprise network (in terms of per-flow router state) might not work on a national scale.
+
+Differentiated-services vs. differentiated-pricing. The two concepts are independent. It is possible to offer either one but not the other, or it is possible that two might be linked, as our normal sense of equity would suggest.
+
+Multicast. Multicast intersects with QoS, especially in the domain of multimedia and collaboration tools. Use of multicast technology to distribute the same signal to many destinations without replicating the stream multiple times is a boon to network efficiency, but can complicate the QoS problem. For example, different clients may have different bandwidth requirements, or different users may have different privileges with respect to accessing premium bandwidth. The already complex QoS policy space becomes truly awesome when overlaid with the technical complexities of multicast distribution.
+
+02.9 An Imperfect World
+
+Having end-systems negotiate with the net for reserved bandwidth is theoretically a Good Thing... but such a scenario has a darkside. For example, bandwidth reservation has the following less-than-desirable implications:
+
+Authenticated requests, and therefore dependency on a KDC.
+
+Authorization/policy database, and therefore dependency on a DBMS.
+
+Lots of internal router state.
+
+Staff to run the authorization DB and write/administer policies.
+
+Some useful questions might include:
+
+Is it necessary to invent heavy-duty policy and accounting machinery in order to have adequate QoS?
+
+Since "The Phone Company" has managed, in general, to provision their network such that "circuit busy" rates are very low, even while using inefficient circuit switching technology, why do we data-heads think that reservation-based QoS is either a necessary or desirable alternative to adequate provisioning or pricing-based allocation? (On the other hand, IP networking offers a much richer set of services than the phone system, e.g. multiple sessions, multicast, multiple classes of service, so usage can be more demanding than simple phone calls.)
+
+Accordingly, would a site be better off investing in reservation/ preemption mechanisms or in additional capacity?
+
+02.10 Differences between LANs and WANs
+
+LANs and WANs have some opposite characteristics that are relevant to how one might choose to implement QoS in an enterprise. In particular:
+
+In LANs, cost argues for simpler edge devices. For example, UW has approximately 30 core routers, but nearly 1500 hubs/switches in building subnets. Therefore, it is desirable that the edge devices be as inexpensive as possible, and that usually means as simple as possible. In contrast, routers can be more complex/costly because there are not nearly as many of them. On the other hand, the Internet as a WAN owes much of its success and scalability to the design premise that the core routers are kept relatively simple, and complexity is left to edge devices.
+
+In LANs, the edge connect speed may be much faster than that of the core links. For example, some labs might be equipped with Gigabit Ethernet connections, while the enterprise core might only have Fast Ethernet links. In contrast, customer access speeds to National Service Providers are usually a fraction of the speed of the NSP's backbone links. The speed inversion in enterprise nets is a recent phenomenon which was caused by the advent of low-cost Fast Ethernet NICs and hubs/switches, and the corresponding slow roll-out of cost-effective Fast Ethernet routers. Before that, shared 10Mbps LANs were likely to be the congestion points in an enterprise network.
+
+With a network based on switched Fast Ethernet connections at the edges, and also Fast Ethernet connections to routers, it is quite possible that the enterprise core will become the biggest congestion point within the campus net. The implication for QoS design is that IF congestion is less likely at the edges of the campus network, it may not be necessary to have complex QoS-aware edge devices, since QoS mechanisms generally only affect packet handling when there is congestion.
+
+03. ENVIRONMENT
+
+The purpose of this section is to identify characteristics of an enterprise that will influence the type of QoS solutions needed.
+
+03.1 Context
+
+The University of Washington is not unlike other billion-dollar-per-year enterprises, except that in addition to the normal Fortune 500 information technology concerns, UW also operates two hospitals and has many thousands of students wandering about seeking enlightenment.
+
+At the University of Washington, the Computing & Communications organization supports:
+
+70,000 accounts
+
+40,000 end systems
+
+2,000 modems
+
+50 remote sites
+
+We operate an IP-only backbone that currently handles nearly 500 Gigabytes/day with a doubling time of three years. Incoming border traffic from the Internet is now peaking around 40Mbps, with a doubling time of 1.3 years.
+
+UW was a founder of NorthWestNet, one of the original NSFnet regionals, and for many years provided NOC services to its successor organization, Verio Northwest. UW also designed and operates the Pacific/NorthWest Gigapop, the Seattle Network-to-Network Access Point (SNNAP), which is a local-exchange point for ISPs in the area, and a statewide K20 network.
+
+Our campus constituency includes teachers, researchers, students, administrators, and clinicians. UW is not an exception to the rule that the middle name of every academic department is "autonomous".
+
+03.2 Application Drivers
+
+In the context of Internet 2, we see the following application pressures:
+
+Collaboration and distance learning apps.
+
+Large-scale IP video distribution for the Research TV consortium.
+
+FTP: Lots of researchers who just want/expect it to go faster.
+
+Various medical apps.
+
+Some have also suggested that, lest anyone really believe that we can provide enough capacity in a campus net to keep everyone happy, the network version of the Quake game is capable of consuming enormous amounts of bandwidth, and may indeed be the precursor of some mainstream "advanced applications". These would presumably fall under the "collaboration" category above.
+
+Delay and delay variation (jitter) are among the most important network performance characteristics, especially for full-duplex audio applications that are crucial for collaboration tools. Here is a listing of selected apps by (more-or-less) increasing sensitivity to delay:
+
+Background data transfers, e.g. email, news
+
+Interactive file transfers
+
+Web browsing
+
+Remote file service, e.g. NFS, SMB
+
+Telnet sessions with remote echo
+
+Interactive multipoint, multimedia collaboration tools
+
+Telepresence, teleimmersion
+
+Remote manipulation, e.g. telesurgery
+
+Streaming multimedia is not included above because receiver-side buffering can often mask the network latency. Of course latency is very important for any interactive control information, such as "pause" or "rewind" of the streaming media. Note that there is no direct correlation between delay sensitivity and bandwidth requirements.
+
+03.3 Usage Scenarios
+
+One would like network service, including premium service, to be transparent to the user. It should "just work", without users having to think about it. This has been an attainable goal for single class-of-service (best effort) networks; it remains to be seen how user-transparent a multi-service-class network can be. In some designs, where forwarding priority is based on TCP/UDP port numbers, the transparency goal can be achieved --provided that the application in question is one for which global configuration has already been done. Similarly, if the policy design for an advanced net is based soley on a port subscription fee for premium service, this too can be transparent to the user --except for the billing part, of course. However, there are definitely scenarios where users might have to take some specific action to obtain premium service for a session. Here are three examples:
+
+A NIC vendor provides desktop users with some middleware that allows them to adjust the Type Of Service (TOS) bits in outgoing packets. This gives them the ability to explicitly signal the network that an application s/he is about to start should be given priority treatment. The assumption is that there is some cost or quota associated with the premium bandwidth, so the user will want to be somewhat selective about which applications ask for premium service.
+
+A representative for a funding agency is about to visit to see the results of your multi-million dollar high-bandwidth collaboration research project. It becomes an institutional priority to provide "all necessary bandwidth" for this demonstration.
+
+A scheduled distance education lecture series is planned, and it is felt that the needed bandwidth should be reserved in advance (assuming, of course, that an advance reservation system exists at this site.)
+
+In the first case, the premium service cannot be user-transparent because the user must make a value judgement about the specific activity or task at hand and whether it is worth using up their premium quota or paying for the premium service. (One can imagine that more privileged or well-heeled members of an institution, when confronted with such decisions, might simply configure their desktop to always seek premium service --at least for a particular set of applications.)
+
+In the second example, the setup for the demo is likely to be very involved and require the participation of many people. Not only will this event not be user-transparent for the participants, it is possible --nay, likely-- that non-participants will be adversely affected (if significant fractions of heretofor best-effort bandwidth is suddenly sequestered for the demo). We conclude, therefore, that such events are the very antithesis of transparent network services.
+
+Example three obviously requires user action. Whether this particular scenario is going to be commonplace is in dispute, however. We'll return to the topic in the section on reservations and scheduling in the following chapter.
+
+Another dimension of usage has to do with eligibility for access to premium bandwidth. Possible scenarios include "first come, first served", "whoever can pay", "designated program/project participants", and "anyone above a certain station in life". Or combinations of the above.
+
+03.4 Subnet Congestion: How Much QoS Is Needed?
+
+Does the 80/20 traffic locality rule still hold?
+
+Conventional wisdom is that the web has turned things upside down, and most traffic to desktop systems originates off-subnet. Without doubting that the web has had considerable influence on traffic patterns, we suspect that the picture is far more complex, with units operating local workgroup or departmental servers continuing to see intra-subnet traffic dominate, while those relying on central or external servers seeing interor off-subnet traffic dominate. And departments which have their own servers and are also split across subnets tend to complicate the measurement of these trends. But it is essential to understand these traffic patterns in order to properly provision the network and to be able to anticipate the places in the network where there is likely to be congestion, and therefore, a QoS issue.
+
+In a QoS-enabled network, how smart must the edge switch be?
+
+This question has important cost implications, and it depends in turn on several other questions:
+
+Do we need diff-serv queuing on upstream traffic?
+
+Where does/will congestion occur?
+
+Is desktop traffic symmetric?
+
+If it were the case that downstream traffic (destined for the desktop) seriously outweighed the amount of traffic originated on the desktop, then one could argue that for any reasonable provisioning level, adequate to the downstream traffic load, the smaller amount of upstream traffic could be easily accommodated with low probability of congestion. Therefore, in this scenario, the first congestion point a packet leaving a desktop system is likely to encounter would be the subnet router interface. This scenario is attractive because it suggests that most of the QoS complexity in an enterprise network can safely be relegated to routers, and the edge switches don't need to be very smart, meaning that they can be cheap (i.e cheaper than they otherwise would be.) Intuitively, the hypothesis that most desktop systems will consume way more packets than they produce, and that consequently most subnets will be net consumers of traffic, seems obvious, even if one allows for desktop conferencing.
+
+There is only one problem with that analysis: it is not supported by empirical data. On the UW network, there are many subnets that are net producers of traffic. It may be that the desktop hypothesis (most consume way more than they produce) is still true, but the existence of departmental servers exporting information tends to undermind the subnet hypothesis --which is the important one with respect to QoS provisioning. If packets from a desktop collide on their way to a router with those from a local server exporting, say a web or ftp site, then we still have an in-subnet congestion issue even if the desktop system itself is a net importer. That means a QoS-enabled network may need more expensive edge devices (or, if not "edge devices", at least more expensive building distribution switches) in order to apply policy preferences to certain kinds of traffic. It also suggests that those institutions which, for organizational reasons, tend to centralize their servers, or otherwise keep them on separate subnets, away from the desktop population, may be able to build a QoS-enabled network at lower cost than organizations where there is widespread use of departmental servers exporting data off-subnet. (Servers whose clients are local to the same subnet may or may not be an issue, depending on subnet provisioning.)
+
+As mentioned in the previous section, there are a lot more edge devices than core devices in a campus net, so one would like the edge devices to be as inexpensive as possible. Many vendors offering advanced high-speed switches sell them in two forms: one with layer-3 functionality, and one without. Not surprisingly, the version with L-3 functionality is more expensive. This observation is the basis of the concern about complexity at the edges; however, a few multi-layer switch vendors have adopted the Alaska Airlines tagline "For the same price you just get more" and include both L-2 and L-3 functionality at a single aggressive price. So it is possible that edge complexity might prove to be less of an equipment cost concern and more of a configuration complexity and management concern.
+
+03.5 Border Crossings
+
+Our bias is that within a campus LAN, it is plausible to rely on adequate provisioning plus differentiated queuing based on privilege, application need, or user desire. However, "no network should be an island" --regardless of how tempting that might be to administrators dealing with hackers-- and it is less likely that these same techniques will offer an adequate solution to the wide-area problem where adding capacity is generally more expensive. Since the interface between the campus network and wide-area links can have implications for the campus network architecture, and the ultimate goal of QoS mechanisms is to provide an end-to-end solution, it is important to consider the campus border router boundary briefly.
+
+Kinds of wide-area connections.
+
+There certainly may be others, but we'll focus on three:
+
+Commodity Internet, with a premium traffic option
+
+Research Internet, with distinct use and funding policies
+
+Enterprise remote site connections, supporting all services
+
+The way premium service is packaged and priced by the national Network Service Providers (NSPs), be they commercial or research, has significant implications for campus QoS design. For example, the NSP might offer premium bandwidth in the form of a separate (virtual?) circuit, or as an allocation within the same best-effort channel. It might be charged based on a committed access rate and associated traffic threshold, or by peak bandwidth. In a research network consortium, it may not be the case that premium bandwidth use is directly recharged to the using institution, but that will surely happen in the commercial Internet. Therefore, the institution must decide whether to make premium wide-area bandwidth a core-funded allocated good, or to pass the incurred costs directly back to the end-user.
+
+03.6 Integrated Services, Take Two
+
+Network nirvana is considered "integrated services" --wherein all types of communication services (voice, video, and data) all share a single channel. Only a few network managers have aspired to fully integrate all communication services within a campus over a single infrastructure in the near-term. Most have viewed their separate data, video, and voice distribution systems as sunk costs that are working just fine, and haven't wanted to risk using relatively unproven technology for speculative economic gain. They also realize there is value in species diversity and some level of redundancy.
+
+The wide-area case is a different story, however, because there are clear economic benefits to aggregating traffic over a single big pipe rather than leasing multiple smaller pipes. So in one sense, integrated services over wide-area links is old news. Many organizations lease wide-area links and then carve up the channel capacity among their voice, video, and data needs. You might think of these static configuration allocations as "long term reservations".
+
+But this is usually done in the context of time-domain multiplexing (TDM) so even if a service is currently idle, the bandwidth allocated to it was not available to other services. So the real goal is a more flexible bandwidth allocation scheme so that bandwidth unused by one service becomes available for another. However, if this goal is achieved with less than 100% certainty that a given service will always be able to obtain its allocated bandwidth, a network manager might still choose a less efficient bandwidth allocation scheme (e.g. SONET multiplexing) in order to have the certainty that one service cannot interfere with another. Besides, SONET channels can often be procured in high-availability (rapid failover) "protected ring" configurations.
+
+03.7 Capacity Planning and Cost Recovery
+
+UW campus backbone traffic, currently approaching 500GB/day, is doubling every 3 years. In the past six years, Ethernet technology has gone from 10 to 1000 Mbps, an increase of two decimal orders of magnitude, while campus backbone traffic increased by a factor of four at UW. These numbers suggest that it should be possible to add campus network capacity fast enough to keep up with average demand. That's the good news. The bad news is that a) there exist bottlenecks in the current 10Mbps shared subnets that may be artificially constraining demand, b) if Ethernet traffic is indeed self-similar, aggregating it will not even out peaks, it will exacerbate them, and c) we are on the verge of new application paradigms, e.g. desktop video, that may invalidate any projections based on historical data. Since no one really knows how much bandwidth will actually be needed by different classes of users in the future, only time will tell whether raw capacity will keep supply ahead of demand, but there is reason for encouragement.
+
+UW Internet traffic, currently peaking at 40Mbps inbound and over 20Mbps outbound, is doubling every 1.5 years. This is particularly worrisome, not just because of the rapid doubling, but because unlike the campus net, national Internet service providers have been moving away from flat-rate pricing to usage-based pricing (ostensibly as a favor to customers who don't use very much.) Many institutions may decide to limit core-funding of this ever-increasing cost and instead seek methods of reflecting any usage-based charges back to those who incur them.
+
+03.8 Reality Check
+
+This document was originally written in early 1998, and revised throughout 1999. News flash: Today's data networks are not ready for QoS, and it will take "forklift upgrades" to get them ready. Perhaps worse, the same is true for today's end-systems, i.e. the computers themselves.
+
+The prevailing state of network evolution at UW and elsewhere is collections of shared 10Mbps Ethernet segments, linked by routers. What's wrong with this picture? From a QoS perspective, quite a bit. Shared Ethernet segments use a media access discipline (CSMA/CD) that introduces delay variation (jitter) as a function of the number of sending stations contending for the medium. Since these shared links are inherently half-duplex, traffic to and from the same station can collide and thereby exacerbate the jitter problem. Prevalent desktop operating systems are not noted for their low-latency or low-jitter properties, either. Indeed, the statement has been made that prevalent desktop systems lack the clock resolution to do adequate traffic shaping, so we may be looking at forklift upgrades of both network and end-system components before adequate QoS is achieved. Maybe more than one.
+
+But on the network side, there is some good news in that everybody's already switching to switches. This widespread replacement of Ethernet hubs (repeaters) with switches is sometimes called "microsegmentation" because it reduces the number of nodes on an Ethernet segment from hundreds down to as few as one station per switch port. This trend has two motivations: performance and security. Performance is increased because there are fewer stations contending for the same bandwidth; security is improved because traffic is isolated so that it is only visible to the station(s) on the one switch port, thus reducing opportunities for password sniffing.
+
+For collaboration tools, e.g. desktop conferencing, reducing delay and jitter is extremely important, and this calls for full-duplex connections. Although current 10Mbps and 100Mbps Ethernet switches and interface cards are capable of full-duplex operation, there seem to be some configuration and interoperability challenges. For example, auto-negotiation is a problem in buildings with category three cableplants, since the negotiation will attempt to land on 100Mbps even if the cableplant is marginal at that speed. Also, many 10Mbps NICs default to half-duplex and don't provide any easy or obvious way for end-users to change that. Worse, if one end of a link is configured for half-duplex, and the other for full-duplex, they interact badly. Connectivity occurs, but with a high error rate. The result is that the user sees poor performance but has no clue that there is a configuration problem. To reduce the risk of misconfiguration, sites may decide to "go with the flow" and configure switch ports to be half duplex, to match the default of most NICs. From a QoS perspective, this is a problem.
+
+In universities with buildings more than a decade old (i.e. almost all of them!) there is also a problem with the wireplant... The defacto-standard version of Fast Ethernet, 100BaseTX, does not work on older "category 3" wireplants, and the version that does, 100BaseT4, was never well-supported by vendors, and is now largely irrelevant because of the TX momentum. So upgrading from 10Mbps to 100Mbps may be non-trivial in older buildings because the wireplant needs to be upgraded too, not just the electronics. Moreover, if switched 100Mbps service becomes the prevailing standard, as opposed to switched 10 service, this puts more pressure on the capacity of the other levels of the enterprise network hierarchy, and calls for Gigabit Ethernet uplinks from the 100Mbps switches in order to aggregate traffic from multiple stations with acceptably low probability of contention. These GE links (between closet/edge switches and building-entrance room switches) will need to be fiber, and that also increases the cost of upgrade. Finally, the longer GE links will require single-mode fiber, whereas previous campus network technologies used multi-mode fiber.
+
+The IETF DiffServ working group has now agreed upon a specification for how TOS bits will be used, and routers implementing the spec are due Real Soon Now. Similarly, traffic policing and shaping capabilities are expected soon.
+
+Reasonalby priced Ethernet switches are only now becoming available with the features needed to support a next-generation enterprise network. Examples of useful features include:
+
+IGMP multicast snooping/pruning.
+
+Control over number of MAC addresses that can use a port.
+
+Class-based-queuing, based on address, port, TOS/DS, etc.
+
+802.1p and/or VLAN tagging and queuing, based on address, port, TOS/DS, etc.
+
+In some cases, vendors will require their "Layer 3" software functionality --often at extra cost-- in order to support some of the features that may be needed in the edge switches.
+
+04. REQUIREMENTS
+
+The purpose of this section is to identify the characteristics of a satisfactory QoS solution, and try to answer the question "How will we know when we get there?"
+
+04.1 Success Criteria
+
+There are three constituencies that have a stake in the type of QoS mechanism chosen for an enterprise: users, application developers, and network administrators.
+
+So what do users & app developers want? Need?
+
+Both developers and users want infinite bandwidth with zero delay, at any instant. What they need is a completely different question, but this much seems clear:
+
+Users of mundane applications such as telnet need to have a network where it is impossible for "advanced" applications to suck all of the bandwidth out of their telnet session.
+
+Users of mundane applications such as FTP will not only expect that network "advances" such as QoS won't harm their own work, but that their FTPs will go faster.
+
+Expectations/needs/wants of those using collaboration tools will vary all over the map. Some will be delighted with barely intelligible audio and jerky postage-stamp video; others will be grumpy with anything less than studio quality HDTV delivered on-demand.
+
+What are the relevant user satisfaction criteria?
+
+Those that are often cited relate to thruput and delay (and delay variance, or jitter), but in a QoS-with-reservations system, we need to add busy signals to the list. Any system that offers its users a significant number of busy signals may be deemed a failure.
+
+What do network managers want?
+
+Above all, network managers would like an enterprise network QoS design that minimizes cost while keeping their users happy by providing good performance and very high reliability and availability. Said differently, they want to minimize the number of performance and availability complaints from their user community, and minimize the number of complaints about cost from their boss. Clearly, the ability of a QoS scheme to provide the desired network properties to applications, without undermining network availability, will affect the number of user complaints. Containing costs, on the other hand, will require careful consideration of several administrative issues, including:
+
+Funding methods (e.g. recharge vs. core)
+
+Trust requirements
+
+Ability to easily determine whether QoS is working
+
+Policy complexity
+
+04.2 Goals for Congested Links
+
+It's conceivable that mechanisms designed to avoid congestion may sometimes prove inadequate. What then? Any viable solution must balance the needs of both premium and best-effort users:
+
+high-demand apps should have a high probability of working well, but
+
+low-demand apps should also have a high probability of working well
+
+Say the capacity of the potentially-congested link is Z bps and the expected usage by best-effort/low-demand apps is X bps and the expected usage by priority/high-demand apps is Y bps. Now if X+Y > Z, how do we want the router feeding the congested link to behave?
+
+We would expect the router to give preference to priority packets until some threshold (fraction of Z) was reached after which it would service the low-pri queue for awhile (if there was pending low-priority traffic). If the threshold is 100%, best-effort traffic could be completely starved, therefore, one might choose a lower threshold in order to allow some best-effort traffic to survive.
+
+We claim that if premium traffic should ever displace (cause to be dropped) more than, say, 10% of the best-effort traffic, the network manager has a big problem (and this number is probably high). Similarly, if more than a few percent of the high-priority requests fail to result in adequate application performance, the network manager is again toast. This conviction has profound implications for QoS. It suggests that network manager survival --much less, success-- is unattainable unless the gap between bandwidth supply and demand is relatively small, and in a world of potentially infinite bandwidth demand, this means that strategies for either allocating available bandwidth or shaping/moderating demand to fit available bandwidth are not optional niceties; they will make the difference between success and failure. The QoS techniques available to us can address the problem of congestion due to instantaneous peak demand, but they cannot mask any serious and persistent mismatches between supply and demand.
+
+How big a problem this is going to be depends a lot on how big a chunk of bandwidth is needed for a particular application, relative to the total available capacity. For flows that are small relative to the total, short-term reservation mechanisms may not be needed, as those demands should be accommodated via normal capacity planning and traffic engineering. On the other hand, if a particular application needs large amounts of bandwidth relative to the total available on a congested link, then the network manager better be scouring the countryside for some fresh bandwidth, or planning on doing some serious expectation-setting for when those competing with the mega-app find their packets falling on the floor or their reservation requests being denied.
+
+04.3 Scheduling and Reservations
+
+Distance education has introduced into the data networking lexicon the concept of "scheduled bandwidth". The idea is that regularly scheduled classes will require regularly scheduled bandwidth, and likewise, it is often said that important live events will require a mechanism for reserving network bandwidth at the appointed time, lest the featured speaker be reduced to Internet noise and "snow". Implicit in this view is the assumption that the network will have insufficient capacity for handling all of the applications using it at any given time, or at least during peak usage times.
+
+But to validate this hypothesis, we need to ask two questions:
+
+What percentage of the capacity of the enterprise network will be needed for scheduled events, and how does this compare with the amount of unscheduled traffic?
+
+What is the scheduling lead-time for these events in comparison to the scheduling lead-time for additional capacity in the enterprise network?
+
+Moreover, we suspect that the bandwidth needs for scheduled events will be relatively small compared to needs for all of the other things going on, especially demand-video applications. However, there may still be situations that require "assured" bandwidth for a future event. There are a range of strategies for achieving such a goal. One is an advanced reservation strategy... but this technique involves taking away bandwidth from other users, perhaps even others who themselves thought they had their own bandwidth assurances. If there is sufficient bandwidth available so that only low-priority delay-insensitive traffic is affected, then the reservation wasn't necessary, and if there wasn't, then less privileged users will be unhappy about the network's performance.
+
+Another alternative is to actually "create" new bandwidth, at least for the duration of the event, via contracts with telecom/Internet providers. For example, AT&T has recently introduced some "Managed Bandwidth" services for just such situations. Sometimes organizations have the ability to reallocate bandwidth that is already under contract. For example, in the case of enterprise "integrated voice/data/video" networks which are based on statically allocating different amounts of bandwidth on a TDM channel to each application, it may be possible to re-apportion the amount given to the three separate services in order to provision a special event. Of course, the disadvantage of such integrated nets is that bandwidth allocated for one app, say video, is not available for other purpose when not needed for video except by static re-allocation. On the other hand, the cost of managing short-term reservation paradigms may exceed the cost of increasing capacity enough to not need reservations. At least in the campus net; maybe even in the wide area.
+
+If an advance reservation model is to be used to provide assurances about future bandwidth availability, there is a question of reservation duration. Unlike scheduled lectures, the duration of many sessions is unknown and unknowable in advance. For example, in setting up a flow for a desktop video conference, what should be the length of the reservation? Router state to support a reservation can be timed out after a flow ceases for some interval, but this technique is not sufficient to provide the capacity guarantees often expected from a reservation-based QoS system. (If you don't know when one reservation will end, how do you know if there will be sufficient capacity for the next one to begin?)
+
+The name of the game is bandwidth creation and allocation, but it's important to keep in mind that there is a wide spectrum of time-scales in which to create or reallocate bandwidth, from years (for building new physical infrastructure) to microseconds (for packet-by-packet decisions).
+
+One of the ironies in this discussion is that telephone service is often used as the defining metaphor for Internet QoS work, yet the two are opposite in this regard: most people would not think the world had improved if telco congestion problems forced customers to reserve bandwidth in advance of their phone calls in order to reduce the probability of getting a busy signal. (Apparently in the early days of telephony, such reservations were needed to make long distance calls, and having moved beyond the need for reservations is generally viewed as progress!)
+
+So do we need advance reservations or not??
+
+Given greater peak demand than current maximum capacity, one might try to steal some capacity from the lower service levels and hope they don't notice. If the traffic mix is such that you still don't have enough head room after "borrowing" some bandwidth from the best-effort crowd, then the next best hope is to shape the demand; smooth it out; i.e. to move some of the demand to an off-peak time. This might be a nanosecond adjustment, as in traffic shaping, or a daily peak (e.g. modem usage just after dinner). Scheduling (advance reservations) is only one approach to this problem.
+
+Quotas in the form of shaping and policing seem to be widely accepted as a good way of dealing with very short-term peaks. Feedback has been shown to work for shaping long term peaks (as well as providing revenue for adding capacity, if the feedback takes the form of an invoice). Quotas in the form of subscriptions/committed access rates also appear to be a viable way of provisioning for medium/long time scales. So what would be a scenario that demands the use of scheduling?
+
+In an effort to understand when reservations might be a good solution, let's first identify situations where scheduling may be problematic. For advance reservations to make sense, we claim:
+
+You need to know the duration of the events being scheduled, otherwise there is no way to say with certainty that the next reservation will be honored when it comes time...
+
+You need sequestered bandwidth that is only available to the reservation system --if "on demand" requests can suck bandwidth away from the reservations, the reservations may fail, and if the reservations can preempt the on-demand traffic, the on-demand customers will get mighty grumpy... especially if they are subscribed for premium service. So there is the issue of just starving lower-classes of service until somebody screams "enough", and there is the fact that a subscription class of service must necessarily be a higher priority than any on-demand service requests, unless the classes have segregated channel capacity.
+
+Finally, there is the size of the reservation relative to the total channel capacity. It seems reasonable to me that if the size of the reservations is small with respect to total channel capacity, you would have to be operating with virtually no margin, no capacity planning, and no revenue stream for adding capacity before it would be worth dealing with reservations. On the other hand, if the typical reservation size is a significant chunk of total capacity, then you either have to have reservations or revenue to add capacity so that those requests no longer represent a "significant chunk" !
+
+Translating to specifics:
+
+Many organizations have some experience managing conventional videoconferencing systems. In many cases, the bandwidth needed for the video conference is a significant fraction of total capacity available to the remote site. For example, 768Kbps out of an available T1 (with the other half often reserved for data.) This kind of a scenario doesn't leave much room for on-demand use... clearly reservations are appropriate in this case. On the other hand, if this event was using 768Kbps out of an OC12 connected to the Abilene Internet2 backbone, even if one of hundreds of similar sessions, I can't imagine that we'd want to be worrying about reservations... we'd be watching the OC12 utilization on a continual basis, and when offered load started to get close, we'd be trying to figure out how to add more capacity. In a market/commercial scenarioi, this might mean adjusting the (presumed) revenue stream from users needed to pay the NSP providing (and charging for) the premium service to make sure that we didn't run out. Similarly, even if we were running near the edge, if it was possible to add capacity for the duration of the session via switched public network services or managed bandwidth services, we'd probably want to do that rather than deal with reservations.
+
+Contrast this with the scenario where most or all of one's Internet2 OC12 link was to be reserved for a big demo. If the OC12 is shared with on-demand premium traffic and/or best-effort traffic, such a reservation will result in serious mutiny by those uninvolved in the demo --unless everyone understands that the I2 link cannot be depended upon for production use, but that is not realistic considering the current state of routing technology, which almost guarantees that all traffic between a given pair of institutions (both production and experimental) will use the same path.
+
+If a major part of the OC12 capacity is dedicated to scheduled bandwidth requests only, then the reservation scheme will work... but: if reservations are not needed very often, this is big waste of bandwidth, and --as others have observed-- such large-scale reservations are likely to be both rare and require coordinated effort of lots of people, so they are effectively reservations by massive manual configuration.
+
+A case can be made that most premium bandwidth in Internet2 will be consumed by relatively smallish (compared to total capacity) on-demand AV streams, with indeterminant duration, interspersed with occassional extraordinary demands. And big demos will almost surely involve many people and much manual reconfiguration. So is there a case for a sequestered "advance reservation channel" to accommodate lots of "mid-size" requests of determinant length? Or will the frequency of such requests be low enough to not warrant either the sequestered bandwidth nor the reservation machinery?
+
+04.4 Segregation or Reservation?
+
+With the advent of IP telephony and video, the attraction of integrated services is resurgent. There are a couple of points to be made here:
+
+There is a wide spectrum of choices in bandwidth allocation timescales
+
+A major distinction can be made between real-time per-flow reservations and those which are much more persistent:
+
+per-flow
+
+per-session
+
+per special event
+
+persistent (quasi-permanent)
+
+We can conceive of a network design where the primary emphasis is on relatively persistent reservations, essentially a segregation strategy that allows for different services or service classes to be kept separate, but using modern queueing technology so that bandwidth unused by one service is available to others. For example, consider a model where routers (or layer-3 switches) support multiple queues, say, for IP telephony, IP conferencing, (other) high-priority data, and best-effort data. Suppose further that the router supports a queuing discipline where each queue is serviced, before going to the next queue, for a maximum of 1/4 of the output link capacity. This model provides:
+
+guaranteed bandwidth for each service
+
+non-interference among the services
+
+low-overhead and low-complexity in the reservation scheme
+
+efficient use of the entire channel when some services are underused
+
+An important observation is that gateways to traditional transport paths for POTS and videoconferencing will certainly be part of the enterprise network architecture, and these gateways will be linked in some way to the campus IP border routers. In some cases the gateway will "de-mux" an integrated traffic stream from off-campus onto the separate infrastructures for voice, video, data on-campus, and in other cases the gateway will take voice or video streams from the campus IP data net and connect them to traditional wide-area transport services for voice or video.
+
+Implementation of multilevel allocation/prioritization
+
+It is possible that more queues and more sophisticated algorithms could be used to provide prioritization within long-term reservation categories. But there is a possible problem with the number of bits available to represent distinct service classes plus priorities within service classes. For example, the 802.1p/Q specs define three priority bits, which isn't very many for this dual role. There are a few more bits available in the IP TOS header field, and the IETF DiffServ spec defines some TOS field code points for local use, so perhaps these can be used to map a sparse hierarchy of priority policies into the available codepoints.
+
+The advent of tag switching, or Multi-Protocol Label Switching (MPLS) may provide an effective mechanism for implementing nested allocation policies. MPLS essentially provides a way of implementing virtual circuits in a pure IP environment, and seems entirely complementary to the intended use of TOS bits as specified in the DiffServ specification. This approach would imply that router vendors offer the appropriate queuing disclplines necessary to allocate a certain percentage of channel capacity to a particular MPLS virtual circuit, while respecting the TOS/DiffServ prioritization bits on packets within each MPLS virtual circuit flow.
+
+04.5 Is User Authentication a Must?
+
+A cornerstone of much QoS work is the assumption that bandwidth/delay requests must be authenticated, since network managers will never trust end-systems. While it is certainly true that network managers will not trust end-systems, it's worth exploring the solution space a little more completely.
+
+As discussed earlier, privileges, quotas, and costs can all be associated with a variety of different parameters, e.g. user ID, physical port, MAC or IP address. The principal advantage of using the identity of the user is that it affords location and computer independence. That is, if privileges are associated with a user, those privileges can be used regardless of what computer the person happens to be using or what physical port that computer is connected to. On the other hand, this approach implies that the user must authenticate even if they are using their "normal" computer/port. Although logging-in is a normal requirement for accessing many enterprise resources, it is still relatively unusual to require authentication to access the network "dial tone" from one's primary office location.
+
+Experience with the phone system suggests that a viable model is to base "normal" access on physical port alone (no authentication needed) while providing authenticated access from alternate locations (via phone cards, etc). The moral equivalent for the enterprise data network would be eligibility control based on physical port for one's "normal" computer, with eligibility control tie

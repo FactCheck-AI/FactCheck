@@ -1,0 +1,995 @@
+9/15
+
+Integration Tasks
+
+This chapter covers the following topics:
+
+Application Work Integration
+
+Application Work Nodes
+
+Queued, Priority Work Distribution and Delivery
+
+Application Notices
+
+Tasks
+
+Escalations
+
+Leads
+
+Opportunities
+
+Quotes
+
+Marketing Lists
+
+Collections
+
+Service Requests
+
+Media Channel Integration
+
+Advanced Inbound Telephony
+
+Advanced Outbound
+
+Web Callback
+
+Email Center
+
+Interaction Blending Integration
+
+Set UWQ Profile Options for Oracle Interaction Blending
+
+Interaction Center Intelligence Integration
+
+Set UWQ Server Profile Options for Oracle Interaction Center Intelligence
+
+Oracle TeleSales Integration
+
+Set UWQ Profile Options for Oracle TeleSales
+
+Create a Media Action for Oracle TeleSales
+
+Oracle TeleService Integration
+
+Set UWQ Profile Options for Oracle TeleService
+
+Advanced Inbound Integration
+
+Advanced Inbound Media Support
+
+Configure UWQ Server for an Oracle Advanced Inbound Screen Pop
+
+Create a Media Action for Inbound Telephony
+
+Set UWQ Profile Options for Oracle Advanced Inbound
+
+Advanced Outbound Integration
+
+Advanced Outbound Media Support
+
+Set UWQ Profile Options for Oracle Advanced Outbound
+
+Email Center Integration
+
+Queued Emails
+
+My Inbox
+
+Enable Launching of Email Center Message Component from UWQ
+
+Enable Display of Email Media Counts in UWQ
+
+Oracle Customer Care Integration
+
+Create a Universal Work Queue Media Action for Oracle Customer Care
+
+Set UWQ Profile Options for Oracle Customer Care
+
+Web Callback Integration
+
+Application Work Integration
+
+Oracle Universal Work Queue acts as an integration framework for work item delivery (screen pops) to applications. It provides the media plug-in and application work provider frameworks described above to incorporate media and work items. It also provides an application integration infrastructure that allows applications to receive screen pops through Oracle Universal Work Queue from media and application work providers. Only Oracle Forms-based applications integrate with Oracle Universal Work Queue and they integrate at the forms level. Not all Forms applications integrate with Oracle Universal Work Queue. Only some application forms support Oracle Universal Work Queue screen pops.
+
+An application work provider creates and manages one or more work item types. Not all Oracle E-Business applications use Universal Work Queue for the presentation and delivery of work items.
+
+The following applications support Oracle Universal Work Queue screen pops:
+
+Oracle TeleSales
+
+Oracle TeleService
+
+Oracle Advanced Collections
+
+Oracle Task Manager
+
+Oracle Escalation Manager
+
+The following table presents a matrix of the application and form launching.
+
+Application Integration Matrix Application Media Supported (form launched) Screen Pop Forms Work Items Supported Oracle TeleSales
+
+Advanced Outbound (eBusiness Center)
+
+Advanced Inbound (eBusiness Center)
+
+eBusiness Center
+
+Tasks
+
+Leads (work panel enabled)
+
+Opportunities
+
+Quotes
+
+Marketing Lists (work panel enabled)
+
+Oracle TeleService
+
+Advanced Inbound (eBusiness Center)
+
+Web Callback Request
+
+Contact Center
+
+Service Request
+
+Service Request
+
+Tasks
+
+Escalations
+
+Oracle Advanced Collections
+
+Advanced Outbound (eBusiness Center)
+
+Advanced Inbound (eBusiness Center)
+
+eBusiness Center
+
+Delinquency Notice
+
+Dunning Notice
+
+Broken Promise to Pay
+
+Collection Strategy
+
+Tasks
+
+Oracle Task Manager Not supported None
+
+Tasks
+
+Oracle Escalation Manager Not supported None
+
+Escalations
+
+Application Work Nodes
+
+Application work providers expose work item lists through Universal Work Queue nodes.
+
+Nodes organize work by work type (task, service request, media), ownership or assignment and by distribution (groups or individuals).
+
+There may be more than one node for a given work object type: “My Leads” and “My Teams Leads”
+
+Nodes may include sub-nodes that further segment work by work item type.
+
+Nodes display summary information about each work item the agent may access.
+
+Nodes may include quick filters to refine summary information displayed.
+
+Nodes may include quick actions (Workpanel) to allow agents to act upon one or several selected work items.
+
+Agents may open work from the work summary; UWQ launches work into the appropriate application form based on work object action mapping implemented in this release.
+
+Summary information presented is different for each work object type.
+
+Sites customize nodes.
+
+Sites customize summary display. Each summary display consists of a spread table; sites may configure the order and visibility of columns in the spread table.
+
+Sites may set default sort order for summary display.
+
+Sites may set order of nodes within Agent Workplace.
+
+Sites may grant or deny access to nodes on a site-wide, responsibility and individual agent basis.
+
+Sites may control access to Workpanel on a site-wide, responsibility and individual agent basis.
+
+Sites may configure Workpanel commands, parameter display and notes on a responsibility basis through an HTML administration tool.
+
+Sites may configure Quick Filters for each node on a responsibility basis through an HTML administration tool.
+
+Allow agents to control node displays.
+
+Agents may customize the work selector.
+
+Agents may dynamically change node access method: tree control or cascading control.
+
+Agents may hide (or display) nodes for a single session.
+
+Agents may change node order for a single session.
+
+Agents may customize node summary display and save setting between sessions:
+
+Agents may change and save sort summary sort order.
+
+Agents may hide or display summary columns.
+
+Agents may change the order of summary columns.
+
+Queued, Priority Work Distribution and Delivery
+
+Work providers may include work items in the Work Repository to support queued, prioritized distribution and delivery of work items.
+
+Applications map work item priority to UWQ global priority.
+
+Applications maintain work item status.
+
+Applications define work sources and work distribution methods and rules.
+
+UWQ queues work items and supports distribution only upon request and focused, next work distribution and delivery.
+
+Application Notices
+
+Oracle E-Business applications provide notice of important events through Universal Work Queue's application notice framework.
+
+Individual applications may directly integrate with the Application Notice facility or they may supply workflows that send application notices upon specific events.
+
+The work provider (application or workflow) determines the actual events that trigger an application notice.
+
+Sites may create application notices through public APIs.
+
+Agents may launch work item directly from notice.
+
+Tasks
+
+Tasks integrate with UWQ for application work. Tasks provide two nodes for browse and select work, “My Tasks” and “Enterprise Tasks,” “All Tasks” is no longer supported.
+
+Tasks integrate with the Work Repository to support primary and relationship work sources. This means tasks may be distributed with independent rules for stand-alone tasks (such as agent appointments) or as dependent (child) work items based on the task source application.
+
+Using the new work action associations in this release, sites may determine the task launch form based on user responsibility and task source document. This means that a service request task may be configured to launch the task manager, service request form or contact center depending on an agent's responsibility.
+
+Nodes Provided Applications Supported Work Panel Features Quick Filter Columns Application Notices Work Repository Work Sources
+
+My Tasks
+
+Enterprise Tasks
+
+Service Request
+
+Contact Center
+
+Oracle TeleSales
+
+Leads Center
+
+Opportunity Center
+
+eBusiness Center
+
+Oracle Collection
+
+Special Instruction
+
+Notes
+
+Actions
+
+Due Date
+
+Status
+
+Assignment/Ownership
+
+No prepackaged notices.
+
+No prepackaged notices.
+
+Tasks
+
+Service Request Tasks
+
+Escalations
+
+Escalations identify work items, such as service requests, that have been escalated and therefore require special attention. Escalations supports a single node segmented by escalation level.
+
+Nodes Provided Applications Supported Work Panel Features Quick Filter Columns Application Notices Work Repository Work Sources
+
+Escalations
+
+Escalations (segmented by escalation level)
+
+Oracle Escalations
+
+None
+
+No prepackaged notices.
+
+No
+
+Leads
+
+Leads supports two nodes, “My Leads” for owned leads and “My Leads” for sales team associated node. Leads nodes support the work panel; neither supports quick filters. Leads does not subscribe to the Work Repository.
+
+Nodes Provided Applications Supported Work Panel Features Quick Filter Columns Application Notices Work Repository Work Sources
+
+My Leads (Owner)
+
+My Leads (Sales Team)
+
+Oracle TeleSales
+
+Oracle Marketing
+
+Notes
+
+Actions
+
+None
+
+No
+
+No
+
+Opportunities
+
+Opportunities supports two nodes, “My Opportunities Sales Credits” for owned opportunities and “My Opportunities Sales Team” where the agent is part of the sales team. Both support the work panel; neither supports quick filters. Opportunities does not subscribe to the Work Repository.
+
+Oracle TeleSales supports a “Personal Lists” node driven off the Universal Search. This node supports contacts (like Marketing Lists) and Opportunities. Agents create personal lists by specifying selection criteria and executing a Universal Search, then categorizing it as either a Contact or an Opportunity. Agents may create a number of lists in each category. They may be used to track “hot” or failing opportunities, work that requires near-term follow-up, etc. For contacts it is a useful means of creating lists for recurring activities, such as a quarterly or monthly phone call. Personal Lists support Workpanel actions. Contact type lists support Marketing List actions, Opportunity type lists support Opportunity actions. Personal Lists also include the recent activity column and filter.
+
+Nodes Provided Applications Supported Work Panel Features Quick Filter Columns Application Notices Work Repository Work Sources
+
+My Opportunities Sales Credits
+
+My Opportunities Sales Team
+
+Oracle TeleSales
+
+Special Instruction
+
+Notes
+
+Actions
+
+Recent Activity Filter
+
+No prepackaged notices.
+
+No
+
+Quotes
+
+There is a single quotes node. Quotes does not support Workpanel, Quick Filters or the Work Repository.
+
+Nodes Provided Applications Supported Work Panel Features Quick Filter Columns Application Notices Work Repository Work Sources
+
+Quotes
+
+Oracle TeleSales
+
+None
+
+None
+
+No prepackaged notices.
+
+No
+
+Marketing Lists
+
+Marketing lists allow agents to access marketing campaign schedules directly, for manual and list processing. Marketing Lists supports two nodes segmented by marketing campaign schedule (so that agents can access each campaign). Marketing lists supports Workpanel but neither Quick Filters nor Work Repository.
+
+Oracle TeleSales supports a “Personal Lists” node driven off the Universal Search. This node supports both contacts (like Marketing Lists) and Opportunities. Agents create personal lists by specifying selection criteria and executing a Universal Search and categorizing it as either a Contact or an Opportunity. Agents may create a number of lists in each category. They may be used to track “hot” or failing opportunities, work that requires near-term follow-up, etc. For contacts this is a useful means of creating lists for recurring activities, such as a quarterly or monthly phone call.
+
+Personal Lists support Workpanel actions. Contact type lists support Marketing List actions, Opportunity type lists support Opportunity actions. Personal Lists also include the recent activity column and filter.
+
+Nodes Provided Applications Supported Work Panel Features Quick Filter Columns Application Notices Work Repository Work Sources
+
+Marketing Lists
+
+Marketing Lists Manual Assignments
+
+Personal Lists
+
+Oracle TeleSales
+
+eBusiness Center
+
+Task Manager
+
+Special Instructions
+
+Notes
+
+Actions
+
+None
+
+No prepackaged notices.
+
+No
+
+Collections
+
+Collections applications support four major work objects:
+
+Delinquency – the debt that needs to be collected
+
+Broken Promises – a failed promise to pay in response to a collection effort.
+
+Strategies – a collection effort on behalf of a delinquency.
+
+Dunning – an attempt to collect a delinquency, generally in the form of a letter.
+
+To assist collectors, Collections provides a number of nodes organized to view customer or account information. (See the node list below.) Collections does not support Workpanel, Quick Filters or Work Repository for any of these work item objects.
+
+Service Requests
+
+The service request node supports end-user customization through service provided utilities. This allows site administrators to set the segmentation of the service node. Service supports the new work repository for work distribution from service request and SR Task work sources. It does not support Workpanel or Quick Filters.
+
+Universal Work Queue also supports the following for service requests:
+
+Work Distribution
+
+SR Tasks distributed only after related service request has been distributed
+
+Distribute Only mode
+
+Distribute and Deliver framework
+
+Media Channel Integration
+
+Media work providers integrate through the UWQ media plug-in, a de-coupled, real-time media interface. Universal Work Queue provides media support for the following media providers.
+
+Advanced Inbound Telephony
+
+The following integration support is provided for Oracle Advanced Inbound Telephony:
+
+Active and passive mode OTM screen pops.
+
+Active mode, OTM classifies a call and routes it to and queues it for a specific agent or agent group.
+
+Passive mode, an ACD routes and queues the call, OTM provides only CTI services to pass call classifications, events and information through UWQ to the agent's softphone and application.
+
+Execute screen pop based on AI classification and Universal work Queue application action mapping.
+
+Direct and route point call transfers between agents with different responsibilities.
+
+Direct inbound call screen pop configuration: call received, on agent answer or on agent answer and end interaction.
+
+Note: Always use the softphone when it is present. Never use your physical telephone unless directed to by either a warning message or your supervisor.
+
+Advanced Outbound
+
+Universal Work Queue exposes Advanced Outbound campaigns and facilitates call delivery in:
+
+Predictive mode - voice and application screen pop delivered to agent simultaneously
+
+Progressive - Universal Work Queue coordinates dial when application work item is delivered from Advanced Outbound
+
+Preview - Universal Work Queue inserts phone number into the softphone when work is received from Advanced Outbound; agent dials call when ready.
+
+Time Preview - same as preview mode, except automatically places call if agent does not dial within a set time.
+
+AO manual mode - no CTI, only delivers application work item, agent dials phone manually.
+
+Interaction Blending supports multi-list campaigns.
+
+Web Callback
+
+Universal Work Queue supports web callback as an alternate inbound channel. Self-service applications expose a 'call me' button on their web pages. Users request a callback by select the button and entering the callback information (name, phone number, and reason). Oracle Telephony Manager classifies and queues the callback request and distributes it to the next available agent in standard (FIFO) order, by classification.
+
+Email Center
+
+With this release, Universal Work Queue provides full support for email. Agents may access email accounts and classifications from within Universal Work Queue to request new email and access unfinished responses from their inbox. Both access methods launch the HTML Email client.
+
+You can perform the following:
+
+Request next email - Email Center queues are accessed through the agent workplace in Universal Work Queue
+
+Open received email - Agents can access inbox from the agent workplace in Universal Work Queue
+
+Interaction Blending Integration
+
+Note: This procedure applies to the blending of media work. It is only required when implementing Oracle Interaction Blending. The System Administrator responsibility is required to define profile options.
+
+Oracle Interaction Blending dynamically moves agents between queues and media types based on the service levels for the interaction center. Use the following procedure to integrate Universal Work Queue with Oracle Interaction Blending.
+
+Related Topics
+
+Oracle Interaction Blending Implementation Guide
+
+Set UWQ Profile Options for Oracle Interaction Blending
+
+The IEU: Blending Style profile is used to enable the blending of media work. When an agent requests work from the Blended node, Universal Work Queue will deliver any of the media type for which an agent is enabled (e.g., inbound, web callbacks, or outbound), based on the service levels for the interaction center.
+
+The following table features the four blending options:
+
+Setting Description Full Forced Blended Enables the blending of media work.
+
+A Blended node appears in the Universal Work Queue work selector.
+
+The media node or nodes (e.g., Inbound and Outbound) from which an agent can request work that is specific to the media do not appear. Full Optional Blended Enables media work blending and the appearance of a Blended node and media nodes (e.g., Inbound or Outbound) in the Universal Work Queue window.
+
+The media node or nodes (e.g., Inbound and Outbound) from which an agent can request work that is specific to the media also appears, allowing an agent to select between the nodes. Not Blended Media work blending is not enabled. A single blending node appears. Simple Forced Blended Provides the ability for passive blending. Simple Optional Blended Provides the ability for enhanced-passive blending. All media nodes appear.
+
+Related Topics
+
+Oracle Interaction Blending Implementation Guide
+
+Oracle Interaction Center Server Manager Implementation Guide
+
+Appendix B
+
+Setting System Profile Options
+
+Interaction Center Intelligence Integration
+
+Universal Work Queue tracks agent session and activity data and reports the information that has been gathered in Oracle Interaction Center Intelligence.
+
+Note: This procedure applies to the session logging of media work and is only required when implementing Oracle Interaction Center Intelligence. Oracle Interaction Center Intelligence must be installed and configured prior to modifying any profiles and the Call Center HTML Administration responsibility must be assigned.
+
+The Universal Work Queue server records the following information in the database:
+
+Agent login
+
+Agent logout
+
+Media item requests
+
+Media item deliveries
+
+Use the following procedure to integrate Universal Work Queue with Oracle Interaction Center Intelligence.
+
+Note: The additional server activity can affect the performance of the Universal Work Queue server.
+
+See Also
+
+Oracle Interaction Center Intelligence Implementation Guide
+
+Set UWQ Server Profile Options for Oracle Interaction Center Intelligence
+
+To enable Universal Work Queue to provide information to be written to Interaction Center tables, you must enable the following Universal Work Queue profile:
+
+Profile Setting IEU: Session History Logging Yes
+
+Note: The default setting for the profile option is No.
+
+See Also
+
+Oracle Interaction Center Intelligence Implementation Guide
+
+Oracle Interaction Center Server Manager Implementation Guide
+
+Appendix C
+
+Oracle TeleSales Integration
+
+Note: This procedure is only required when implementing Oracle TeleSales.
+
+Universal Work Queue can specifically integrate with the Lead and Opportunities modules in Oracle TeleSales. The steps required to integrate Oracle TeleSales include:
+
+Install Oracle TeleSales applications using Oracle Applications Rapid install
+
+Implement Oracle TeleSales modules, as determined by your enterprise and business requirements
+
+Assigning the appropriate user responsibilities to your agents that enable them to access Oracle Applications functionality related to the Oracle TeleSales modules to be used. For example, if the agent has the Customer Support responsibility assigned, they would be able to access and work items that have been assigned to them and are related their job, such as tasks and service requests.
+
+Setting related Universal Work Queue user profile options to enable or disable site or user access to the functionality provided by Oracle TeleSales module.
+
+Set UWQ Profile Options for Oracle TeleSales
+
+When a user logs into Universal Work Queue, the user is enabled to work on the type of work items to which his or her assigned responsibilities provide access unless you limit user access to certain functionality by setting values for the Universal Work Queue profile options. Therefore, if the user's responsibilities enable him or her to access Oracle TeleSales functionality, this profile option does not need to be set unless you want to disable a user's access to the functionality.
+
+The following Universal Work Queue profile options can be set for users who handle Oracle TeleSales related work items:
+
+Profile Option Setting IEU: Queue: Leads Yes IEU: Queue: Opportunities Yes
+
+Create a Media Action for Oracle TeleSales
+
+Use this procedure to create a media action for inbound telephony for Oracle TeleSales.
+
+Login
+
+Oracle HTML Applications
+
+Responsibility
+
+Call Center HTML Administration
+
+Prerequisites
+
+Review Configuring Universal Work Queue for Media Work
+
+Steps
+
+From the Oracle Interaction Center Server Manager, select the UWQ Media Action tab.
+
+The Media Classification Action Association page appears.
+
+Enter the following information for the media action.
+
+In the Media Type field, select Inbound Telephony.
+
+In the Classification field, type in the name of the media item classification that will trigger the media action (screen pop).
+
+In the Media Action field, select the business application that will be launched when a media item of the specified type with the specified classification is selected from a work queue.
+
+Click Update.
+
+Oracle TeleService Integration
+
+Note: This procedure is only required when implementing Oracle TeleService.
+
+Universal Work Queue can specifically integrate with Oracle TeleService's Customer Support and Service Requests modules.
+
+The steps required to integrate Universal Work Queue with the Oracle TeleService include:
+
+Installing Oracle TeleService applications using Oracle Applications Rapid install.
+
+Implementing the Oracle TeleService modules that will be used by your enterprise.
+
+Assigning the appropriate user responsibilities to your agents that enable them to access Oracle Applications functionality related to the Oracle TeleService modules to be used. Oracle Applications ship with certain defined user responsibilities which are set up to provide user access to product functionality.
+
+The Customer Support responsibility enable users to access Oracle TeleService product functionality. For example, if the agent has the Customer Support responsibility assigned, they would be able to work items that have been assigned to them and are related their job, such as tasks and service requests.
+
+Setting related Universal Work Queue profile options to enable or disable site or user access to the functionality provided by Oracle TeleService module.
+
+Note: The ability to integrate telephony with Oracle TeleService requires the configuration of media classification using the Service Requests Media function. The Service Requests Media function will be available in a future release.
+
+See Also
+
+Oracle TeleService Implementation Guide
+
+Set UWQ Profile Options for Oracle TeleService
+
+When a user logs into Universal Work Queue, the user is enabled to work on the type of work items to which his or her assigned responsibilities provide access unless you limit user access to certain functionality by setting values for the Universal Work Queue profile options. Therefore, if the user's responsibilities enable him or her to access Oracle TeleSales functionality, this profile option does not need to be set unless you want to disable a user's access to the functionality.
+
+For example, if you are set up with a responsibility that allows you to access and work items, such as tasks or service requests, those items that are open and assigned to you will be delivered and presented in Universal Work Queue. If the profile option IEU: Queue Service Requests is not set to Yes at the user level, work items will not be delivered to the work queue for presentation to the agent.
+
+The following Universal Work Queue profile option can be set for users who handle Oracle TeleService related work items:
+
+Profile Option Setting IEU: Queue: Service Requests Yes
+
+Advanced Inbound Integration
+
+Note: This procedure is only required when implementing Oracle Advanced Inbound.
+
+Universal Work Queue channels media requests, events and information to the softphone and Oracle E-Business applications. Agents use this channel to log into the Oracle Telephony Manager and assign their extension for receipt of inbound calls.
+
+Oracle Advanced Inbound is an Interaction Center module which is comprised of the following Interaction Center products:
+
+Oracle Telephony Manager
+
+Universal Work Queue
+
+Oracle Interaction Blending
+
+Oracle Routing Server
+
+Oracle Interactive Voice Response Integration
+
+Together these products provide the base for managing customer interactions through multiple channels, delivering interactions to appropriate agents when ready.
+
+Oracle Advanced Inbound is required to telephony enable business applications in the Oracle E-Business Suite. Telephony-enabled means that the product has the capability of communicating with a telephone system for both inbound and outbound calls via the Computer Telephony Integration (CTI) middleware that handles the messaging between a telephone switch and the user's application.
+
+Oracle Advanced Inbound provides an enterprise with the means to improve interaction center productivity through CTI to it's PBX and IVR platforms for application screen pops in the Oracle Applications. It also ensures that the proper customer is routed to the correct agent for multi-media contacts.
+
+The server architecture of Oracle Advanced Inbound is scalable to run interaction centers with a single physical site or multiple sites. It can also be configured to integrate IVR data. The integration points for Oracle Advanced Inbound to other Interaction Center Modules and products include Oracle Advanced Outbound, Universal Work Queue, and Oracle Interaction Blending.
+
+In order for a screen pop to occur in Oracle Advanced Inbound, the following tasks need to be completed for Universal Work Queue:
+
+Configure Universal Work Queue Server
+
+Configure Universal Work Queue Screen Pop
+
+Create and Define Universal Work Queue Agents
+
+Set Universal Work Queue Profile Options
+
+Advanced Inbound Media Support
+
+The following integration support is provided for Advanced Inbound:
+
+Active and passive mode OTM screen pops.
+
+Active mode, OTM classifies a call and routes it to and queues it for a specific agent or agent group.
+
+Passive mode, an ACD routes and queues the call, OTM provides only CTI services to pass call classifications, events and information through UWQ to the agent's softphone and application.
+
+Execute screen pop based on AI classification and Universal work Queue application action mapping.
+
+Direct and route point call transfers between agents with different responsibilities.
+
+Direct inbound call screen pop configuration: call received, on agent answer or on agent answer and end interaction.Universal Work Queue
+
+Configure UWQ Server for an Oracle Advanced Inbound Screen Pop
+
+Use this procedure to configure the Universal Work Queue server for an Oracle Advanced Inbound screen pop.
+
+Login
+
+Oracle HTML Applications
+
+Responsibility
+
+Call Center HTML Administration
+
+Prerequisites
+
+Review Oracle Interaction Center Implementation Guide and Appendix C.
+
+Steps
+
+From the ICSM tab, select the Server Groups sub-option.
+
+The Server Group List page appears.
+
+Select a server group from the available list in the Server Group Name column.
+
+Click Create.
+
+The Server Details page appears.
+
+In the Server Name field, enter the name of the Universal Work Queue server.
+
+In the Server Type field, select Universal Work Queue Server.
+
+Click Save.
+
+Note: You can configure some of the runtime parameters for the Universal Work Queue server. See the appendixes. for a list of the server parameters and values.
+
+Create a Media Action for Inbound Telephony
+
+Use this procedure to create an inbound telephony media action.
+
+Login
+
+Oracle HTML Applications
+
+Responsibility
+
+Call Center HTML Administration
+
+Prerequisites
+
+Review Configuring Universal Work Queue for Media Work
+
+Steps
+
+In the Oracle Interaction Center page, select the UWQ Media Action tab.
+
+The Media Classification Action Association page appears.
+
+Enter the following information for the media action.
+
+In the Media Type field, select Inbound Telephony.
+
+In the Classification field, type in the name of the media item classification that will trigger the media action (screen pop).
+
+In the Media Action field, select the business application that will be launched when a media item of the specified type with the specified classification is selected from a work queue.
+
+Click Update.
+
+Set UWQ Profile Options for Oracle Advanced Inbound
+
+The following Universal Work Queue profile options need to be set:
+
+Profile Option Setting IEU: Queue: Inbound Telephony Yes IEU: Queue: Media: Telephony Yes
+
+Advanced Outbound Integration
+
+Note: This procedure is only required when implementing Oracle Advanced Outbound.
+
+In order for a screen pop to occur for an outbound media item in Oracle Advanced Outbound, the following tasks need to be completed for Universal Work Queue:
+
+Creating a classification rule or rules for outbound media items
+
+Configuring the media actions by media classification
+
+Call classifications are created as part of the Oracle Telephony Manager configuration. The call classifications and the media types are seeded data from the various Oracle Applications.
+
+Advanced Outbound Media Support
+
+Universal Work Queue exposes Advanced Outbound campaigns and facilitates call delivery in:
+
+Predictive mode - voice and application screen pop delivered to agent simultaneously
+
+Progressive - Universal Work Queue coordinates dial when application work item is delivered from Advanced Outbound
+
+Preview - Universal Work Queue inserts phone number into the softphone when work is received from Advanced Outbound; agent dials call when ready.
+
+Time Preview - same as preview mode, except automatically places call if agent does not dial within a set time.
+
+AO manual mode - no CTI, only delivers application work item, agent dials phone manually.
+
+Interaction Blending supports multi-list campaigns.
+
+Set UWQ Profile Options for Oracle Advanced Outbound
+
+The following profile options need to be set for users in Universal Work Queue:
+
+Profile Option Setting IEU: Queue: Advanced Outbound Telephony Yes IEU: Queue: Media: Telephony Yes
+
+Email Center Integration
+
+With this release, Universal Work Queue provides full support for email. Agents may access email accounts and classifications from within Universal Work Queue to request new email and access unfinished responses from their inbox. Both access methods launch the HTML Email client.
+
+You can perform the following:
+
+Request next email - Email Center queues are accessed through the agent workplace in Universal Work Queue
+
+Open received email - Agents can access inbox from the agent workplace in Universal Work Queue
+
+Prior to this release read-only views of email queues and an agent's inbox were displayed in the Universal Work Queue. An agent could view the number of emails in each individual classification queue and also view the list of all emails in their inbox. However they could not either acquire the next message from the queue or open an email from the inbox.
+
+Queued Emails
+
+The “Queued Emails” view provides a count for the number of e-mail messages queued for a specific account. This view displays only the e-mail accounts to which the agent has been assigned. The agent can also drill down to view the count of e-mail messages queued for each classification under a specific account. The agent can acquire the next -email message for a specific classification or the next -email message across all classifications for that account by double-clicking the appropriate row or by selecting the row and clicking the “Get Work” icon in the menu bar. E-mail messages are always delivered to the agent in a first-in-first-out (FIFO) order. The Email Center Message Component is launched in a separate browser window and the contents of the e-mail message along with suggested responses and matching customer data are displayed in the Reply screen. When the agent ends the interaction by responding to the e-mail message, transferring, rerouting, or deleting it, the Message Component window closes automatically. Because each e-mail message is recorded as a separate interaction, the agent can have more than one message open at the same time.
+
+My Inbox
+
+The “My Inbox” view displays the lists of e-mail messages in an agent's inbox. Agents can view e-mail across all accounts to which they are assigned or a list of e-mail messages for a specific account. The following details are displayed for each e-mail message in the agent's inbox:
+
+Read/New – This column indicates whether the message has already been read by the agent or not. An e-mail message could get placed in the agent's inbox if it was automatically routed to the agent, transferred by another agent or assigned by a supervisor. The e-mail message is marked as “New” until the agent views it.
+
+Account – The account name to which the e-mail message belongs is only displayed in a summary view of ALL e-mail ,essagess in the agent's inbox. This column is not displayed when the agent drills down to a specific e-mail account.
+
+Classification – The predefined group into which the e-mail is classified.
+
+From – Sender's -email address
+
+Subject – E-mail message subject
+
+Date – The date the e-mail message was received
+
+Priority – While transferring an e-mail message to another agent, a “high” priority can be assigned to the email. Additionally, while transferring an e-mail message to a supervisor, an “Escalated” priority could be assigned as well. These priorities are displayed here for corresponding e-mail messagess.
+
+Status – The current status of the e-mail message, which includes “Read”, “Transferred”, “Escalated”, “Auto Routed” or “Assigned” or “Saved”
+
+The agent can open an e-mail message from the inbox by double-clicking the corresponding row in the view or selecting it and clicking the “Get Work” icon in the menu bar. The eMail Center Message component is launched in a separate browser window and the contents of the email along with suggested responses and matching customer data is displayed in the Reply screen. When the agent ends the interaction by either responding to the email, transferring, rerouting or deleting it, the Message Component window is automatically closed. The agent can have more than one e-mail message open at the same time because each one is recorded as a separate interaction.
+
+Enable Launching of Email Center Message Component from UWQ
+
+Use this procedure to enable the launching of the Message Component from Universal Work Queue.
+
+Login
+
+Forms Login URL
+
+Responsibility
+
+System Administrator
+
+Prerequisites
+
+None
+
+Steps
+
+From the Application menu, select Menu.
+
+The Menus window appears.
+
+In the User Menu Name field, enter query mode and search for 'CSX_CUSTOMER_SUPPORT'.
+
+The Menus field populates with records matching the query.
+
+Click New in the toolbar to add a new row to the resulting set of functions.
+
+A new row appears.
+
+In the new row, if the function IEM_MC_LAUNCHER is not already assigned, then in the Seq column, enter a unique sequence number.
+
+In the new row, in the Function field, type 'IEM_MC_LAUNCHER' or select this option from the list.
+
+Save the record and exit.
+
+Enable Display of Email Media Counts in UWQ
+
+Use this procedure to enable email media counts being displayed in UWQ.
+
+Login
+
+Forms Login URL
+
+Responsibility
+
+System Administrator
+
+Prerequisites
+
+None
+
+Steps
+
+From the Profile menu, select System.
+
+The Find System Profile Values window appears.
+
+In the Profile field, type 'IEU%Email%' and click Find.
+
+The System Profile Values window appears, displaying records that match your search criteria.
+
+Set the IEU: Queue: Inbound Email profile to Yes.
+
+Note: Depending on your site requirements, you can set this profile at 'Site', 'Application', or 'User' level.
+
+Oracle Customer Care Integration
+
+Note: This procedure is only required when implementing Oracle Customer Care.
+
+The Oracle Customer Care application allows an organization to create profitable customer relationships by managing enterprise-wide customer interactions and information. This is accomplished from the Contact Center. The Contact Center provides a single interface for managing all customer transactions in an efficient. An agent can log a quick service request, search the knowledge base for solutions, assign tasks, and enter and view notes for a customer.
+
+Customers can initiate media and non-media interactions with a company. Media interactions consist of inbound phone calls, emails, or web callbacks and non -media events may be items such as service requests or tasks. The agent can view the work items assigned, in Universal Work Queue. The agent selects the media or non-media work item to process in Universal Work Queue.
+
+Integration with Oracle Telephony Manager through Universal Work Queue, facilitates the media interactions. Telephony Manager routes the call to the appropriate agent based upon availability. When the agent uses the softphone to accept the call, the Contact Center is populated with the customer information. The customer is identified based on the phone number, account number, or other call parameters that the caller enters in the Interactive Voice Recognition (IVR).
+
+The function of a Contact Center with the integration of Oracle Telephony Manager through Universal Work Queue allow Oracle Customer Care to be interfaced with a telephone switch, which includes the added functionality of the softphone.
+
+The integration of Universal Work Queue and Oracle Customer Care provide for the following features:
+
+Softphone is enabled.
+
+Telephone icon is highlighted.
+
+Instant access to customer information with call inputs screen.
+
+Message icon allows a message to be created and sent in Oracle Customer Care.
+
+Task icon opens the task window, allowing the creation of a new task.
+
+See Also
+
+Oracle Customer Care Implementation Guide
+
+Oracle Customer Care User Guide
+
+Create a Universal Work Queue Media Action for Oracle Customer Care
+
+Use this procedure to create a Universal Work Queue media action for Oracle Customer Care.
+
+Login
+
+Oracle HTML Applications
+
+Responsibility
+
+Call Center HTML Administration
+
+Prerequisites
+
+Review Configuring Universal Work Queue for Media Work
+
+Steps
+
+Select the UWQ Media Action tab.
+
+The Media Classification Action Association page appears.
+
+Enter the following information for the media action.
+
+In the Media Type field, select Web Collaboration
+
+In the Classification field, leave blank to indicate "unclassified".
+
+in the Media Action field, select Customer Care Media Action.
+
+Click Update.
+
+Set UWQ Profile Options for Oracle Customer Care
+
+The following profile options need to be set for users in Universal Work Queue:
+
+Profile Option Setting IEU: Queue: Web Callback Yes IEU: Queue: Web Collaboration Yes
+
+Web Callback Integration
+
+Universal Work Queue supports web callback as an alternate inbound channel. Self-service applications expose a 'call me' button on their web pages. Users request a callback by select the button and entering the callback information (name, phone number, and reason). Oracle Telephony Manager classifies and queues the callback request and distributes it to the next available agent in standard (FIFO) order, by classification.

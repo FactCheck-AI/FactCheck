@@ -1,0 +1,81 @@
+How does it work?
+
+Stepper 17 Click as its foundation uses the TB67S539FTG, a two-phase bipolar stepping motor driver with resistorless current sensing from Toshiba Semiconductor. The TB67S539FTG incorporates low on-resistance DMOS FETs, which can deliver a 1.8A maximum current with a motor output voltage rating of 40V, in addition to integrated protection mechanisms such as over-current and over-temperature detection (ISD and TSD LED indicators). It supports full-step to 1/32 steps resolution for less motor noise and smoother control, with a built-in mixed decay mode which helps to stabilize the current waveforms.
+
+Thanks to the many steps that TB67S539FTG supports, motor noise can be significantly reduced with smoother operation and more precise control. It is suited to a wide range of applications such as office automation, commercial, and industrial equipment using stepping motors supporting an operational temperature range covering -20°C to +85°C. The current value is set by the reference voltage value obtained by the MCP1501, a high-precision voltage regulator. The current threshold point of the TB67S539FTG, alongside MCP1501, can be set manually using an onboard trimmer labeled as VR.
+
+In addition to the I2C communication, several GPIO pins connected to the mikroBUS™ socket pins are also used to forward the information to the MCU, associated with the PCA9555A port expander. The PCA9555A also allows choosing the least significant bit (LSB) of its I2C slave address by positioning SMD jumpers labeled as ADDR SEL to an appropriate position marked as 0 and 1, alongside its interrupt feature routed to the INT pin of the mikroBUS™ socket.
+
+The CLK clock signal, routed to the PWM pin of the mikroBUS™ socket, shifts the current step and electrical angle of the motor with its every up-edge, while the Enable pin, labeled as EN and routed to the CS pin of the mikroBUS™ socket, optimizes power consumption used for power ON/OFF purposes. All circuits, including the interface pins, are inactive in this state, and the TB67S539FTG is in the form of minimum power consumption. A simple DIR pin routed to the AN pin on the mikroBUS™ socket allows MCU to manage the direction of the stepper motor (clockwise or counterclockwise), while the RST pin of the mikroBUS™ socket initializes an electrical angle in the internal counter to set an initial position.
+
+A specific addition to this Click board™ is a multifunctional switch that allows the user, by selecting a particular switch, to set appropriate features such as:
+
+1 – Sleep Mode Activation
+
+2 , 3 – Motor Torque Setting
+
+4 , 5 – Mixed Decay Control
+
+6 , 7 , 8 – Step Resolution Setting
+
+The Stepper 17 Click supports an external power supply for the TB67S539FTG, which can be connected to the input terminal labeled as VM and should be within the range of 4.5V to 34V, while the stepper motor coils can be connected to the terminals labeled as B+, B-, A-, and A+.
+
+This Click board™ can operate with both 3.3V and 5V logic voltage levels selected via the VCC SEL jumper. This way, it is allowed for both 3.3V and 5V capable MCUs to use communication lines properly. However, the Click board™ comes equipped with a library containing easy-to-use functions and an example code that can be used, as a reference, for further development.
+
+Specifications
+
+Type Stepper Applications Can be used for small stepping motors in a wide range of applications such as office automation, commercial and industrial equipment On-board modules TB67S539FTG - two-phase bipolar stepping motor driver with resistorless current sensing from Toshiba Semiconductor Key Features Low power consumption, capable of controlling bipolar stepping motor, PWM controlled constant-current drive, operational in full, half, quarter, 1/8, 1/16, and 1/32 step resolutions, built-in a mixed decay mode, anomaly detection functions, and more Interface GPIO,I2C Feature No ClickID Compatibility mikroBUS™ Click board size L (57.15 x 25.4 mm) Input Voltage 3.3V or 5V,External
+
+Pinout diagram
+
+This table shows how the pinout on Stepper 17 Click corresponds to the pinout on the mikroBUS™ socket (the latter shown in the two middle columns).
+
+Notes Pin Pin Notes Rotation Direction DIR 1 AN PWM 16 CLK Step Clock Electrical Angle Intilizing RST 2 RST INT 15 INT Interrupt Enable EN 3 CS RX 14 NC NC 4 SCK TX 13 NC NC 5 MISO SCL 12 SCL I2C Clock NC 6 MOSI SDA 11 SDA I2C Data Power Supply 3.3V 7 3.3V 5V 10 5V Power Supply Ground GND 8 GND GND 9 GND Ground
+
+Onboard settings and indicators
+
+Label Name Default Description LD1 PWR - Power LED Indicator LD2 ISD - Over-Current State LED Indicator LD3 TSD - Over-Temperature State LED Indicator JP1-JP3 ADDR SEL - I2C Address Selection 0/1: Left position 0, Right position 1 JP4 VCC SEL - Logic Level Voltage Selection 3V3/5V: Left position 3V3, Right position 5V SW1 POS 1 - Sleep Mode Activation Switch SW1 POS 2-3 - Motor Torque Setting Switch SW1 POS 4-5 - Mixed Decay Control Switch SW1 POS 6-7-8 - Step Resolution Setting Switch VR VR - Current Threshold Trimmer
+
+Stepper 17 Click electrical specifications
+
+Description Min Typ Max Unit Supply Voltage VCC 3.3 - 5 V External Supply Voltage VM 4.5 - 34 V Maximum Output Current - - 1.8 A Maximum Step Clock Frequency - - 250 kHz Operating Temperature Range -20 +25 +85 °C
+
+Software Support
+
+We provide a library for the Stepper 17 Click as well as a demo application (example), developed using MikroElektronika compilers. The demo can run on all the main MikroElektronika development boards.
+
+Package can be downloaded/installed directly from NECTO Studio Package Manager(recommended way), downloaded from our LibStock™ or found on mikroE github account.
+
+Library Description
+
+This library contains API for Stepper 17 Click driver.
+
+Key functions:
+
+stepper17_cfg_setup - Config Object Initialization function.
+
+stepper17_init - Initialization function.
+
+stepper17_default_cfg - Click Default Configuration function.
+
+Example description
+
+This is an example application for showing Stepper 17 click ability to control motor. First, it sets default configuration, then runs motor on every turn it stops when makes a full circle and it changes direction on every iteration and on every CW movement changes step resolution.
+
+void application_task ( void ) { static uint32_t counter = 0; static uint8_t run = 1; static uint8_t dir = 1; static uint8_t turns = 1; static uint8_t step = 2; if ( ( 0 == stepper17_get_int_state( &stepper17 ) ) && run ) { counter++; if ( counter == ( FULL_CIRCLE * turns ) ) { //Stop motor stepper17_set_en_state( &stepper17, 0 ); run = 0; log_info( &logger, " Stop motor." ); Delay_ms( 2000 ); //Change direction if ( dir ) { log_info( &logger, " Move motor CCW." ); dir = 0; stepper17_set_dir_state( &stepper17, dir ); } else { log_info( &logger, " Move motor CW." ); dir = 1; stepper17_set_dir_state( &stepper17, dir ); if ( 32 == step ) { step = 2; } else { step *= 2; } set_step_resolution( step ); } //Move motor stepper17_set_en_state( &stepper17, 1 ); counter = 0; run = 1; } else { while ( 0 == stepper17_get_int_state( &stepper17 ) ); } } }
+
+The full application code, and ready to use projects can be installed directly from NECTO Studio Package Manager(recommended way), downloaded from our LibStock™ or found on mikroE github account.
+
+Other mikroE Libraries used in the example:
+
+MikroSDK.Board
+
+MikroSDK.Log
+
+Click.Stepper17
+
+Additional notes and informations
+
+Depending on the development board you are using, you may need USB UART click, USB UART 2 click or RS232 click to connect to your PC, for development systems with no UART to USB interface available on the board. The terminal available in all MikroElektronika compilers, or any other terminal application of your choice, can be used to read the message.
+
+mikroSDK

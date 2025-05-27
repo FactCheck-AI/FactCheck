@@ -1,0 +1,233 @@
+Overview
+
+Welcome to the LP-Research Motion Sensor (LPMS) user manual.
+
+This manual applies to the following series devices:
+
+In this manual we will explain everything you need to know to set up the LPMS hardware, install its software and get started with integrating the sensor in your own software project. We have put a lot of effort into making the LPMS a great product, but we are always eager to improve and work on new developments. If you have any further questions or comments regarding this manual, please feel free to contact us anytime.
+
+Specifically, this manual applies to the following series devices:
+
+LPMS-B2 Series (LPMS-B2, LPMS-B2 OEM)
+
+LPMS-U2 Series (LPMS-CU2, LPMS-URS2, LPMS-UTTL2)
+
+LPMS-AL2 Series (LPMS-CANAL2, LPMS-RS232AL2, LPMS-USBAL2)
+
+LPMS-CURS2 Series (LPMS-CURS2 RS232, LPMS-CURS2 CAN, LPMS-CURS2 TTL)
+
+LPMS-ME1 Series (LPMS-ME1 OEM, LPMS-ME1 DKN, LPMS-ME1 DK232)
+
+For more information on the LPMS or other product series, please refer to related documentations, available from the LP-Research website at the following address: http://www.lp-research.com.
+
+Measurement Output
+
+The LP-Research Motion Sensor (LPMS) is a miniature, multi-purpose inertial measurement unit. We designed the unit to be as small as possible so that it can be used in a wide range of applications, from measuring the human motion to the stabilization of ground vehicles or airplanes. The unit can measure orientation in 360 degrees about all three global axes. Measurements are taken digitally and transmitted to a data analysis system in the form of orientation quaternion or Euler angles. Whereas Euler angles are one way of describing the orientation of an object, a quaternion allows orientation measurement without encountering the so-called Gimbal’s lock.
+
+This is achieved by using a four-element vector to express orientation around all axes without being limited by singularities. A more in-depth explanation of the quaternion output of the LPMS will follow further on in this manual. Optionally an LPMS can be equipped with a barometric pressure sensor to extend the application range of the sensor and to be used e.g. in connection with a GPS unit for global position measurements.Technical Background
+
+To measure the orientation of an object, the sensor internally uses three different sensing units (four if the optional pressure sensor is used). These units are micro-electro-mechanical system (MEMS) sensors that integrate complex mechanical and electronic capabilities on a miniaturized device. The units used in the LPMS for orientation determination are a 3-axis gyroscope (detecting angular velocity), a 3-axis accelerometer (detecting the direction of the earth’s gravity field) and a 3-axis magnetometer to measure the direction of the earth magnetic field. In principle orientation data about all three room-axes can be determined by integrating the angular velocity data from the gyroscope.
+
+However, through the integration step the error from the gyroscope measurements, although it might be very small, has an exponential influence on the calculation causing the resulting angle values to drift. Therefore, we correct the orientation data from the gyroscope with information from the accelerometer (roll and pitch) and magnetometer (yaw) to calculate orientation information of high accuracy and stability while guaranteeing fast sampling rates. We combine the orientation information from the three sensing units using an extended Kalman filter (EKF). The Kalman filter allows us to reduce the measurement error especially in case of regular movements (e.g. human gait analysis, vehicle vibration analysis etc.). The internal sampling and filtering rate of the sensor is 400Hz. The data stream frequency is independent from the sampling and processing rate and can be adjusted depending on the selected communication interface.
+
+Communication Methods
+
+One of the strengths of the LPMS series is the diversity of offered communication interfaces. LPMS devices can be connected through either Bluetooth 2, Bluetooth Low Energy, USB, CAN bus, RS-232 or TTL-level serial interfaces. Depending on the capabilities of the communication interface users can choose between transmission with our proprietary (but well documented) LP-BUS and LP-CAN formats, plain ASCII (CSV) format, a minimal CANopen implementation or a user defined CAN protocol.
+
+Calibration
+
+For accurate operation the sensor needs to be calibrated. The calibration procedure includes the determination of gyroscope bias and gain, gyroscope movement threshold, accelerometer misalignment, accelerometer offset and gain, and magnetometer interference bias and gain. As the earth magnetic field can be distorted by metal or electromagnetic sources within the vicinity of the sensor, the re-calibration of the magnetic sensor and re-calculation of the sensor’s magnetic reference vector might be necessary when using the sensor in different locations or under varying experiment environments. Later in this manual we will describe in detail the calibration procedures necessary to guarantee the accuracy of the measurements done by the sensor. We tried to automate the calibration procedures as far as possible inside the firmware of the sensor to make usage as convenient as possible for users.
+
+To compensate the effects of a noisy earth magnetic field the LPMS can dynamically adjust the intensity of the magnetometer compensation to the impact of magnetic environment noise.
+
+Size and Run-times
+
+During development of the LPMS we tried to make the unit as small as possible to allow a large variety of applications. For size reduction the actual sensing units and microcontroller hardware are integrated into one mainboard with a multi-layer PCB design. Each version of LPMS consists of two parts, the actual sensing hardware (microcontroller and MEMS sensors) and communication electronics (USB, CAN bus etc.).
+
+Application Areas
+
+The LPMS is suitable for a wide range of applications. One of the applications focuses for a small-scale motion sensor is the measurement of human movement for injury rehabilitation, gait cycle analysis, surgical skill training etc. The sensor can also be effectively used in the field of virtual reality, navigation, robotics, or for measuring vehicle dynamics. If more than one sensor is used for a sensor network the motion of complex objects as necessary in cinematic motion capturing or animation movie production is possible.
+
+Operation
+
+Device Specifications
+
+Please refer to the corresponding quick start guides for device specifications and connection diagrams. The quick start guides also describe the operational details of the corresponding sensor types such as the meaning of LED indicators (where applicable).
+
+Host Device Communication
+
+Internally LPMS has two different communication modes:
+
+NOTE: The sensor is set to streaming mode by default after powering on. Command mode may be set via the corresponding LP-BUS command. The current operation mode can be saved into sensor flash memory. We will specify the available commands in detail later in this manual.
+
+For sensor with a CAN bus interface, data is initially streamed via CAN bus. Data communication is switched to USB once the first LP-BUS command has been received through the USB port.
+
+For sensors with a serial interface, data is initially streamed via serial port. Data communication is switched to USB once the first LP-BUS command has been received through the USB port.
+
+Bluetooth 2
+
+To connect to the sensor, a Bluetooth connection request must be sent to the Bluetooth MAC address of LPMS-B2. This MAC address is displayed as sensor device ID in the LpmsControl application.
+
+Users should connect to the Bluetooth module of LPMS-B2 using a standard class 2 Bluetooth host interface that supports SPP (serial protocol profile). A key-code for pairing is not normally required. Should you be asked for a key-code anyway, enter “1234”. Establishing a connection with the sensor usually takes around 2 to 5 seconds. The Bluetooth device name of the sensor for device discovery is LPMS-B2. The baudrate of the Bluetooth connection is 921600bit/s.
+
+NOTE: Bluetooth communication always uses the LP-BUS binary format for input / output.
+
+USB
+
+The USB interface of the LPMS sensors internally uses a serial-to-USB interface IC by the company Silabs: https://www.silabs.com/products/interface/usb-bridges/classic-usb-bridges/device.cp2102
+
+There are two options of communication with the Silabs IC:
+
+By downloading a virtual com port driver (VCP): This driver allows you to see the LPMS as COM port in your operating system. All communication is done using standard COM port access procedures. The default connection baudrate is 912.6Kbit/s, 8N1, with hardware flow control.
+
+By accessing the Silabs IC directly using a DLL library: Silabs offers a convenient library that allows users to communicate with their USB interface ICs.
+
+NOTE: USB communication always uses the LP-BUS binary format for input / output.
+
+CAN Bus
+
+Users should be able to communicate with LPMS-CU2, LPMS-CANAL2 or LPMS-CURS2 CAN using any standard CAN interface. The CAN message uses standard 11 bits identifier and 8 bytes of data. The default connection baud rate is 125Kbit/s.
+
+CAN bus communication can be switched to one of the following formats:
+
+CANopen (default) messages, output only
+
+Sequential (custom) CAN messages, output only
+
+LP-BUS binary format (LP-CAN)
+
+NOTE: Format settings can be changed through LpmsControl application or direct LP-BUS communication commands.
+
+RS-232, TTL-level serial
+
+The UART interface for both, RS232 and TTL-level serial uses a baud rate default setting of 115200 bit/s, 8N1, no hardware flow control.
+
+RS-232 and TTL-level serial communication can be switched to one of the following formats:
+
+LP-BUS binary (default)
+
+ASCII plain text
+
+NOTE: Format settings can be changed through the LpmsControl application or direct LP-BUS communication commands.
+
+Orientation Data
+
+The LPMS sensor calculates the orientation difference between a fixed sensor coordinate system and a global reference coordinate system. The local and the global reference coordinate systems used are defined as right-handed Cartesian coordinate systems with:
+
+X positive when pointing to the magnetic west
+
+Y positive when pointing to the magnetic south
+
+Z positive when pointing up (gravity points vertically down with -1g)
+
+See Figure 2 and Figure 3 displaying the orientation and relationship of local sensor and earth global coordinate systems. The 3D orientation output is defined as the orientation between the body-fixed coordinate system and the global coordinate system, using the global coordinate system as reference.
+
+A positive rotation is always right-handed, i.e. defined according to the right-hand rule (corkscrew rule). This means a positive rotation is defined as clockwise in the direction of the axis of rotation.
+
+The definition used for Euler angles in this document is equivalent to roll, pitch, yaw/heading. The Euler angles are of ZYX global type (subsequent rotation around global Z, Y and X axis, also known as aerospace sequence).
+
+Rotation around global X, defined from -180 °...180 °
+
+Rotation around Y, defined from -90 °...90 °
+
+Rotation around Z, defined from -180 °...180 °
+
+NOTE: Due to the definition of Euler angles there is a mathematical singularity when the sensor-fixed X-axis is pointing up or down in the global reference frame (i.e. pitch approaches+/-90). This singularity is not present in quaternion output.
+
+Sensor Orientation Alignment Modes
+
+Object reset
+
+The object reset aligns the LPMS coordinate frame to that of the object to which it is attached (see Figure 4). The sensor must be attached in such a way that the X-axis is in the XZ-plane of the object coordinate frame, i.e. the LPMS can be used to identify the X-axis of the object. To preserve the global vertical, the object must be oriented such that the object Z-axis is vertical. The alignment reset causes the new S’ coordinate frame and the object coordinate frame to be aligned.
+
+NOTE: Since the sensor X-axis is used to describe the direction of the object X-axis, the reset will not work if the sensor X-axis is aligned along the Z-axis of the object.
+
+The object reset simply combines alignment reset and the heading reset at a single instant in time. This has the advantage that all coordinate systems can be aligned with a single action. Keep in mind that the new global reference X-axis (heading) is defined by the object X-axis (to which XZ-plane you have aligned the LPMS).
+
+Heading reset
+
+Often it is important that the global Z-axis remains along the vertical (defined by local gravity vector), but the global X-axis has to be in a particular direction. In this case a heading reset may be used. When performing a heading reset, the new global reference frame is chosen such that the global X-axis points in the direction of the sensor while keeping the global Z-axis vertical (along gravity, pointing upwards). In other words: The global Z-axis point upwards along gravity, where the X and Y axis orthogonally form a perpendicular plane.
+
+NOTE: After a heading reset, the yaw may not be exactly zero, this occurs especially when the X-axis is close to the vertical. This is caused by the definition of the yaw when using Euler angles, which becomes unstable when the pitch approaches +/-90 deg.
+
+Alignment reset
+
+The alignment reset function aims to facilitate in aligning the LPMS coordinate frame (S) with the coordinate frame of the object to which the sensor is attached (O). After an alignment reset, the S coordinate frame is changed to S’ as follows:
+
+The S’ Z-axis is the vertical (up) at time of reset
+
+The S’ X-axis equals the S X-axis but projected on the new horizontal plane.
+
+The S’ Y-axis is chosen as to obtain a right-handed coordinate frame.
+
+NOTE: Once this alignment reset is done, both calibrated data and orientation will be output in the new coordinate frame (S’).
+
+Data Acquisition
+
+Raw Sensor Data
+
+The LPMS contains three MEMS sensors: A gyroscope, an accelerometer and a magnetometer. The raw data from all three of these sensors can be accessed by the host system based on the LP-BUS protocol. The raw sensor data can be used to check if the current acquisition range of the sensors is enough and if the different sensors generate correct output. Users can also implement their own sensor fusion algorithms using the raw sensor data values. Sensor range and data sampling speed can be set by sending commands to the firmware.
+
+The LPMS is delivered in a factory-calibrated state, but it might be necessary to recalibrate the sensors if the measurement environment changes (different ambient electromagnetic field, strong temperature change). Please refer to the following sections for a detailed introduction of sensor calibration methods.
+
+Orientation Data
+
+The LPMS has two orientation output formats: quaternion and Euler angle. As the Euler angle representation of orientation is subject to the Gimbal lock, we strongly recommend users to rely on quaternion representation for orientation calculation.
+
+Filter Settings
+
+Data from the three MEMS sensors is combined using an extended Kalman filter to calculate the orientation data, like quaternion and Euler angle. To make the filter operate correctly, its parameters need to be set in an appropriate way.
+
+Filter Modes
+
+The selection of the right filter mode is essential for a good performance of the orientation calculation. The following filter modes are available:
+
+Magnetometer Correction Setting
+
+The amount by which the magnetometer corrects the orientation output of the sensor is controlled by the magnetic correction settings. The following options are selectable through LpmsControl or directly through the firmware commands.
+
+Acceleration Compensation Setting
+
+The amount by which the accelerometer corrects the orientation output of the sensor is controlled by both linear acceleration and centripetal acceleration settings. The following options are selectable through LpmsControl or directly through firmware commands.
+
+Linear Acceleration Correction Settings
+
+Rotational Acceleration Correction Settings
+
+Gyroscope Threshold
+
+This option has been deprecated with our latest sensor generation. This parameter option in LpmsControl has no effect on sensor output.
+
+Gyroscope Auto-calibration Function
+
+As described earlier in this manual the selection of the following parameter values allows the users to enable or disable the gyroscope auto calibration function. In auto calibration mode the sensor fusion filter automatically detects if the sensor is in a stable / motion-less state. If the sensor stays still for 2s, the currently sampled gyroscope data will be used to re-calculate the gyroscope offset. Using this function will enhance the accuracy of the gyroscope data in especially in changing temperature environments.
+
+NOTE: For application cases that use LPMS to measure machine motion e.g. rotation of a robot arm, gyroscope auto-calibration might not work well. The autocalibration algorithm might detect a uniform rotation generated by a machine as a static state of the gyroscope and calibrate relative to that machine motion. This will lead to unpredictable results. Tests need to be performed with the actual application case to find out if autocalibration can be safely applied.
+
+Calibration Methods
+
+Gyroscope Bias Calibration and Threshold
+
+When the sensor is resting, the output data of the gyroscope should be close to 0. The raw data from the gyroscope sensor has a constant bias of a certain value. This is related to the mechanical structure of the gyroscope MEMS, which can slightly change its characteristics depending e.g. on the environment temperature. There are two ways to determine the gyroscope bias:
+
+Automatic calibration: If the sensor is in a motion-less state for more than 7.5s the gyroscope bias will be automatically readjusted.
+
+Manual calibration: To determine the bias value manually the following calibration procedure needs to be applied. Alternatively, to calibration from the LpmsControl application, the calibration can also be triggered through direct communication with the sensor.
+
+The gyroscope threshold will set up an angular speed limit, below which the LPMS will not process any motion data. This setting can be used to suppress noise or vibrations that might impact the sensor measurements. Users should be careful when applying this functionality, though, as motion information below the threshold will be lost and this might significantly reduce the accuracy of the overall orientation measurement.
+
+Magnetometer Calibration
+
+During the magnetometer calibration procedure several parameters about the magnetic environment close to the sensor are to be determined: magnetometer bias / gain on the X, Y and Z-axis and length / direction of the local geomagnetic field vector. In most environments the earth magnetic field is influenced by electromagnetic noise sources such as power lines, metal etc. As a result the magnetic field becomes de-centered and deformed.
+
+Figure 5 - Result of a successful magnetometer calibration. The green ellipsoid fit should be relatively close to the red points of the magnetic field map. The magnetic noise indicator should be very low in vicinity of the place where the calibration was done.
+
+During the magnetometer calibration the amount of this deformation as well as the average length of the magnetic field vector is calculated. This is usually also referred to as hard-iron and soft-iron calibration. These parameters are tuned automatically using the calibration procedures in the LpmsControl software:
+
+There are two methods for calibrating the hard iron offset and soft iron matrix:
+
+Ellipsoid fit: Parameters are calculated by creating a map of the environment field and then fitting an ellipsoid through the point data. The point cloud after rotating the sensor around its axes should look like Figure 6.
+
+Min / max fit: Parameters are calculated by measuring the minimum and maximum field values for each axis during the sensor rotation process. This method can in principle be used for planar magnetometer calibration. This is important in cases where the magnetometer is fixed to a reference frame that can’t be rotated around all axes e.g. a car.
+
+NOTE: The calculations for the magnetometer calibration are currently executed within the LpSensor library running on the host. They can’t be triggered directly from communication commands on the sensor.

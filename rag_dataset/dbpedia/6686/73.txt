@@ -1,0 +1,65 @@
+SINHALA - Translator Table
+
+Table Designator: sin
+
+A translation table is a module in DBT that provides the rules to convert (translate) a document from print-to-braille or from braille-to-print. Normally, it is selected by the DBT template that controls production of the current document. All documents have a template. In fact, for many languages there are multiple templates, with differences in translation rules or formatting, but each references at least one translation table. (For more on templates, see DBT Templates, the Basics.)
+
+Regardless of your template, you can choose a different translation table to translate your current document using the Translation Table selection from the DBT Document Menu.
+
+You can also select different translation tables to use for particular passages in your document. See the section below on Language Table Switching.
+
+Purpose
+
+The Sinhala tables support print-to-braille translation of Sinhala-language literary text into uncontracted Sinhala braille. Any of the scripts generally used in India and surrounding regions: Arabic (including Sindhi), Bengali, Devanagari (Hindi), Gujarati, Gurmukhi, Kannada, Malayalam, Myanmar, Oriya, Sinhala, Tamil, or Telugu, may be used for print-to-braille translation. Roman script generally is translated as uncontracted braille (with English assumed).
+
+Translation from braille-to-print is supported for this language.
+
+Key Characteristics
+
+Table Designator: sin identifies this translation table for Language Table Switching.
+
+Braille Contractions: This language is usually produced in uncontracted braille. This means that the letters of each word are rendered into braille on a one-for-one basis.
+
+Capital Sign: The Sinhala translator does not use any capitalization mark in braille because the native script does not employ capitalization. Text written with the Roman alphabet (such as English) uses dot 6 for capitalization.
+
+Emphasis: The Sinhala translator ignores all bold, italics, and underlining from the inkprint text. These are not represented in the braille.
+
+Mathematical Braille: With Sinhala, you have a choice of two DBT templates. One uses UEB Math, the other uses Nemeth Math.
+
+Script Systems Used: The Sinhala translator handles all of the scripts of India (U+0900-0DFF), Arabic (U+0600-06FF), and Myanmar (U+1000-1059). The Sinhala translator also handles text using Roman characters, and a wide variety of symbols and punctuation marks.
+
+Sister Tables
+
+The Sinhala translator is closely related to all of the translators used for the languages of India, Nepal, Myanmar, and Sri Lanka. All of these translators share a common set of features and capabilities for translating from print-to-braille. Note, however, that each of the major scripts has its own braille-to-print translator. You do not need to use language table switching to mix different Indic scripts for print-to-braille translation. You do need to use language table switching to mix different Indic scripts for braille-to-print translation.
+
+Translation Modes (DBT Codes which Change the Mode of Translation)
+
+A number of DBT codes affect the mode of the translation or create special translation effects on specific letters or symbols. Some translation modes are specific to particular translator tables.
+
+There are no special translator modes for this table, only those which are present for all tables, such as the [lnb~] code (language-switch) and a few codes for internal testing.
+
+For more about DBT codes that affect the mode of translation, search on the two words, "Translation Code", in the topic, DBT Codes Quick Reference.
+
+Language Table Switching
+
+DBT has translation tables for over 200 world languages. Modern versions of DBT allow using multiple language translation tables within a single document.
+
+Suppose that you are working on a document using this base translation table, but it has passages in a foreign language, or that need a technical braille code. At the beginning of each such passage, insert the DBT code lnb, followed by ~ (tilde) and the table designator for the desired language table. (The table designator for each language table is listed in the Key Characteristics.) Note that using the lnb code you can change from the base table to virtually any other translation table and back again.
+
+For some language tables, the table designator is short, like ise for Icelandic. Thus, to switch to Icelandic braille translation, insert [lnb~ise]. The table designators are more elaborate for mathematics code tables and for languages that have multiple translation tables. As an example, the designator for Unified French Braille is fra-xuf. To start a passage in the French Unified Braille code, insert [lnb~fra-xuf]. At the end of a foreign language passage, use the plain [lnb] code to switch back to the original, base, language translation table.
+
+Some translation tables, and hence their table designators, are for braille codes but not for natural languages. Some examples are the International Phonetic Alphabet (designator: qip) and Nemeth Code (designator: qmt-xnem72m) for mathematics. Using lnb with those table designators allows you to switch to the IPA braille code or the Nemeth braille math code.
+
+While a plain [lnb] code returns translation to the base language, it does not restore any other translation properties that might have been in effect before the switch. For example, if you had been using a [g1L] code (for "grade 1 lock") to prevent contractions, you need to repeat that code after the [lnb] code to restore that effect. Fortunately, you can build lnb codes into DBT styles, to customize what modes to enter and exit at the switch in and out of a translation table.
+
+Note that DBT templates whose names contain the word "basic" all have a number of styles defined for switching between different translation tables. (For the list, see Basic Templates.)
+
+Notice that if you include Roman alphabet characters in a document but do not use a language style or code to switch to a different translation table, you will get uncontracted English with the same marks of punctuation, emphasis, and capitalization used for the base language.
+
+References, History, and Credits
+
+Duxbury Systems, Inc. originally implemented these tables in April 2008, based upon several sources: the document, "World Braille Usage," a joint publication of UNESCO and the National Library Service for the Blind and Physically Handicapped, Washington, D.C. (1990), as well as information posted by two organizations in India, Acharya (IIT Madras) and Baraha, a developer of software for Indian script editing.
+
+Duxbury Systems is grateful to Mr. Dipendra Manocha, Mr. J. L. Kaul, and their colleagues in India who helped us greatly by expanding upon that original information, conducting tests, and providing feedback.
+
+Updates and Errors

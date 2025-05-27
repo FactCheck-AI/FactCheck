@@ -1,0 +1,49 @@
+What is NuGet?
+
+NuGet is a package manager for Microsoft .NET. It installs packages and manages dependencies for .NET projects. It is like Maven (Java) or pip (Python). The NuGet Gallery hosts thousands of popular packages like Json.NET, NUnit, and jQuery. If you develop .NET applications (like in C#), then you probably need to use NuGet.
+
+Installing Packages
+
+The easiest way to use NuGet is through Visual Studio, which includes NuGet features by default. Packages are managed per project. Right-click on a project in Solution Explorer and select “Manage NuGet Packages…” to open the project’s package manager page.
+
+The Browse tab lets you search and install new packages.
+
+The Installed tab shows which packages are installed and can uninstall them.
+
+The Updates tab lets you update packages to their latest versions.
+
+When packages are installed and updated, NuGet also pulls any dependencies they require. Visual Studio also creates a packages.config file for all dependencies. Then, just build and run!
+
+NuGet Configuration
+
+NuGet can be configured using a NuGet.Config file. This file can be placed under a project directory, a solution directory, or a system-wide location. One of the most common settings is the package sources: NuGet uses the public nuget.org repository by default, but others (like private company repos) can also be added. Check the nuget.config reference online for docs on all options. (Package sources can also be configured through Visual Studio under Tools > NuGet Package Manager > Package Manager Settings.)
+
+NuGet Package Manager Console
+
+Sometimes, it’s helpful to control NuGet directly through the Package Manager Console. From the menu bar: Tools > NuGet Package Manager > Package Manager Console. For example, when packages get messed up, I’ll run “Update-Package -Reinstall” to reinstall everything. (Right-clicking the solution and selecting “Restore NuGet Packages” never seems to work for me.) Check the help command or the official guide for more info.
+
+NuGet CLI
+
+The NuGet CLI nuget.exe provides the full extent of NuGet features, including the ability to make packages. It is more powerful than the Package Manager Console. It must be installed independently – it does not come with Visual Studio. Check the NuGet CLI reference online for full details. The .NET Core CLI dotnet.exe can also be used for managing packages. See the feature comparison for the differences.
+
+Creating a NuGet Package
+
+A NuGet package is basically a ZIP file with a .nupkg extension. It typically contains an assembly DLL and maybe other related files. Creating a NuGet package is pretty easy:
+
+Install the NuGet CLI.
+
+Create a .nuspec file for the project.
+
+Add appropriate settings to the .nuspec file.
+
+Run the “nuget pack” command to create the .nupkg file.
+
+Publish the .nupkg file to the desired destination.
+
+The .nuspec file can be created by running the “nuget spec” command in the project’s directory. The generated <project-name>.nuspec file will contain replacement tokens that will be substituted with values from the project’s AssemblyInfo when the package is built. Make sure to set AssemblyInfo values appropriately for the substitution. The version is especially important, and the automatic version format may be useful for guaranteeing uniqueness. Be sure to add any packages upon which the project depends as dependencies, too. (The .nuspec file can also be created manually.) Refer to the .nuspec reference for full details.
+
+The standard package creation command is “nuget pack <project-name>.nuspec”. However, if the .nuspec file contains replacement tokens, then use “nuget pack <project-name>.csproj” instead. Once the package is created, it can be published publicly to nuget.org or to a private NuGet feed.
+
+Below is an example .nuspec file with replacement tokens:
+
+Resources

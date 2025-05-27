@@ -1,0 +1,79 @@
+The appearance of Fortran inaugurated a fruitful period in programming languages that was to last until the early 1970s. When, in 1999, E.W. Dijkstra gave the keynote address at the ACM Symposium on Applied Computing in San Antonio, Texas, he gave an overview of what he saw as the large-scale trends in the preceding half century. I quote:
+
+And then the 60s started with an absolute miracle, viz. ALGOL 60. This was a miracle because on the one hand this programming language had been designed by a committee, while on the other hand its qualities were so outstanding that in retrospect it has been characterized as “a major improvement on most of its successors” (C.A.R. Hoare).
+
+…
+
+Several friends of mine, when asked to suggest a date of birth for Computing Science, came up with January 1960, precisely because it was ALGOL 60 that showed the first ways in which automatic computing could and should and did become a topic of academic concern. [1]).
+
+Algol was a miracle as a language. It was short-lived, but it left a momentous legacy that acted in two ways: in the way the Revised Report on Algol 60 describes the language and in the way subsequent language designers were influenced by being shown what a programming language could be. In celebration of Algol 60 I refer to these designers as “Children of the Miracle”.
+
+The first Children of the Miracle were the members of the Simula team. Although that language quickly followed Algol 60 into oblivion, its distinguishing feature, classes, survived as object-oriented programming in the hands of Bjarne Stroustrup [2] as his C++ language. Although that language is no longer among the most widely used object-oriented languages, it is very much alive.
+
+The Simula team was exposed to Algol 60 pretty much in one place and at the same time. It is remarkable that three of the main contributors to Prolog implementation also had Algol as their formative experience, but independently, scattered in space and time. In the remainder of this article I give an account of how they were influenced by Algol.
+
+In the case of Alain Colmerauer I rely on [3, 4, 5, 6]. In 1963 Colmerauer, as a new graduate student, joined a group at the University of Grenoble whose task was to build an Algol-60 compiler for the IBM 7044. Among the various available parsing techniques, the group was attracted to the method of Edgar Irons. Compared to the other recursive approach, that of Booker and Morris, the one of Irons was more generally applicable, but required non-deterministic choice among production rules. This was Colmerauer’s first brush with non-determinism.
+
+After Colmerauer completed his PhD work, in parsing, he remained in Grenoble to work on two other topics. One of these was to implement an extension to Algol 60 according to a proposal by Robert Floyd for a general mechanism that is not restricted to such non-determinism as may arise in parsing and that can be added to any imperative language.
+
+The other topic was the two-level grammar of Adriaan van Wijngaarden. Colmerauer wrote both a parser and a generator such grammars. Van Wijngaarden thought that going beyond context-free grammars is important for better definition of programming languages. Accordingly, these grammars were used in the definition of Algol 68. If context-free grammars seem inadequate for the definition of programming language, then they seem more obviously inadequate for natural-language processing.
+
+At the University of Montreal, where he had moved to in 1967, Colmerauer implemented “Q systems”, a generalization of context-free grammars that has similarities to two-level grammars as well as to the type-0 grammars of the Chomsky hierarchy. Q systems can be used both in parsing and in generating mode. This property makes them attractive for natural-language translation: parse the source-language text to capture a semantic structure, generate target-language text on the basis of that structure.
+
+The dual-mode property of Q systems makes them also an attractive choice for question-answering systems in natural language: parse the assertions to capture their information content, update the semantic structure, parse the question to retrieve information from the semantic structure, and generate answers on the basis of that information. Such a use suggests a specific kind of semantic structure, namely a sufficiently expressive logic. That is, view a question-answering system as a front-end to automatic theorem-proving.
+
+When Colmerauer left Montreal in 1970 to take up a faculty position in the University of Aix-Marseille, he assembled a small group to develop a question-answering system in French. For the theorem-prover they selected J.A. Robinson’s resolution logic, possibly inspired by Cordell Green’s question-answering system QA3 [7] where Lisp is the language for the assertions and queries.
+
+The most promising work in resolution theorem-proving was seen to be happening in the University of Edinburgh. Colmerauer invited Robert Kowalski for a brief visit in 1971, followed by a longer visit in 1972. The expectations of the Marseille group were met by what they learned about SL resolution, a new technique recently developed in Edinburgh. Beyond these expectations there was a surprise: Boyer, Kowalski, and Moore had noticed that positive Horn clauses play a pivotal role in resolution logic: in their presence SL resolution refrained from misbehaviour and these clauses can be read as context-free production rules. This suggested that the rules be expressed in positive Horn clauses, with SL resolution acting in parsing or in generating mode, as required by the question-answering system.
+
+When the Marseille group learned these results, the relevance to their project was apparent: the Q systems, which were modeled on type-0 grammars, could be replaced by an SL-resolution theorem-prover based on productions in the form of positive Horn clauses. In spite of a resemblance to type-2 grammars, these logic grammars are more expressive because of the availability of parameters, reminiscent of the rules of the two-level grammars of Algol 68.
+
+Thus the Kowalski visits resulted in a drastic re-design of the Marseille question-answering system. Instead of Q systems for parsing assertions and queries and for generating answers, with logic restricted to the semantic structures, it became logic for everything: an SL theorem-prover specialized for positive Horn clauses could parse, generate, and make inferences. This theorem-prover was only a step away from a general-purpose programming language.
+
+Colmerauer got a grant for a year with the goal to produce a “man-machine communication system in French”. The strategy: first create the programming language, then write the required system. The group adopted “Prolog” as the name of the programming language. The most incisive account of the logic kernel of Prolog is Kowalski’s [8].
+
+In 1975 the action moved to Budapest, Hungary, where Peter Szeredi completed his first Prolog implementation. As a student in mathematics, Szeredi had been programming since 1966. He started in Autocode on the Elliott 803 and used it to write assemblers for this machine. He next became involved in Algol 68: translated parts of the report into Hungarian. Szeredi is credited with discovering an error in the type system, which was later corrected by introducing “incestuous unions”.
+
+As a result of his involvement with Algol 68, Szeredi became acquainted with the Compiler Definition Language (CDL), developed by Cornelis Koster, one of the authors of the Algol 68 report. CDL is closely related, via affix grammars, to the W-grammars in which Algol 68 is defined. As others did, Szeredi found CDL a congenial medium for software development and he used it for systems programs for a new Hungarian computer.
+
+In 1975 the Fortran source code of the second Marseille Prolog implementation reached Hungary together with a few transparencies by David H.D. Warren explaining the main ideas of this interpreter. By the time another group in Budapest had overcome its problems in porting the Fortran code to the locally available machine, Szeredi had completed a new Prolog implementation written in CDL. He credits the similarity of CDL with Prolog for this quick success. See [9] for more information about Szeredi’s work in connection with Prolog.
+
+As Algol plays such an important part in the causal chain connecting Szeredi’s early programming experience with his Prolog implementations, I count him among the Children of the Miracle.
+
+Starting in 1976 Keith Clark took the lead in implementing a sequence of Prolog-like languages. These languages exploited the non-sequential semantics of Horn clauses and used control structures such as coroutines and guards or used parallelism. Let us look at Clark’s pre-Prolog computing experience.
+
+After completing his undergraduate work in logic and philosophy, Clark continued his academic study by taking the Computer Science Conversion diploma course at Imperial College, London. There were no examinations; one graduated on the basis of a dissertation. At the start of the work he was handed a listing of an implementation of Euler on the IBM 7094, written in Algol 60. “Do something with this.”
+
+Clark extended the language with list processing capabilities and liberalised the syntax to allow var declarations to appear anywhere in procedure bodies. In addition to introducing new primitives, he had to extend the BNF grammar of Euler, which associated abstract-machine code generation with most of the grammar rules, add extra abstract-machine instructions, and change the definition of its abstract interpreter for code sequences in reverse Polish. He ended up producing a usable implementation of the extended Euler. In this way Clark was exposed to a double dose of Algol 60: by understanding the language so as to be able to modify the implementation and by immersing himself in Euler, a language inspired by Algol 60.
+
+The miracle that was Algol 60 exerted its influence through the language itself as well as via derivatives such as Simula, Euler, and Algol 68. For the Prolog pioneers these languages were the formative experience.
+
+Acknowledgements
+
+Thanks to Keith Clark, Paul McJones, and Péter Szeredi for help with this article.
+
+References
+
+[ 1] Edsger W. Dijkstra: “Computing Science: Achievements and Challenges” (EWD1284) http://tinyurl.com/znbzyd7
+
+[ 2] Stroustrup, Bjarne. The design and evolution of C++. Addison Wesley, 1994.
+
+[ 3] Cohen, Jacques. “A view of the origins and development of Prolog.” Communications of the ACM 31.1 (1988): 26-36.
+
+[ 4] Cohen, Jacques. “A tribute to Alain Colmerauer.” Theory and Practice of Logic Programming 1.06 (2001): 637-646.
+
+[ 5] Colmerauer, Alain, and Philippe Roussel. “The birth of Prolog.” History of programming languages—II. ACM, 1996.
+
+[ 6] Kowalski, Robert A. “The early years of logic programming.” Communications of the ACM 31.1 (1988): 38-43.
+
+[ 7] Green, Cordell. “Theorem proving by resolution as a basis for question-answering systems.” Machine intelligence 4 (1969): 183-205.
+
+[ 8] Kowalski, R. “Predicate logic as a programming language”. Proc. of IFIP Congress ’74, pp. 569-574, North Holland.
+
+[ 9] P. Szeredi “The Early Days of Prolog in Hungary”. ALP Newsletter, Vol 17 n. 4, November 2004.
+
+PS
+
+Alain Colmerauer, January 24, 1941 – May 12, 2017.
+
+We mourn a great scientist and a dear friend.

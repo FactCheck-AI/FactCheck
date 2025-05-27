@@ -1,0 +1,141 @@
+Cubesat Space Protocol Original author(s) AAUSAT3 Developer(s) GomSpace Initial release 26 April 2010 Stable release 1.0 / October 24, 2011; 0 days ago ( ) Written in C Operating system FreeRTOS, Linux Type Protocol License GNU Lesser General Public License Website http://www.libcsp.org
+
+Cubesat Space Protocol (CSP) is a small network-layer delivery protocol designed for Cubesats. The idea was developed by a group of students from Aalborg University in 2008, and further developed for the AAUSAT3 Cubesat mission scheduled for launch in 2011. The protocol is based on a 32-bit header containing both network and transport layer information. Its implementation is designed for, but not limited to, embedded systems such as the 8-bit AVR microprocessor and the 32-bit ARM and AVR from Atmel. The implementation is written in C and is currently ported to run on FreeRTOS and POSIX and pthreads-based operating systems such as Linux. The three-letter acronym CSP was originally an abbreviation for CAN Space Protocol because the first MAC-layer driver was written for CAN-bus. The physical layer has since been extended to include several other technologies, and the name was therefore extended to the more general Cubesat Space Protocol without changing the abbreviation.
+
+The protocol and the implementation is actively maintained by the students at Aalborg University and the spin-off company GomSpace. The source code is available under an LGPL license and hosted on GitHub.
+
+Contents
+
+1 Description
+
+2 Operating Systems supported
+
+3 Physical layer drivers
+
+4 Protocol Header
+
+4.1 Version 0.9
+
+4.2 Version 1+
+
+5 References
+
+6 External links
+
+Description
+
+The Cubesat Space Protocol enables distributed embedded systems to deploy a service oriented network topology. The layering of CSP corresponds to the same layers as the TCP/IP model. The implementation supports a connection oriented transport protocol (Layer 4), a router-core (Layer 3), and several network-interfaces (Layer 1–2). A service oriented topology eases the design of satellite subsystems, since the communication bus itself is the interface to other subsystems. This means that each subsystem developer only needs to define a service-contract, and a set of port-numbers his system will be responding on. Furthermore subsystem inter-dependencies are reduced, and redundancy is easily added by adding multiple similar nodes to the communication bus.
+
+Notable features include:
+
+Simple API similar to Berkeley sockets.
+
+Router core with static routes. Supports transparent forwarding of packets over e.g. spacelink.
+
+Support for both connectionless operation (similar to UDP), and connection oriented operation (based on RUDP).
+
+Service handler that implements ICMP-like requests such as ping and buffer status.
+
+Support for loopback traffic. This can e.g. be used for Inter-process communication between subsystem tasks.
+
+Optional support for broadcast traffic if supported by the physical interface.
+
+Optional support for promiscuous mode if supported by the physical interface.
+
+Optional support for encrypted packets with XTEA in CTR mode.
+
+Optional support for HMAC authenticated packets with truncated SHA-1 HMAC.
+
+Operating Systems supported
+
+CSP should compile on all platforms that has a recent version of the gcc compiler. CSP requires support for C99 features such as inline functions and designated initializers.
+
+FreeRTOS – Tested on AVR8, AVR32 and ARM7.
+
+Linux – Tested on x86, x86-64 and Blackfin.
+
+Physical layer drivers
+
+CSP supports several physical layer technologies. The LGPL licensed source code contains an implementation of a fragmenting CAN interface and drivers for SocketCAN and the Atmel AT90CAN128 and AT91SAM7A1 processors. The remaining physical layer drivers are not included in the LGPL licensed source code, and must be implemented separately. Interfaces need only to implement a function to transmit a packet, and insert received packets into the protocol stack with the csp_new_packet function. CSP has been successfully tested with the following physical layers.
+
+CAN
+
+I2C
+
+RS-232 using the KISS[1] protocol
+
+CCSDS 131.0-B-1-S[2]/131.0-B-2[3] space link protocol
+
+TCP/IP
+
+Protocol Header
+
+Two versions of the CSP header exists. The 0.9 version was used prior to November 2010, when it was replaced with a new header with support for more hosts and ports. The reserved bits must be set to 0. Note that the CSP header does not include a length field. If required, this must be implemented by the physical layer interface.
+
+Version 0.9
+
+The original CSP header supported up to 16 hosts on the network, with 32 ports available on each host. Address 15 is reserved for broadcast traffic. The port range is divided into three segments. Ports 0 to 7 are used for general services such as ping and buffer status, and are implemented by the CSP service handler. The ports from 8 to 15 are used for subsystem specific services. The remaining ports, from 16 to 31, are ephemeral ports used for outgoing connections. Bits 28 and 29 are used for marking packets with HMAC and XTEA encryption.
+
+CSP Header 0.9 Bit offset 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 0 Protocol Priority Source Destination Destination
+
+Port Source
+
+Port Reserved H
+
+M
+
+A
+
+C X
+
+T
+
+E
+
+A R
+
+E
+
+S
+
+1 R
+
+E
+
+S
+
+2 32 Data (0 – 65535 bytes)
+
+Version 1+
+
+In November 2010, the header was redefined to support more hosts and ports. The protocol field was removed, and RDP packets are instead identified by a set bit in the flags field. The priority field was adjusted to two bits, and the freed bits were used to double both the host and port range. CSP now supports up to 32 hosts on the network, with 64 ports available on each host. Address 31 is reserved for broadcast traffic.
+
+The port range is still divided into three adjustable segments. Ports 0 to 7 are used for general services such as ping and buffer status, and are implemented by the CSP service handler. The ports from 8 to 47 are used for subsystem specific services. All remaining ports, from 48 to 63, are ephemeral ports used for outgoing connections. The bits from 28 to 31 are used for marking packets with HMAC, XTEA encryption, RDP header and CRC32 checksum.
+
+CSP Header 1.0+ Bit offset 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 0 Priority Source Destination Destination
+
+Port Source
+
+Port Reserved H
+
+M
+
+A
+
+C X
+
+T
+
+E
+
+A R
+
+D
+
+P C
+
+R
+
+C 32 Data (0 – 65535 bytes)
+
+References

@@ -1,0 +1,27 @@
+SGI may be no more but people are still using its code – and some more of that code may be about to enjoy a revival.
+
+Although Silicon Graphics was delisted back in 2005, and its name taken over by Rackable in 2009, much of its code is still very much around, in active use, and attracting interest. In December, we reported that Linux kernel 6.2 would receive some bug fixes to XFS, the filesystem from SGI's IRIX proprietary Unix. SGI donated the filesystem to the Linux kernel in 1999.
+
+Well, if you're on 6.2, you may want to stay there for now. A bug in XFS in kernel 6.3.3 has shown up. It only corrupts metadata, rather than file data itself, but that's still nasty and can stop a system from booting even if the root partition is not on XFS. The Fedora team investigated and traced it to a single line of code. So it's been found and fixed, but as several commentators have observed, the bug shouldn't really have been let through at all.
+
+This issue is fixed in today's kernel 6.3.5 – meaning that the kernel developers have deleted a line that previously resulted in a loop in writeback trying to allocate an aligned block. XFS users should settle for nothing earlier, in the 6.3 series at least.
+
+XFS has faded somewhat into obscurity in recent years, but in the past it has been the default filesystem in more than one enterprise distro. It's also the basis of Red Hat's next-generation Stratis storage engine, which combines the XFS disk format with ZFS-style enhanced volume management. (The Reg FOSS desk hasn't used either logical-volume management system in anger in years, but distantly recalls preferring the EVMS tooling to the alternative LVM2 system, which won the favor of the kernel developers and got built in instead.)
+
+In other SGI-related matters, OSNews reports that a surprising project went public last week: an effort to reverse engineer the 32-bit version of Silicon Graphics' IRIX kernel. The final 32-bit version of IRIX was version 5.3, and this is what the team hopes to recreate in open source form. Although IRIX then went 64-bit and made it to release 6.5.30, the team points out that the 32-bit version was approximately one-third of the size and complexity, as well as offering better backwards compatibility, including with IRIX 4.x. Better still, the project already has a commercial sponsorship, to the tune of some $6,500. The project lead estimates a time frame of 18 to 24 months. We fear that both the timeline and the budget strike us as extremely optimistic.
+
+Why you might want an email client in the era of webmail
+
+Windows XP activation algorithm cracked, keygen now works on Linux
+
+Intel mulls cutting ties to 16 and 32-bit support
+
+Red Hat releases RHEL 9.2 to customers, with buffet of rebuilds for the rest of us
+
+The problem with trying to reimplement any part of IRIX that wasn't expressly published as open source is that somebody still owns it. SGI, as in The Company Formerly Known As Rackable, has been part of HP Enterprise since 2016. HPE also owns its own UNIX, HP-UX, but that has no future as recent versions only run on Itanium. HPE did have a plan to port HP-UX to x86-64, but axed "Project Redwood" over a decade ago. As there is no new hardware being made that the OS can run on, HP-UX is effectively as dead as IRIX.
+
+Unlike Itanic, at least one derivative of IRIX's native platform still survives. SGI used MIPS processors, and the Chinese Loongson architecture is extremely close to MIPS. We wish the IRIX-32 project all possible luck… but its argument that it's out of patent and is therefore safe to recreate sounds less than totally watertight to us. We've asked HPE for its view.
+
+There's a great deal of nostalgia for Silicon Graphics and its products out there. As we covered a while ago, there is also a project which has reimplemented SGI's Magic desktop on Linux, under the name Maxx Interactive Desktop. Since the last time that The Reg FOSS Desk looked at it, the project's website has been updated, and it has installation instructions for versions of Ubuntu recent enough to still be in support. We hope to take a look at it soon. ®
+
+Bootnote

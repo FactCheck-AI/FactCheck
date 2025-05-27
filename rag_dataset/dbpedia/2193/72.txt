@@ -1,0 +1,15 @@
+Sometimes, when finding the Japanese (ja) title equivalence for page, https://en.wikipedia.org/wiki/Aframomum_corrorima
+
+import json import requests site = "enwiki" # For English queries, set `&sites=enwiki` page = "Aframomum_corrorima" trg_lang = "ja" url = f"https://www.wikidata.org/w/api.php?action=wbgetentities&sites={site}&titles={page}&languages={trg_lang}&format=json" result = json.loads(requests.get(url).content.decode('utf8')) translations = [result['entities'][k]['labels'] for k in result['entities']] print(translations)
+
+[out]:
+
+[{'ja': {'language': 'ja', 'value': 'コロリマ'}}]
+
+Then you'll find that the https://ja.wikipedia.org/w/index.php?title=コロリマ isn't written yet but the wikidata API is able to find the right entity translation.
+
+To extract all the possible links, do something like:
+
+url = f"https://www.wikidata.org/w/api.php?action=wbgetentities&sites={site}&titles={page}&prop=langlinks&format=json" result = json.loads(requests.get(url).content.decode('utf8')) links = [result['entities'][e]['sitelinks'] for e in result['entities'].keys()] print(json.dumps(links))
+
+[out]:

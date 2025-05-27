@@ -1,0 +1,205 @@
+It sounds like a strong argument when a developer states that his company is using its own products, like "MySQL Workbench is using MySQL Connector/C++" or "Connector/OpenOffice.org is based on Connector/C++". But at the end of the day you will need to try out the product yourself. You need to evaluate if its any good for you. Here you go with in-depth build, configure and debug instructions for the MySQL driver for C++ including an example of writing programs that use the driver.
+
+Contents
+
+Build requirements
+
+Building Connector/C++ (Visual Studio Express and Unix Makefiles)
+
+Configure options
+
+If the build fails…
+
+Installing Connector/C++
+
+Running the examples
+
+Creating an application that is using Connector/C++
+
+The Drivers debug traces
+
+Bug reports, feedback, contact
+
+Build requirements
+
+The MySQL Connector/C++ is available as a source code only release. You need to compile the driver yourself, but it’s easy and you must be a passionate developer if you ready build instructions for an alpha release. Binaries will be made available later on. We gave code stability precedence over building and testing binaries.
+
+You will need to have the following piece downloaded and installed.
+
+The source code of Connector/C++
+
+http://downloads.mysql.com/forge/connector_cpp_alpha“>Alpha release
+
+Development snapshot from Launchpad:
+
+The MySQL Client Libary
+
+CMake – Cross Platform Make
+
+… a MySQL Server 5.0 or above to connect your application to 🙂
+
+The source code of the driver can either be obtained from its download site or you check out the latest development snapshot from Launchpad. My recommendation (November 2008) goes for the alpha release download packages. If you want the fresh and bloody meat from Launchpad, get a Bazaar client and run: bzr branch lp:~mysql/mysql-connector-cpp/trunk.
+
+If you want to use the development snapshot but are not familiar with Launchpad and/or Bazaar, you can find a good number of "How to use Launchpad" articles at the MySQL Forums. Based on a quick glance, I recommend that you start with Jays presentation A Contributor’s Guide to Launchpad.net and Bazaar Slides and continue reading his Getting Started and Code Management.
+
+If you go for the Alpha release, you don’t need to worry about all this. Just get the source of the driver from the download page.
+
+MySQL Connector/C++ is based on the MySQL Client Library (C-API). The MySQL Client Library is shipped together with the MySQL Server. If you not not have installed the MySQL Server on your build host, do it now. At least you will need to install the libraries and header files from the server which are available as a separate download packages on the server download page.
+
+Later on, when running, applications that use Connector/C++, you will be reminded of the MySQL Client Library dependency, because Connector/C++ is linked against it. This also means that you need to ship the MySQL Client Library (Windows: libmysql.dll, Unix: libmysqlclient*) together with your Connector/C++ based applications unless you create static builds.
+
+Finally, you will need CMake. CMake is a cross platform make system which generates native build files for your environment.
+
+Building Connector/C++
+
+The basic steps are as easy as cmake && make && make install. Linux, Solaris and MacOS users have seen screen copies of the procedure already in the blog posting MySQL Workbench is using Connector/C++ pre-alpha snapshot . It is time to post Windows (Visual Studio Express) examples. The basic procedure is identical on all platforms, its only (glory?) details that vary.
+
+One CMake pitfall exists on every platform: CMakeCache.txt. CMake does cache configure settings such as the location of a library. Assume you build fails due to a missing library, for example, you may have forgotten to install the MySQL Client Library on your build host. You install the library and run CMake again. Eventually CMake will still not find the library because of the cache. Therefore my usual make clean contains the removal of the cache file rm CMakeCache.txt; make clean. Make sure the cache does not fool you.
+
+The procedure is similar on Windows. First you invoke CMake to generate build files for, for example, Visual C++ 2008 Express Edition. Then you open the solution resp. projects in the IDE.
+
+C:\Dokumente und Einstellungen\T60\cpp_trunk>cmake -G "Visual Studio 9 2008" -- Check for working C compiler: cl -- Check for working C compiler: cl -- works -- Detecting C compiler ABI info -- Detecting C compiler ABI info - done -- Check for working CXX compiler: cl -- Check for working CXX compiler: cl -- works -- Detecting CXX compiler ABI info -- Detecting CXX compiler ABI info - done -- ENV{MYSQL_DIR} = -- MySQL Include dir: C:/Programme/MySQL/MySQL Server 5.1/include -- MySQL Library : C:/Programme/MySQL/MySQL Server 5.1/lib/opt/mysqlclient.lib -- MySQL Library dir: C:/Programme/MySQL/MySQL Server 5.1/lib/opt -- MySQL CFLAGS: -- MySQL Link flags: -- MySQL Include dir: C:/Programme/MySQL/MySQL Server 5.1/include -- MySQL Library dir: C:/Programme/MySQL/MySQL Server 5.1/lib/opt -- MySQL CFLAGS: -- MySQL Link flags: -- Configuring cppconn -- Configuring test cases -- Looking for isinf -- Looking for isinf - not found -- Looking for isinf -- Looking for isinf - not found. -- Looking for finite -- Looking for finite - not found. -- Configuring C/J junit tests port -- Configuring examples -- Configuring done -- Generating done -- Build files have been written to: C:/Dokumente und Einstellungen/T60/cpp_trunk C:\Dokumente und Einstellungen\T60\cpp_trunk>dir *.sln *.vcproj [...] 19.11.2008 12:16 23.332 MYSQLCPPCONN.sln [...] 19.11.2008 12:16 27.564 ALL_BUILD.vcproj 19.11.2008 12:16 27.869 INSTALL.vcproj 19.11.2008 12:16 28.073 PACKAGE.vcproj 19.11.2008 12:16 27.495 ZERO_CHECK.vcproj
+
+If you are running Visual Studio 2008 Express and you would like to use the command line, you could tell CMake to create NMake Makefiles and use nmake for the build.
+
+C:\Dokumente und Einstellungen\T60\cpp_trunk>cmake -G "NMake Makefiles" -- The C compiler identification is MSVC -- The CXX compiler identification is MSVC [...] -- Build files have been written to: C:/Dokumente und Einstellungen/T60/cpp_trunk C:\Dokumente und Einstellungen\T60\cpp_trunk>nmake Microsoft (R) Program Maintenance Utility Version 9.00.30729.01 Copyright (C) Microsoft Corporation. All rights reserved. Scanning dependencies of target mysqlcppconn [ 2%] Building CXX object driver/CMakeFiles/mysqlcppconn.dir/mysql_connection.obj mysql_connection.cpp [...] Linking CXX executable statement.exe [100%] Built target statement
+
+Configure options
+
+Configure options help you to solve build problems, define the installation target and create debug builds. The available configure options can be displayed by running cmake -LH. The switch -LH gives you a commented list of core options. If you want to see all available options, try -LA. And if you don’t need the additional information and hints shown by -LH go for -L.
+
+C:\Dokumente und Einstellungen\T60\cpp_trunk>cmake -LH -- ENV{MYSQL_DIR} = -- MySQL Include dir: C:/Programme/MySQL/MySQL Server 5.1/include -- MySQL Library : C:/Programme/MySQL/MySQL Server 5.1/lib/debug/mysqlclient.lib -- MySQL Library dir: C:/Programme/MySQL/MySQL Server 5.1/lib/debug -- MySQL CFLAGS: -- MySQL Link flags: -- MySQL Include dir: C:/Programme/MySQL/MySQL Server 5.1/include -- MySQL Library dir: C:/Programme/MySQL/MySQL Server 5.1/lib/debug -- MySQL CFLAGS: -- MySQL Link flags: -- Installation path is: C:/Programme/MySQL/ConnectorCPP (overwrite with -DCMAKE_INSTALL_PREFIX=/your/path) -- Configuring cppconn -- Configuring test cases -- No MiniCppUnit -- Configuring examples -- Configuring done -- Generating done -- Build files have been written to: C:/Dokumente und Einstellungen/T60/cpp_trunk -- Cache values // For backwards compatibility, what version of CMake commands and syntax should this version of CMake try to support. CMAKE_BACKWARDS_COMPATIBILITY:STRING=2.4 // Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSi zeRel. CMAKE_BUILD_TYPE:STRING=Debug // Install path prefix, prepended onto install directories. CMAKE_INSTALL_PREFIX:PATH=C:/Programme/MYSQLCPPCONN // Single output directory for building all executables. EXECUTABLE_OUTPUT_PATH:PATH= // Single output directory for building all libraries. LIBRARY_OUTPUT_PATH:PATH= // gcov-enabled MYSQLCPPCONN_GCOV_ENABLE:BOOL=0 // trace-enabled MYSQLCPPCONN_TRACE_ENABLE:BOOL=0 // Path to a file. MYSQL_INCLUDE_DIR:PATH=C:/Programme/MySQL/MySQL Server 5.1/include // Path to a library. MYSQL_LIB:FILEPATH=C:/Programme/MySQL/MySQL Server 5.1/lib/debug/mysqlclient.lib
+
+Every platform may offer a slightly different set configure settings. However, the most important settings are:
+
+MYSQL_INCLUDE_DIR (Windows): MySQL include files path
+
+MYSQL_LIB (Windows): MySQL Client Library path
+
+MYSQL_CONFIG_EXECUTABLE (Linux, Solaris, Mac): location of the mysql_config utility
+
+CMAKE_INSTALL_PREFIX : installation target prefix
+
+MYSQLCPPCONN_TRACE_ENABLE: flag to enable Connector/C++ debug trace log
+
+If the build fails…
+
+Under normal circumstances you do not need to worry about any of these settings. We try to use sensible defaults. But you know, clever auto-detection scripts are there to fail. Whenever you need to change any of these settings, run cmake -DSetting:Type=Value and verify afterwards that CMake has recognized the change using cmake -L. Make sure that you pass the option name, its type and its value to CMake, and be warned about the CMake cache CMakeCache.txt, though…
+
+If, for example, you want to compile Connector/C++ against a MySQL Client Library from your MySQL Server location which is located in /home/nixnutz/mysql-museum/mysql5.0.51/mysql/, you will need to hint CMake to search for the mysql_config utility in the corresponding directory.
+
+nixnutz@ulflinux:~/src/cpp_new/trunk> cmake -DMYSQL_CONFIG_EXECUTABLE:FILEPATH=/home/nixnutz/mysql-museum/mysql5.1.29/bin/mysql_config -- mysql_config was found /home/nixnutz/mysql-museum/mysql5.1.29/bin/mysql_config [...] -- Build files have been written to: /home/nixnutz/src/cpp_new/trunk nixnutz@ulflinux:~/src/cpp_new/trunk> cmake -L -- mysql_config was found /home/nixnutz/mysql-museum/mysql5.1.29/bin/mysql_config [...] MYSQL_CONFIG_EXECUTABLE:FILEPATH=/home/nixnutz/mysql-museum/mysql5.1.29/bin/mysql_config
+
+Installing Connector/C++
+
+The installation of the MySQL Connector/C++ is as easy as running nmake install on Windows (when using nmake and cmake -G"NMake Makefiles) or make install on Unix-like systems (when using cmake -G”Unix Makefiles”). During the installation the header files and libraries of the driver will be copied into appropriate places. On Windows the files will be copied into your program directory, on Linux the files will be copied into /usr/local/.
+
+C:\Dokumente und Einstellungen\T60\cpp_trunk>nmake install Microsoft (R) Program Maintenance Utility Version 9.00.30729.01 Copyright (C) Microsoft Corporation. All rights reserved. [ 36%] Built target mysqlcppconn [ 73%] Built target mysqlcppconn-static [ 75%] Built target driver_test [ 78%] Built target static_test [ 80%] Built target connect [ 82%] Built target connection_meta_schemaobj [ 85%] Built target debug [ 87%] Built target exceptions [ 90%] Built target prepared_statement [ 92%] Built target resultset [ 95%] Built target resultset_meta [ 97%] Built target resultset_types [100%] Built target statement Install the project... -- Install configuration: "Debug" -- Installing: C:/Programme/MySQL/ConnectorCPP/include/cppconn/blob.h -- Installing: C:/Programme/MySQL/ConnectorCPP/include/cppconn/connection.h -- Installing: C:/Programme/MySQL/ConnectorCPP/include/cppconn/datatype.h -- Installing: C:/Programme/MySQL/ConnectorCPP/include/cppconn/driver.h -- Installing: C:/Programme/MySQL/ConnectorCPP/include/cppconn/exception.h -- Installing: C:/Programme/MySQL/ConnectorCPP/include/cppconn/metadata.h -- Installing: C:/Programme/MySQL/ConnectorCPP/include/cppconn/parameter_metadata.h -- Installing: C:/Programme/MySQL/ConnectorCPP/include/cppconn/prepared_statement.h -- Installing: C:/Programme/MySQL/ConnectorCPP/include/cppconn/resultset.h -- Installing: C:/Programme/MySQL/ConnectorCPP/include/cppconn/resultset_metadata.h -- Installing: C:/Programme/MySQL/ConnectorCPP/include/cppconn/statement.h -- Installing: C:/Programme/MySQL/ConnectorCPP/include/cppconn/warning.h -- Installing: C:/Programme/MySQL/ConnectorCPP/lib/mysqlcppconn.lib -- Installing: C:/Programme/MySQL/ConnectorCPP/lib/mysqlcppconn.dll -- Installing: C:/Programme/MySQL/ConnectorCPP/lib/mysqlcppconn-static.lib -- Installing: C:/Programme/MySQL/ConnectorCPP/include/cppconn/mysql_connection.h -- Installing: C:/Programme/MySQL/ConnectorCPP/include/cppconn/mysql_driver.h -- Installing: C:/Programme/MySQL/ConnectorCPP/include/cppconn/mysql_util.h
+
+You can configure an alternative installation location using cmake -DCMAKE_INSTALL_PREFIX:PATH=C:\my_installation_path\.
+
+C:\Dokumente und Einstellungen\T60\cpp_trunk>mkdir C:\my_installation_path C:\Dokumente und Einstellungen\T60\cpp_trunk>cmake -DCMAKE_INSTALL_PREFIX:PATH=C:\my_installation_path [...] -- Build files have been written to: C:/Dokumente und Einstellungen/T60/cpp_trunk C:\Dokumente und Einstellungen\T60\cpp_trunk>nmake install [...] -- Installing: C:/my_installation_path/include/cppconn/mysql_util.h
+
+Running the examples
+
+To simplify your first steps with the new driver, we have included several examples in the example/ directory of the source distribution. The examples will be compiled as part of a build but they will not be installed to any places by make install. You can use them as a snippet-library for creating your first application based on Connector/C++. The code of the examples does not aim to be production ready and sometimes it is a bit verbose. But still, it tries to help you getting you started using a cut&paste, trial-and-error approach.
+
+examples/connect.cpp:
+
+How to create a connection, insert data into MySQL and handle exceptions
+
+examples/connection_meta_schemaobj.cpp:
+
+How to obtain meta data associated with a connection object, for example, a list of tables, databases, MySQL version, driver version.
+
+examples/debug.cpp:
+
+How to activate and deactivate the Connector/C++ debug protocol.
+
+examples/exceptions.cpp:
+
+A closer look at the exceptions thrown by the driver and how to fetch error information.
+
+examples/prepared_statements.cpp:
+
+How to run Prepared Statements including an example how to handle SQL commands that cannot be prepared by the MySQL Server.
+
+examples/resultset.cpp:
+
+How to fetch data and iterate over the result set (cursor)
+
+examples/resultset_meta.cpp:
+
+How to obtain meta data associated with a result set, for example, number of columns and column types
+
+examples/resultset_types.cpp:
+
+Result sets returned from meta data methods – this is more a test than much of an example.
+
+examples/standalone_example.cpp:
+
+Simple standalone program not integrated into regular CMake builds
+
+examples/statements.cpp:
+
+How to run SQL commands without using Prepared Statements
+
+Here is the code of examples/statements.cpp to give you an impression of what you can expect.
+
+/* Standard C++ includes */ #include <stdlib.h> #include <iostream> #include <sstream> #include <stdexcept> /* Public interface of the MySQL Connector/C++ */ #include <driver/mysql_public_iface.h> /* Connection parameter and sample data */ #include "examples.h" using namespace std; /** * Example of statements - not to be confused with prepared statements */ int main(int argc, const char **argv) { static const string url(argc >= 2 ? argv[1] : EXAMPLE_HOST); static const string user(argc >= 3 ? argv[2] : EXAMPLE_USER); static const string pass(argc >= 4 ? argv[3] : EXAMPLE_PASS); static const string database(argc >= 5 ? argv[4] : EXAMPLE_DB); /* Driver Manager */ sql::Driver *driver; /* sql::ResultSet.rowsCount() returns size_t */ size_t row; stringstream sql; int i; bool ok; cout << boolalpha; cout << "1..1" << endl; cout << "# Connector/C++ (simple) statement example.." << endl; try { /* Using the Driver to create a connection */ driver = get_driver_instance(); std::auto_ptr< sql::Connection > con(driver->connect(url, user, pass)); con->setSchema(database); /* Creating a "simple" statement - "simple" = not a prepared statement */ std::auto_ptr< sql::Statement > stmt(con->createStatement()); /* Create a test table demonstrating the use of sql::Statement.execute() */ stmt->execute("DROP TABLE IF EXISTS test"); stmt->execute("CREATE TABLE test(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, label CHAR(1))"); cout << "#\t Test table created" << endl; /* Populate the test table with data */ for (i = 0; i < EXAMPLE_NUM_TEST_ROWS; i++) { // KLUDGE: You should take measures against SQL injections! // example.h contains the test data sql.str(""); sql << "INSERT INTO test(id, label) VALUES ("; sql << test_data[i].id << ", '" << test_data[i].label << "')"; stmt->execute(sql.str()); } cout << "#\t Test table populated" << endl; /* NOTE: Use execute() instead of the more convenient executeQuery() See the other example file for executeQuery() and executeUpdate() examples However, if you are executing SQL dynamically, you might have to use execute() */ ok = stmt->execute("SELECT id, label FROM test ORDER BY id ASC"); cout << "#\t stmt->execute('SELECT id, label FROM test ORDER BY id ASC') = "; cout << ok << endl; if (ok == true) { /* The first result is a result set */ cout << "#\t\t Fetching results" << endl; /* NOTE: If stmt.getMoreResults() would be implemented already one would use a do { ... } while (stmt.getMoreResults()) loop */ std::auto_ptr< sql::ResultSet > res(stmt->getResultSet()); row = 0; while (res->next()) { cout << "#\t\t Row " << row << " - id = " << res->getInt("id"); cout << ", label = '" << res->getString("label") << "'" << endl; row++; } } else if (ok == false) { /* The first result is an update count */ throw runtime_error("Expecting regular result set"); } /* Clean up */ stmt->execute("DROP TABLE IF EXISTS test"); cout << "# done!" << endl; } catch (sql::SQLException &e) { /* The MySQL Connector/C++ throws three different exceptions: - sql::MethodNotImplementedException (derived from sql::SQLException) - sql::InvalidArgumentException (derived from sql::SQLException) - sql::SQLException (derived from std::runtime_error) */ cout << "# ERR: SQLException in " << __FILE__; cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << endl; // Use what(), getErrorCode() and getSQLState() cout << "# ERR: " << e.what(); cout << " (MySQL error code: " << e.getErrorCode(); cout << ", SQLState: " << e.getSQLState() << " )" << endl; cout << "not ok 1" << endl; return EXIT_FAILURE; } catch (std::runtime_error &e) { cout << "# ERR: runtime_error in " << __FILE__; cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << endl; cout << "# ERR: " << e.what() << endl; cout << "not ok 1" << endl; return EXIT_FAILURE; } cout << "ok 1" << endl; return EXIT_SUCCESS; }
+
+Running the examples on Linux is usually a bit easier than running the examples on Windows. That is because on Linux you will not need to worry about library paths most of the time when invoking one of examples from within your build directory. However, if you have not compiled the application statically and ldd &lg;your_app> shows you that a required shared library cannot be found, check your LD_LIBRARY_PATH setting.
+
+All examples take up to to four optional command line parameters. The command line parameters specify the connection URL, the MySQL user, the MySQL password and the MySQL database (schema) to connect to. The connection URL can be of the format tcp://host[:port] or unix:///path_to_socket. If you do not specify any command line parameters when running the examples, the examples will try to connect to 127.0.0.1 using TCP/IP and log into the MySQL server using the user "root", the password "root" and the MySQL database/schema "test".
+
+nixnutz@ulflinux:~/src/cpp_new/v1_0_1> examples/statement tcp://127.0.0.1:3306 user password database 1..1 # Connector/C++ (simple) statement example.. # Test table created # Test table populated # stmt->execute('SELECT id, label FROM test ORDER BY id ASC') = true # Fetching results # Row 0 - id = 1, label = '' # Row 1 - id = 2, label = 'a' # Row 2 - id = 3, label = 'b' # Row 3 - id = 4, label = 'c' # done! ok 1
+
+On Windows you might face the little inconvenience that required libraries (mysqlcppconn.dll and libmysql.dll) are not found by default when running the examples: different platforms, different default search path for libraries – little pitfall. When running an example you might get an error message stating that you should try to re-install the application. To fix this, tell Windows where to find the required libraries. Add the libraries to your library search path, for example, using PATH=%PATH%;c:\path_to_required_libraries on the command line.
+
+On my Windows system I have created a debug build. Both cmake -LH and nmake install told me that I created a debug build and not a release build. Therefore, I am adding the location of the debug version of libmysql to my PATH setting. And I add the location of my Connector/C++ installation to the PATH before running an example.
+
+C:\Dokumente und Einstellungen\T60\cpp_trunk>PATH=%PATH%;C:\Programme\MySQL\ConnectorCPP\lib C:\Dokumente und Einstellungen\T60\cpp_trunk>PATH=%PATH%;C:\Programme\MySQL\MySQL Server 5.1\lib\debug C:\Dokumente und Einstellungen\T60\cpp_trunk>examples\statement tcp://127.0.0.1 root root test 1..1 # Connector/C++ (simple) statement example.. # Test table created # Test table populated # stmt->execute('SELECT id, label FROM test ORDER BY id ASC') = true # Fetching results # Row 0 - id = 1, label = '' # Row 1 - id = 2, label = 'a' # Row 2 - id = 3, label = 'b' # Row 3 - id = 4, label = 'c' # done! ok 1
+
+Creating an application that is using Connector/C++
+
+There is one source file in the examples/ that is special. The program examples/standalone_example.cpp is excluded from the CMake build. It serves as an example how to build your own applications that use the MySQL Connector/C++. It documents which header files you need to include into your programs. You can take two approaches for the header files. Either you include no more than absolutely needed or you take the lazy road and include everything by including mysql_public_iface.h. If you include no more than needed, your compile time will be less, and you have as little external dependencies as possible. Remember that whenever an included header file changes, you will need to recompile. The less you include, the less likely it is that you need to recompile anything. And the less headers you include, the less you pollute your namespace.
+
+However, the downside of including only the minimum set of header files is that you don’t profit from the convenience of a “one-fits-all” and “include-all” approach. If you don’t mind compile times, because you own a Blackbox, and namespace pollution can be ignored, you may want to be lazy and include the entire public interface by including mysql_public_iface.h. Just yesterday I fooled and confused myself because I forgot to include required header files. If I had gone the lazy way, …
+
+The standalone example takes the approach of including as little as possible as you see below.
+
+[...] /* Include directly the different headers from cppconn/ and mysql_driver.h + mysql_util.h (and mysql_connection.h). This will reduce your build time! */ #include "mysql_connection.h" #include <cppconn/driver.h> #include <cppconn/exception.h> #include <cppconn/resultset.h> #include <cppconn/statement.h> [...]
+
+The most complicated matter when building the standalone example is probably to ensure that all libraries will be found when running it :-). As you can see, my Linux box is the best example for that. One way to solve it is to set the LD_LIBRARY_PATH.
+
+nixnutz@ulflinux:~/src/cpp_new/v1_0_1> /usr/bin/c++ -o standalone -I/usr/local/include/cppconn/ -lmysqlcppconn -Wl,-Bdynamic examples/standalone_example.cpp nixnutz@ulflinux:~/src/cpp_new/v1_0_1> ls -la standalone -rwxr-xr-x 1 nixnutz users 21614 25. Nov 17:34 standalone nixnutz@ulflinux:~/src/cpp_new/v1_0_1> ldd standalone libmysqlcppconn.so.1 => not found libstdc++.so.6 => /usr/lib64/libstdc++.so.6 (0x00002b66c97bc000) libm.so.6 => /lib64/libm.so.6 (0x00002b66c9ac4000) libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00002b66c9d18000) libc.so.6 => /lib64/libc.so.6 (0x00002b66c9f26000) /lib64/ld-linux-x86-64.so.2 (0x00002b66c959f000) nixnutz@ulflinux:~/src/cpp_new/v1_0_1> LD_LIBRARY_PATH=/usr/local/lib/ ./standalone tcp://127.0.0.1 root root test Connector/C++ standalone program example... ... running 'SELECT 'Welcome to Connector/C++' AS _message' ... MySQL replies: Welcome to Connector/C++ ... say it again, MySQL ....MySQL replies: Welcome to Connector/C++ ... find more at http://www.mysql.com
+
+To keep the tradition of this blog posting alive of providing both Linux and Windows examples, here you go with the Windows (Visual Studio Express 2008) syntax. Make sure you use the options EHsc and MD for the compiler. EHsc is required for the C++ exception handling. MD will link MSVCRT.LIB. In the example I am using /MDd because I have created a debug build of MySQL Connector/C++.
+
+C:\Dokumente und Einstellungen\T60\v1_0_1>cl /EHsc /MDd /IC:/Programme/MySQL/ConnectorCPP/include/ examples\standalone_example.cpp /link C:/Programme/MySQL/ConnectorCPP/lib/mysqlcppconn.lib Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 15.00.30729.01 for 80x86 Copyright (C) Microsoft Corporation. All rights reserved. standalone_example.cpp Microsoft (R) Incremental Linker Version 9.00.30729.01 Copyright (C) Microsoft Corporation. All rights reserved. /out:standalone_example.exe C:/Programme/MySQL/ConnectorCPP/lib/mysqlcppconn.lib standalone_example.obj C:\Dokumente und Einstellungen\T60\v1_0_1>standalone_example.exe tcp://127.0.0.1 root root test Connector/C++ standalone program example... ... running 'SELECT 'Welcome to Connector/C++' AS _message' ... MySQL replies: Welcome to Connector/C++ ... say it again, MySQL ....MySQL replies: Welcome to Connector/C++ ... find more at http://www.mysql.com
+
+The Drivers debug traces
+
+Now you are ready to write your own applications using Connector/C++. As life goes, you will hit a potential bug at some point. Although you are a master in C++ and you know how to use a debugger, you may want to turn on the debug traces of the driver. Some problems seem to happen randomly which makes it very tricky to attach a debugger to the program. In such cases debug traces and protocol files are more useful because they allow you to trace the activities of all instances of your program.
+
+The driver does not offer any special DTrace support for debugging and profiling. DTrace is a very powerful technology to trace any application without having to develop an extra trace module for your application. The trouble with DTrace is that it is only available on OpenSolaris, Solaris, MacOS 10.5 and FreeBSD. Therefore the driver has no extra support for DTrace – not yet, do you need it?
+
+However, the MySQL Connector/C++ can write two trace files for you. The first trace file can be generated by the underlying MySQL Client Library (formerly known as libmysql). To enable this trace the driver will call the C-API function mysql_debug() internally. Only debug versions of the MySQL Client Library are capable of writing a trace file. Therefore you need to compile Connector/C++ against a debug version of the library, if you want utilize this trace. The trace shows the internal function calls and the adresses of internal objects as you can see below.
+
+>mysql_stmt_init | >_mymalloc | | enter: Size: 816 | | exit: ptr: 0x68e7b8 | <_mymalloc | >init_alloc_root | | enter: root: 0x68e7b8 | | >_mymalloc | | | enter: Size: 2064 | | | exit: ptr: 0x68eb28 [...]
+
+The second trace is the MySQL Connector/C++ internal trace. Note: it is available with debug and non-debug builds of the driver as long as you have enabled the tracing module at compile time using cmake -DMYSQLCPPCONN_TRACE_ENABLE:BOOL=1. By detault the tracing functionality is not available and calls to trace functions are removed by the preprocessor.
+
+Compiling the driver with tracing functionality enabled will cause two additional trace function calls per each driver function call. Please run your own benchmark to find out how much this will impact the performance of your application. I did a quick test with a loop running 30.000 INSERT SQL statements. The test showed no significant time impact for the real time (wall clock time). The two variants of my application using a trace enabled and trace disabled version of the driver performed equally fast. The runtime measure in real time was not significantly impacted as long as I did not enable writing a debug trace. However, there was a diffrence in user time (time spend in the application). When writing a debug trace the IO subsystem may become a bottleneck. In summary: use trace enabled driver builds with care. Trace enabled versions may cause higher CPU usage even if the overall runtime of your application may not be impacted significantly. But why are people using MySQL Proxy or the MySQL Query Analyzer although they impact the performance? Because its the best tool available. And the drivers debug trace may be the only and best tool available as well.
+
+| INF: Tracing enabled <MySQL_Connection::setClientOption >MySQL_Prepared_Statement::setInt | INF: this=0x69a2e0 | >MySQL_Prepared_Statement::checkClosed | <MySQL_Prepared_Statement::checkClosed | <MySQL_Prepared_Statement::setInt [...]
+
+The example from examples/debug.cpp demonstrates how to activate the debug traces in your script. Currently they can only be activated through API calls. The traces are controlled on a per connection basis. You can use the setClientOptions() method of a connection object to activate and deactivate the generation of a trace. The MySQL Client Library trace gets always written into a file whereas the drivers protocol messages will be printed to standard out. Yes, we can make it possible to write the driver trace to a file – but in later version… – after all this is Alpha.
+
+sql::Driver *driver; int on_off = 1; /* Using the Driver to create a connection */ driver = get_driver_instance(); std::auto_ptr< sql::Connection > con(driver->connect(host, user, pass)); /* Activate debug trace of the MySQL Client Library (C-API) Only available with a debug build of the MySQL Client Library! */ con->setClientOption("libmysql_debug", "d:t:O,client.trace"); /* Tracing is available if you have compiled the driver using cmake -DMYSQLCPPCONN_TRACE_ENABLE:BOOL=1 */ con->setClientOption("client_trace", &on_off);
+
+Bug reports, feedback, contact
+
+That’s it! Grab a JDBC book, check out the examples and get going with Connector/C++. If you have any questions contact us on the C/C++ community forum or write to the community mailing list. In case you hit a bug, please file a bug report at bugs.mysql.com. Be patient when you do. Connector/C++ is Alpha and the bug team will assign all bug reports to the few developers of Connector/C++. Also, please note, official support is not available for the alpha version of MySQL Connector/C++.
+
+Enjoy!

@@ -1,0 +1,89 @@
+ACM SIGCOMM 2019 Full-Day Tutorial on Programming the Network Data Plane (P4)
+
+Tutorial Program (subject to changes)
+
+Call For Participation
+
+This tutorial will provide participants with a hands-on experience working with the P4 language (www.p4.org). Attendees will learn how to express conventional and novel data-plane applications in the P4 language, and how to compile, execute, and evaluate P4 programs using Mininet, a network emulation framework.
+
+The second half of the day will consist of a mini P4 Workshop for participants to present early stage research ideas. If you would like to give a short 10-15 minute talk, please submit a 1-page talk proposal to the following website: https://p4workshop.cs.cornell.edu/
+
+Outline
+
+The goal of the tutorial is two-fold:
+
+We will emphasize aspects of data-plane programming that were only briefly covered in previous P4 tutorials, including the P4 langauge-architecture separation and stateful packet processing. Through a series of exercises, we will show them how to prototype network applications in the P4 language and compile them to programmable devices. By the end of the tutorial, attendees will be able to implement novel data-plane features in P4, and evaluate their programs using Mininet, a network emulation framework.
+
+We will expose attendees to exciting new applications and future research directions enabled by data-plane programming.
+
+More specifically, we plan to cover the following topics:
+
+P4 language overview and the language-architecture separation
+
+Hands-on training of P4 development environment -Compiler
+
+Debugger
+
+Behavioral model
+
+Lab Exercises
+
+Mini-workshop â invited talks focusing on the following categories
+
+Emerging P4 applications
+
+Future research directions
+
+New P4 targets and tools
+
+Teaching resources
+
+Audience Expectations and Prerequisites
+
+Attendees will be expected to have basic familiarity with the P4 lanaguage. Novice participants without any prior P4 experience are encouraged to refer to the Getting Started wiki page.
+
+Attendees will also be expected to bring their own laptops. We will provide a VM image containing all the necessary packages and tools. The P4 specification is publicly available at the P4 website under an Apache license. Key development tools (front-end compiler and software switch capable of running P4 programs) are available as open-source tools (http://github.com/p4lang).
+
+Tutorial Instructions
+
+In order to ensure that you arrive prepared for the tutorial we ask that you please follow the instructions listed on our GitHub repository.
+
+If you attend and complete the P4 tutorial and you would like to receive a certificate of completion from P4.org, please send an email to sibanez@stanford.edu indicating your request.
+
+Mini-Workshop Program
+
+Leveraging P4 to Automatically Validate Networking Switches. Stefan Heule, Konstantin Weitz, Waqar Mohsin, Lorenzo Vicisano, Amin Vahdat (Google).
+
+Mimic P4 Model. Le Tian (Information Engineering University), Pengshuai Cui (PLA Strategic Support Force Information Engineering University), Yuxiang Hu (PLA Strategic Support Force Information Engineering University)
+
+Taurus: An Intelligent Data Plane. Tushar Swamy, Alexander Rucker, Muhammad Shahbaz, and Kunle Olukotun (Stanford University)
+
+100Gbps P4-enabled Smart NIC: Architecture and Challenges on Datapath implementation in FPGA. Yan Yan (Raymax Technology)
+
+Non-invasive Campus Deployment of P4-based Network Measurement. Xiaoqi Chen (Princeton University)
+
+Performant and Flexible DDoS Defense with Programmable Switches. Zaoxing Liu (Carnegie Mellon University), Georgios Nikolaidis (Barefoot Networks), Jeongkeun Lee (Barefoot Networks), Changhoon Kim (Barefoot Networks), Xin Jin (Johns Hopkins University), Minlan Yu (Harvard University), Vyas Sekar (Carnegie Mellon University)
+
+Magellan: A Compiler and Runtime for High-Level Programming of Highly Programmable Network Data Planes. Y. Richard Yang (Yale University)
+
+Redesigning Sketch Data Structures for Programmable Data Plane Devices. Vladimir Braverman (Johns Hopkins University)
+
+Background
+
+P4 (www.p4.org) is a programming language for describing how network packets should be processed on a variety of targets ranging from general-purpose CPUs to network processors, FPGAs, and custom ASICs [1]. P4 was designed with three goals in mind: (i) protocol independence: devices should not âbake inâ specific protocols; (ii) field re-configurability: programmers should be able to modify the behavior of devices after they have been deployed; and (iii) portability: programs should not be tied to specific hardware targets.
+
+The P4 community has created â and continues to maintain and develop â a language specification, a set of open-source tools (compilers, debuggers, code analyzers, libraries, software P4 switches, etc.), and sample P4 programs with the goal of making it easy for P4 users to quickly and correctly author new data-plane behaviors. New ideas are being developed in P4, prototyped as new forwarding behaviors, and published at some of the top conferences in networking. Existing data-plane features typically realized in a fixed-function logic are also being authored in P4.
+
+Recently, P4 evolved to embrace the functional and architectural heterogeneity of various targets while keeping the language core simple and clean. One manifestation of this change is the development of a Portable Switch Architecture (PSA). The PSA describes common capabilities of network switch devices which process and forward packets across multiple interface. This specification improves the portability and composability of a P4 program, allowing P4 consumers and target providers to reuse their code. Second, in the past year, there have been significant new developments on the control-plane API for P4 pipelines. This tutorial will introduce P4 Runtime, the silicon-independent and protocol-independent API that can be auto-generated from an unambiguous definition of a packet processing pipeline in P4. Third, P4 continues to be a transformative technology in networking, and an increasingly popular choice for developing novel data-plane designs. Examples include P4 programs that realize in-band network telemetry [4], path-condition-aware adaptive routing [5], a better NetFlow [6], L4 connection load-balancing [7], replicated storage systems [8], and fast failure detection and recovery [9]. There are also new P4 programmable targets available to the research community [10]. We believe there are many opportunities for academic researchers to help evolve the design of the language, discover new implementation techniques, and develop use cases.
+
+Organizers
+
+Stephen Ibanez
+
+California, USA
+
+Changhoon (Chang) Kim
+
+California, USA
+
+References

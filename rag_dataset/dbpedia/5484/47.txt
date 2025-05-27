@@ -1,0 +1,95 @@
+Types of Tivoli Storage Manager (TSM) Volumes
+
+Tivoli Storage Manager classifies its volumes into the two following categories
+
+PRIVATE: A private volume is a labeled volume that is in use or owned by an application. This volume might contain valid data. You must define each private volume, and must mount it by name. Private volumes do not revert to scratch when they become empty.
+
+SCRATCH: A scratch volume is a labeled volume that is empty or contains no valid data. Use this volume to comply with any request to mount a scratch volume. When data is written to a scratch volume, its status changes to private.
+
+You can change the status of volumes by issuing the update libvolume command. With the command, you can assign a private status to a scratch volume or assign a scratch status to a private volume. The private volumes must be administrator-defined volumes with either no data or invalid data. They cannot be partially written volumes that contain active data. Volume statistics are discarded when volume statuses are modified.
+
+Also Read: Monitoring and Managing Tape Volumes
+
+Difference between Scratch and Private Volumes
+
+Scratch volumes:
+
+Contain a label
+
+Are empty or contain no valid data
+
+Change status to PRIVATE when data is written to them
+
+Can use to satisfy any request for mounting a scratch volume
+
+Private volumes:
+
+Contain a label.
+
+Might contain valid data.
+
+An application uses or owns them.
+
+Use only to satisfy a request to mount the specified volume.
+
+Life cycle of TSM Tape Volumes
+
+You must label tapes first, then add them to the inventory of tapes available to Tivoli Storage Manager. Check tapes in to Tivoli Storage Manager as either scratch or private. Tapes that are part of the scratch pool are eligible to select for use. After a tape is selected, data remains on the tape until it expires or moves. You can then reclaim the tape and return it to the scratch pool.
+
+You can use several methods to check in a tape. Check it can in online or offline. You can label and check in one or all of the tapes in one step with label libvol command or use the autolabel=yes feature to define a 349X, ACSLS, SCSI, external, or manual library. See the following example to learn how to label the new tapes and checkin into the library.
+
+Labeling new tapes
+
+When you use the tape volumes for the first time, you have to label the tapes to be recognised by the TSM server. Use the following command to label and checkin those tapes at the same time. Check the TSM admin reference for the full syntax of these commands.
+
+label libvolume library_name checkin=scratch search=bulk|yes labelsource=barcode
+
+Search: Specifies that the server searches the library for usable volumes to label. Possible values are as follows:
+
+Bulk: Specifies that the server searches the library entry and exit ports for usable volumes to label.
+
+Yes: Specifies that the server labels each volume, unless the volume is already labeled or its barcode cannot be read.
+
+Also Read: Restoring damaged Storagepool volumes
+
+Labelsource: Specifies how or whether the server reads sequential media labels of volumes. Possible values are as follows:
+
+Barcode: The server attempts to read the barcode label. If the attempt fails, the server does not label the volume, and it shows a message.
+
+Prompt: Prompts for volume names as necessary.
+
+Vollist (SCSI only) reads for a file or list.
+
+Checking in Volumes
+
+After the volumes are labeled, you make the volumes available to Tivoli Storage Manager devices by checking the volumes into the library volume inventory. You use the checkin libvolume command. Checking media into an automated library involves adding the volumes to the library inventory when the tape is again ready for reuse or removed out from the library. Check in volumes by using a command line with the following commands:
+
+checkin libvolume tapelib JK0007L4 search=no status=scratch
+
+checkin libvolume tapelib search=yes status=scratch checklabel=barcode
+
+Checking out Volumes
+
+You can remove volumes from automated libraries by issuing the checkout libvolume command. For automated libraries with multiple entry and exit ports, you can issue the checkout libvolume command and include the REMOVE=BULK parameter. Tivoli Storage Manager ejects the volume to the next available entry and exit port.
+
+After it is checked out, the volume moves to the entry or exit port if the device has one. If it does not, the operator is prompted to remove the volume from the drive that is within the device. Tivoli Storage Manager mounts each volume and verifies the internal label before checking it out. Check out volumes by using a command line with the following commands:
+
+checkout libvolume library_name volume_name
+
+checkout libvolume tapelib JK0007L4 checklabel=yes remove=bulk
+
+Auditing a Tape Library
+
+You can issue the audit library command to audit the volume inventories of automated libraries. Auditing the volume inventory ensures that the information that the Tivoli Storage Manager server maintains is consistent with the physical media in the library. The audit is useful when the inventory is moved physically. Tivoli Storage Manager deletes missing volumes and updates the locations of volumes that moved since the last audit. Tivoli Storage Manager cannot add new volumes during an audit. Remember that you should run this command when no other activity is running on the library.
+
+audit library tapelib checklabel=barcode
+
+Also Read:Steps to upgrade Atape device drivers
+
+Watch the below video to learn how to update library volume status
+
+PREVIOUS: 6.1 TSM Physical Storage Devices Introduction
+
+NEXT: 6.3 Using Virtual Tape Library (VTL) in TSM Environment
+
+ALL CHAPTERS:IBM Spectrum Protect (TSM) Basic Free Tutorials

@@ -1,0 +1,2259 @@
+Oracle® Retail Invoice Matching
+
+Installation Guide
+
+Release 15.0
+
+E69045-04
+
+Oracle® Retail Invoice Matching Installation Guide, Release 15.0
+
+Copyright © 2015, Oracle. All rights reserved.
+
+Primary Author: Sahithya Sreenath
+
+Contributors: Nathan Young
+
+This software and related documentation are provided under a license agreement containing restrictions on use and disclosure and are protected by intellectual property laws. Except as expressly permitted in your license agreement or allowed by law, you may not use, copy, reproduce, translate, broadcast, modify, license, transmit, distribute, exhibit, perform, publish, or display any part, in any form, or by any means. Reverse engineering, disassembly, or decompilation of this software, unless required by law for interoperability, is prohibited.
+
+The information contained herein is subject to change without notice and is not warranted to be error-free. If you find any errors, please report them to us in writing.
+
+If this is software or related documentation that is delivered to the U.S. Government or anyone licensing it on behalf of the U.S. Government, then the following notice is applicable:
+
+U.S. GOVERNMENT END USERS: Oracle programs, including any operating system, integrated software, any programs installed on the hardware, and/or documentation, delivered to U.S. Government end users are "commercial computer software" pursuant to the applicable Federal Acquisition Regulation and agency-specific supplemental regulations. As such, use, duplication, disclosure, modification, and adaptation of the programs, including any operating system, integrated software, any programs installed on the hardware, and/or documentation, shall be subject to license terms and license restrictions applicable to the programs. No other rights are granted to the U.S. Government.
+
+This software or hardware is developed for general use in a variety of information management applications. It is not developed or intended for use in any inherently dangerous applications, including applications that may create a risk of personal injury. If you use this software or hardware in dangerous applications, then you shall be responsible to take all appropriate fail-safe, backup, redundancy, and other measures to ensure its safe use. Oracle Corporation and its affiliates disclaim any liability for any damages caused by use of this software or hardware in dangerous applications.
+
+Oracle and Java are registered trademarks of Oracle and/or its affiliates. Other names may be trademarks of their respective owners.
+
+Intel and Intel Xeon are trademarks or registered trademarks of Intel Corporation. All SPARC trademarks are used under license and are trademarks or registered trademarks of SPARC International, Inc. AMD, Opteron, the AMD logo, and the AMD Opteron logo are trademarks or registered trademarks of Advanced Micro Devices. UNIX is a registered trademark of The Open Group.
+
+This software or hardware and documentation may provide access to or information about content, products, and services from third parties. Oracle Corporation and its affiliates are not responsible for and expressly disclaim all warranties of any kind with respect to third-party content, products, and services unless otherwise set forth in an applicable agreement between you and Oracle. Oracle Corporation and its affiliates will not be responsible for any loss, costs, or damages incurred due to your access to or use of third-party content, products, or services, except as set forth in an applicable agreement between you and Oracle.
+
+Value-Added Reseller (VAR) Language
+
+Oracle Retail VAR Applications
+
+The following restrictions and provisions only apply to the programs referred to in this section and licensed to you. You acknowledge that the programs may contain third party software (VAR applications) licensed to Oracle. Depending upon your product and its version number, the VAR applications may include:
+
+(i) the MicroStrategy Components developed and licensed by MicroStrategy Services Corporation (MicroStrategy) of McLean, Virginia to Oracle and imbedded in the MicroStrategy for Oracle Retail Data Warehouse and MicroStrategy for Oracle Retail Planning & Optimization applications.
+
+(ii) the Wavelink component developed and licensed by Wavelink Corporation (Wavelink) of Kirkland, Washington, to Oracle and imbedded in Oracle Retail Mobile Store Inventory Management.
+
+(iii) the software component known as Access Via licensed by Access Via of Seattle, Washington, and imbedded in Oracle Retail Signs and Oracle Retail Labels and Tags.
+
+(iv) the software component known as Adobe Flex licensed by Adobe Systems Incorporated of San Jose, California, and imbedded in Oracle Retail Promotion Planning & Optimization application.
+
+You acknowledge and confirm that Oracle grants you use of only the object code of the VAR Applications. Oracle will not deliver source code to the VAR Applications to you. Notwithstanding any other term or condition of the agreement and this ordering document, you shall not cause or permit alteration of any VAR Applications. For purposes of this section, "alteration" refers to all alterations, translations, upgrades, enhancements, customizations or modifications of all or any portion of the VAR Applications including all reconfigurations, reassembly or reverse assembly, re-engineering or reverse engineering and recompilations or reverse compilations of the VAR Applications or any derivatives of the VAR Applications. You acknowledge that it shall be a breach of the agreement to utilize the relationship, and/or confidential information of the VAR Applications for purposes of competitive discovery.
+
+The VAR Applications contain trade secrets of Oracle and Oracle's licensors and Customer shall not attempt, cause, or permit the alteration, decompilation, reverse engineering, disassembly or other reduction of the VAR Applications to a human perceivable form. Oracle reserves the right to replace, with functional equivalent software, any of the VAR Applications in future releases of the applicable program.
+
+Contents
+
+Send Us Your Comments......................................................................................... xi
+
+Preface................................................................................................................... xiii
+
+Audience.............................................................................................................................................. xiii
+
+Related Documents........................................................................................................................... xiii
+
+Customer Support............................................................................................................................. xiii
+
+Review Patch Documentation....................................................................................................... xiii
+
+Improved Process for Oracle Retail Documentation Corrections........................................ xiv
+
+Oracle Retail Documentation on the Oracle Technology Network.................................... xiv
+
+Conventions........................................................................................................................................ xiv
+
+1 Preinstallation Tasks............................................................................................ 1
+
+Check Supported Database Server Requirements....................................................................... 1
+
+Check Supported Application Server Requirements.................................................................. 3
+
+Verify Single Sign-On........................................................................................................................... 4
+
+Check Supported Client PC and Web Browser Requirements................................................. 5
+
+Supported Oracle Retail Products.................................................................................................... 5
+
+UNIX User Account Privileges to Install the Software............................................................... 5
+
+Supported Oracle Applications........................................................................................................ 6
+
+2 RAC and Clustering.............................................................................................. 7
+
+3 Database Installation Tasks.................................................................................. 9
+
+4 Application Installation Tasks............................................................................. 11
+
+Middleware Infrastructure and WebLogic Server 12c (12.1.3) Installation....................... 11
+
+Install RCU Database Schemas...................................................................................................... 17
+
+Create a New ADF Domain (with managed server and EM)................................................. 24
+
+Start the Node Manager.................................................................................................................... 35
+
+Start the AdminServer (admin console)....................................................................................... 35
+
+Start the Managed Server.................................................................................................................. 36
+
+Configuration of OID Provider in WebLogic Domain............................................................. 36
+
+Configure Oracle Single Sign-On................................................................................................... 42
+
+Create the SSO provider in the REIMDomain.................................................................... 42
+
+Create mds-CustomPortalDS Datasource using EM................................................................ 43
+
+Deployment of jax-rs-2.0 library in WebLogic............................................................................ 49
+
+Steps to Configure WebLogic Work Manager.................................................................... 55
+
+Load LDIF Files in LDAP................................................................................................................. 63
+
+Oracle Retail Application Administration Console................................................................. 65
+
+Clustered Installations  Preinstallation Steps......................................................................... 66
+
+(Optional) Analyze Changes in the Patch................................................................................... 67
+
+Expand the ReIM Application Distribution............................................................................... 67
+
+Run the Oracle Retail Invoice Matching Installer..................................................................... 67
+
+Resolving Errors Encountered During Application Installation......................................... 68
+
+Post-Installation Steps....................................................................................................................... 68
+
+Clustered Installations  Post-Installation Steps...................................................................... 69
+
+Installing the REIM BI Publisher Templates....................................................................... 69
+
+Test the ReIM Application............................................................................................................... 69
+
+reim.properties..................................................................................................................................... 70
+
+integration.properties........................................................................................................................ 70
+
+ReIM Batch Scripts............................................................................................................................. 71
+
+Online Help.......................................................................................................................................... 72
+
+Single Sign-On..................................................................................................................................... 72
+
+Adding Logout URI............................................................................................................................ 73
+
+5 Configuring BIPublisher for REIM....................................................................... 75
+
+Configuring the RMS JDBC connection............................................................................... 82
+
+6 Configure the Oracle BI EE Environment for Operational Insights...................... 85
+
+Terms...................................................................................................................................................... 85
+
+Install Oracle BI................................................................................................................................... 85
+
+Configure OID Provider in Oracle BI EE WebLogic Domain................................................. 85
+
+Load LDIF Files in LDAP................................................................................................................. 90
+
+Configure Oracle Single Sign-On................................................................................................... 91
+
+Create the SSO provider in the Oracle BI EE Domain...................................................... 91
+
+Configure the Repository (rpd)............................................................................................... 91
+
+Set up the Database Connection............................................................................................. 92
+
+Configure Catalog....................................................................................................................... 96
+
+Configure Oracle Retail Operational Insights Roles and Application Roles........... 97
+
+Language Selection with SSO............................................................................................... 106
+
+7 Post Installation Tasks and Configuration......................................................... 107
+
+Enable the Oracle BI EE Content to be Displayed in IFrame................................................ 107
+
+Configure Charts /Charts/to use HTML5............................................................................... 107
+
+Enable EVALUATE Function in Oracle BI EE......................................................................... 107
+
+Disable Cache in Oracle BI EE...................................................................................................... 108
+
+Deploy Operational Insights Skin and Styles.......................................................................... 109
+
+Create Symbolic Link to analyticsRes Directory..................................................................... 111
+
+Prepare the Operational Insights Environment for Oracle BI EE Presentation Services Connection 112
+
+Enable the ADF Contextual Event Action in Oracle BI EE................................................... 112
+
+Single Sign-On Configuration for Oracle BI EE....................................................................... 112
+
+Make the Oracle BI EE Static Resources Available to the Oracle Web Tier............. 112
+
+Configure Alias for the Static Resources in the Oracle Web Tier............................... 116
+
+Undo the Redirect of analyticsRes to the WebLogic Server......................................... 116
+
+Make the Static Resources Publicly Available................................................................. 117
+
+Enable Caching and Compression of the Oracle BI EE Static Resources................. 117
+
+Verify the Static Resources using the Oracle Web Tier.................................................. 119
+
+Configure for In-Context launches of RMS forms........................................................... 120
+
+Restart Oracle BI EE......................................................................................................................... 121
+
+Validation........................................................................................................................................... 121
+
+Troubleshooting................................................................................................................................ 121
+
+Refresh User GUIDs................................................................................................................. 121
+
+8 Data Migration................................................................................................... 123
+
+Usage.................................................................................................................................................... 123
+
+Parameters.......................................................................................................................................... 123
+
+Error and Restart.............................................................................................................................. 123
+
+Locking................................................................................................................................................ 124
+
+9 Patching Procedures......................................................................................... 125
+
+Oracle Retail Patching Process..................................................................................................... 125
+
+Supported Products and Technologies...................................................................................... 125
+
+Patch Concepts.................................................................................................................................. 126
+
+Patching Utility Overview..................................................................................................... 127
+
+Changes with 15.0.................................................................................................................... 127
+
+Patching Considerations................................................................................................................ 127
+
+Patch Types................................................................................................................................ 127
+
+Incremental Patch Structure.................................................................................................. 128
+
+Version Tracking...................................................................................................................... 128
+
+Apply all Patches with Installer or ORPatch................................................................... 128
+
+Environment Configuration.................................................................................................. 129
+
+Retained Installation Files..................................................................................................... 129
+
+Reloading Content................................................................................................................... 129
+
+Java Hotfixes and Cumulative Patches.............................................................................. 129
+
+Backups....................................................................................................................................... 130
+
+Disk Space.................................................................................................................................. 130
+
+Patching Operations........................................................................................................................ 131
+
+Running ORPatch.................................................................................................................... 131
+
+Merging Patches....................................................................................................................... 141
+
+Compiling Application Components................................................................................. 142
+
+Deploying Application Components................................................................................. 144
+
+Maintenance Considerations........................................................................................................ 145
+
+Database Password Changes............................................................................................... 145
+
+WebLogic Password Changes.............................................................................................. 146
+
+Infrastructure Directory Changes........................................................................................ 147
+
+DBManifest Table..................................................................................................................... 147
+
+RETAIL_HOME relationship to Database and Application Server.......................... 147
+
+Jar Signing Configuration Maintenance............................................................................ 147
+
+Customization................................................................................................................................... 149
+
+Patching Considerations with Customized Files and Objects.................................... 149
+
+Registering Customized Files............................................................................................... 150
+
+Custom Compiled Java Code................................................................................................ 152
+
+Extending Oracle Retail Patch Assistant with Custom Hooks................................... 154
+
+Troubleshooting Patching............................................................................................................. 159
+
+ORPatch Log Files.................................................................................................................... 159
+
+Restarting ORPatch................................................................................................................. 159
+
+Manual DBManifest Updates............................................................................................... 159
+
+Manual Restart State File Updates...................................................................................... 161
+
+DISPLAY Settings When Compiling Forms..................................................................... 161
+
+JAVA_HOME Setting.............................................................................................................. 161
+
+Patching Prior to First Install................................................................................................ 161
+
+Providing Metadata to Oracle Support.............................................................................. 162
+
+A Appendix: ReIM Application Installer Screens................................................... 165
+
+B Appendix: Installer Silent Mode........................................................................ 193
+
+C Appendix: Single Sign-On for WebLogic........................................................... 195
+
+What Do I Need for Single Sign-On?.......................................................................................... 195
+
+Can Oracle Access Manager Work with Other SSO Implementations?........................... 195
+
+Oracle Single Sign-on Terms and Definitions.......................................................................... 196
+
+What Single Sign-On is not........................................................................................................... 197
+
+How Oracle Single Sign-On Works............................................................................................. 197
+
+Installation Overview...................................................................................................................... 199
+
+User Management............................................................................................................................ 199
+
+D Appendix: URL Reference.................................................................................. 201
+
+JDBC URL for a Database............................................................................................................... 201
+
+E Appendix: BI User and Group LDIF Entries....................................................... 203
+
+BI_User.ldif Entries.......................................................................................................................... 203
+
+BI_Group.ldifs Entries.................................................................................................................... 204
+
+F Appendix: Common Installation Errors............................................................. 205
+
+ConcurrentModificationException in Installer GUI.............................................................. 205
+
+Warning: Could not find X Input Context................................................................................ 205
+
+GUI screens fail to open when running Installer.................................................................... 205
+
+Hostname Verification Error when SSL is used...................................................................... 206
+
+G Appendix: Setting Up Password Stores with wallets/credential stores............... 207
+
+About Database Password Stores and Oracle Wallet............................................................ 207
+
+Setting Up Password Stores for Database User Accounts.................................................... 208
+
+Setting up Wallets for Database User Accounts...................................................................... 209
+
+For RMS, RWMS, RPM Batch using sqlplus or sqlldr, RETL, RMS, RWMS, and ARI 209
+
+Setting up RETL Wallets................................................................................................................ 211
+
+For Java Applications (SIM, ReIM, RPM, RIB, AIP, Alloc, ReSA, RETL).................. 212
+
+How does the Wallet Relate to the Application?.................................................................... 215
+
+How does the Wallet Relate to Java Batch Program use?..................................................... 215
+
+Database Credential Store Administration............................................................................... 215
+
+Managing Credentials with WSLT/OPSS Scripts.................................................................. 217
+
+listCred........................................................................................................................................ 218
+
+updateCred................................................................................................................................. 219
+
+createCred................................................................................................................................... 220
+
+deleteCred................................................................................................................................... 220
+
+modifyBootStrapCredential................................................................................................... 220
+
+addBootStrapCredential......................................................................................................... 222
+
+Quick Guide for Retail Password Stores (db wallet, java wallet, DB credential stores) 223
+
+G Appendix: Installation Order............................................................................. 233
+
+Enterprise Installation Order........................................................................................................ 233
+
+Oracle Retail Invoice Matching, Installation Guide, Release 15.0
+
+Oracle welcomes customers' comments and suggestions on the quality and usefulness of this document.
+
+Your feedback is important, and helps us to best meet your needs as a user of our products. For example:
+
+§ Are the implementation steps correct and complete?
+
+§ Did you understand the context of the procedures?
+
+§ Did you find any errors in the information?
+
+§ Does the structure of the information help you with your tasks?
+
+§ Do you need different information or graphics? If so, where, and in what format?
+
+§ Are the examples correct? Do you need more examples?
+
+If you find any errors or have any other suggestions for improvement, then please tell us your name, the name of the company who has licensed our products, the title and part number of the documentation and the chapter, section, and page number (if available).
+
+Note: Before sending us your comments, you might like to check that you have the latest version of the document and if any concerns are already addressed. To do this, access the new Applications Release Online Documentation CD available on My Oracle Support and www.oracle.com. It contains the most current Documentation Library plus all documents revised or released recently.
+
+Send your comments to us using the electronic mail address: retail-doc_us@oracle.com
+
+Please give your name, address, electronic mail address, and telephone number (optional).
+
+If you need assistance with Oracle software, then please contact your support representative or Oracle Support Services.
+
+If you require training or instruction in using Oracle software, then please contact your Oracle local office and inquire about our Oracle University offerings. A list of Oracle offices is available on our Web site at www.oracle.com.
+
+Oracle Retail Installation Guides contain the requirements and procedures that are necessary for the retailer to install Oracle Retail products.
+
+Audience
+
+This Installation Guide is written for the following audiences:
+
+§ Database administrators (DBA)
+
+§ System analysts and designers
+
+§ Integrators and implementation staff
+
+Related Documents
+
+For more information, see the following documents in the Oracle Retail Invoice Matching Release 15.0 documentation set:
+
+§Oracle Retail Invoice Matching Release Notes
+
+§Oracle Retail Invoice Matching User Guide
+
+§Oracle Retail Invoice Matching Online Help
+
+§Oracle Retail Invoice Matching Operations Guide
+
+§Oracle Retail Invoice Matching Data Model
+
+§Oracle Retail Merchandising Implementation Guide
+
+§Oracle Retail Merchandising Batch Schedule
+
+§Oracle Retail Merchandising Security Guide
+
+Customer Support
+
+To contact Oracle Customer Support, access My Oracle Support at the following URL:
+
+https://support.oracle.com
+
+When contacting Customer Support, please provide the following:
+
+§ Product version and program/module name
+
+§ Functional and technical description of the problem (include business impact)
+
+§ Detailed step-by-step instructions to re-create
+
+§ Exact error message received
+
+§ Screen shots of each step you take
+
+Review Patch Documentation
+
+When you install the application for the first time, you install either a base release (for example, 15.0) or a later patch release (for example, 15.0.1). If you are installing the base release or additional patch releases, read the documentation for all releases that have occurred since the base release before you begin installation. Documentation for patch releases can contain critical information related to the base release, as well as information about code changes since the base release.
+
+Improved Process for Oracle Retail Documentation Corrections
+
+To more quickly address critical corrections to Oracle Retail documentation content, Oracle Retail documentation may be republished whenever a critical correction is needed. For critical corrections, the republication of an Oracle Retail document may at times not be attached to a numbered software release; instead, the Oracle Retail document will simply be replaced on the Oracle Technology Network Web site, or, in the case of Data Models, to the applicable My Oracle Support Documentation container where they reside.
+
+This process will prevent delays in making critical corrections available to customers. For the customer, it means that before you begin installation, you must verify that you have the most recent version of the Oracle Retail documentation set. Oracle Retail documentation is available on the Oracle Technology Network at the following URL:
+
+http://www.oracle.com/technetwork/documentation/oracle-retail-100266.html
+
+An updated version of the applicable Oracle Retail document is indicated by Oracle part number, as well as print date (month and year). An updated version uses the same part number, with a higher-numbered suffix. For example, part number E123456-02 is an updated version of a document with part number E123456-01.
+
+If a more recent version of a document is available, that version supersedes all previous versions.
+
+Oracle Retail Documentation on the Oracle Technology Network
+
+Oracle Retail product documentation is available on the following web site:
+
+http://www.oracle.com/technetwork/documentation/oracle-retail-100266.html
+
+(Data Model documents are not available through Oracle Technology Network. You can obtain them through My Oracle Support.)
+
+Conventions
+
+Navigate: This is a navigate statement. It tells you how to get to the start of the procedure and ends with a screen shot of the starting point and the statement the Window Name window opens.
+
+This is a code sample
+
+It is used to display examples of code
+
+1
+
+This chapter explains the tasks required prior to installation.
+
+Note: Oracle Retail assumes that the retailer has applied all required fixes for supported compatible technologies.
+
+Check Supported Database Server Requirements
+
+General requirements for a database server running Oracle Retail Invoice Matching include:
+
+Note: By default, JDK is at 1.6. After installing the 12.1.0.2 binary, apply patch 19623450. Follow the instructions on Oracle Database Java Developers Guide 12c Release 1 to upgrade JDK to 1.7. The Guide is available at: http://docs.oracle.com/database/121/JJDEV/chone.htm#JJDEV01000.
+
+Follow-through to complete the post-patch operation.
+
+Check Supported Application Server Requirements
+
+General requirements for an application server capable of running the Oracle Retail Invoice Matching application include the following:
+
+Verify Single Sign-On
+
+If ReIM will not be deployed in a Single Sign-On environment, skip this section.
+
+If Single Sign-On is to be used, verify the Oracle Identity Management 11gR1 version 11.1.1.9 has been installed along with the components listed in the above Application Server requirements section. Verify if the Access Manager Agent is registered with the Oracle Access Manager 11gR2 11.1.2.3 as a partner application..
+
+Check Supported Client PC and Web Browser Requirements
+
+Supported Oracle Retail Products
+
+UNIX User Account Privileges to Install the Software
+
+A UNIX user account is needed to install the software. The UNIX user that is used to install the software should have write access to the WebLogic server installation files.
+
+For example, oretail.
+
+Note: Installation steps will fail when trying to modify files under the WebLogic installation, unless the user has write access.
+
+Supported Oracle Applications
+
+2
+
+Oracle Retail Invoice Matching has been validated to run in two configurations on Linux:
+
+Standalone WebLogic and Database installations
+
+Real Application Cluster Database and WebLogic Server Clustering
+
+The Oracle Retail products have been validated against a 12.1.0.2 RAC database. When using a RAC database, all JDBC connections should be configured to use THIN connections rather than OCI connections. It is suggested that if you do use OCI connections, the Oracle Retail products database be configured in the tnsnames.ora file used by the WebLogic Server installations.
+
+Clustering for WebLogic Server 12.1.3 is managed as an Active-Active cluster accessed through a Load Balancer. Validation has been completed utilizing a RAC 12.1.0.2 Oracle Internet Directory database with the WebLogic 12.1.3 cluster. It is suggested that a Web Tier 11.1.1.9 installation be configured to reflect all application server installations if SSO will be utilized.
+
+References for Configuration:
+
+§Oracle® Fusion Middleware High Availability Guide 11g Release 1 (11.1.1) Part Number E10106-09
+
+§ Oracle Real Application Clusters Administration and Deployment Guide
+
+12c Release 1 (12.1) E48838-10
+
+3
+
+Database Installation Tasks
+
+The ReIM database objects are bundled with the RMS database schema installer. To install the ReIM database objects follow the Oracle Retail Merchandising System Installation Guide to run the database schema installer, and select the ReIM option on the product selection page.
+
+4
+
+Application Installation Tasks
+
+Before proceeding, you must install Oracle WebLogic 12.1.3 using Fusion Middleware Infrastructure with ADF.
+
+These are the other prerequisites before installing Oracle Retail Invoice Matching application:
+
+§ Install WebLogic domain with ADF and EM (Enterprise Manager). Managed server used to install Allocation must be set up with ADF libraries extended.
+
+§ Set up MDS schema Datasource in Enterprise Manager (EM).
+
+§ Configuration of OID Authenticator in WebLogic domain
+
+§ Load LDIF files in LDAP to create Users and Roles
+
+It is assumed Oracle database has already been configured and loaded with the appropriate RMS and Oracle Retail Invoice Matching schemas for your installation.
+
+MDS schema, OPSS schema and other required schemas for ADF must be created using RCU utility. Steps to create the schemas are explained in this document.
+
+Installing a separate domain as part of ADF configuration is recommended.
+
+The Oracle Retail Invoice Matching application is deployed to a managed server (example: reim-server) which is created inside the new domain (example: REIMDomain). This managed server must contain all the ADF libraries.
+
+Middleware Infrastructure and WebLogic Server 12c (12.1.3) Installation
+
+Create a directory to install the WebLogic (this will be the MW_HOME):
+
+Example: mkdir -p /u00/webadmin/products/wls_retail
+
+1.Set the MW_HOME, JAVA_HOME, and DOMAIN_HOME environment variables:
+
+§ ORACLE_HOME should point to your WebLogic installation.
+
+§ JAVA_HOME should point to the Java JDK 1.7+. This is typically the same JDK which is being used by the WebLogic domain where application is getting installed.
+
+§ DOMAIN_HOME should point to the full path of the domain into which application will be installed.
+
+Example:
+
+$ export MW_HOME=/u00/webadmin/products/wls_retail
+
+$ export DOMAIN_HOME=/u00/webadmin/config/domains/wls_retail/APPNAMEDomain
+
+$ export JAVA_HOME=/u00/webadmin/products/jdk_java
+
+(This should point to the Java which is installed on your server)
+
+$ export PATH=$JAVA_HOME/bin:$PATH
+
+Going forward we will use the above references for further installations.
+
+2.Set the system environment variable MW_HOME to the new directory then cd to location where the jar is downloaded and run the installer using the following command:
+
+./ java -jar ./fmw_12.1.3.0.0_infrastructure.jar
+
+3.Welcome screen appears. Click Next.
+
+4.Enter the following and click Next.
+
+Oracle home =<Path to the middleware home>
+
+Example:
+
+/u00/webadmin/products/wls_retail
+
+5.Select install type Fusion Middleware Infrastructure. Click Next.
+
+This screen will verify that the system meets the minimum necessary requirements.
+
+6.Click Next.
+
+7.If you already have an Oracle Support account, use this screen to indicate how you would like to receive security updates.
+
+8.If you do not have one or if you want to skip this step, clear the check box and verify your selection in the follow-up dialog box.
+
+9.Click Next.
+
+10.Click Next.
+
+11.Click Finish.
+
+12.Continue with RCU installation.
+
+Install RCU Database Schemas
+
+The RCU database schemas are required for the installation of retail application and configuration of domain.
+
+Note: You need SYS user privileges to install the RCU database schemas.
+
+The following steps are provided for the creation of the database schemas:
+
+1.Navigate to the directory into which RCU is installed. For example:
+
+<MW_HOME>/oracle_common/bin/
+
+Run ./rcu
+
+2.Click Next.
+
+3.Select Create Repository and System Load and Product Load. Click Next.
+
+4.Enter database connection details:
+
+§ Database Type: Oracle Database
+
+§ Host Name: dbhostname.us.oracle.com
+
+§ Port: 1521
+
+§ Service Name: dbservicename
+
+§ Username: sys
+
+§ Password: <syspassword>
+
+§ Role: SYSDBA
+
+5.Click Next. The Installer checks prerequisites.
+
+6.When the prerequisite checks are complete, click OK. Click Next.
+
+7.Click theCreate a new prefix option, the prefix name for your schemas should be unique to your application environment.
+
+Example: ReIM, ALLOC, ReSA, etc
+
+8.Select the components to create:
+
+§ Meta Data ServicesOracle Platform Security Services
+
+Note: Once OPSS schema is selected, the following dependent schemas will get selected automatically.
+
+§ Audit Services
+
+§ Audit Services Append
+
+§ Audit Services Viewer
+
+Note: STB schema will be already selected as part of the Common Infrastructure component.
+
+9.Select Use same passwords for all schemas.
+
+10.Enter your password.
+
+Note: This password is needed at the time of ADF domain creation.
+
+11.Click Next. A Repository Creation notification will appear. Click OK.
+
+12.Tablespaces are created, and the progress will be displayed in a pop-up notification. When the operation is completed, click OK.
+
+13.Click Create. The schema is created.
+
+Upon successful creation of database schemas, a screen will appear with all the schemas created .
+
+14.Click Close.
+
+Create a New ADF Domain (with managed server and EM)
+
+To create a new domain and managed server with ADF libraries and EM, follow the below steps:
+
+1.Set the environment variables:
+
+export JAVA_HOME=<JDK_HOME>
+
+(Example:/u00/webadmin/products/jdk_java) [JDK_HOME is the location where jdk has been installed)
+
+export PATH=$JAVA_HOME/bin:$PATH
+
+export ORACLE_HOME=<MW_HOME>/oracle_common (Example:/u00/webadmin/products/wls_retail/oracle_common)
+
+cd $MW_HOME/oracle_common/common/bin
+
+(MW_HOME is the location where Weblogic has been installed.)
+
+2.Run the following command:
+
+./config.sh
+
+3.Select Create a new domain.
+
+Domain location: Specify the path to the <DOMAIN_HOME> Example:/u00/webadmin/config/domains/wls_retail/APPNAMEDomain
+
+4.Click Next.
+
+5.Select Create Domain Using Product Templates.
+
+6.Check the following components:
+
+Oracle Enterprise Manager
+
+Note: When Oracle Enterprise Manager component is selected, the following dependent components are selected automatically:
+
+Oracle JRF
+
+Weblogic Coherence Cluster Extension
+
+7.Click Next.
+
+Application location: Application directory location. Example: /u00/webadmin/config/applications/wls_retail/APPNAMEDomain
+
+8.Click Next.
+
+9.Provide the WebLogic administrator credentials and click Next:
+
+§ Username: <weblogic administrator user>
+
+§ Password: <Password for weblogic administrator user>
+
+10.Select Domain Mode as Production and the JDK to use (as applicable).
+
+11.Select RCU Data.
+
+§ Vendor: Oracle
+
+§ DBMS/Service: dbservicename
+
+§ Host Name: dbhostname.us.oracle.com
+
+§ Port: 1521
+
+§ Schema Owner: APPNAME_STB (Example: ALLOC_STB, ReSA_STB, etc)
+
+§ Password: <Password>. This password which was used for RCU schema creation.
+
+12.Click the Get RCU Configuration button.
+
+13.Click Next.
+
+14.Click Next and it will test to make sure it can connect to your datasources.
+
+15.Select advanced configuration for:
+
+§ Administration Server
+
+§ Node manager
+
+§ Managed Servers, Clusters and Coherence
+
+16.Configure the Administration Server:
+
+§ Server Name: <APP name>_AdminServer
+
+§ Listen address: Appserver Hostname or IPAddress of the Appserver Host.
+
+§ Listen port: <Port for Admin Server> Note: The port used here must be a free port.
+
+§ Server Groups: Unspecified
+
+17.Configure Node Manager:
+
+§ Node manager type: Per domain default location
+
+§ Username: <weblogic administrator user>
+
+§ Password: <Password for weblogic administrator user>
+
+18.Configure Managed Servers with the ADF template.
+
+19.Click the Add button.
+
+§ Server Name: <appname-server>
+
+§ Listen address: Appserver Hostname or IPAddress of the Appserver Host
+
+§ Listen port: <Port for Managed Server> Note: The port used here must be a free port.
+
+§ Server Groups: <JRF-MAN-SVR>
+
+20.Skip Configure Clusters and click Next.
+
+21.No change needed. Click Next.
+
+22.Configure Machines:apphost
+
+23.Click the Add button.
+
+§ Name: apphostname_MACHINE
+
+§ Listen address: apphostname or IPAddress
+
+§ Listen port: <Port for node manager> Note: The port used here must be a free port.
+
+24.Assign the configured Admin server and managed servers to the new machine.
+
+25.Click Create.
+
+26.Click Next.
+
+27.When the process completes, click Finish.
+
+Start the Node Manager
+
+1.Start the nodemanager from <DOMAIN_HOME>/bin using the following:
+
+./startNodeManager.sh
+
+Start the AdminServer (admin console)
+
+1.Start the WebLogic Domain (Admin Server) from <DOMAIN_HOME>/bin using the following:
+
+./startWebLogic.sh
+
+Provide weblogic username and password when prompted
+
+Example:
+
+/u00/webadmin/config/domains/wls_retail/RPMdomain/bin/startWebLogic.sh
+
+2.Configure boot.properties for starting the Weblogic domain without prompting to username and password using the following command:
+
+3.Create security folder at <DOMAIN_HOME>/servers/<AdminServer>/ and create boot.properties file under <DOMAIN_HOME>/servers/<AdminServer>/security
+
+The file boot.properties should have the following:
+
+----------------------------------
+
+username=weblogic
+
+password=<password>
+
+------------------------------------
+
+In the above, the password value is the password of WebLogic domain which is given at the time of domain creation.
+
+1.Save the boot.properties file and restart the WebLogic server.
+
+2.Access the Weblogic Admin console
+
+Example: http://<HOST_NAME>:<ADMIN_PORT>/console
+
+In the below screen, provide username=weblogic and password=<weblogic password>
+
+Start the Managed Server
+
+After NodeManager is started, the managed servers can be started via the admin console. http://<host>:<port>/console
+
+Navigate to Environments -> Servers and click the Control tab. Select alloc-server and click Start.
+
+Managed Server should be up and running before configuring further steps
+
+Configuration of OID Provider in WebLogic Domain
+
+Note: In this section, the base DN dn=us,dn=oracle,dn=com is used as an example. Modify this value as per the organisations ldap settings.
+
+Perform the following procedure to create providers in the domains created in the previous steps.
+
+1.Log in to the Administration Console.
+
+http://<host>:<port>/console/
+
+2.In the Domain Structure frame, click Security Realms.
+
+3.In the Realms table, click myrealm. The Settings for myrealm page is displayed.
+
+4.Click the Providers tab.
+
+5.Click Lock & Edit and then click New. The Create a New Authentication Provider page is displayed.
+
+6.Enter OIDAuthenticator in the Name field and select OracleInternetDirectoryAuthenticator as the type. Click OK.
+
+7.All the providers are displayed. Click OIDAuthenticator. Settings of OIDAuthenticator are displayed.
+
+8.Set the Control Flag field to SUFFICIENT and click Save.
+
+9.From the Providers tab, click on DefaultAuthenticator -> Configuration tab -> Common tab. Update the Control Flag to SUFFICIENT.
+
+10.Click Save.
+
+11.From the Providers tab, click the OIDAuthenticator (you just created), in the configuration -> Provider Specific tab enter your LDAP connection details:
+
+The values shown below are examples only. You should match the entries to your OID.
+
+§ Host: <oidhost>
+
+§ Port: <oidport>
+
+§ Principal: cn=orcladmin
+
+§ Credential: <password>
+
+§ Confirm Credential: <password>
+
+§ User Base DN: cn=users,dc=us,dc=oracle,dc=com
+
+§ Check Use Retrieved User Name as Principal .
+
+§ Check SSL Enabled if the OID is SSL enabled. Port mentioned above must be an SSL port if OID is enabled.
+
+12.Modify the following:
+
+§ Group Base DN: cn=Groups,dc=us,dc=oracle,dc=com
+
+13. Check Propagate Cause For Login Exception
+
+14.Click Save.
+
+15.Click the Providers tab.
+
+16.Click Reorder.
+
+17.Move OIDAuthenticator to the top of the providers list
+
+18.Click OK.
+
+19.Once your changes are saved, click Activate Changes.
+
+20.Restart Weblogic Adminserver and Managed server.
+
+Configure Oracle Single Sign-On
+
+Note: This procedure is only needed if you plan on setting up the ReIM application using Single Sign On (SSO) authentication. This can be skipped if SSO is not going to be configured for this environment. The Oracle Access Manager must be configured and the Oracle http server (Webtier and webgate) must be registered into the Oracle Access Manager.
+
+Create the SSO provider in the REIMDomain
+
+1.Log into the WebLogic console
+
+2.Navigate to: security realms -> myrealm (default realm) -> providers.
+
+3.Start a Lock and Edit session.
+
+4.Click New provider.
+
+5.Set the provider name (Default: OAMIdentityAsserter).
+
+6.Click Ok.
+
+7.Open the new provider configuration.
+
+8.Under Common, set the Control Flag to SUFFICIENT.
+
+9.On the provider list, click Reorder.
+
+10.Move the OAMIdentityAsserter to the top of the list, or above the DefaultAuthenticator.
+
+11.Click Ok.
+
+12.Click Activate Changes.
+
+13.Shutdown the domain.
+
+14.Start the admin and managed servers for the domain.
+
+Create mds-CustomPortalDS Datasource using EM
+
+Follow the below steps to create mds-CustomPortal datasource.
+
+1.Login to EM console
+
+2.Go to WebLogic Domain, Other Services and then MetaData Repositories
+
+3.Under Database-Based Repositories, click the Register button.
+
+4.Remove weblogic user if it appears in the Username field. Provide the MDS Schema user created in RCU as part of RCU schemas creation.
+
+Example: REIM_MDS
+
+5.Input the details of Database Hostname, Port number and Service name. Click Query and a list of all the schemas will be displayed.
+
+6.Select the <ALLOC_MDS> schema and enter the repository name CustomPortalDS and password and click the OK button.
+
+7.The MDS Repository will appear. Click on mds-CustomPortalDS.
+
+8.Under Targeted Servers, Click add and add the managed server alloc-server. Click Target.
+
+9.A message Target repository operation completed is displayed. Click Close.
+
+10.Restart the Admin server and the Managed server. Login to the Admin console URL and verify mds-CustomPortalDS datasource exists.
+
+Deployment of jax-rs-2.0 library in WebLogic
+
+The library jax-rs-2.0.war needs to be deployed in WebLogic prior to ReIM Application install. This library is available at /u00/webadmin/products/wls_retail/wlserver/common/deployable-libraries/jax-rs-2.0.war.
+
+Perform the following procedure to deploy the jax-rs-2.0 library:
+
+1.Login to the WebLogic Admin Console.
+
+2.Click Lock and Edit.
+
+3.Click Deployments.
+
+4.Click Install.
+
+5.Select the library from the path /u00/webadmin/products/wls_retail/wlserver/common/deployable-libraries/jax-rs-2.0.war on the server. Click Next.
+
+6.Select Install the deployment as a library. Click Next.
+
+7.Target to both Admin server (eg:REIM_AdminServer) and Managed server(eg: reim-server). Click Next.
+
+8.Select defaults for the Name=jax-rs. Click Next.
+
+9.Select Defaults and click Finish.
+
+10.Click Activate Changes.
+
+11.The following screen is displayed.
+
+12.Verify the jax-rs library is shown in the Deployments.
+
+Steps to Configure WebLogic Work Manager
+
+For the Invoice Matching Batch programs to use independent work managers for the thread processing, we need to create a work manager for each batch program. The names of the work managers need to be exactly the same as the ones mentioned in the table below. In case a named work manager is not created, the default work manager will be used by the server.
+
+Batch Name
+
+Work Manager
+
+Automatch
+
+AutoMatchWM
+
+Edi Injector
+
+EdiInjectorWM
+
+Credit note automatch
+
+CNAutoMatchWM
+
+Complex deal upload
+
+CDUploadWM
+
+Fixed deal upload
+
+FDUploadWM
+
+Financial Posting
+
+PostingWM
+
+Steps to Create a Named Work Manager
+
+1.From WebLogic Console navigate to Work Manager pane (Domain->Environment->Work Manager)
+
+2.Click Lock and Edit.
+
+3.Click New. This will take us to the screen which allows us to create work managers and other related classes like constraints. Click Next.
+
+4.Provide the name of the work manager as mentioned in the table above.
+
+Example: AutoMatchWM
+
+5.Target it to both Admin Server and the managed server (<Example>: REIM_AdminServer and reim-server).
+
+6.Click Finish.
+
+7.Click Activate Changes.
+
+You can see the named work managers created in the list.
+
+Steps to Create Maximum thread constraints
+
+Maximum thread constraints can be assigned to work managers. Steps to create constraints and to assign them to work managers are as below:
+
+1.From WebLogic Console navigate to Work Manager pane (Domain->Environment->Work Manager)
+
+2.Click Lock and Edit.
+
+3.Click New. This will take us to the screen which allows us to create constraints.
+
+4.Select the Maximum Thread Constraint radio button and click Next.
+
+5.Give a Name (MaxThreads) and specify maximum number of consumers needed for your Application. Click Next.
+
+6.Select Target as <reim-server> and click Finish.
+
+7.Click Activate Changes.
+
+8.Summary of the work managers will be displayed.
+
+9.Click the work manager link from the Summary of work managers. Example: AutoBatchWM
+
+10.Click Lock and Edit.
+
+11.From the Maximum Thread Constraint dropdown, select the constraint you have created earlier.
+
+12.Click Save.
+
+13.Click Activate Changes.
+
+14.Restart Weblogic Adminserver and Managed server.
+
+Load LDIF Files in LDAP
+
+The OID (Oracle Internet Directory 11.1.1.9) must be set up in order to perform the configuration of OID Authenticator in WebLogic Domain.
+
+There are four sample LDIF files provided in the application zip (INSTALL_DIR/reim/application/reim/ldif):
+
+§ RGBU-oid-create-groups.ldif
+
+§ RGBU-oid-create-users.ldif
+
+§ RGBU-oid-delete-groups.ldif
+
+§ RGBU-oid-delete-users.ldif
+
+Note: You may use the existing users and existing groups if the enterprise users map to the appropriate groups for 15.0. For more information, refer to the Retail Role Hierarchy section in the Implementing Functional Security of the Oracle Retail Invoice Matching 15.0 Operation Guide.
+
+IMPORTANT Note: If you are using the above LDIF files to set up the users and groups, you must update the RGBU-oid-create-user.ldif LDIF file with your password for the userpassword attribute for all the users mentioned in the RGBU-oid-create-user.ldif LDIF file. The changes must be done before importing the users LDIF file RGBU-oid-create-users.ldif into the LDAP. Once the users are imported into the LDAP, remove the userpassword attribute value from the LDIF file. Refer to the Oracle Internet Directory Administration Guide for OID password policies for setting up passwords.
+
+User DN and Group DN values (example:dc=us,dc=oracle,dc=com) may need to be updated based on the DN values in your OID.
+
+Once the LDIF files are updated for your configuration, the LDIF files can be loaded into LDAP using the ldapadd tool that is included in the OID installation. LDIF files can also be imported in other ways like ODSM.
+
+For example to load RGBU-oid-create-users.ldif using ldapadd (this is done on the OID host)
+
+export ORACLE_HOME=/u00/webadmin/products/wls_idm/ORACLE_IDM (this is the ORACLE_HOME of your OID install)
+
+export PATH=$ORACLE_HOME/bin:$PATH
+
+$ORACLE_HOME/bin/ldapadd v c h <OID_HOST> -p 3060 w <ORCLADMIN PASSWORD> -D cn=orcladmin f RGBU-oid-create-users.ldif
+
+The LDIF RGBU-oid-delete-groups.ldif can be used as needed if you need to delete the groups created from the groups creation LDIF RGBU-oid-create-groups.ldif.
+
+The LDIF RGBU-oid-delete-users.ldif can be used if you need to delete the users created from the users LDIF file RGBU-oid-create-users.ldif.
+
+1.Users in the LDIF will be imported and Users can be verified in your User DN location, example: cn=Users,dc=us,dc=oracle,dc=com.
+
+The group cn=Administrators and user cn=weblogic must have been added to your OID as part of OID documentation. If it is not added already, create the cn=weblogic user and cn=Administrators group and add cn=weblogic user as a uniquemember in cn=Administrators group. Following LDIF scripts can be used for the creation of the user (cn=weblogic) and group (cn=Administrators).
+
+Note: DN value need to be changed based on your DN value in OID.
+
+For Example:
+
+cn=weblogic user LDIF:
+
+dn: cn=weblogic,cn=Users,dc=us,dc=oracle,dc=com
+
+description: A user for the 'Administrators' role.
+
+objectclass: inetOrgPerson
+
+objectclass: organizationalPerson
+
+objectclass: person
+
+objectclass: top
+
+objectclass: orcluser
+
+objectclass: orcluserV2
+
+objectclass: orclIDXPerson
+
+cn: weblogic
+
+orclsamaccountname: weblogic
+
+sn: weblogic
+
+uid: weblogic
+
+givenname: weblogic
+
+displayname: weblogic
+
+userpassword: <your password here>
+
+employeeNumber:
+
+middleName:
+
+orclHireDate:
+
+telephoneNumber:
+
+facsimileTelephoneNumber:
+
+mail: weblogic@rgbu.generated.oracle.com
+
+postalAddress:
+
+street:
+
+postalCode:
+
+title:
+
+employeeType:
+
+cn= Administrators group LDIF:
+
+dn: cn=Administrators,cn=groups,dc=us,dc=oracle,dc=com
+
+objectclass: groupOfUniqueNames
+
+objectclass: orclGroup
+
+objectclass: top
+
+cn: Administrators
+
+description: Administrators
+
+displayname: Administrators
+
+uniquemember: cn=weblogic,cn=users,dc=us,dc=oracle,dc=com
+
+Oracle Retail Application Administration Console
+
+Oracle Retail Application Administration Console (ORAAC) is a tool used by an administrator to manage application roles, manage the application navigator and manage notifications. It facilitates the customization of default RGBU role mappings to suit the retailers business role model. ORAAC is deployed along with the ReIM application and accessed from the user menu of the ReIM applications user interface.
+
+Only the user with ReIM Application Administrator privilege can access ORAAC from the ReIM application.
+
+As part of the Retail Invoice Matching Application install, RAAC gets installed with one default role REIM_APPLICATION_ADMINISTRATOR_JOB role. The same job role will also exist in ReIM's jazn-data.xml file. The below options can be used for the set up.
+
+Option 1:
+
+Create the REIM_APPLICATION_ADMINISTRATOR_JOB role in your LDAP and assign that role to a user who intends to execute the role mapping process.
+
+Option 2:
+
+Create a Job role in your LDAP and map the intended job role in the LDAP to the REIM_APPLICATION_ADMINISTRATOR_JOB role using enterprise manager.
+
+Since the user is part of the REIM _APPLICATION_ADMINISTRATOR_JOB role, the user first access the REIM application app and then launch RASRM for role mapping from the user menu of the REIM application.
+
+Note: The REIM_APPLICATION_ADMINISTRATOR_JOB role must have been already created if using the sample LDIF files which are provided as part of the Retail Invoice Matching Application zip file.
+
+Clustered Installations  Preinstallation Steps
+
+Skip this section if you are not clustering the application server.
+
+1.Make sure that you are able to start and stop the managed servers that are part of the ReIM Cluster from the WebLogic Admin Console.
+
+There are no additional steps before running the installer for Retail Invoice Matching.
+
+(Optional) Analyze Changes in the Patch
+
+Note: See Appendix: Analyze Tool for details and instructions to run the Analyze Tool. This appendix also contains screens and fields in the tool.
+
+Expand the ReIM Application Distribution
+
+To expand the ReIM application distribution, do the following.
+
+1.Log in to the UNIX server as the user who owns the WebLogic installation. Create a new staging directory for the ReIM application distribution (reim15application.zip). There should be a minimum of 300 MB disk space available for the application installation files.
+
+Example: /u00/webadmin/media/reim
+
+This location is referred to as INSTALL_DIR for the remainder of this chapter.
+
+2.Copy reim15application.zip to INSTALL_DIR and extract its contents.
+
+Example: unzip reim15application.zip
+
+Run the Oracle Retail Invoice Matching Installer
+
+Once you have a managed server that is configured and started, you can run the Oracle Retail Invoice Matching application installer. This installer configures and deploys the Oracle Retail Invoice Matching application.
+
+Note: See Appendix: Oracle Retail Invoice Matching Application Installer Screens for details about every screen and field in the application installer.
+
+Note: It is recommended that the installer be run as the same UNIX account which owns the application server ORACLE_HOME files.
+
+1.Change directories to INSTALL_DIR/reim/application.
+
+2.Set the ORACLE_HOME, JAVA_HOME, and WEBLOGIC_DOMAIN_HOME environment variables. ORACLE_HOME should point to your WebLogic installation. . JAVA_HOME should point to the Java JDK 1.7+. This is typically the same JDK which is being used by the WebLogic domain where Application is getting installed. WEBLOGIC_DOMAIN_HOME should point to the full path of the domain into which Allocation will be installed.
+
+3.If a secured datasource is going to be configured you also need to set ANT_OPTS so the installer can access the key and trust store that is used for the datasource security:
+
+export ANT_OPTS="-Djavax.net.ssl.keyStore=<PATH TO KEY STORE> -Djavax.net.ssl.keyStoreType=jks -Djavax.net.ssl.keyStorePassword=<KEYSTORE PASSWORD> -Djavax.net.ssl.trustStore=<PATH TO TRUST STORE> -Djavax.net.ssl.trustStoreType=jks -Djavax.net.ssl.trustStorePassword=<TRUSTSTORE PASSWORD>"
+
+An example of this would be:
+
+export ANT_OPTS="-Djavax.net.ssl.keyStore=/u00/webadmin/product/identity.keystore -Djavax.net.ssl.keyStoreType=jks -Djavax.net.ssl.keyStorePassword=retail123 -Djavax.net.ssl.trustStore=/u00/webadmin/product/identity.truststore -Djavax.net.ssl.trustStoreType=jks -Djavax.net.ssl.trustStorePassword=retail123"
+
+4.If you are using an X server such as Exceed, set the DISPLAY environment variable so that you can run the installer in GUI mode (recommended). If you are not using an X server, or the GUI is too slow over your network, unset DISPLAY for text mode.
+
+5.Run the install.sh script. This launches the installer. After installation is completed, a detailed installation log file is created (reiminstall.<timestamp>.log). See Appendix: Oracle Retail Invoice Matching Application Installer Screens for illustrations of installer screens and details about what information needs to be entered on each screen.
+
+Resolving Errors Encountered During Application Installation
+
+If the application installer encounters any errors, it halts execution immediately. You can run the installer in silent mode so that you do not have to retype the settings for your environment. See Appendix: Installer Silent Mode in this document for instructions on silent mode.
+
+See Appendix: Common Installation Errors in this document for a list of common installation errors.
+
+Because the application installation is a full reinstall every time, any previous partial installs are overwritten by the successful installation.
+
+Post-Installation Steps
+
+Update the following settings in WebLogic:
+
+Transaction Time Out
+
+The transaction time out is set at the Domain Level in Weblogic console
+
+1.Login to the WebLogic Console.
+
+2.Navigate to REIMDomain/Configuration/JTA/Timeout Seconds.
+
+3.Set Timeout Seconds to 1200000.
+
+Data Source Capacity
+
+Depending on your planned load, you may need to increase the capacity on the Allocation data sources to accommodate more concurrent connections. When increasing this setting, ensure that your Allocation database has processes setting large enough to accommodate the new maximum.
+
+1.Login to the WebLogic Console.
+
+2.Click the Data Sources link on the Home Screen. The Data Source screen is displayed.
+
+3.Under the list of Data Sources, click the ApplicationDBDS data source.
+
+4.Click the Connection Pool tab.
+
+5.Set the Maximum Capacity to 1000.
+
+6.Repeat for all data sources.
+
+Clustered Installations  Post-Installation Steps
+
+If you are installing the ReIM application to a clustered WebLogic Server environment, there are some extra steps you need to take to complete the installation. In these instructions, the application server node with the ORACLE_HOME you used for the ReIM installer is referred to as the master server. All other nodes are referred to as the remote server.
+
+1.The ReIM batch files should be copied from the master server to each of the remote servers under the same path as on the master server. You should take the <retailhome>/batch directory and copy it onto the remote servers under the same path.
+
+2.The Oracle Retail Installation creates some security files on $WEBLOGIC_DOMAIN_HOME/retail/context root/config directory. Copy this directory to each remote node of the Cluster, matching the full path of the location of this directory on main node.
+
+3.The Oracle Retail Installation creates some properties files on $WEBLOGIC_DOMAIN_HOME/retail/context root/ properties directory. Copy this directory to each remote node of the Cluster, matching the full path of the location of this directory on main node
+
+Installing the REIM BI Publisher Templates
+
+In this section we will outline how the REIM report templates are installed into the appropriate BI server repositories which will be referred to as BI_REPOSITORY
+
+Example: <DOMAIN_HOME>/config/bipublisher/repository
+
+Report files are available from - " INSTALL_DIR/reim/reports " and have to be copied into the newly created directory within the Reports directory under the BI Publisher Guest folder.
+
+1.Create the directory to hold the reports under <BI_REPOSITORY>
+
+mkdir <BI_REPOSITORY>/Reports/Guest/REIM
+
+2.Change directory to the INSTALL_DIR/reports. This directory contains subdirectories whose names reflect the names of report templates provided with REIM.
+
+a. Copy each report directory into the directory created above
+
+For example,
+
+cp -R * <BI_REPOSITORY>/Reports/Guest/REIM
+
+Test the ReIM Application
+
+After the application installer completes you should have a working ReIM application installation. To launch the application, open a web browser and go to
+
+http://hostname:(managed_server_port)/<context_root>/index.jsp.
+
+If you have configured a WebTier to a front end ReIM application, use http port instead of managed server port.
+
+Example: http://appserver1:17009/reim01/index.jsp
+
+reim.properties
+
+The reim.properties file contains most of the settings for the ReIM application. Many properties in this file are set by the installer to get a working application up and running, but you may want to modify other settings in this file.
+
+To modify settings in the properties file, you must redeploy the ReIM application. The properties values are stored in the templates/reim.properties file, which is in the directory where you expanded the ReIM installer files (for example, <INSTALL_DIR>/reim/application/templates/reim.properties, where <INSTALL_DIR> is the directory the application installer was unzipped).
+
+Edit the reim.properties file to set the properties to the desired values. Then rerun the installer to deploy ReIM.
+
+integration.properties
+
+The below changes need to be done only if WWAV credentials have been enabled for reim during deployment.
+
+The integration.properties can be found under
+
+<DOMAIN_HOME>/retail/<reim app deployment name>/<6m8whs>/reim.war/WEB-INF/classes/com/retek/reim/integration.properties
+
+Before changes, the integration.properties would look like the below:
+
+#Drill Forward - start
+
+#webservice.financial.drill.forward=https://hostname.us.oracle.com:7068/fin-DrillBackForwardUrl-AppServiceDecorator/ProxyService/DrillBackForwardUrlAppServiceProxy?wsdl
+
+webservice.financial.drill.forward.wsdl=@deploy.webservice.drill.forward.wsdl@
+
+#The below entries are not required as per Dev Team.
+
+#webservice.financial.drill.forward.url.targetnamespace=@deploy.webservice.drill.forward.url.targetnamespace@
+
+#webservice.financial.drill.forward.targetsystem=@deploy.webservice.drill.forward.targetsystem@
+
+#Drill Forward - end
+
+#webservice provider URL for account validation
+
+webservice.financial.account.validation=https://msp00abq.us.oracle.com:7068/fin-GlAccountValidation-AppServiceDecorator/ProxyService/GlAccountValidationAppServiceProxy?wsdl
+
+webservice.financial.account.validation.namespace=http://www.oracle.com/retail/fin/integration/services/GlAccountValidationService/v1
+
+webservice.financial.account.validation.local.code=GlAccountValidationService
+
+#webservice user alias for account validation
+
+webservice.financial.account.validation.credential.alias=${webservice.account.validation.credential.alias.trimmed.upper}
+
+#enable webservice credentials
+
+enable.webservice.account.validation.credentials=@deploy.enable.webservice.account.validation.credentials@
+
+After the changes have been made, integration.properties should look like the below:
+
+#webservice provider URL for drill forward
+
+#Drill Forward - start
+
+#webservice.financial.drill.forward=@deploy.webservice.drill.forward@
+
+webservice.financial.drill.forward.wsdl=http://hostname.us.oracle.com:18008/fin-DrillBackForwardUrl-AppServiceDecorator/ProxyService/DrillBackForwardUrlAppServiceProxy?wsdl
+
+#The below entries are not required as per Dev Team.
+
+#webservice.financial.drill.forward.url.targetnamespace=http://www.oracle.com/retail/fin/integration/services/DrillBackForwardUrlService/v1
+
+#webservice.financial.drill.forward.targetsystem=@deploy.webservice.drill.forward.targetsystem@
+
+#Drill Forward - end
+
+#webservice provider URL for account validation
+
+webservice.financial.account.validation=https://msp00abq.us.oracle.com:7068/fin-GlAccountValidation-AppServiceDecorator/ProxyService/GlAccountValidationAppServiceProxy?wsdl
+
+webservice.financial.account.validation.namespace=http://www.oracle.com/retail/fin/integration/services/GlAccountValidationService/v1
+
+webservice.financial.account.validation.local.code=GlAccountValidationService
+
+#webservice user alias for account validation
+
+webservice.financial.account.validation.credential.alias=${webservice.account.validation.credential.alias.trimmed.upper}
+
+#enable webservice credentials
+
+enable.webservice.account.validation.credentials=@deploy.enable.webservice.account.validation.credentials@
+
+Bounce the domain once the changes have been made.
+
+ReIM Batch Scripts
+
+The ReIM application installer configures and installs the batch scripts under <retailhome>/reim-batch.
+
+Example: /u00/projects/j2ee/reim/rem-batch
+
+The batch scripts are copies of the same generic file. Their file names determine which functionality is run. To run batch scripts, use the alias name provided in the installer when ReIM is installed, the one that is written out to the Java wallet (for example, reim_batchpgmname ADMIN).
+
+For the scripts to run correctly, values for the following variables must be provided:
+
+§ ORACLE_HOME: WebLogic Home directory where the ReIM application has been deployed.
+
+§ JAVA_HOME: Java 7.0 (1.7.0) JDK installation that typically is being used by the WebLogic Application Server.
+
+Example: export ORACLE_HOME=/u00/webadmin/products/wls_retail export JAVA_HOME=/u00/webadmin/products/jdk_java export PATH=$JAVA_HOME/bin:$PATH
+
+Online Help
+
+The application installer automatically installs Online Help to the proper location. It is accessible from the help links within the application.
+
+Single Sign-On
+
+Skip this section if ReIM is not used within an Oracle Single Sign-On environment.
+
+Note: This section assumes the Oracle WebLogic Server has already been registered with the Oracle Access Manager (OAM) via the oamreg tool. See the Oracle Single Sign-On (OAM using webgate) documentation for details.
+
+To set up single sign-on, complete the following steps.
+
+1.If you are using Oracle Retail Invoice Matching in an Oracle Single Sign-On environment, then the Invoice Matching root context must be protected. Modify the following files
+
+§ mod_wl_ohs.conf located in <WEBLOGIC_HOME>/Oracle_WT1/instances/instance1/config/OHS/ohs1
+
+LoadModule weblogic_module "<WEBLOGIC_HOME>/Oracle_WT1/ohs/modules/mod_wl_ohs.so"
+
+<IfModule weblogic_module>
+
+WebLogicHost <WEBLOGIC_HOST>
+
+WebLogicPort <WEBLOGIC_PORT>
+
+Debug ON
+
+WLLogFile /tmp/weblogic.log
+
+MatchExpression *.jsp
+
+</IfModule>
+
+<Location /ReimViewController >
+
+SecureProxy ON
+
+WebLogicHost <WEBLOGIC_HOST>
+
+WebLogicPort <WEBLOGIC_PORT>
+
+SetHandler weblogic-handler
+
+WLCookieName REIMSESSIONID
+
+WLProxySSL ON
+
+WLProxySSLPassThrough ON
+
+WlSSLWallet "${ORACLE_INSTANCE}/config/${COMPONENT_TYPE}/${COMPONENT_NAME}/keystores/host_name"
+
+</Location>
+
+<Location /RetailAppsAdminConsole-REIM >
+
+WebLogicHost <WEBLOGIC_HOST>
+
+WebLogicPort <WEBLOGIC_PORT>
+
+SetHandler weblogic-handler
+
+WLCookieName REIMSESSIONID
+
+WLProxySSL ON
+
+WLProxySSLPassThrough ON
+
+SecureProxy ON
+
+WlSSLWallet "${ORACLE_INSTANCE}/config/${COMPONENT_TYPE}/${COMPONENT_NAME}/keystores/host_name"
+
+Adding Logout URI
+
+After checking that the default authenticator's control flag is set correctly as per the OAM documentation, and that the order of the providers is correct, add an OAM SSO provider and restart all servers as described below.
+
+1.Connect to the WebLogic domain using WLST and run the following command:
+
+addOAMSSOProvider(loginuri="/<appcontextroot>/adfAuthentication", logouturi="/oamsso/logout.html")
+
+Example:
+
+<WEBLOGIC_HOME>/common/bin/wlst.sh
+
+Connect() and proceed with the above step
+
+5
+
+Note: This section is not required if BIPublisher has been configured as part of RMS Installation.
+
+1.Login with the credentials you entered in your Oracle BI EE configuration (weblogic / password). Example URL:http://[obiee_host]:[obiee server_port]/xmlpserver
+
+:
+
+2.Configure the BI Publisher repository. After signon, select Administration.
+
+3.On the System Maintenance Section, click Server Configuration
+
+4.Navigate to the Configuration Screen.
+
+5.On this screen on the Configuration Folder section, enter the path to your repository. On the Catalog section enter Catalog Type: Oracle BI Publisher  File System from the drop down menu.
+
+This is the path you entered in the Configuration Section and Catalog Section:
+
+$MIDDLEWARE_HOME/user_projects/domains/bifoundation_domain/config/bipublisher/repository
+
+6.Restart the BI Publisher after this change.
+
+7.Set BiPublisher security model.
+
+a.On the BiPublisher 11g Administration Screen, click Security Configuration from the Security Center.
+
+b.Enable a superuser by checking the Enable Local SuperUser box and by entering name and password on the corresponding fields on this screen.
+
+c.Mark Allow Guest Access check box. Enter Guest as Guest Folder Name
+
+d.Scroll down the screen and locate the Authorization section:
+
+e.Select BI Publisher Security from the Security Model list.
+
+f.The default user name for the BI Publisher Security Model is Administrator
+
+g.On the password text field, enter a value that you can remember. It is going to be the password for Login to xmlpserver.
+
+h.Save the changes and re-start the BIPublisher server.
+
+i.Launch xmlpserver. To Login you must use the new credentials that you set up in the former step: Username: <Administrator User> and Password: <password for Administrator User>.
+
+Note: You will not be able to login to xmlpserver as weblogic any more because we have already changed the Security Model.
+
+8.Set the repository path.
+
+Example: /u00/webadmin/product/10.3.X/WLS/user_projects/domains/bifoundation_domain/config/bipublisher/repository In the Oracle BI EE file system you will find the repository in the following location:
+
+$OBIEE/wls/user_projects/domains/bifoundation_domain/config/bipublisher/repository
+
+In the repository you will see the following directories:
+
+§ Admin
+
+§ DemoFiles
+
+§ Reports
+
+§ Tools
+
+§ Users
+
+9.Create role Bipub_default_role.
+
+a.From the xmlpserver Administration screen, scroll down to Security Center and click Roles and Permissions.
+
+b.On the Roles and Permissions screen, click the Create Role button.
+
+c.Create the Bipub_default_role. Enter in Create Role Section name of the role.
+
+d.When the information has been entered press Apply changes.
+
+10.Assign BiPub system roles to the newly created Bipub_default_role.
+
+a.To assign BiPub system roles to the newly create Bipub_default_role, go to Security Center section and navigate to the Roles and Permissions screen:
+
+b.On the Roles and Permissions screen you should see the new role created: Bipub_default_role. Add multiple roles to the Bipub_Default_Role by pressing the corresponding green icon on the Add Roles column.
+
+c.From the Available Roles panel, select the ones needed for your reports and click Move to move them to the Included Roles panel.
+
+d.Click Apply to save your changes.
+
+11.Create Guest (XMLP_GUEST) user.
+
+a.From the xmlpserver Administration screen scroll down to Security Center section and click Users to navigate to the next screen.
+
+b.Click Create User to create the xmlp_guest user and save the changes.
+
+12.Adding the Bipub_default_role to XMLP_GUEST user.
+
+a.Open the Users section.
+
+b.For xmlp_guest user, click the Assign Roles icon to navigate to the next screen.
+
+c.On the Assign Roles screen, select the BiPub_default_role from the Available Roles panel and click Move to move it to the Assigned Roles panel. Click Apply to save your changes.
+
+13.Create folders. Complete the following steps.
+
+a.Create the Guest and REIM directories on the server. Change directories into these directories and verify that the new folders have the 755 permission.
+
+Example assuming that /u00/webadmin is the root of the installation:
+
+cd /u00/webadmin/product/10.3.X/WLS/user_projects/domains/bifoundation_domain/config/bipublisher/repository/Reports
+
+mkdir /u00/webadmin/product/10.3.X/WLS/user_projects/domains/bifoundation_domain/config/bipublisher/repository/Reports/Guest
+
+cd Guest
+
+mkdir /u00/webadmin/product/10.3.X/WLS/user_projects/domains/bifoundation_domain/config/bipublisher/repository/Reports/Guest/REIM
+
+Configuring the RMS JDBC connection
+
+Follow the below steps to configure JDBC connection for RMS Data Source name. This is the data source that REIM uses for REIM reports.
+
+1.Log on with the default user ID and passwords for BI Publisher using the administrative user and password configured previously.
+
+2.Click the Administration tab and select the JDBC Connection hyperlink in the Data Sources lists. The following screen is displayed. Click Add Data Source.
+
+3.Enter RMS for the datasource name (datasource MUST be RMS as the xdm file has code pointing at a datasource named RMS), and enter the appropriate details for the RMS data source. Once the data is entered, click Test Connection to test the connection.
+
+The syntax for connection is jdbc:oracle:thin:@<hostname>:<port>/<servicename>
+
+For example: jdbc:oracle:thin:@hostname.example:1521/servicename
+
+4.Ensure that Allow Guest Access is checked in the Security Section.
+
+5.Click Apply to save the information.
+
+6
+
+This section provides the details on how to configure Operation Insights Installation. This is an optional section as you can chose not to use Operation Insights. Single Sign-On configuration for REIM, ALLOC, ReSA and Oracle BI EE is highly recommended for configuring Operational Insights.
+
+Terms
+
+The following terms apply to the Operational Insights installation and configuration:
+
+OBIEE_PORT  The port where the Oracle BI EE administration server is running.
+
+OBIEE_MS_PORT  The Oracle BI EE Managed server port.
+
+OBIEE_WEBLOGIC_DOMAIN_HOME  The Oracle BI EE WebLogic domain path.
+
+RMS_HOST  The host where RMS is installed in WebLogic.
+
+Install Oracle BI
+
+For step-by-step instructions on how to install and configure Oracle BI EE, see the Installing Oracle Business Intelligence chapter of the Oracle BI EE Installation Guide.
+
+Configure OID Provider in Oracle BI EE WebLogic Domain
+
+The OID Provider needs to be configured in Oracle BI EE WebLogic domain.
+
+Note: In this section, the base DN dn=us,dn=oracle,dn=com is used as an example. Modify this value as per the organisations ldap settings.
+
+Perform the following procedure to create providers in the domains created in the previous steps.
+
+1.Log in to the Administration Console.
+
+http://<OBIEE_HOST>:<OBIEE_PORT>/console/
+
+2.In the Domain Structure frame, click Security Realms.
+
+3.In the Realms table, click myrealm. The Settings for myrealm page is displayed.
+
+4.Click the Providers tab.
+
+5.Click Lock & Edit and then click New. The Create a New Authentication Provider page is displayed.
+
+6.Enter OIDAuthenticator in the Name field and select OracleInternetDirectoryAuthenticator as the type. Click OK.
+
+7.All the providers are displayed. Click OIDAuthenticator. Settings of OIDAuthenticator are displayed.
+
+8.Set the Control Flag field to SUFFICIENT and click Save.
+
+9.From the Providers tab, click on DefaultAuthenticator -> Configuration tab -> Common tab. Update the Control Flag to SUFFICIENT.
+
+10.Click Save.
+
+11.From the Providers tab, click the OIDAuthenticator (you just created), in the configuration -> Provider Specific tab enter your LDAP connection details:
+
+The values shown below are examples only. You should match the entries to your OID.
+
+§ Host: <oidhost>
+
+§ Port: <oidport>
+
+§ Principal: cn=orcladmin
+
+§ Credential: <password>
+
+§ Confirm Credential: <password>
+
+§ User Base DN: cn=users,dc=us,dc=oracle,dc=com
+
+§ Check Retrieve credentials as principal.
+
+12.Modify the following:
+
+Group Base DN: cn=Groups,dc=us,dc=oracle,dc=com
+
+13.Check Propagate Cause For Login Exception
+
+14.Click Save.
+
+15.Click the Providers tab.
+
+16.Click Reorder.
+
+17.Move OIDAuthenticator to the top of the providers list
+
+18.Click OK.
+
+19.Once your changes are saved, click Activate Changes.
+
+20.Shutdown all servers and restart the admin server using startWebLogic.sh script.
+
+Load LDIF Files in LDAP
+
+The OID (Oracle Internet Directory) must be set up in order to perform the configuration of OID Authenticator in Oracle BI EE WebLogic Domain.
+
+There are two ldifs which need to be loaded in OID.
+
+§ BI_Group.ldif
+
+§ BI_User.ldif
+
+Note: The ldif files are updated in the APPENDIX D
+
+The steps given below can be used to import the Groups and Users into the LDAP using the LDIF files.
+
+Note: If you are using the above LDIF files to set up the users and groups, you must update the BI_User.ldif LDIF file with your password for the userpassword attribute for all the users mentioned in the RESA-oid-create-user.ldif LDIF file. The changes must be done before importing the users LDIF file BI_User.ldif into the LDAP. Once the users are imported into the LDAP, remove the userpassword attribute value from the LDIF file. Refer to the Oracle Internet Directory Administration Guide for OID password policies for setting up passwords.
+
+User DN and Group DN values (example: dc=us,dc=oracle,dc=com) may need to be updated based on the DN values in your OID.
+
+Once the LDIF files are updated for your configuration, the LDIF files can be loaded into LDAP using the ldapadd tool that is included in the OID installation. LDIF files can also be imported in other ways like ODSM.
+
+For example to load BI_Group.ldif using ldapadd (this is done on the OID host)
+
+export ORACLE_HOME=/u00/webadmin/products/wls_idm/ORACLE_IDM (this is the ORACLE_HOME of your OID install)
+
+export PATH=$ORACLE_HOME/bin:$PATH
+
+$ORACLE_HOME/bin/ldapadd v c h <OID_HOST> -p 3060 w <ORCLADMIN PASSWORD> -D cn=orcladmin f BI_Group.ldif
+
+The same can be done to BI_User.ldif
+
+Configure Oracle Single Sign-On
+
+Note: This procedure is only needed if you plan on setting up the OBIEE using Single Sign On (SSO) authentication. This can be skipped if SSO is not going to be configured for this environment. The Oracle Access Manager must be configured and the Oracle http server (Webtier and webgate) must be registered into the Oracle Access Manager.
+
+Create the SSO provider in the Oracle BI EE Domain
+
+1.Log into the WebLogic console.
+
+2.Navigate to: security realms -> myrealm (default realm) -> providers.
+
+3.Start a Lock and Edit session.
+
+4.Click New provider.
+
+5.Set the provider name (Default: OAMIdentityAsserter).
+
+6.Click Ok.
+
+7.Open the new provider configuration.
+
+8.Under Common, set the Control Flag to SUFFICIENT.
+
+9.On the provider list, click Reorder.
+
+10.Move the OAMIdentityAsserter to the top of the list, or above the DefaultAuthenticator.
+
+11.Click Ok.
+
+12.Click Activate Changes.
+
+13.Shutdown the domain.
+
+14.Start the admin and managed servers for the domain.
+
+Configure the Repository (rpd)
+
+Complete the following steps.
+
+1.Stop Oracle BI services by executing opmnctl stopall from <BI_INSTALL_DIRECTORY>\instances\instance1\bin.
+
+2.Update the configuration file located at <BI_INSTALL_DIRECTORY>\instances\instance1\config\OracleBIServerComponent\coreapplication_obis1/NQSConfig.INI. Add a new line under the [REPOSITORY] section. For example:
+
+[REPOSITORY]
+
+Star = Operational_Insights.rpd, DEFAULT;
+
+3.Other default repositories should be commented out in the NQSConfig.INI. For example:
+
+[REPOSITORY]
+
+Star = Operational_Insights.rpd, DEFAULT;
+
+#Star = SampleAppLite.rpd, DEFAULT;
+
+4.Change the following setting from FMW_UPDATE_ROLE_AND_USER_REF_GUIDS = NO; to FMW_UPDATE_ROLE_AND_USER_REF_GUIDS= YES;
+
+5.Save and close NQSConfig.INI.
+
+6.Verify the existence of tnsnames.ora file under <BI_INSTALL_DIRECTORY>/Oracle_BI1/network/admin and the file has an entry of the database used by Operational Insights.
+
+7.Proceed to set up the database connection.
+
+Note: When making any changes to the repository, does it in the offline mode and before saving the changes perform a global consistency check. The global consistency check should not show any errors. Out of the box Operational Insight repository will have some warnings when a Global Consistency Check is done. These warnings do not affect Operational Insight functionality in any way and these are been thoroughly verified.
+
+Set up the Database Connection
+
+Refer to the Configuring Repositories chapter of the Oracle BI EE System Administrator's Guide for additional details.
+
+Note: The screen illustrations in the following steps are only examples. The screens that appear depend on the setup of your system.
+
+1.The Rpd.zip is located under <INSTALL DIR>\OI\Rpd and unzip the Rpd.zip to obtain Operational_Insight.rpd file and proceed with DB Connection setup.
+
+2.This change requires moving the rpd to a Microsoft Windows system which has Oracle BI EE installed. Rpd is located at <BI_INSTALL_DIRECTORY>\instances\instance1\bifoundation\OracleBIServerComponent\coreapplication_obis1\repository.
+
+3.Once the Operational_Insights.rpd is moved to a Microsoft Windows system, open it using the Oracle BI Server Administration tool.
+
+4.When prompted for the password, refer to the RPD_post_install.txt located at <BI_INSTALL_DIRECTORY>\instances\instance1\bifoundation\OracleBIServerComponent\coreapplication_obis1\repository.
+
+5.At this time the password of the rpd can be changed if desired. For more details on changing the password refer to the chapter, Managing Oracle BI Repository Files of the Oracle BI EE Metadata Repository Builder's Guide.
+
+6.When the rpd is opened, from the menu, go to Manage > Variables.
+
+7.Under Repository Static variables, Double-click on RMS_USER to edit with main RMS schema username (for example, RMS01) and RMS_DSN with Data Source Name of the RMS Database.
+
+8.Configure Rpd variable for RMS forms In-context launch
+
+§ Change the value of Repository variable: RMS_CONFIG_PARAM
+
+Note: If RMS URL is as below:
+
+http://<RMS_HOST>:<PORT>/forms/frmservlet?config=<RMS15SSO>
+
+Then the value of RMS_CONFIG_PARAM variable will be RMS15SSO
+
+9.In the Physical Layer, open the Connection Pool (Oracle RMS Connection Pool) under Oracle RMS OLTP and update the password for the RMS User. The following is a sample of the Oracle RMS Connection Pool screen.
+
+10.Follow the same steps for Oracle Data RMS Repository Initblocks Connection Pool.
+
+11.Save the Operational_Insights.rpd file.
+
+12.Test the database connection by right-clicking on any of the tables in the Physical Layer, and select Update Row Count. The number of rows will be shown when that table is highlighted if the database connection is successful.
+
+13.FTP the rpd back to <BI_INSTALL_DIRECTORY>/instances/instance1/bifoundation/OracleBIServerComponent/coreapplication_obis1/repository. Make sure it is copied in binary mode.
+
+Notes:
+
+When making any changes to the repository, does it in the offline mode and before saving the changes perform a global consistency check. The global consistency check should not show any errors. Out of the box Operational Insight repository will have some warnings when a Global Consistency Check is done. These warnings do not affect Operational Insight functionality in any way and these are been thoroughly verified.
+
+14.Proceed to the next section to configure the catalog.
+
+Configure Catalog
+
+To configure the catalog, complete the following steps.
+
+1.The Catalog.zip is located under <INSTALL DIR>/OI/Catalog and unzip the Catalog.zip to obtain the catalog folder.
+
+2.Copy the catalog folder to the below directory<BI_INSTALL_DIRECTORY>/instances/instance1/config/OracleBIPresentationServicesComponent/coreapplication_obips1/catalog/
+
+3.Update the instanceconfig.xml file to point to Operational_Insights catalog. Instanceconfig.xml is found at <BI_INSTALL_DIRECTORY>/instances/instance1/config/OracleBIPresentationServicesComponent\coreapplication_obips1. Change the catalog path within the file to point to Operational_Insights. For example:
+
+<CatalogPath><BI_INSTALL_DIRECTORY>/instances/instance1/bifoundation/OracleBIPresentationServicesComponent/coreapplication_obips1/catalog/</CatalogPath>
+
+4.Save and close instanceconfig.xml.
+
+5.Log in to WebLogic Enterprise Manager (EM) via web browser with the URL as http://<OBIEE_HOST>:<OBIEE_ADMIN_PORT>/em. Log in with the username and password created during Oracle BI EE installation.
+
+6.Go to WebLogic Domain > right click bifoundation_domain > Security > Credentials as shown in the following screen.
+
+7.Click Create Key.
+
+8.For Key, enter repository. Operational Insights. For User Name, enter system. Enter the password of the rpd.
+
+9.Click OK and log out.
+
+10.Start Oracle BI services by executing opmnctl startall from <BI_INSTALL_DIRECTORY>\instances\instance1\bin.
+
+11.Test Operational Insights Installation by opening the browser with the URL as http://<OBIEE_HOST>:<OBIEE_MS_PORT>/analytics with the username and password created during Oracle BI EE installation.
+
+Another alternative for configuring the rpd and catalog through WebLogic, refer to the "Configuring Repositories" chapter in the System Administrator's Guide for Oracle Business Intelligence Enterprise Edition"
+
+Configure Oracle Retail Operational Insights Roles and Application Roles
+
+Migrating Application Roles using WLST (Recommended approach)
+
+1.To migrate security there is a WLST method called as Migrate Security Store which can move the roles from one system-jazn-data.xml to the other. To do that, first copy the system-jazn-data.xml from Dev instance (<INSTALL DIR>/application/XXXX/OperationalInsights/XML ) to the Prod instance (to a temporary directory). In the same way copy the system-jazn-data.xml from the Prod instance to the temporary directory as shown below.
+
+2.Take a backup of all these files before doing the migration. Now, copy the jps-config.xml from any one of the instances (Dev or Prod) to the temporary Directory as shown below. And rename the file to jps-config-policy.xml.
+
+3.Open up the jps-config-policy.xml. You will notice that this file contains all the details about all the stores in the environment. Now, for policy migration, we need to basically use this file to point to the locations of the Dev and Prod (source & target) system-jazn-data.xml files. Also, since we are doing only policy migration, we do not need the other store related tags within this file. Remember that we are modifying only a copy of the jps-config.xml. This copy file will be used only for migration. The modified file is given below
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<jpsConfig xmlns="http://xmlns.oracle.com/oracleas/schema/11/jps- config-11_1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema- instance" schema-major-version="11" schema-minor-version="1" xsi:schemaLocation="http://xmlns.oracle.com/oracleas/schema/11/jps- config-11_1.xsd jps-config-11_1.xsd">
+
+<property name="oracle.security.jps.jaas.mode" value="off"/>
+
+<property name="oracle.security.jps.enterprise.user.class" value="weblogic.security.principal.WLSUserImpl"/>
+
+<property name="oracle.security.jps.enterprise.role.class" value="weblogic.security.principal.WLSGroupImpl"/>
+
+<propertySets>
+
+<propertySet name="saml.trusted.issuers.1">
+
+<property name="name" value="www.oracle.com"/>
+
+</propertySet>
+
+<propertySet name="trust.provider.embedded">
+
+<property name="trust.provider.className" value="oracle.security.jps.internal.trust.provider.embedded .EmbeddedProviderImpl"/>
+
+<property name="trust.clockSkew" value="60"/>
+
+<property name="trust.token.validityPeriod" value="1800"/>
+
+<property name="trust.token.includeCertificate" value="false"/>
+
+</propertySet>
+
+</propertySets>
+
+<serviceProviders>
+
+<serviceProvider type="CREDENTIAL_STORE" name="credstoressp" class="oracle.security.jps.internal.credstore.ssp.SspCredentialStorePro vider">
+
+<description>SecretStore-based CSF Provider</description>
+
+</serviceProvider>
+
+<serviceProvider type="IDENTITY_STORE" name="idstore.ldap.provider" class="oracle.security.jps.internal.idstore.ldap.LdapIdentityStoreProvi der">
+
+<description>LDAP-based IdentityStore Provider</description>
+
+</serviceProvider>
+
+<serviceProvider type="IDENTITY_STORE" name="idstore.xml.provider" class="oracle.security.jps.internal.idstore.xml.XmlIdentityStoreProvide r">
+
+<description>XML-based IdentityStore Provider</description>
+
+</serviceProvider>
+
+<serviceProvider type="POLICY_STORE" name="policystore.xml.provider" class="oracle.security.jps.internal.policystore.xml.XmlPolicyStoreProvi der">
+
+<description>XML-based PolicyStore Provider</description>
+
+</serviceProvider>
+
+<serviceProvider type="PDP" name="pdp.service.provider" class="oracle.security.jps.az.internal.runtime.provider.PDPServiceProvi der">
+
+<description>Runtime PDP Service Provider</description>
+
+</serviceProvider>
+
+<serviceProvider type="LOGIN" name="jaas.login.provider" class="oracle.security.jps.internal.login.jaas.JaasLoginServiceProvider ">
+
+<description>This is Jaas Login Service Provider and is used to configure login module service instances</description>
+
+</serviceProvider>
+
+<serviceProvider type="KEY_STORE" name="keystore.provider" class="oracle.security.jps.internal.keystore.KeyStoreProvider">
+
+<description>PKI Based Keystore Provider</description>
+
+<property name="provider.property.name" value="owsm"/>
+
+</serviceProvider>
+
+<serviceProvider type="AUDIT" name="audit.provider" class="oracle.security.jps.internal.audit.AuditProvider">
+
+<description>Audit Service</description>
+
+</serviceProvider>
+
+<serviceProvider type="TRUST" name="trust.provider" class="oracle.security.jps.internal.trust.TrustServiceProvider">
+
+<description>Trust Service</description>
+
+</serviceProvider>
+
+<serviceProvider type="ATTRIBUTE" name="attribute.provider" class="oracle.security.jps.internal.attribute.impl.AttributeServiceProvide rImpl">
+
+<description>Attribute Service Provider</description>
+
+</serviceProvider>
+
+</serviceProviders>
+
+<serviceInstances>
+
+<serviceInstance name="credstore" provider="credstoressp" location="./">
+
+<description>File Based Credential Store Service Instance</description>
+
+</serviceInstance>
+
+<serviceInstance name="bootstrap.credstore" provider="credstoressp" location="./bootstrap">
+
+<description>Bootstrap Credential Store Service Instance</description>
+
+<property name="location" value="./bootstrap"/>
+
+</serviceInstance>
+
+<serviceInstance name="bootstrap.credstore.local" provider="credstoressp" location="${domain.home}/opss/local">
+
+<description>Local Bootstrap Credential Store Service Instance</description>
+
+<property name="location" value="${domain.home}/opss/local"/>
+
+</serviceInstance>
+
+<serviceInstance name="idstore.ldap" provider="idstore.ldap.provider">
+
+<description>LDAP Identity Store Service Instance</description>
+
+<property name="idstore.config.provider" value="oracle.security.jps.wls.internal.idstore.WlsLdapIdStoreConfi gProvider"/>
+
+<property name="CONNECTION_POOL_CLASS" value="oracle.security.idm.providers.stdldap.JNDIPool"/>
+
+</serviceInstance>
+
+<serviceInstance name="idstore.xml" provider="idstore.xml.provider" location="./system-jazn-data.xml">
+
+<description>File Based Identity Store Service Instance</description>
+
+<property name="subscriber.name" value="jazn.com"/>
+
+</serviceInstance>
+
+<serviceInstance name="srcpolicystore.xml" provider="policystore.xml.provider"location="<path to /system-jazn-data.xml>">
+
+<description>File Based Policy Store Service Instance</description>
+
+</serviceInstance>
+
+<serviceInstance name="policystore.xml"provider="policystore.xml.provider" location="<path to /system-jazn-data.xml>">
+
+<description>File Based Policy Store Service Instance</description>
+
+</serviceInstance>
+
+<serviceInstance name="pdp.service" provider="pdp.service.provider">
+
+<description>Runtime PDP service instance</description>
+
+</serviceInstance>
+
+<serviceInstance name="keystore" provider="keystore.provider" location="./default-keystore.jks">
+
+<description>Default JPS Keystore Service</description>
+
+<property name="keystore.provider.type" value="file"/>
+
+<property name="keystore.file.path" value="./"/>
+
+<property name="keystore.type" value="JKS"/>
+
+<property name="keystore.csf.map" value="oracle.wsm.security"/>
+
+<property name="keystore.pass.csf.key" value="keystore-csf-key"/>
+
+<property name="keystore.sig.csf.key" value="sign-csf-key"/>
+
+<property name="keystore.enc.csf.key" value="enc-csf-key"/>
+
+</serviceInstance>
+
+<serviceInstance name="audit" provider="audit.provider" location="./audit- store.xml">
+
+<description>Audit Service</description>
+
+<property name="audit.filterPreset" value="None"/>
+
+<property name="audit.maxDirSize" value="0"/>
+
+<property name="audit.maxFileSize" value="104857600"/>
+
+<property name="audit.timezone" value="utc"/>
+
+<property name="audit.loader.jndi" value="jdbc/AuditDB"/>
+
+<property name="audit.loader.interval" value="15"/>
+
+<property name="audit.loader.repositoryType" value="File"/>
+
+<property name="auditstore.type" value="file"/>
+
+</serviceInstance>
+
+<serviceInstance name="trust" provider="trust.provider">
+
+<description>Trust Service</description>
+
+<extendedProperty>
+
+<name>trust.providers</name>
+
+<values>
+
+<value>trust.provider.embedded</value>
+
+</values>
+
+</extendedProperty>
+
+</serviceInstance>
+
+<serviceInstance name="saml.loginmodule" provider="jaas.login.provider">
+
+<description>SAML Login Module</description>
+
+<property name="loginModuleClassName" value="oracle.security.jps.internal.jaas.module.saml.JpsSAMLLoginMo dule"/>
+
+<property name="jaas.login.controlFlag" value="REQUIRED"/>
+
+<propertySetRef ref="saml.trusted.issuers.1"/>
+
+</serviceInstance>
+
+<serviceInstance name="saml2.loginmodule" provider="jaas.login.provider">
+
+<description>SAML2 Login Module</description>
+
+<property name="loginModuleClassName" value="oracle.security.jps.internal.jaas.module.saml.JpsSAML2LoginM odule"/>
+
+<property name="jaas.login.controlFlag" value="REQUIRED"/>
+
+<propertySetRef ref="saml.trusted.issuers.1"/>
+
+</serviceInstance>
+
+<serviceInstance name="krb5.loginmodule" provider="jaas.login.provider">
+
+<description>Kerberos Login Module</description>
+
+<property name="loginModuleClassName" value="com.sun.security.auth.module.Krb5LoginModule"/>
+
+<property name="jaas.login.controlFlag" value="REQUIRED"/>
+
+<property name="storeKey" value="true"/>
+
+<property name="useKeyTab" value="true"/>
+
+<property name="doNotPrompt" value="true"/>
+
+<property name="keyTab" value="./krb5.keytab"/>
+
+<property name="principal" value="HOST/localhost@EXAMPLE.COM"/>
+
+</s

@@ -1,0 +1,15 @@
+In case anyone is familiar with Clonezilla and wants to create a Clonezilla USB boot stick you could try running this:-
+
+Code:
+
+export CLONEZILLA_SRC="http://kent.dl.sourceforge.net/project/clonezilla/clonezilla_live_stable/2.6.1-25/clonezilla-live-2.6.1-25-amd64.zip" export USB="da0" export MOUNTDIR="/mnt/clonezilla-tmp" mkdir $MOUNTDIR gpart destroy -F $USB gpart create -s mbr $USB gpart add -t fat32 $USB gpart set -a active -i 1 $USB newfs_msdos /dev/${USB}s1 mount -t msdosfs /dev/${USB}s1 $MOUNTDIR fetch --no-verify-peer -o - $CLONEZILLA_SRC | unzip -d $MOUNTDIR - cp $MOUNTDIR/utils/mbr/mbr.bin mbr umount $MOUNTDIR rmdir $MOUNTDIR dd if=/dev/zero of=mbr seek=440 bs=1 count=72 gpart bootcode -b mbr $USB pkg install -y syslinux syslinux --install -s -f -d /syslinux /dev/${USB}s1
+
+It is offerred as is and use at your own risk. It works for me.
+
+You may want to adjust the value of USB above as it defaults to using /dev/da0.
+
+This is just a first attempt at getting it work, and I may try to refine it at some point.
+
+Any comments appreciated.
+
+It's a pity there is no FreeBSD version of this utility. Apparently it is written in Perl and the source code is available but I suspect there are too many Linuxisms included to make porting to FreeBSD a simple process.

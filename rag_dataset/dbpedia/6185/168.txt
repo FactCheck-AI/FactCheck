@@ -1,0 +1,121 @@
+[Turn 10 Studios development manager Adent tackles the topic of how the team moved to a goal of having an always-working build for Forza Motorsport 3, how that goal was achieved, and what it meant for the development of the game -- and team motivation.]
+
+As programmers in the games industry we are often called upon to develop technology that enables creative experiences and yet we are asked to do it with limited resources and on firm deadlines. At Turn 10, after releasing our award winning Forza Motorsport 2 in 2007, our team set out on a mission to develop an epic AAA title that was characterized by creative iteration, yet do so in such a way that enabled predictable project planning.
+
+How many postmortems have we all read or participated in where good engineering and development practices were abandoned because of an aggressive schedule?
+
+I am not talking about cases where programmers did not have the time to architect their ultimate game subsystem because of schedule pressure -- but rather cases where we dropped fundamental practices of estimation, design, review or validation of work because it was deemed too expensive.
+
+While one might think that the engineering team is unable to maintain these critical practices because of the pressure applied by producers or publishers, the interesting part that I tend to find is that it is often we, the software engineers, who will abandon or refuse to initiate these habits because we are so passionate about delivering the biggest and most feature-rich game possible.
+
+However, in the end, we end up hindering our own development bandwidth and crippling the creative iteration ability of designers and artists because we have not provided a stable or predictable set of technologies.
+
+When undertaking the vision Turn 10 had for Forza Motorsport 3, a vision that included massive expansions in graphics fidelity, content, gameplay and user-generated content (UGC), along with a complete new look and feel, it was critical that we develop our game technologies in such a way that allowed for predictable project planning and still enabled iteration and creative development.
+
+I vividly recall sitting in our programming team postmortem for Forza Motorsport 2. At that time, I committed to myself that we would hold to a set of key pillars, pillars that we would establish and not abandon when the feature cuts came. These pillars would become a part of our software development and studio culture.
+
+Most importantly, these pillars had a goal and that goal was to enable a studio culture of creative iteration. Cultural change is always difficult and takes time, however, we were committed to these pillars and regularly articulated this commitment to the team until it became a part of our DNA.
+
+Fast forward nine months: our pillars were in place and a part of our software development culture, and they were having their intended effect of enabling creative iteration. Additionally, these pillars were having unintended effects of increasing development bandwidth and technology iteration.
+
+In May of 2008, we were conducting our greenlight with Microsoft Game Studios (MGS) executives and committing to a shipping date some 15 months in the future -- a date that we delivered on to the day. In this article, I would like to share with you the pillars that we put in place as a programming team that significantly helped us to deliver Forza Motorsport 3 on time and with a quality of which we are very proud.
+
+Always a Playable Build
+
+Having a build that is always playable may be common sense, but I tend to find that it is not often a common practice. In fact, many projects that I have been a part of will lose the playability of the build soon into production, only to restore it late in the schedule when teams are desperately looking for that spark around the core of the game that builds the excitement and momentum of the team.
+
+Perhaps some of the subtlety here lies in what we defined as a "playable build". At Turn 10, a playable build is one that contains all the necessary core subsystems, functioning together to allow the game to launch, navigate into a race experience, complete the race and return to the out-of-race experience, and being able to do this from the planned distribution media (the DVD).
+
+This is more than the typical vertical slice which will often take shortcuts around systems like memory, streaming from the DVD, resource management, user profiles and so forth. For those developing with a mature game engine, this may not be as significant of an issue; however, for newer projects or when going through a platform migration, this very important step can often be overlooked.
+
+While primarily ensured by the software engineers, maintaining a fully playable build requires the cooperation and coordination of the entire studio. Our test team will validate the playability and functionality in the game each day. Designers, artists, audio designers and programmers must take steps to ensure the continued playability with each feature or piece of content that is placed in the game.
+
+It is amazing how design, art and technology iteration is enabled when there is no question that the game is going to be playable each day and that all content in the game is usable. This also has significant positive impact on the quality of work estimates when the game is fully playable and can be used while developing the estimates for work as well as implementing the features.
+
+Always a Performant Build
+
+Performance is of the utmost importance to us at Turn 10. I remember all too well the night when Forza Motorsport 2 was running at a solid 60 frames per second for a full track and a full complement of cars. It had been a long and hard-fought battle to achieve this milestone in transitioning from the Xbox to the Xbox 360.
+
+The reason I remember this late night so well is the ripple effect it had on much of our project. When the game was playable and "performant" -- our term -- the enthusiasm and momentum of the team immediately noticeably increased. We were then able to ensure any content added to the game didn’t adversely impact the performance. And the development of multiplayer and a majority of gameplay features were much more efficient when they are developed within the context of a performant and stable engine.
+
+Needless to say, one of the key pillars for our team as we set out to build Forza Motorsport 3 was that our game would continue to always run at a solid 60 frames per second, with some of our subsystems, such as physics, running at much higher frequencies.
+
+Just as with our game always being playable, it needed to have every piece of content that was usable in the game to be performant.
+
+At Turn 10, a "performant" build is one where all processing, graphics and content are staying within their allocated budgets such that the game is running at a solid 60 frames per second.
+
+As you could imagine, this goal would impact all areas of our game's development. Achieving this goal would force our content to be developed differently; it requires a way for the artists to develop and see their assets in the game engine without them being a part of the released game until they had been made performant.
+
+It required some of our more complex assets to be made performant before being made beautiful. It required our pipeline team to develop content escrow areas and invest in our automated performance validation frameworks so that artists could know what was needed to make their assets perform within budgets.
+
+By adjusting our technologies, production and validation processes to maintain a performant build throughout the development cycle, we succeeded in increasing the studios ability to creatively iterate. Content was able to be developed in such a way that iteration was an investment into visual moments as opposed to drastically reducing quality to force assets within budgets. Additionally, technology features were able to be quickly iterated upon to ensure that they were operating within performance budgets prior to incorporation into the build.
+
+Always a Progressing Build
+
+Build breaks and regressions are probably the two biggest hindrances to creative iteration. Sometimes build breaks introduced by the programming team can be treated lightly as they often do not greatly impact the daily work of the software engineers on the team. However, they kill the overall productivity of the team at large, delaying necessary tool changes for content production, stopping content iteration altogether, and causing delays and inefficiencies in testing efforts.
+
+When Turn 10 started our Forza Motorsport 3 development we set out to develop a culture characterized by no build breaks and no regressions. We did not achieve a perfect record, but by developing the culture, we greatly reduced the occurrences of breaks and greatly increased our ability to creatively iterate and plan our project. To accomplish this and still avoid having to completely validate all code and content changes prior to their submission into the game, we established an ever-increasing test philosophy.
+
+That is, an engineer, designer or artist will run a small battery of tests designed to catch the most obvious errors and regressions prior to submitting their changes into the game. Continuous incremental builds and tests will further validate the changes before the daily builds occur. Daily builds receive even more scrutiny along with manual testing to ensure the full integrity of the build including visuals.
+
+This increasing test coverage approach allows for reasonable validation times prior to change submittal (increasing iteration) while greatly increasing the likelihood that the daily build will be free from regression. In cases where regressions did slip into the build, the cause was easily identified and quickly resolved.
+
+Occasionally features have no choice but to be disruptive to the game. We have all experienced the complex rendering feature development that requires multiple engineers and artists to successfully implement the feature. On Forza Motorsport 3, we made a commitment to have all multi-engineer disruptive changes to be executed in a separate branch and only integrated back into the main build when the changes met our other pillars (playable, performant, and regression free).
+
+In fact, there were several crucial rendering pipeline improvements that took approximately 12 engineers and artists months to complete and the work was done entirely in a separate branch and integrated back into the main build with only a one week lockdown for the final integration. During this time, the remainder of the studio was fully capable of implementing additional features into a fully functional and performant game.
+
+Always In Memory
+
+How many times have you found yourself in the final stages of shipping your game only to have to harvest large amounts of memory from your code or your content -- and often from both?
+
+Having already shipped Forza Motorsport 2 on the Xbox 360, we had a game that was running within the memory limits of our platform. As we started the implementation of our next version, we made a conscious decision to always keep our game within memory constraints throughout production. That meant that memory work would have to accompany any feature that required additional memory to implement.
+
+Taking the usual approach of implementing the features is actually hiding memory reclamation work that must be completed prior to shipping the game.
+
+Without accounting for that work, you stand a good chance of nullifying all the quality you achieved through earlier iteration by forcing late content and code changes to gain the required memory.
+
+This is probably common sense, but having well-defined memory, CPU, GPU, IO and media budgets is a key to enabling iteration. With a slight increase in effort during the project planning phase, resource budget requirements can be estimated while features are being prioritized for incorporation into the final product.
+
+By forcing the discipline of estimating the costs of resources along with the features you actually enable iteration through the scoping of features prior to even beginning the implementation phase. Additionally, early iteration is enabled and more valuable when artists and designers are iterating on content within defined and stable memory budgets.
+
+Always a Stable Build
+
+Like regressions and build breaks, a lack of build stability can be a great hindrance to iteration and predictable project planning. Unlike our pillar of always having a playable build, our pillar for always having a stable build focuses on the ability for the game to cycle in and out of race continuously for many hours.
+
+Unfortunately, there are many threats to the stability of your game: malformed content, partial feature implementation, bugs in content build tools or bugs in your build process are among the top culprits.
+
+When developing Forza Motorsport 3, we made early use of our "automated test monkeys" along with an MGS automated crash handling system to identify and eliminate sources of instability during our development process.
+
+By having a regular review of the call stacks and game logs whenever a crash occurred on a bank of automated test machines, we were able to resolve instabilities that were introduced into the game usually within 48 hours. Additionally, by dedicating a significant number of development kits to running these automated tests, we were able to use the frequency of crashes to ensure that we were resolving the issues that most frequently caused game instability.
+
+This allowed us to keep a multi-hour mean-time-to-failure throughout production and also allowed us to achieve our shipping mean-time-to-failure goals months before our ship date.
+
+Additionally, with this investment in our automated test infrastructure we were able to gather valuable data as to our typical causes of instability and take preventative steps to eliminate the introduction of these instabilities. Significant contributors to instability are the introduction of partial or incompatible content, incompatibilities between tools and in-game code and features that are implemented without consideration for content production realities.
+
+As we progressed in production of Forza Motorsport 3, we introduced scrubbers for pre-checkin and pre-build validation of content, content escrow locations along with automated content validation and promotion, and finally versioning support for all game-serialized data. These three investments significantly increased the daily stability of our game and thus improved the ability of all our teams to iterate on their content or features, and ultimately greatly increased the predictability of our schedule.
+
+Estimation and History
+
+How is it that great game developers, artists and designers can sometimes have work estimates that are so far off? This is a question that plagued me for quite a while during some of our early development within Turn 10. Additionally, I would find myself asking whether or not it was possible to create a predictable project schedule despite having poor estimates.
+
+Throughout Turn 10’s history, we have been fortunate to be able to attract some fantastic talent in all disciplines within the studio. Each software engineer that joined the team brought a wealth of game development experience and often brought experience with the consoles and platforms on which we were working. So, how was it that their estimates could be so far off at times? With our emphasis on building predictability into our efforts, I set out to find answers to these questions.
+
+It was actually while serving on jury duty, where I had time to grab some of the books that I had on my "to read" stack that I came across a gem of a book on this exact issue.
+
+The book Software Estimation by Steve McConnell was a wealth of information, supported by years of industry data and it felt as if I was reading through post mortems of many projects of which I had been a part.
+
+We all have a gut feel for the causes of errors in our estimates, but seeing historical and industry data that confirmed and clarified the common root causes gave us the confidence to make changes to address known risk areas that affect iteration and predictability.
+
+In McConnell’s book, some of the top factors contributing to schedule variability are project complexity, time constraints, domain experience, platform experience, and storage constraints. As you can see, these are factors in just about every game development project.
+
+In our experience, the fundamental key to predictably planning our project, which enables iteration at all levels, was to adapt our processes to collect and utilize historical data in understanding our project plan.
+
+For the software engineers in the studio, this means providing estimates for all work that is executed and then working with producers to find a way to measure actual results. One key for me was to let go of the notion that we could measure with great accuracy and track those results. We learned that you can develop a very predictable project plan with high level estimating and tracking techniques. At Turn 10, we employ a macro estimation technique where all work is estimated with a limited set of work sizes, which translate to individual and team work capacities.
+
+With the use of historical data, which enables more realistic project plans and early scoping, the ability for the studio to iterate on features is greatly increased. Knowing when features will be completed allows the team to schedule work to complete areas where code and design level iteration is required such that there is time to complete multiple passes on those areas of the game. Additionally, this opens the door for second order historical data use in the areas of predictable estimation errors and found work estimation.
+
+Conclusion
+
+Often times when the programming and technology teams speak of supporting iteration, we immediately jump to scripting engines and in-game editing of content to make our content producers able to efficiently iterate on their assets during production. While this is important, at Turn 10 we have learned that some of the fundamentals associated with good software development can be leveraged to enhance and enable a creative team’s ability to iterate and still do so with a project plan that allows for predictable scheduling.
+
+As we continue working hard to develop innovative and creative experiences that capture the imagination of our customers, we will always be seeking ways to enable the ability of our most creative minds to iterate on their ideas and their content. As an engineering team, we will continue to hold these pillars as fundamental keys to enabling a culture of predictable iteration in our studio and will continue to look to knock down those barriers that prevent us from quickly realizing our vision in our products.

@@ -1,0 +1,17 @@
+The vague term ‘core’ is used a lot when describing features. There is the notion of functionality that resides in the core, and that which is outside the core. It is not well defined, so let us try and address that here.
+
+The core of the product is a set of services and functionality. This functionality is essential to the operation of taskwarrior. The I/O system, date handling, filtering and rule system are all examples of services, and the services are used in multiple areas of the code. Code that is used by more than one feature is a good candidate for the core. Even code that might be used that way belongs in core.
+
+Some functionality can be implemented using scripts which require no changes to the code. A good example is a review script. A review is one of the standard GTD practices, and an important aspect for many people.
+
+Such a review script would present a set of tasks for review, giving you the chance to correct any details about the task. Perhaps a priority is too high, or the due date wrong. Perhaps it has an incorrect dependency. Perhaps, since the last review, the situation changed such that the task is not longer relevant.
+
+As important as review is, that is not enough to make it a core feature. While review could be implemented in core as a command, as a standalone external script it can accomplish all it needs, and furthermore adhere to it’s own release cycle. You could say it uses off-the-shelf features. This clearly does not belong in the core.
+
+One of the nice benefits of external scripts is that they are usually implemented in something more approachable than C++, and as such encourage tinkering. By the way, a good example of a review script is https://github.com/nocejo/trev, written by our friend and translator Fidel Mato.
+
+Then there is the priority attribute. This attribute is just a value that is stored, and has a collating sequence. It could almost be implemented instead as a User Defined Attribute. With the ability to specify collating sequence (H > M > L), priority would no longer need to reside in the core. One day, priority will be removed from core, and implemented via configuration.
+
+Another example is the shadow file feature. This is currently in the core, and needs to move outside.
+
+The core should ideally be small and efficient. It should be well debugged and consequently stable. That’s the real goal – the core engine of the product should be … good.

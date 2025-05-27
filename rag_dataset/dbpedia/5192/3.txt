@@ -1,0 +1,51 @@
+download PDF
+
+The Federal Information Processing Standard (FIPS) Publication 140-2, is a computer security standard, developed by a U.S. Government and industry working group to validate the quality of cryptographic modules. FIPS publications (including 140-2) can be found at the following URL: http://csrc.nist.gov/publications/PubsFIPS.html. The FIPS standard provides four (4) security levels, to ensure adequate coverage of different industries, implementations of cryptographic modules and organizational sizes and requirements. These levels are described below:
+
+Level 1 – Security Level 1 provides the lowest level of security. Basic security requirements are specified for a cryptographic module (e.g., at least one Approved algorithm or Approved security function shall be used). No specific physical security mechanisms are required in a Security Level 1 cryptographic module beyond the basic requirement for production-grade components. An example of a Security Level 1 cryptographic module is a personal computer (PC) encryption board.
+
+Level 2 – Security Level 2 enhances the physical security mechanisms of a Security Level 1 cryptographic module by adding the requirement for tamper-evidence, which includes the use of tamper-evident coatings or seals or for pick-resistant locks on removable covers or doors of the module. Tamper-evident coatings or seals are placed on a cryptographic module so that the coating or seal must be broken to attain physical access to the plain text cryptographic keys and critical security parameters (CSPs) within the module. Tamper-evident seals or pick-resistant locks are placed on covers or doors to protect against unauthorized physical access.
+
+Level 3 – In addition to the tamper-evident physical security mechanisms required at Security Level 2, Security Level 3 attempts to prevent the intruder from gaining access to CSPs held within the cryptographic module. Physical security mechanisms required at Security Level 3 are intended to have a high probability of detecting and responding to attempts at physical access, use or modification of the cryptographic module. The physical security mechanisms may include the use of strong enclosures and tamper detection/response circuitry that zeroes all plain text CSPs when the removable covers/doors of the cryptographic module are opened.
+
+Level 4 – Security Level 4 provides the highest level of security defined in this standard. At this security level, the physical security mechanisms provide a complete envelope of protection around the cryptographic module with the intent of detecting and responding to all unauthorized attempts at physical access. Penetration of the cryptographic module enclosure from any direction has a very high probability of being detected, resulting in the immediate zeroization of all plain text CSPs. Security Level 4 cryptographic modules are useful for operation in physically unprotected environments.
+
+Refer to the full FIPS 140-2 standard at http://csrc.nist.gov/publications/fips/fips140-2/fips1402.pdf for further details on these levels and the other specifications of the FIPS standard.
+
+10.2.1. Enabling FIPS Mode
+
+To make Red Hat Enterprise Linux 6 compliant with the Federal Information Processing Standard (FIPS) Publication 140-2, you need to make several changes to ensure that certified cryptographic modules are used. To turn your system (kernel and user space) into FIPS mode, follow these steps:
+
+For proper operation of the in-module integrity verification, the prelink has to be disabled. This can be done by setting PRELINKING=no in the /etc/sysconfig/prelink configuration file. Existing prelinking, if any, should be undone on all system files using the prelink -u -a command.
+
+Next, install the dracut-fips package:
+
+~]# yum install dracut-fips
+
+Note
+
+FIPS integrity verification is performed when the dracut-fips package is present on the system, regardless of whether the system operates in FIPS mode or not. However, the integrity verification results are ignored (or only logged) if the system or a shared library is not in FIPS mode, even when dracut-fips is present.
+
+Recreate the initramfs file (this operation will overwrite the existing initramfs file):
+
+~]# dracut -f
+
+Modify the kernel command line of the current kernel in the /boot/grub/grub.conf file by adding the following option:
+
+fips=1
+
+If the /boot or /boot/efi/ directories are located on a separate partition, the boot=partition kernel parameter must be added to the kernel command line. Replace partition with the partition that contains the /boot or /boot/efi/ directory. Partitions can be identified using the df command. For example:
+
+~]$ df /boot Filesystem 1K-blocks Used Available Use% Mounted on /dev/sda1 495844 53780 416464 12% /boot
+
+In the example above, the /boot directory is located on /dev/sda1. Therefore, the following string needs to be appended to the kernel command line:
+
+boot=/dev/sda1
+
+Reboot your system.
+
+Note that by default, ciphers and Message Authentication Codes (MACs) are set in the /etc/ssh/sshd_config file in FIPS mode. If your /etc/ssh/sshd_config contains any other ciphers and MACs, modify it to only use algorithms supported in FIPS mode. To do that, use the following configuration or a subset thereof:
+
+Protocol 2 Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-cbc,3des-cbc,aes192-cbc,aes256-cbc Macs hmac-sha1,hmac-sha2-256,hmac-sha2-512
+
+Should you require strict FIPS compliance, the fips=1 kernel option needs to be added to the kernel command line during system installation so that key generation is done with FIPS approved algorithms and continuous monitoring tests in place. Users should also ensure that the system has plenty of entropy during the installation process by moving the mouse around, or if no mouse is available, ensuring that many keystrokes are typed. The recommended amount of keystrokes is 256 and more. Less than 256 keystrokes may generate a non-unique key.

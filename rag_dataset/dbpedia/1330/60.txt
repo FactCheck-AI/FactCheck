@@ -1,0 +1,69 @@
+Solar Heating Control
+
+Overview of Christian Schumann's Solarsystem
+
+Design
+
+I have helped Christian Schumann with scripts to control his Solar-panel + rainwater buffer with switches and water-pump.
+
+There are several cronjobs which run every minute, and one of the scripts frequently return “Data error” when reading a DS2890. Reading the sensor second time works almost every time.
+
+Christian Schumann created a quick overview of the system, and I added the temperature’s and sensors in the picture with imagemagick.
+
+Take a look at: http://home.mag.cx/sommer/
+
+Code
+
+My scripts looks like this when reading the data:
+
+#!/bin/ash
+
+readsensor () (
+
+VAL=`owread -s 3002 $1/$2 2>&1`
+
+ERR=$?
+
+[ $ERR != 0 ] &&
+
+}
+
+# save last value to a file as well (mostly for web-server)
+
+[ "$2" = "temperature" ] && echo "$VAL" > /tmp/last_val.$1.$2
+
+echo "$VAL"
+
+true;
+
+)
+
+writesensor () (
+
+VAL=`owwrite -s 3002 $1/$2 $3 2>&1`
+
+ERR=$?
+
+[ $ERR != 0 ] &&
+
+}
+
+true;
+
+)
+
+VAL=`readsensor $SENSOR PIO`
+
+ERR=$?
+
+[ $ERR != 0 ] && exit 1
+
+Platform
+
+It’s run on a Asus WL500gd with openwrt 0.9.
+
+Extensions
+
+I have made a simple web-interface to control some switches and potentiometers via cgi-scripts too, but it’s still a major hack and under development.
+
+Perhaps I can show it in a few days. I don’t want to give out the URL to Christian Schumann’s web-interface even if it’s password protected.

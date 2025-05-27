@@ -1,0 +1,451 @@
+College of Geography and Planning, Chengdu University of Technology, Chengdu 610059, China
+
+*
+
+Author to whom correspondence should be addressed.
+
+Sustainability 2024, 16(5), 1989; https://doi.org/10.3390/su16051989
+
+Submission received: 30 January 2024 / Revised: 19 February 2024 / Accepted: 25 February 2024 / Published: 28 February 2024
+
+(This article belongs to the Special Issue Urban Social Space and Sustainable Development)
+
+Abstract
+
+:
+
+This study establishes the evaluation index system of Chengdu’s habitat suitability based on three dimensions (the ecological livability environment, economic development environment, and social security environment) and quantitatively investigates the habitat suitability of Chengdu using the Analytic Hierarchy Process (AHP) and ArcGIS10.8 tools. Additionally, it analyzes the spatial pattern characteristics of Chengdu’s habitat suitability to provide insights into the rational optimization of Chengdu’s habitat system, and show that (1) the adaptability index of Chengdu’s human settlement is between 15.69 to 75.56, and the habitat suitability exhibits a high spatial distribution in the central area and a low spatial distribution in the surrounding regions, with obvious differences between hot spots and cold spots. (2) According to the suitability index from high to low, the habitat of Chengdu is divided into five regions: the most suitable area (895.62 km2, 6.25%), highly suitable area (2136.82 km2,14.91%), moderately suitable area (5755.80 km2,40.15%), low-suitability area (4580.61 km2, 31.95%) and the unsuitable area (966.15 km2, 6.74%). (3) The spatial distribution of habitat suitability in Chengdu demonstrates a certain coupling relationship with the city’s circular social development model. Moreover, the spatial distribution characteristics of each area exhibit good consistency with population density, natural environment, economic conditions, and social conditions. (4) The influence of each indicator factor shows spatial heterogeneity, with variations in different subregions. Additionally, different regions have their own advantages and disadvantages. The results show that there are obvious regional characteristics with the suitability of human settlements in Chengdu; the main urban area exhibits the highest degree of habitat suitability, while the western Longmen Mountain area shows relatively lower suitability in its habitat. Considering these spatial characteristics, future development should explore corresponding development modes for each region based on local conditions, aiming to reduce spatial differences and promote the integrated development of urban and rural areas.
+
+1. Introduction
+
+The human settlement is the primary space for human survival and development, encompassing areas for work, living, leisure, and social interaction, and is closely intertwined with people’s daily lives [1,2]. Early foreign research on the environment of the human habitat can be traced back to the early 20th century when the rapid development of industry led to the unchecked expansion of cities and the deterioration of living conditions, casting a shadow over urban residents. In response, people began advocating for a “return to nature”. In this context, the British scholar Howard proposed the concept of the “garden city”, which initiated the exploration of human habitats [3,4]. In the 1950s, Greek scholar Doxiadis conducted a comprehensive study of the human living environment and introduced the concept of “Habitat Environment Science (Ekistics)”, which became an exclusive concept for the study of the human environment. This concept provided a theoretical foundation [5]. In the 1960s, the World Health Organization introduced the concept of “suitability” as a basic requirement for the construction and development of the human habitat environment, marking the beginning of the importance of evaluating the quality of human habitat environment based on its suitability [6]. In the 1990s, Chinese architect Wu Liangyong introduced the theory of human settlements to China, establishing the field of “Habitat Science” and developing its theory and application based on China’s development and basic conditions [7]. Since then, the study of the human habitat has gradually attracted increasing attention, with more and more experts and scholars investing in related research. As a fundamental unit of human settlement, the quality of the human habitat is directly related to the living conditions and quality of life of its residents, and serves as an important indicator for measuring the level of economic development and the material and cultural life of a city’s residents [8]. Quantitative studies on the human habitat are of great significance for optimizing regional population distribution, promoting coordinated regional development, and constructing livable cities [9,10]. However, with the acceleration of global industrialization and urbanization, the decline in the quality of the human settlement has become more prominent, and both developed and developing countries are facing similar problems in this field [11,12]. Currently, more than 50% of the global population lives in cities, and this trend is expected to continue, emphasizing the increasing importance of developing the habitat environment in cities. More and more experts and scholars have recognized the urgency of optimizing the habitat environment and are gradually becoming involved in its study [13].
+
+Recently, both domestic and international scholars have conducted more in-depth and specific studies on the evaluation of human habitats. Suitability has become an important focus in current research [14]. For instance, Song et al. assessed the quality of the habitat environment in the lower reaches of the Yangtze River in China by developing six single-factor suitability models and a comprehensive index model of the natural environment. They emphasized the natural suitability as the starting point and provided a theoretical basis for the planning and management of the habitat environment in the eastern coastal areas of China [15]. Subsequently, Guan et al. evaluated the habitat suitability of Liaoning Province in eastern China by analyzing the natural and humanistic advantages or limitations of human settlement development. They revealed the spatial differentiation law of the comprehensive suitability of these settlements [16]. Summarizing previous studies, domestic scholars have mostly focused on the suitability of human settlement in the eastern and central regions of China, with relatively few studies on the western region [17]. The scale of these studies ranges from the community and municipal scales to the provincial and national scales. Most of them employ basic methods such as structural modeling, hierarchical analysis, fuzzy comprehensive evaluation, and GIS spatial autocorrelation. Moreover, they primarily concentrate on topography, hydrological environment, and vegetation cover as natural elements in their evaluation, while neglecting the human environment elements. Consequently, the index system is incomplete and the evaluation results are insufficient [18,19]. On the other hand, foreign scholars’ research on urban habitat encompasses landscape [20], ecology [21], climate [22], energy conservation [23], and other fields. Their research perspectives mainly revolve around planning, ecology, and geography.
+
+China’s “National New Urbanization Plan 2014–2020” clearly states that the development layout of China’s urbanization should gradually optimize so that cities in the central and western regions become new growth poles for coordinated regional development, and regional cooperation between China and Central Asia, and even the entire Eurasian continent, is deepened. Chengdu, as a mega-city in the western region, is located in the core of the Chengdu–Chongqing Economic Belt and has a solid foundation and unique advantages for further deepening its construction. From the initial mention of a park city to building a park city demonstration area that practices the new development concept, Chengdu is expected to explore new urbanization with Chinese characteristics. Chengdu has been entrusted with the mission of exploring a new urbanization road with Chinese characteristics. However, with the acceleration of urbanization, the task and pressure of urban governance have become increasingly burdensome as the level of development has increased, and the quality of the urban habitat needs urgent improvement [24]. Therefore, in order to scientifically promote the sustainable development of urban habitat in Chengdu and develop a differentiated development orientation, this study selects the urban habitat of Chengdu as the research object and raises the following questions: What are the spatial differences in the suitability of the urban habitat in Chengdu, and how might we improve its habitat suitability? To deeply understand these issues, this study selects the following three dimensions: the ecological livable environment, the economic development environment, and the social security environment, based on the construction standard of the “park city”, and constructs a Chengdu City habitat environment suitability evaluation model by using AHP and ArcGIS tools with a multi-scalar and multi-perspective approach; it comprehensively evaluates the Chengdu City habitat’s environmental quality and suitability. Compared to the existing literature, this study is distinguished by its practicality and novelty. It focuses on the pressing issue of urban habitat suitability and selects Chengdu City, a core city in western China that has received less attention in previous research, as the study area. In addition to the traditional evaluation of the suitability of the human habitat, this study incorporates economic and humanistic indexes, constructing a comprehensive evaluation system for the suitability of the human habitat in Chengdu City from multiple scales and perspectives. Through quantitative analysis, this study investigates the current status of habitat suitability in Chengdu City and analyzes its spatial patterns. The findings aim to guide Chengdu in developing appropriate development patterns for different regions based on local conditions, reducing spatial disparities, and promoting integrated urban-rural development.
+
+2. Materials and Methods
+
+2.1. Study Area
+
+Chengdu, the capital of Sichuan Province, is located in the southwestern part of Sichuan Province and is an important central city, commerce and logistics center, and comprehensive transportation hub in the western region. The city has 12 districts, 3 counties and 5 county-level cities, covering a total area of 14,335 km2. Chengdu is characterized by significant topographical differences, being high in the northwest and low in the southeast and featuring a subtropical monsoon climate with a mild climate, abundant rainfall, and diverse natural ecological environments. It has been known as the “Land of Heavenly Capital” since ancient times. (Figure 1) [25]. According to the Chengdu 2022 Statistical Yearbook, the total population of Chengdu had reached approximately 15.7 million by the end of 2022, and the total GDP is about RMB 208 million, making it the economic and cultural center of Sichuan province; it has great development potential. In 2018, Chengdu kicked off the prelude to building a park city with the “first mention of a park city”, rationally optimizing the urban habitat system and building a beautiful park city for it. The rational optimization of the urban habitat system is of great significance in the construction of a beautiful and livable park city.
+
+2.2. Data Collection and Analysis
+
+Three types of data were utilized in this study: natural environment data, economic research data, and social research data. The natural environment data, including administrative boundary data for Sichuan Province, topographic data, vegetation data, temperature data, and precipitation data, were primarily obtained from the Resource and Environment Data Centre of the Chinese Academy of Sciences (http://www.resdc.cn/, accessed on 3 February 2023), the Geospatial Data Cloud (http://www.gscloud.cn/, accessed on 3 February 2023) and the China Meteorological Data Network (https://data.cma.cn, accessed on 15 February 2023). For instance, the administrative boundary data and vegetation data of Sichuan Province were obtained from the Resource and Environment Data Centre of the Chinese Academy of Sciences; the slope and elevation data were acquired from Landsat8 satellite and ASTERGDEM 30 M resolution digital elevation data in the geospatial data cloud; and the temperature, humidity, and precipitation data were collected from the China Meteorological Data Network. Economic research data, such as the GDP per capita in Chengdu City in 2022 and the disposable income per capita in Chengdu City in 2022, were mainly sourced from the Chengdu City Statistical Yearbook (2022) (http://cdstats.chengdu.gov.cn, accessed on 3 March 2023) and the Statistical Bulletin of National Economic and Social Development of Chengdu City Districts and Counties in 2022. The social research data, including hospital POI data, school POI data, public space POI data, and transport station POI data, each containing four kinds of information (name, category, coordinates, and classification), were primarily extracted from the POI query tool Planning Cloud (http://guihuayun.com/poi, accessed on 6 May 2023). Data sources and usage details are shown in Table 1.
+
+2.3. Model Building
+
+2.3.1. Indicator Selection
+
+As the pioneer of the concept of “park city” in China, Chengdu’s sustainable development has attracted much attention. The sustainability of the city encompasses ecological, social, and economic aspects, which are interdependent and promote the city’s development [26]. In this study, we combine the actual situation of Chengdu and the standards of park city construction to establish an evaluation index system for the suitability of Chengdu’s human settlement. Based on relevant studies, the natural elements include climate, topography, soil and water resources, water and heat conditions, atmosphere, land use, land cover, and natural disasters [27,28]. These factors collectively influence human settlement, although not all of them are representative or practical in practice. Among them, the terrain undulation can directly or indirectly affect the location and development of settlements, as well as the advantages and disadvantages of land use [29]. The vegetation cover reflects the regional distribution characteristics of natural elements and is directly related to sustainable development [30]. The temperature and humidity index evaluates the comfort of human beings under different climatic conditions and is an important indicator of the suitability of the human habitat [31]. The hydrological index reflects the natural water supply in the area under natural conditions [32]. Considering the specific situation of Chengdu, we selected the representative indicators of surface undulation, vegetation index, temperature and humidity index, and hydrological index to assess its ecological function. In terms of economic elements, GDP per capita and disposable income per capita are core indicators for regional economic analysis, reflecting the overall economic situation of a region. Therefore, we chose these indicators to characterize the economic production of Chengdu. Social elements, medical and health services, cultural and educational resources, public spaces, and transportation convenience reflect the level of urban modernization and public services. Hence, they were selected as important indicators for assessing the suitability of the human environment in Chengdu.
+
+2.3.2. Topographic Relief Index Model
+
+As an important indicator of regional topographic features, the degree of land surface relief (RDLS) is not only directly related to the planning and construction of urban habitat, but also related to the comfort of residents’ lives [33]. Taking the 30 m × 30 m-resolution DEM data of Chengdu City as the data source, a model for calculating the degree of relief of the land surface (RDLS) was adopted based on the previous research results [34], and the formula is as follows:
+
+R D L S = A L T / 1000 + M a x H − M i n H × 1 − P A A / 500
+
+(1)
+
+where RDLS is the surface roughness index; ALT is the average altitude of the study area (m); and Max (H) and Min (H) represent the highest and lowest elevations (m) of the study area, respectively. The DEM data were calculated using the neighborhood analysis tool in ArcGIS to obtain the above three parameters.
+
+2.3.3. Vegetation Index Model
+
+Vegetation can regulate urban microclimate and improve air quality, which is an important indicator of the suitability of human habitat. In this study, the vegetation index was calculated using the normalized vegetation index (NDVI) model with the following formula [35]:
+
+N D V I = N I R − R / N I R + R
+
+(2)
+
+where NIR is the reflectance in the near-infrared band; R is the reflectance in the red light band.
+
+2.3.4. Temperature and Humidity Index Model
+
+Temperature and humidity index (THI) is an important parameter used to measure the climate suitability of a region, which is closely related to the suitability of human habitat, and it is necessary to choose it as a factor to evaluate the suitability of human habitat in Chengdu [36]. The study used the temperature and humidity index (THI) calculation model, the formula of which is [37]
+
+T H I = 1.8 t − 0.55 1 − f 1.8 t − 26
+
+(3)
+
+where THI is the temperature and humidity index; t is the monthly average temperature (°C); and f is the annual average relative humidity (%). Spatial interpolation was performed on the meteorological data of Chengdu in 2022 to obtain 1 km of Chengdu City × Grid data of meteorological elements for 1 km units.
+
+2.3.5. Hydrological Index Model
+
+As one of the most basic elements in urban ecosystems, water occupies a pivotal position in habitat evaluation. The study used the hydrological index (WRI) calculation model with the following formula [37]:
+
+W R I = α P + β W α
+
+(4)
+
+where WRI is the hydrological index; P is the normalized precipitation within the study area, obtained through Kriging interpolation; W α is the extracted normalized water area from land use types for the study area. α and β are the weights for average annual precipitation and normalized water area, which are taken as 0.8 and 0.2, respectively.
+
+2.3.6. Economic Index Model
+
+The 2022 gross domestic product (GDP) and 2022 per capita disposable income (PCDI) data of Chengdu City were collected and organized using Microsoft Excel 2010 software. ArcGIS10.8 tools were then utilized to connect the tables, and the natural breakpoint method was employed to classify and visualize the 2022 economic data of Chengdu City.
+
+2.3.7. Social Index Model
+
+Microsoft Excel 2010 software was used to summarize and organize all the acquired social research data, and then imported into ArcGIS10.8 tools for pre-processing operations such as coordinate conversion, cropping, and spatial connection, etc. Finally, the density of each POI was calculated with the help of the density analysis tool in ArcGIS10.8 tools, and the natural breakpoint method was used for grading and visual expression, and ultimately, the distribution map of each social factor was obtained.
+
+2.3.8. Determination of the Index Weight of Human Settlements
+
+The Analytic Hierarchy Process (AHP) is a hierarchical and structured decision-making method used to analyze the multi-indicator system of a program. It combines the quantitative characteristics of all decision-making elements to produce comprehensive analysis results, taking into account both subjective qualitative and objective quantitative aspects. AHP has been successfully applied to similar comprehensive assessment problems, demonstrating rich research experience and feasibility [38]. Based on this, this study constructs an evaluation system for the suitability of Chengdu’s human settlement using the AHP method. The evaluation steps include (1) determining the indicators and constructing the judgment matrix; (2) calculating the characteristic roots and weights; (3) analyzing the consistency test; (4) analyzing the results and evaluating the suitability of the human habitat in Chengdu.
+
+The three selected dimensions along with their ten indicators are used to construct a judgment matrix. The dimensions include the ecological livability environment, economic development environment, and social security environment. These dimensions serve as the primary indicators for evaluating the suitability of Chengdu’s human settlement. To score each indicator, a group of experts in relevant fields was invited to use the Yaahp software 10.1, in combination with the evaluation indicator system, to assign scores based on their expertise. The scores were expressed as percentages. The average score of each indicator was then calculated as the final score for that particular indicator at the primary level. After scoring all the primary level indicators, the average score was taken as the final score for the evaluation object at the primary level. To obtain the indicator score in the evaluation system, the final score of the primary level indicator was multiplied by its corresponding weight, and the results were summed up to derive the overall score of the evaluation target. The specific calculation formula is as follows [39]:
+
+U = ∑ i = 1 n w i U i
+
+(5)
+
+where U represents the overall score of the evaluation target, wi denotes the weight of the smallest indicator, and Ui represents the score of the smallest-level indicator.
+
+Then, the consistency test was conducted. Only when CR < 0.1 were the first-level indicators compared pairwise to determine the relative importance, and the first-level indicators’ guideline level consistency rate ratio (CR) was found to be 0.0518. This result satisfied the consistency test, allowing us to obtain the weight values for each level of indicators. Three relationship matrices are constructed to represent the ecological livability environment, economic development environment, and social security environment. By comparing the relative importance of the four secondary indicators of the ecological livability environment, the two secondary indicators of the economic development environment, the four secondary indicators of the social security environment, and the synthesis the results of experts’ scoring, we obtained the consistency rate ratio of the indicator layer of the ecological livability environment (CR1), 0.0633, and the consistency rate ratio of the indicator layer of the economic development environment (CR1), 0.0518. These results also satisfy the consistency test. The consistency rate ratio of the environment indicator layer (CR2) is 0.000, and the consistency rate ratio of the social security environment indicator layer (CR3) is 0.0360. Both CR2 and CR3 were less than 0.1, indicating that they conform to the consistency test. Therefore, we obtained weight values for each second-level indicator. Table 2 presents the weight information of each habitat suitability indicator in the study area. It is evident that the suitability of Chengdu’s habitat is primarily influenced by surface undulation, temperature and humidity index, per capita disposable income, and transportation accessibility. Chen et al.’s evaluation of Chengdu’s habitat suitability included seven indicators, revealing that the key factors affecting Chengdu’s habitat are topographic relief, temperature and humidity index, and economic conditions [24], aligning with the findings of this study.
+
+2.3.9. Establishment of the Human Settlement Evaluation Model
+
+The weighted superposition analysis tool in ArcGIS10.8 tools was used to construct a habitat suitability model of Chengdu City, and the habitat suitability of Chengdu City was classified into five levels. I calculation formula was as follows [40]:
+
+H E I = ∑ i = 1 n B i w i
+
+(6)
+
+where HEI represents the suitability index of the living environment; i is the score of each indicator; Wi is the weight of the i-th indicator; Bi is the i-th indicator value; and n is the number of indicators.
+
+3. Results and Analysis
+
+3.1. Ecological Livable Environment Adaptability Analysis
+
+3.1.1. Factor Analysis of Topographic Relief
+
+Chengdu is situated in the western part of the Sichuan Basin and exhibits significant variation in its topography, with the degree of surface relief gradually decreasing from the northwest to the southeast (Figure 2a). The northwestern part of Chengdu City is located on the periphery of the Sichuan Basin and is characterized by deep hills and mountains, with the highest surface undulation index value reaching 7134 m. This area, mainly concentrated in the Longmen Mountain region, is not conducive to human activities and the development of the human environment. On the other hand, the eastern and central parts of the city belong to the basin floor plain of the Sichuan Basin, characterized by flat and open terrain, making them more suitable for human habitation. This distribution aligns with the current population distribution in Chengdu.
+
+3.1.2. Factor Analysis of Vegetation Index
+
+The NDVI (normalized difference vegetation index) of the study area exhibits a distribution pattern of high values in the west and low values in the center. The highest NDVI values, ranging from 0.73 to 0.89, are mainly found in the northern part of Qionglai City, the central part of Dayi County, the northern part of Chongzhou City, the central part of Dujiangyan City, and the central part of Pengzhou City. Conversely, the lowest NDVI values, ranging from 0.03 to 0.32, are mainly concentrated in the Jinniu District, Qingyang District, Wuhou District, Jinjiang District, and Chenghua District (Figure 2b). The distribution of vegetation index in Chengdu is primarily influenced by natural geographic factors and socio-economic factors. The western part of the city primarily consists of natural green areas with minimal development and weak human interference, resulting in high vegetation cover and suitability for living. On the other hand, the central main urban areas are economically developed and densely populated, serving as centers of urban development. These areas exhibit a high degree of development and construction, characterized by a significant amount of steel reinforcement concrete, resulting in hardened ground and much lower vegetation cover compared to the central part of the city. Consequently, the ecological environment in these areas is fragile, and the suitability for human habitation is low.
+
+3.1.3. Factor Analysis of Temperature and Humidity Index
+
+The temperature and humidity index follows a pattern of high values in the west and lower values in the center and east (Figure 2c). The highest value of 2171.12 is mainly concentrated in the west of Qionglai City, the west of Dayi County, the west of Chongzhou City, the north of Dujiangyan City, and the north of Pengzhou City, which are in the mountainous areas around the lower degree of development, abundant precipitation, lush vegetation, and high temperature and humidity indexes, making them suitable for human habitation. Conversely, the lowest temperature and humidity index value of 923.724 is mainly distributed in the main urban area and the eastern part of the city, which are highly developed, with highly concentrated populations. These areas face significant thermal environment issues and have a low suitability for human habitation.
+
+3.1.4. Hydrological Index Factor Analysis
+
+The hydrological distribution in Chengdu City is relatively uniform, gradually decreasing from the mountainous hills to the plains (Figure 2d). The city is primarily traversed by main rivers such as the Tuojiang and Minjiang rivers. Overall, Chengdu City has an extensive network of rivers and ditches, resulting in a high density of the river network. Hydrological factors have a relatively uniform impact on the suitability of human settlements in each region, with a weak correlation between the suitability index of human settlements and hydrological indicators.
+
+3.2. Economic Development Environment Adaptability Analysis
+
+3.2.1. GDP Index Analysis
+
+GDP is a crucial indicator for measuring the level of economic development in a region. It largely determines people’s material living standards and has a profound impact on improving the quality of the living environment. The spatial distribution of regional gross domestic product in Chengdu in 2022 showed significant differences. Overall, the distribution gradually decreased from the city center outward (Figure 3a). The highest regional GDP in Chengdu in 2022 was CNY 36,292,805, which was observed in Wuhou District, the main urban area. With its strong development vitality and solid industrial foundation, Wuhou District is suitable for human habitation. On the other hand, the minimum value of regional GDP was CNY 2,115,396, mainly found in Dayi County, Qionglai City, and Pujiang County in the western part of Chengdu City. These areas have limited economic development due to the constraints of the natural geographical environment, which results in a lower suitability of the living environment.
+
+3.2.2. Per Capita Disposable Income Index Analysis
+
+The spatial distribution of per capita disposable income of residents in Chengdu in 2022 is highly similar to that of per capita regional gross domestic product, showing a hierarchical structure consistent with administrative levels (Figure 3b). In 2022, the areas with a high level of per capita disposable income were concentrated in the main urban areas of Jinniu District, Qingyang District, Wuhou District, Jinjiang District, and Chenghua District. The per capita disposable income ranged from CNY 23,073 to CNY 58,172. These areas, characterized by excellent economic foundation and high population density, are key areas for economic development in Chengdu. Consequently, their per capita disposable income is significantly higher than that of the western and eastern suburban areas, resulting in a higher humanistic suitability index. On the other hand, the areas with the lowest per capita disposable income are distributed in Jintang County and Jianyang City in the eastern part of Chengdu, both of which have a lower index of cultural suitability.
+
+3.3. Social Security Environment Adaptability Analysis
+
+3.3.1. Factor Analysis of Healthcare Distribution Index
+
+Due to the varying degrees of regional development, the distribution level of medical resources is uneven, showing a distribution trend that is high in the center and low in the surrounding areas (Figure 4a). The areas with the highest level of healthcare coverage are the Qingyang, Wuhou, Jinjiang, Chenghua and Jinniu districts in the main urban area, which have better public healthcare facilities and are suitable for human habitation. On the other hand, the areas with low healthcare coverage are mainly concentrated in the remote suburbs of the third circle of Chengdu, namely Pujiang County, Dayi County, Chongzhou City, Pengzhou City in the west, and Jintang County and Jianyang City in the east, which are far away from the city center; the level of social security is not able to match the development and rapid urbanization, resulting in a lower suitability of the living environment.
+
+3.3.2. Factor Analysis of Cultural and Educational Distribution Index
+
+There are significant differences in the level of culture and education among the regions of Chengdu, with the central and northern regions having a high coverage of educational institutions. Leveraging the advantages of economic development, most of the educational institutions are concentrated in the center of Chengdu urban agglomeration, specifically Qingyang District, Wuhou District, Jinjiang District, Chenghua District, and Jinniu District. These areas exhibit a clustered distribution and have a higher suitability of the human environment. Conversely, the suburbs of Xinjin District, Shuangliu District, Wenjiang District, Pidu District, and Longquanyi District as well as the suburbs of Pujiang County, Qionglai City, Dayi County, and Chongzhou City have a lower level of cultural and educational distribution, resulting in a lower suitability of the human environment (Figure 4b).
+
+3.3.3. Factor Analysis of Public Space Distribution Index
+
+The distribution of public space in Chengdu exhibits significant spatial variations, with noticeable concentration in high-value areas and relatively imbalanced regional development of the public service system. In the main urban area, public space is concentrated in large patches, while in the surrounding areas, it is scattered in smaller areas (Figure 4c). Jinniu District, Qingyang District, Wuhou District, Jinjiang District, and Chenghua District are located in the core economic circle of Chengdu City, belonging to the “medium-excellent” area of Chengdu City. These areas have better infrastructure and service facilities, and the highest average value of public space distribution. On the other hand, the western and eastern peripheral districts have experienced slow economic development due to a large number of residents relocating out of the city. Consequently, these areas have poor development foundations and inferior public space coverage. Moreover, the level of public space coverage is lower, and the suitability of the human environment is also lower in these areas due to the relatively slow economic development and poor development foundations caused by the large number of residents moving out.
+
+3.3.4. Factor Analysis of Traffic Network Density Index
+
+Chengdu demonstrates a high degree of accessibility, but there is an imbalance and inadequacy in its development. The transportation accessibility is closely related to the distribution of the administrative hierarchy, with higher transportation accessibility closer to the city center. The main urban area exhibits a high level of transportation access index, while the western Pujiang County, Qionglai City, Dayi County, Chongzhou City, Dujiangyan City, and Pengzhou City have a low level of transportation access index. These areas are constrained by geographic factors, resulting in low accessibility. The distribution index of transportation access shows a “scattered” pattern (Figure 4d), indicating the need for optimization of the urban transportation structure.
+
+3.4. Spatial Distribution of Human Settlements’ Suitability
+
+To clarify the differences in suitability across the entire study area and facilitate the development of corresponding protection strategies, we employed the natural discontinuity method to classify the suitability levels of human habitats in Chengdu and determine the critical value for suitability levels. Habitat suitability was categorized into five categories from high to low: the most suitable area, high-suitability area, moderate-suitability area, low-suitability area and inappropriate-suitability area. (Table 3, Figure 5). It was found that the habitat suitability index of Chengdu City ranged from 15.69 to 75.56, and the composite suitability index shows a clear trend of decreasing from the city center to the surrounding areas. High values are concentrated in the Jinniu, Qingyang, Wuhou, Jinjiang, and Chenghua districts in the main urban area and the Shuangliu and Longquanyi districts in the suburbs, while low values were mainly distributed in the western part of Dayi County, the western part of Chongzhou City, the northern part of Dujiangyan City, and the northern part of Pengzhou City; they are mainly concentrated in the Longmenshan area, which is the largest mass of the topographic region along the topographic course of Chengdu City. The highest suitability values are distributed in large clusters. The spatial distribution pattern of habitat suitability in Chengdu is mainly influenced by three aspects: nature, economy, and society.
+
+The most suitable area
+
+The suitability index of human settlements ranges from 64.38 to 75.56. The land area is 895.62 km2, accounting for 6.25% of the total study area. These settlements are concentrated in the Jinniu, Qingyang, Wuhou, Jinjiang, and Chenghua Districts, located in the city center with a large distribution area. The remaining area is scattered in the Shuangliu and Longquanyi Districts. The city center, with its developed economy and infrastructure, has a location advantage. It has flat terrain and a high land use coefficient, resulting in better development of the human environment in this area, which also radiates to the surrounding areas, making it suitable for human habitation.
+
+2.
+
+The highly suitable area
+
+The index of human settlements ranges from 52.21 to 64.38. The land area is 2136.82 km2, accounting for about 14.91% of the study area. These settlements are mainly located in the suburbs of Wenjiang, Pidu, Xindu, Longquanyi, and Shuangliu Districts. They are distributed in clusters around the high-suitability zone. Although the economic development level of suburban areas is weaker than that of the main urban areas, they have advantages in terms of policies, rapid development of industry and agriculture, and ecological environment. These areas can form functional complementarity with the main urban areas, driving the coordinated development of other systems, resulting in relatively high suitability for human habitation.
+
+3.
+
+The moderately suitable area
+
+The index of human settlements ranges from 40.03 to 52.21, and the land area is 5755.80 km2, accounting for 40.15% of the study area. These settlements are mainly located in the outer suburbs, including Jintang County, Qingbaijiang District, Xinjin District, Pujiang County, and the eastern parts of Qionglai City, Dayi County, Chongzhou City, Dujiangyan Irrigation Project City, and Pengzhou City. The distribution of human settlements’ suitability in these areas is relatively divergent and fragmented. The suitability of the living environment in these areas is mainly limited by economic and social factors, and the quality of living environment depends on its regional resources’ advantages. The suburban areas have a better natural environment than the main urban area, with a humid climate and high vegetation coverage, making them critical suitability areas. The suitability of the living environment in these areas is moderate.
+
+4.
+
+The low-suitability area
+
+The index of human settlements ranges from 27.86 to 40.03. The land area is 4580.61 km2, accounting for 31.95% of the study area. These settlements are mainly located in the western parts of Qionglai City, Dayi County, Chongzhou City, Dujiangyan Irrigation Project City, Pengzhou City, and Jianyang City. In the western region, the distribution of low-value areas for human settlement suitability is consistent with the direction of mountain ranges, showing a southwest–northwest trend influenced by natural geographical conditions. The suitability of the living environment in Jianyang City in the east has a relatively regular distribution shape. Apart from the poor infrastructure system, the development of other systems in the city is at a moderate level, with obvious disadvantages. Economic and social conditions are the main limiting factors for the suitability of the living environment and urgently need improvement.
+
+5.
+
+The unsuitable area
+
+The index of human settlements ranges from 15.69 to 27.86. The land area is 966.15 km2, accounting for 6.74% of the study area. These settlements are mainly located in the western parts of Dayi County, Chongzhou City, Dujiangyan Irrigation Project City, and Pengzhou City. These areas are mainly concentrated in the Longmen Mountain area, which is a high mountain area with a high altitude. Although these areas have a good ecological environment, their urban development, industrial layout, and transportation infrastructure construction are restricted by the natural environment, and their economic and social conditions are poor. The comprehensive suitability index of the living environment is the lowest, making it unsuitable for human habitation.
+
+3.5. Human Settlement Suitability Evaluation Results Test
+
+In order to test the accuracy of the research results, the results of the Chengdu Habitat Suitability Model were compared with the population distribution of Chengdu City, and the population data of each region of Chengdu City were obtained from the Chengdu City Population Census Yearbook 2022; they were connected and visually analyzed with the help of ArcGIS10.8 tools, and the distribution of the population of Chengdu City was mapped (Figure 6). The results show that the total population of Chengdu City in 2022 will be about 15.71 million people, of which the central urban area contains the largest proportion of the population. These areas are flat and economically developed, with a high level of social security, and they are also high-level areas of habitat suitability; meanwhile, the areas with less of the population are the peri-urban Xinjin and Qingbaijiang districts as well as the far-away Pujiang and Dayi counties, which coincide with areas of low-level habitats, indicating a low level of habitat suitability. This indicates that the results of the habitat suitability evaluation are basically consistent with the actual situation in the study area. In addition, in order to further verify the accuracy of the results, this study also conducted a correlation analysis between the results of the habitat suitability model of Chengdu City and the spatial distribution of the population density in Chengdu City in 2022 and compared the results of the habitat suitability model with the sampling areas where people are currently active and living; we achieved this by sampling 356 settlements in Chengdu City. The test results show that the habitat environment index of Chengdu City is highly correlated with the population density, with an R2 value of 0.74552 (Figure 7 and Figure 8), and in general, the results of the habitat environment suitability evaluation of Chengdu City have a high degree of similarity with the actual situation in the study area. After reviewing the research conducted in recent years, it has been observed that the findings of this study align with them and remain consistent over time. Generally, it can be concluded that areas with higher population density receive more government assistance and, as a result, can be expected to allocate more resources towards improving the suitability of their habitats.
+
+4. Discussion
+
+In response to our research question, the spatial differentiation pattern of the comprehensive suitability index of human settlement in Chengdu reveals that the main urban area in the center of Chengdu has the highest comprehensive suitability index, followed by the suburban areas, and the lowest comprehensive suitability index is in the western Longmenshan area. Therefore, the integrated suitability index shows a divergence pattern from the central to the surrounding area, and the differentiation of the hot and cold areas of the habitat environment is obvious. Different subsystems in different regions have their own advantages and problems, and future research should conduct in-depth studies on the strengths and weaknesses of different regions; combine the development status quo of different regions with zoning guidance; and build a networked metropolitan area spatial development pattern led by the central urban area with suburban axes linked together and supported by multiple points in the remote suburban areas, so as to effectively promote the high-quality and synergistic development of human settlements in different regions of Chengdu. For instance, the western part of Dayi County, the western part of Chongzhou City, the northern part of Dujiangyan City, and the northern part of Pengzhou City in the Longmen Mountain area, which have the lowest suitability for the human environment, should compensate for their shortcomings by emphasizing their own natural resources and promoting the integration of natural resources and tourism. Additionally, attention should be given to improving infrastructure, living standards, public service support, and the quality of the social system. In contrast, the central city, which has the highest suitability for human habitation, exhibits a clear distribution-driven effect due to the developed economy of the surrounding areas and a higher level of social development. However, it also faces the risk of alternative ecological systems or weakened ecological environmental effects, making its ecological environment fragile. In order to promote the sustainable development of the ecological environment, the first priority should be to properly balance the relationship between economic development and ecological environmental protection, harmonize and alleviate the contradictions between them, and not solely prioritize urban economic development at the expense of the urban ecological environment. Therefore, the central city should decrease development intensity in the later stages, optimize the urban green space system, and enhance the ecological environment’s capacity and the urban ecological environment’s livability [41,42].
+
+Overall, this study focuses on the habitat settlement of Chengdu City and adopts the concept of a “park city”. It evaluates the suitability of the habitat of Chengdu in three dimensions: ecological livability, economic development, and social security. This comprehensive evaluation aims to optimize Chengdu’s habitat environment and establish a model area of a “park city”, which is innovative to some extent. However, due to limited access to data, the article only measures the suitability of Chengdu’s habitat and its spatial pattern at a certain point in time, lacking an analysis based on a time scale. Future research should strengthen the analysis of spatial and temporal evolution in conjunction with time series data, revealing the differences in the quality of Chengdu’s habitat through a spatial and temporal processes in order to enhance the effectiveness of the work and promote the sustainable development of Chengdu’s habitat.
+
+5. Conclusions
+
+The study systematically evaluates the suitability of Chengdu’s human settlements from three dimensions: ecological livability, economic development, and social security. Based on AHP and ArcGIS tools, a suitability evaluation model for Chengdu’s human settlement environment is constructed, and the spatial pattern characteristics of its human settlement environment’s suitability are analyzed. The specific conclusions are as follows:
+
+The spatial distribution characteristics of the suitability of the living environment in Chengdu show a clear decreasing trend from the city center to the surrounding areas. According to the suitability index, the living environment in Chengdu can be divided into five regions: the highest-suitability areas (895.62 km2, 6.25%), high-suitability areas (2136.82 km2, 14.91%), moderate-suitability areas (5755.80 km2, 40.15%), low-suitability areas (4580.61 km2, 31.95%), and inappropriate-suitability areas (966.15 km2, 6.74%). The main contradiction at present is the imbalanced and insufficient development between regions. In the future, it is necessary to categorize the current situation in order to promote the improvement of the human settlement, address the corresponding shortcomings of each region, and foster synergistic development among them. The western Longmen Mountain area, which has a poor habitat suitability, should leverage the advantages of its natural resources to accelerate the development of the local tourism industry, thereby driving economic growth. On the other hand, for the central urban area with high habitat suitability, it is important to reduce development intensity, improve urban ecological livability, and improve ecological carrying capacity.
+
+There is a clear spatial differentiation phenomenon between the hot and cold areas of the Chengdu Human Settlement Environment Quality Evaluation Index. Among them, the hotspots with a high level of living environment in Chengdu present a spatial pattern of agglomeration with the main urban area as the center and the suburban areas as the two wings. The low-level cold spot area presents a spatial pattern of widespread distribution in the western Longmen Mountain area. In the future, urban development and governance shortcomings should be diagnosed from multiple perspectives. Policy support should be provided for suburban areas and the western Longmenshan region, which have a low level of suitability as human environments. This support aims to strengthen regional government investment in the construction of public service packages for education, healthcare and culture so as to continue to improve the quality of the social system.
+
+The spatial distribution of habitat suitability in Chengdu is closely related to its social development model, which is influenced by the circular social development model. This model represents the urban development pattern where the main urban area serves as the core economic circle, radiating and driving the synergistic development of the suburbs and the far suburbs. The distribution of the human environment’s suitability in Chengdu City exhibits a spatial structure, with the first circle (the main city) having the highest value, followed by the second circle (suburban areas) and the third circle (remote suburban areas), spreading step by step. The spatial distribution characteristics of each region demonstrate a strong spatial consistency with population density, natural environmental conditions, economic conditions, and social conditions. Each region has its own advantages and disadvantages, highlighting the importance of formulating targeted, differentiated, and reasonable countermeasures and suggestions for promoting the coordinated development of each region. For urban areas with high habitat suitability, it is essential to prioritize their central city functions in order to promote and stimulate the development of surrounding areas. Simultaneously, it is crucial to reduce development intensity and enhance the ecological environment to ensure sustainable urban development. In the case of suburban areas with medium habitat suitability, the focus should be on optimizing their social service functions, improving industrial levels, and strengthening exchanges and cooperation with the main urban areas. This will enhance the supportive role of suburban areas and reinforce their contribution to regional integration. As for the western Longmen Mountain area, which has low habitat suitability, it can enhance local economy and service facilities through the development of its tourism industry, and explore new green development models for the city.
+
+The effects of each indicator/factor have spatial heterogeneity, and there are certain differences in effects across different zones. The spatial manifestation of the comprehensive index of the economic development system shows a decreasing trend from Chengdu at the core toward the outer periphery. The spatial pattern of the ecological environment system shows the opposite trend, with the infrastructure system showing a clear distribution pattern of being high in the middle and low in the surrounding areas. The urban ecological environment space, economic development space, and social security space are an interconnected whole, and the coordination and order of the three are the key to improving the suitability level of Chengdu’s livable environment. Regional development should prioritize the integration of the concept of ecological civilization into the entire process of socio-economic development, thereby promoting sustainable development across all regions.
+
+Author Contributions
+
+Conceptualization, H.L. (Hongyu Li) and Y.W.; methodology, H.L. (Hongyu Li); Y.W.; W.C.; validation, H.L. (Hongyu Li) and Y.W.; W.C. formal analysis, H.L. (Hongyu Li); data curation, H.L. (Hongyu Li); writing—original draft preparation, H.L. (Hongyu Li); writing—review and editing, H.L. (Hongyu Li); Y.W., supervision, Y.W.; W.C.; H.L. (Hongfu Li); Y.T.; R.C. All authors have read and agreed to the published version of the manuscript.
+
+Funding
+
+The Sichuan Philosophy and Social Science Research “14th Five-Year Plan” 2022 Project: Evaluation of Ecosystem Service Function in Ruoergai National Park. (SC22BZD075).
+
+Institutional Review Board Statement
+
+Not applicable.
+
+Informed Consent Statement
+
+Not applicable.
+
+Data Availability Statement
+
+The datasets generated and analyzed during this study are not publicly available, but can be obtained from the authors upon reasonable request.
+
+Conflicts of Interest
+
+The authors declare no conflicts of interest.
+
+References
+
+Xie, T.; Liu, X.; Nie, P. Study on Spatial–Temporal Patterns and Factors Influencing Human Settlement Quality in Beijing. Sustainability 2022, 14, 3752. [Google Scholar] [CrossRef]
+
+Tang, L.; Ruth, M.; He, Q.; Mirzaee, S. Comprehensive evaluation of trends in human settlements quality changes and spatial differentiation characteristics of 35 Chinese major cities. Habitat Int. 2017, 70, 81–90. [Google Scholar] [CrossRef]
+
+Wang, Y.; Jin, C.; Lu, M.; Lu, Y. Assessing the suitability of regional human settlements environment from a different preferences perspective: A case study of Zhejiang Province, China. Habitat Int. 2017, 70, 1–12. [Google Scholar] [CrossRef]
+
+Qi, X.H.; Cheng, Y.; Chen, L.; Chen, J. Review of Literatures on Human Settlements. World Reg. Stud. 2007, 16, 17–24. [Google Scholar]
+
+Mamat, A.; Halik, M.; Rouzi, A. Spatial evaluation of environmental suitability for human settlements based on GIS: A case study in Kaidu River Basin, Northwest China. Fresen. Environ. Bull. 2018, 27, 132–140. [Google Scholar]
+
+Gilbert, A. An urbanizing world: Global report on human settlements. Habitat Int. 1998, 22, 75–77. [Google Scholar] [CrossRef]
+
+Li, X.M.; Jin, P.Y. Characteristics and spatial-temporal differences of urban human settlement environment in China. Sci. Geogr. Sin. 2012, 32, 521–529. [Google Scholar]
+
+Seto, K.C.; Güneralp, B.; Hutyra, L.R. Global forecasts of urban expansion to 2030 and direct impacts on biodiversity and carbon pools. Proc. Natl. Acad. Sci. USA 2012, 109, 16083–16088. [Google Scholar] [CrossRef]
+
+Doxiadis, C.A. Ekistics: An Introduction to the Science of Human Settlements; Athens Publishing Center: Athens, Greece, 1968. [Google Scholar]
+
+Zhang, X.; Yan, G.; Feng, Q.; Razzaq, A.; Abbas, A. Ecological Sustainability and Households’ Wellbeing: Linking Households’ Non-Traditional Fuel Choices with Reduced Depression in Rural China. Int. J. Environ. Res. Public Health 2022, 19, 15639. [Google Scholar] [CrossRef]
+
+Kaššaj, M.; Peráček, T. Sustainable Connectivity—Integration of Mobile Roaming, WiFi4EU and Smart City Concept in the European Union. Sustainability 2024, 16, 788. [Google Scholar] [CrossRef]
+
+Sang, X.; Luo, X.; Razzaq, A.; Huang, Y.; Erfanian, S. Can agricultural mechanization services narrow the income gap in rural China? Heliyon 2023, 9. [Google Scholar] [CrossRef] [PubMed]
+
+Mutambik, I.; Almuqrin, A.; Alharbi, F.; Abusharhah, M. How to Encourage Public Engagement in Smart City Development—Learning from Saudi Arabia. Country 2023, 12, 1851. [Google Scholar] [CrossRef]
+
+Xue, Q.; Yang, X. Evaluation of the suitability of human settlement environment in shanghai city based on fuzzy cluster analysis. Therm. Sci. 2020, 24, 2543–2551. [Google Scholar] [CrossRef]
+
+Song, F.; Yang, X.; Wu, F. Suitable Pattern of the Natural Environment of Human Settlements in the Lower Reaches of the Yangtze River. Atmosphere 2019, 10, 200. [Google Scholar] [CrossRef]
+
+Guan, Y.; Li, X.; Yang, J.; Li, S.; Tian, S. Spatial differentiation of comprehensive suitability of urban human settlements based on GIS: A case study of Liaoning Province, China. Environ. Dev. Sustain. 2022, 24, 4150–4174. [Google Scholar] [CrossRef]
+
+Feng, Y.; Zhen, J. Comprehensive Suitability Evaluation and Spatial Optimization of Human Settlements Environment in Inner Mongolia. J. Geo-Inf. Sci. 2022, 24, 1204–1217. [Google Scholar]
+
+Luo, J.; Zhou, T.; Du, P.; Xu, Z. Spatial-temporal variations of natural suitability of human settlement environment in the Three Gorges Reservoir Area—A case study in Fengjie County, China. Front. Earth Sci. 2019, 13, 1–17. [Google Scholar] [CrossRef]
+
+Yu, L.; Xie, D.; Xu, X. Environmental Suitability Evaluation for Human Settlements of Rural Residential Areas in Hengshui, Hebei Province. Land 2022, 11, 2112. [Google Scholar] [CrossRef]
+
+López-Romero, E.; Verdin, F.; Eynaud, F.; Culioli, C.; Hoffmann, A.; Huchet, J.B.; Rollin, J.; Stephan, P. Human settlement and landscape dynamics on the coastline south of the Gironde estuary (SW France): A multiproxy approach. J. Isl. Coast. Archaeol. 2021, 16, 1–22. [Google Scholar] [CrossRef]
+
+Jenerette, G.D.; Harlan, S.L.; Brazel, A.; Jones, N.; Larsen, L.; Stefanov, W.L. Regional relationships between surface temperature, vegetation, and human settlement in a rapidly urbanizing ecosystem. Landsc. Ecol. 2007, 22, 353–365. [Google Scholar] [CrossRef]
+
+Mcgranahan, G.; Balk, D.; Anderson, B. The rising tide: Assessing the risks of climate change and human settlements in low elevation coastal zones. Environ. Urban. 2007, 19, 17–37. [Google Scholar] [CrossRef]
+
+Minx, J.; Baiocchi, G.; Wiedmann, T.; Barrett, J.; Creutzig, F.; Feng, K.; Förster, F.; Pichler, P.P.; Weisz, H.; Hubacek, K. Carbon footprints of cities and other human settlements in the UK. Environ. Res. Lett. 2013, 8, 35–39. [Google Scholar] [CrossRef]
+
+Chen, W.; Zhu, K.; Wu, Q.; Cai, Y.; Lu, Y.; Wei, J. Adaptability evaluation of human settlements in Chengdu based on 3S technology. Environ. Sci. Pollut. Res. Int. 2021, 29, 5988–5999. [Google Scholar] [CrossRef]
+
+Jiang, G.; Wang, X.; Yun, W.; Zhang, R. A new system will lead to an optimal path of land consolidation spatial management in China. Land Use Policy. 2015, 42, 27–37. [Google Scholar]
+
+Abbas, S.; Khan, K.; Ali, Z. Green Economic Growth: An opportunity for sustainability and poverty alleviation, HKH, Pakistan. Science of International. Lahore 2016, 28, 3715–3720. [Google Scholar]
+
+Wei, H.; Gao, Y.; Han, Q.; Li, L.; Dong, X.; Liu, M.; Meng, Q. Quality Evaluation and Obstacle Identification of Human Settlements in the Qinghai–Tibet Plateau Based on Multi-Source Data. Land 2022, 11, 1479. [Google Scholar] [CrossRef]
+
+Muhammad, R.; Ruhizal, R.; Mohd, S.; Ahamad, S. Land evaluation suitability for settlement based on soil permeability, topography and geology ten years after tsunami in Banda Aceh, Indonesia. Egypt. J. Remot Sens. Space Sci. 2015, 18, 207–215. [Google Scholar]
+
+Xu, X.; Genovese, P.V. Assessment on the Spatial Distribution Suitability of Ethnic Minority Villages in Fujian Province Based on GeoDetector and AHP Method. Land 2022, 11, 1486. [Google Scholar] [CrossRef]
+
+Li, M.; Yan, Q.; Li, G.; Yi, M.; Li, J. Spatio-Temporal Changes of Vegetation Cover and Its Influencing Factors in Northeast China from 2000 to 2021. Remote Sens. 2022, 14, 5720. [Google Scholar] [CrossRef]
+
+Wang, J.; Wang, P.; Jiang, L. Study on climate comfort degree of human settlements in Kunming. Econ. Geogr. 2002, 22, 196–200. [Google Scholar]
+
+Li, X.; Li, X.X.; Wang, T.; Li, L. Human Settlement Assessment in Yellow River Valley Based on Factor Analysis. Environ. Sci. Technol. 2010, 33, 189–193. [Google Scholar]
+
+Tang, G.; Liu, X.; Fang, L.; Luo, M. The scales and scale effects of DEM and digital terrain analysis. Geomat. Inf. Sci. Wuhan Univ. 2006, 31, 1059–1066. [Google Scholar]
+
+Feng, Z.; Tang, Y.; Yang, Y.; Zhang, D. The relief degree of land surface in China and its correlation with population distribution. Acta Geogr. Sin. 2007, 62, 1069–1082. [Google Scholar]
+
+Fung, T.; Siu, W. Environmental quality and its changes, an analysis using NDVI. Int. J. Remote Sens. 2000, 21, 1011–1024. [Google Scholar] [CrossRef]
+
+Spagnolo, J.; Dear, R.D. A field study of thermal comfort in outdoor and semi-outdoor environments in subtropical Sydney Australia. Build. Environ. 2003, 38, 721–738. [Google Scholar] [CrossRef]
+
+Feng, Z.; Yang, Y.; Zhang, D.; Tang, Y. Natural environment suitability for human settlements in China based on GIS. J. Geograph. Sci. 2009, 19, 437–446. [Google Scholar] [CrossRef]
+
+Ozegin, O.K.; Ilugbo, O.S.; Adebo, B. Spatial evaluation of groundwater vulnerability using the DRASTIC-L model with the analytic hierarchy process (AHP) and GIS approaches in Edo State, Nigeria. Phys. Chem. Earth 2024, 134, 103562. [Google Scholar] [CrossRef]
+
+Habib, R.H.M.; Rahman, M.; Uddin, M.M.; Shimu, N.J.; Hasan, M.; Alam, M.J.; Islam, M.S. Application of AHP and geospatial technologies to assess ecotourism suitability: A case study of Saint Martin’s Island in Bangladesh. Reg. Stud. Mar. Sci. 2024, 70, 103357. [Google Scholar] [CrossRef]
+
+Jian, G.; Kazunori, H. Residential environment index system and evaluation model established by subjective and objective methods. Journal of Zhejiang University. Science 2004, 5, 1028–1034. [Google Scholar]
+
+Lăzăroiu, G.; Ionescu, L.; Andronie, M.; Dijmărescu, I. Sustainability Management and Performance in the Urban Corporate Economy: A Systematic Literature Review. Sustainability 2020, 12, 7705. [Google Scholar] [CrossRef]
+
+Lăzăroiu, G.; Ionescu, L.; Uță, C.; Hurloiu, I.; Andronie, M.; Dijmărescu, I. Environmentally Responsible Behavior and Sustainability Policy Adoption in Green Public Procurement. Sustainability 2020, 12, 2110. [Google Scholar] [CrossRef]
+
+Figure 1. Chengdu urban area.
+
+Figure 2. Single-factor analysis of the ecological livable environment: (a) factor analysis of topographic relief; (b) factor analysis of vegetation index; (c) factor analysis of temperature and humidity index; (d) hydrological index factor analysis.
+
+Figure 3. Single-factor analysis of economic development environment in 2022: (a) GDP of Chengdu in 2022; (b) per capita disposable income in Chengdu in 2022.
+
+Figure 4. Single-factor analysis of social security environment: (a) factor analysis of health-care distribution index; (b) factor analysis of cultural and educational distribution index; (c) factor analysis of public space distribution index; (d) factor analysis of traffic network density index.
+
+Figure 5. Suitability of the living environment in Chengdu in 2022.
+
+Figure 6. Population distribution of Chengdu in 2022.
+
+Figure 7. Population density of Chengdu in 2022.
+
+Figure 8. Relationship between the human settlement index (HEI) and population density of Chengdu in 2022. R2 denotes the correlation between the habitat suitability index and population density.
+
+Table 1. Data sources and usage details.
+
+Data TypeData NameData SourcesEvaluating IndicatorNatural Environment Data 2020–2022Administrative boundary data,
+
+Vegetation data,
+
+Terrain data,
+
+Temperature data,
+
+Precipitation dataResource and Environment
+
+Data Center of Chinese Academy
+
+of Sciences,
+
+Geospatial Data Cloud,
+
+China Meteorological
+
+Data NetworkStudy area location information,
+
+Surface roughness,
+
+Vegetation index NDVI,
+
+Surface temperature LST,
+
+Annual rainfall,
+
+Hydrological indexEconomic Research Data 2022Per capita GDP of
+
+Chengdu,
+
+Per capita disposable
+
+income of residents in
+
+Chengdu Chengdu Statistical Yearbook (2022),
+
+Statistical Bulletin on National
+
+Economic and Social Development of
+
+Various Districts and
+
+Counties in Chengdu in 2022Regional gross domestic
+
+product of each district and county,
+
+Per capita disposable
+
+personal incomeSocial Research Data 2022Hospital POI data,
+
+School POI data,
+
+Public space POI data,
+
+and Transportation
+
+station POI dataPOI Query Tool—Planning CloudHospital density index,
+
+School density index,
+
+Public space density index,
+
+and Transportation station
+
+density index
+
+Table 2. Weights of suitability evaluation indicators for the human settlement in Chengdu.
+
+Criterion LayerWeightIndicator LayerWeightEcological livable environment (A1)0.5889B1 RDLS0.2705B2 NDVI0.0535B3 THI0.2361B4 WRI0.0721Economic development environment (A2)0.2519B5 PGDP 0.0840B6 PCDI0.1679Social security environment (A3)0.1593B7 Medical and health distribution0.0533B8 Cultural and educational distribution0.0130B9 Public space distribution0.0221B10 Convenience of transportation0.0708
+
+Table 3. Evaluation and statistics of the suitability of the living environment in Chengdu.
+
+Suitability GradeSuitability of Human Settlement EnvironmentSuitability Index RangeArea (Km2)ProportionIMost suitable area64.38–75.56895.626.25%IIHighly suitable area52.21–64.382136.8214.91%IIIModerately suitable area40.03–52.215755.8040.15%IVLow- suitable areas27.86–40.034580.6131.95%VUnsuitable areas15.69–27.86966.156.74%
+
+Disclaimer/Publisher’s Note: The statements, opinions and data contained in all publications are solely those of the individual author(s) and contributor(s) and not of MDPI and/or the editor(s). MDPI and/or the editor(s) disclaim responsibility for any injury to people or property resulting from any ideas, methods, instructions or products referred to in the content.
+
+© 2024 by the authors. Licensee MDPI, Basel, Switzerland. This article is an open access article distributed under the terms and conditions of the Creative Commons Attribution (CC BY) license (https://creativecommons.org/licenses/by/4.0/).
+
+Share and Cite
+
+MDPI and ACS Style
+
+Li, H.; Wang, Y.; Chen, W.; Li, H.; Tian, Y.; Chen, R. Adaptability Evaluation of Human Settlements in Chengdu Based on ArcGIS. Sustainability 2024, 16, 1989. https://doi.org/10.3390/su16051989
+
+AMA Style
+
+Li H, Wang Y, Chen W, Li H, Tian Y, Chen R. Adaptability Evaluation of Human Settlements in Chengdu Based on ArcGIS. Sustainability. 2024; 16(5):1989. https://doi.org/10.3390/su16051989
+
+Chicago/Turabian Style
+
+Li, Hongyu, Yuelin Wang, Wende Chen, Hongfu Li, Yue Tian, and Ruojing Chen. 2024. "Adaptability Evaluation of Human Settlements in Chengdu Based on ArcGIS" Sustainability 16, no. 5: 1989. https://doi.org/10.3390/su16051989
+
+Note that from the first issue of 2016, this journal uses article numbers instead of page numbers. See further details here.
+
+Article Metrics
+
+No
+
+No
+
+Article Access Statistics
+
+For more information on the journal statistics, click here.
+
+Multiple requests from the same IP address are counted as one view.

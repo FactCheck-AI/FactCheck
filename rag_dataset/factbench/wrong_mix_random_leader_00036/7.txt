@@ -1,0 +1,19 @@
+What I am trying to do with excel is a bit unorthodox, but I need a method of cleaning the data people import in to TechExcel's DevTrack. DevTrack creates values for fields if what you attempt to import is not 100% accurate to what exists already in the project, leading to duplicate values with slightly different formatting.
+
+What I have come to is having a "validator" excel sheet; people copy/paste what they want to import, and anything that doesn't match a data validation table is highlighted.
+
+Data validation itself does not work because copy/paste overwrites it and it is a waste of time to enter data manually.
+
+I have managed to get conditional formatting working partially using this formula: =ISERROR(MATCH(C5,D:D,0))
+
+However it is not case sensitive. I need case sensitivity.
+
+So I managed to create another formula which shows true if there is no match, however exact requires it to be an array formula which doesn't seem to work with conditional formatting.
+
+So this works if it is entered in to a cell with ctrl+shift+enter, but doesn't work as a conditional rule. {=ISERROR(MATCH(TRUE,EXACT(C5,D:D),0))}
+
+Here is a simplified version of what I'm looking at for testing. That formula is true when there is no case match, but I can't enter it in conditional formatting with ctrl+shift+enter. If this worked as I want it to, the lower case "melon" would highlight red.
+
+Is there a way to get this working, or is there an alternative method to do this?
+
+If it matters, I'm using the latest version of excel in office 365.

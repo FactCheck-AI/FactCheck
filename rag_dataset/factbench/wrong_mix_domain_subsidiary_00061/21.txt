@@ -1,0 +1,2145 @@
+4
+
+Before proceeding, you must install Oracle WebLogic Server 11g Release 1 (10.3.6) with the patches listed in the Chapter 1 of this document and Oracle ADF 11g Release 1 (11.1.1.7).
+
+If Oracle Forms 11g has been installed in the same WebLogic being used for this application, a domain called ClassicDomain is installed. You may choose the same Oracle Middleware Home and install ADF component in the same location.
+
+Note: If applying 14.1.1 patch to an existing 14.1 Allocation, you may use the existing Allocation domain which has been already set up in WebLogic/ADF with 14.1 Allocation installation.
+
+These are the other prerequisites before installing the Oracle Retail Allocation application:
+
+If an existing Allocation domain from 14.1 is being used, you may verify all the below steps.
+
+§ Install required RCU database schemas for OPSS and MDS. You may use existing OPSS and MDS schemas if applying the patch 14.1.1 to an existing 14.1 Allocation install.
+
+§ Install ADF
+
+§ Install WebLogic domain with ADF and EM (Enterprise Manager). Create a managed server in the same domain and extend ADF libraries to the managed server.
+
+§ Set up OPSS schema Datasource in WebLogic domain
+
+§ Set up Loading policies into Database
+
+§ Set up MDS schema Datasource in WebLogic domain
+
+§ Configuration of OID Authenticator in WebLogic domain
+
+§ Load LDIF files in LDAP to create Users and Roles
+
+It is assumed Oracle database has already been configured and loaded with the appropriate RMS and Oracle Retail Allocation schemas for your installation.
+
+MDS schema, OPSS schema and other required schemas for ADF must be created using RCU 11.1.1.7 utility. Steps to create the schemas are explained in the below section.
+
+Installing a separate domain as part of ADF configuration is recommended.
+
+The Oracle Retail Allocation application is deployed to a managed server (example: alloc-server) which is created inside the new domain (example: AllocDomain). This managed server must contain all the ADF libraries.
+
+Expand the Oracle Retail Allocation Application Distribution
+
+To expand the Oracle Retail Allocation application distribution, complete the following steps.
+
+1.Log into the UNIX server as the user who owns the WebLogic installation. Create a new staging directory for the Oracle Retail Allocation application distribution (alloc14application.zip).
+
+Example: /u00/webadmin/media/alloc
+
+This location is referred to as INSTALL_DIR for the remainder of this chapter.
+
+2.Copy alloc14application.zip to INSTALL_DIR and extract its contents.
+
+Example: unzip alloc14application.zip
+
+Install RCU Database Schemas
+
+The RCU database schemas are required to install the Allocation application and for the ADF installation and configuration of a domain.
+
+Note: If patching from 14.1 to 14.1.1, you may use your existing OPSS and MDS schemas for Allocation application.
+
+The following steps will show you the creation of the database schemas required using RCU on Windows OS:
+
+1.Download the RCU 11.1.1.7 zip file and extract it to a new folder named RCU 11.1.1.7. This folder (RCU 11.1.1.7) is used as RCU_HOME for the remainder of this guide. You may use a Windows version of RCU to create the schemas.
+
+2.Go to <RCU_HOME>\bin and double click rcu.bat.
+
+3.Click Next.
+
+4.Select Create and click Next.
+
+5.Enter all the fields as explained below and click Next:
+
+a.Host Name: Database server host name which Application will use.(example: Your DB Host)
+
+b.Port: Database port (example: 1521)
+
+c.Service Name Database name (example: oolsc15)
+
+d.Username: SYS
+
+e.Password: <SYS password>
+
+6.Prerequisite requirements are verified and the following screen is displayed.
+
+7.Click OK. The following screen is displayed.
+
+8.Add a Prefix (Example: ALC).
+
+9.Expand AS Common Schemas and select Metadata Services and Oracle Platform Security Services checkboxes as shown below:
+
+10.Click Next.
+
+11.Click OK.
+
+12.Enter and confirm your password.
+
+Note: Make a note of the password you give here as it will be used later.
+
+13.Click Next.
+
+14.Click Next.
+
+15.Click OK.
+
+16.Click OK.
+
+17.Click Create. This will create the selected database schemas.
+
+18.The following Completion Summary screen is displayed on a successful schema creation.
+
+The above procedure can be used to create database schemas for OID (Oracle Internet Directory) using the OID database information.
+
+Install and Configure ADF11g
+
+Follow the steps below to install ADF.
+
+1.Download the ADF installation zip and extract it to a stage location.
+
+2.Set the environment variables below:
+
+export JAVA_HOME=<location of JDK>
+
+export PATH=$JAVA_HOME/bin:$PATH
+
+3.Navigate to the ADF Stage location <ADF11.1.1.7>/Disk1
+
+4.Execute the installer command as below:
+
+./runInstaller jreLoc <JAVA_HOME>
+
+5.The following Welcome screen is displayed. Click Next.
+
+6.Select Skip Software Updates and click Next.
+
+7.Click Next.
+
+8.Enter the details as below:
+
+Oracle Middleware Home = <This should be the Middleware Home location where Weblogic has been installed>. For example: /u00/webadmin/product/ fmw/wls_app
+
+Oracle Home Directory = <leave this as default>. Eg: oracle_common
+
+Click Next.
+
+9.Select WebLogic Server and click Next.
+
+10.Click Install.
+
+11.Click Next.
+
+12.Click Save to save your installation details and click Finish.
+
+Create a New Domain and managed server with ADF libraries and EM:
+
+To create a new domain and managed server with ADF libraries and EM, follow the below steps:
+
+1.Set the environment variables:
+
+export JAVA_HOME=<JDK_HOME> [JDK_HOME is the location where jdk has been installed)
+
+export PATH=$JAVA_HOME/bin:$PATH
+
+export ORACLE_HOME=<WLS_HOME>/oracle_common(Example:/u00/webadmin/product/fmw/wls_app/oracle_common)
+
+cd $WLS_HOME/wlserver_10.3/common/bin (WLS_HOME is the location where Weblogic has been installed.)
+
+2.Run the following command:
+
+./config.sh
+
+3.The following screen is displayed:
+
+4.Select Create a new WebLogic domain and click Next.
+
+5.Select the components shown in the screenshot below (Oracle Enterprise Manager and Oracle JRF) and click Next.
+
+6.Domain name: <AllocDomain> (you may provide the name of the domain here). Click Next.
+
+7.Enter User password value and Confirm user password value (same as user password). Click Next.
+
+User password=<password>
+
+Confirm user password=<password>
+
+8.Select Production Mode. Click Next.
+
+9.Select Administration Server, Managed Servers, Clusters and Machines and Deployments and Services. Click Next.
+
+10.Enter the Listen port and click Next.
+
+§ Listen port: 18001 (This port must be an open port on the server)
+
+11.Click Add and provide Name and Listen Port for the managed server.
+
+§ Name: alloc-server (This is your managed server name)
+
+§ Listen port: 18003 (This port must be an open port on the server)
+
+12.Click Next.
+
+13.From the Unix Machine tab, click Add and provide a Name and an open port for Node manager listen port as shown below. Click Next.
+
+§ Name: <hostname> (This can be any name or usually your hostname)
+
+§ Listen port: 5556 (This port must be an open port on the server)
+
+14.Select alloc-server from the left and and click on the arrow (towards right). The server alloc-server will move to the right and add to the Nodemanager. Click Next.
+
+15.Select alloc-server in the Target panel and select Library. This will automatically select all the libraries in the Library list. Click Next.
+
+16.Leave defaults and Click Next.
+
+17.From the Configuration Summary screen, click Create.
+
+18.When the domain is successfully created, the following screen is displayed. Click Done.
+
+19.Start WebLogic Server from the <DOMAIN_HOME>/bin
+
+Example: /u00/webadmin/product/fmw/wls_app/user_projects/domains/AllocDomain/bin/startWebLogic.sh
+
+20.Create security folder at <DOMAIN_HOME>/servers/<AdminServer>/and create boot.properties file under <DOMAIN_HOME>/servers/<AdminServer>/security
+
+The file boot.properties should have the following:
+
+----------------------------------
+
+username=weblogic
+
+password=<password>
+
+------------------------------------
+
+In the above, the password value is the password of WebLogic domain which is given at the time of domain creation.
+
+21.Save the boot.properties file and restart the WebLogic server.
+
+22.Login to the Admin console of the Domain
+
+Example: http://<hostname>:<port>/console
+
+In the below screen, provide username=weblogic and password=<weblogic password>
+
+Start Node Manager
+
+1.Start NodeManager from the server using the startNodeManager.sh at $WLS_HOME/wlserver_10.3/server/bin
+
+2.Edit the nodemanager.properties file at the following location with the below values:
+
+$WLS_HOME/wlserver_10.3/common/nodemanager/nodemanager.properties
+
+§ StartScriptEnabled=true
+
+§ StartScriptName=startWebLogic.sh.
+
+3.NodeManager must be restarted after making changes to the nodemanager.properties file.
+
+Note: The nodemanager.properties file is created after NodeManager is started for the first time. It will not be available before that point.
+
+Start the Managed Server
+
+To start the managed servers, complete the following steps.
+
+1.After the Node Manager is started, the managed servers can be started via the admin console.
+
+2.Navigate to Environments > Servers. Click the Control tab and Select <app-server>. Click Start.
+
+Set up OPSS Schema Datasource in WebLogic domain
+
+Follow the below steps to set up the datasource with OPSS schema in WebLogic domain.
+
+1.Login to the Admin console.
+
+http://<hostname>:<port>/console
+
+2.In Domain Structure, go to Services-> Data Sources and click Lock & Edit.
+
+3.Click New -> Generic Data Source
+
+4.Enter the details:
+
+§ Name: <OPSS DataSource>
+
+§ JNDI Name: jndi/OPSSDS
+
+§ Database Type: Oracle
+
+5.Click Next.
+
+6.Select Oracles Driver (Thin) for Instance connections; Versions: 9.0.1 and later. Click Next.
+
+7.Uncheck Supports Global Transactions. Click Next.
+
+8.Enter the details:
+
+§ Database Name: <servicename>
+
+§ Host Name: <database server name>
+
+§ Port: <database port>
+
+§ Database User Name: <ALC_OPSS> (This is the OPSS schema which has been created using RCU earlier in this document.)
+
+§ Password: <password> (Password given at the time of OPSS schema creation)
+
+9.Click Next.
+
+10.In URL: update the syntax to jdbc:oracle:thin:@<hostname>:<1521>/<servicename> and Click Test Configuration. The message Connection test succeeded will appear upon a successful connection.
+
+11.Select Targets Admin Server and <alloc-server>. Click Finish.
+
+12.Click Activate Changes. The OPSS DataSource is created as below.
+
+13.Create another datasource using the same process as shown above with the below details.
+
+§ Name: mds-CustomPortalDS
+
+§ JNDI Name: jdbc/mds/CustomPortalDS
+
+§ Database Type: Oracle
+
+§ Database Name: <servicename>
+
+§ Host Name: <database server name>
+
+§ Port: <database port>
+
+§ Database User Name: <ALC_MDS> (This is the MDS schema which has been created using RCU earlier in this document.)
+
+§ Password: <password> (Password given at the time of MDS schema creation)
+
+The Datasources screen looks like below after the mds-CustomPortalDS Datasource is created.
+
+Re-Associate Policy Store to Database
+
+Follow the steps below to re-associate a policy store to the database:
+
+1.Login to the WebLogic EM console.
+
+2.Select AllocDomain on the left. Go to WebLogic Domain and click AllocDomain.
+
+3.Select the dropdown WebLogic Domain->Security->Security Provider Configuration.
+
+4.Click Change Store Type.
+
+5.Select Oracle Database in the Store Type drop down.
+
+6.Click Select and select jndi/OPSSDS JNDI name. Click OK. When you click Ok, the Data Source Properties fields will be displayed where you enter the values as shown in the next step.
+
+7.Enter the values:
+
+§ In Data Source Properties->Username=<ALC_OPSS> (This is the OPSS Schema created in RCU)
+
+§ In Data Source Properties ->Password=<OPSS schema password> (This is the OPSS Schema Password created in RCU)
+
+In Root Node Details:
+
+§ Root DN= <cn=AllocPolicies> (This can be any name, but it MUST match the value in jps-config.xml explained in the later section)
+
+§ Select Create New Domain
+
+§ Domain Name=<AllocDomain> (This must be the domain name which has been created earlier in this document)
+
+8.Click OK.
+
+9.Click Yes.
+
+10.The message Configure Security Stores  Completed Successfully appears. Click Close.
+
+The following screen appears:
+
+11.Restart the WebLogic domain.
+
+Rename and Update jps-config.xml file
+
+1.Go to $WLS_HOME/user_projects/domains/AllocDomain/config/fmwconfig.
+
+2.Copy the file jps-config.xml and rename it with jps-config-<env>.xml (where env can be any name matching your environment name)
+
+Note: Do not change the existing jps-config.xml file. The change has to be done only to jps-config-<env>.xml.
+
+Note: If applying patch 14.1.1 to an existing 14.1 Allocation and using the same Alloc Domain, you may already have done these changes at the time of 14.1 Allocation install. You may reuse the same modified jps-config-<env>.xml file if exists.
+
+1.Add the following entry in the renamed file above (jps-config-<env>.xml):
+
+<serviceInstance location="./merged-jazn-data.xml" provider="policystore.xml.provider" name="policystorelocal.xml">
+
+<description>File based policy store Instance"</description>
+
+</serviceInstance>
+
+The above entry can be added above this:
+
+</serviceInstances>
+
+<jpsContexts default="default">
+
+<jpsContext name="default">
+
+<serviceInstanceRef ref="credstore.db"/>
+
+Example:
+
+<propertySetRef ref="props.db.1"/>
+
+</serviceInstance>
+
+<serviceInstance location="./merged-jazn-data.xml" provider="policystore.xml.provider" name="policystorelocal.xml">
+
+<description>"File based policy store Instance"</description>
+
+</serviceInstance>
+
+</serviceInstances>
+
+<jpsContexts default="default">
+
+<jpsContext name="default">
+
+<serviceInstanceRef ref="credstore.db"/>
+
+2.In the same file, add the following entry:
+
+<jpsContext name="source">
+
+<serviceInstanceRef ref="policystorelocal.xml"/>
+
+</jpsContext>
+
+Example:
+
+<serviceInstanceRef ref="attribute"/>
+
+</jpsContext>
+
+<jpsContext name="source">
+
+<serviceInstanceRef ref="policystorelocal.xml"/>
+
+</jpsContext>
+
+<jpsContext name="bootstrap_credstore_context">
+
+<serviceInstanceRef ref="bootstrap.credstore"/>
+
+</jpsContext>
+
+The modified jps-config-<env>.xml and the cwallet.sso (from bootstrap location mentioned below) file will be used for deploying policies.
+
+Wallet file is available at $WLS_HOME/user_projects/domains/<AllocDomain>/config/fmwconfig/bootstrap/cwallet.sso
+
+Note: Only use the wallet in the above bootstrap folder location. Make sure to check the line break in the path mentioned for the wallet file.
+
+3.Copy the jps-config-<env>.xml file to the staging location <INSTALL_DIR>/alloc/application/alloc14/policysetup/jps-config.
+
+4.Rename the file jps-config-<env>.xml at <INSTALL_DIR>/alloc/application/alloc14/policysetup/jps-config to jps-config.xml after copying the file jps-config-<env>.xml in step 5.
+
+5.Copy cwallet.sso from $WLS_HOME/user_projects/domains/<AllocDomain>/config/fmwconfig/bootstrap to the location <INSTALL_DIR>/alloc/application/alloc14/policysetup/wallet.
+
+Configure OID Authenticator in WebLogic Domain
+
+The OID (Oracle Internet Directory 11.1.1.7) must be set up in order to perform the configuration of OID Authenticator in WebLogic Domain.
+
+Follow the steps below to configure WebLogic domain with OID Authenticator:
+
+1.Login to Admin console of the domain (Example: AllocDomain).
+
+2.Go to SecurityRealm.
+
+3.Click the MyRealm -> Providers tab.
+
+4.Click Lock & Edit. Click DefaultAuthenticator.
+
+5.Select Control Flag=OPTIONAL. Click Save and Activate changes.
+
+6.Go to Security Realms->MyRealm->Providers tab. Click New.
+
+7.Enter the values:
+
+§ Name: <OIDAuthenticator> (Provide a name for OID Authenticator. Example:OIDAuthenticator)
+
+§ Type: OracleInternetDirectoryAuthenticator
+
+8.Click OK and Activate Changes.
+
+9.Click OIDAuthenticator.
+
+10.Select Type: SUFFICIENT. And Click on Save button
+
+11.Click Provider Specific tab.
+
+Enter the values:
+
+§ Host: <OID Server name> (Provide OID Hostname)
+
+§ Port: <OID port> (Example: 3060 or 389)
+
+§ Principal: <cn=orcladmin> (provide the OID admin user)
+
+§ Credential: <password> (provide the password of cn=orcladmin)
+
+§ User Base DN: (Example: cn=Users,dc=us,dc=oracle,dc=com)
+
+§ Group Base DN: (Example: cn=Groups,dc=us,dc=oracle,dc=com)
+
+§ Select Ignore Duplicate Membership
+
+12.Save the values and activate changes.
+
+13.Go to Security Realms->myrealm->Providers.
+
+14.Click Lock and Edit and then Click Reorder. Select OIDAuthenticator and move it to the top of the list. Click OK.
+
+15.Click Activate Changes. The following screen is shown with OIDAuthenticator in the providers.
+
+16.Restart the WebLogic Domain and Alloc Managed server.
+
+17.Login to WebLogic domain->Security Realms->myrealm->Users and Groups and verify that the users in OID appears in this screen (Users and Groups). This confirms the OID authentication from WebLogic is successful.
+
+Load LDIF Files in LDAP
+
+The OID (Oracle Internet Directory 11.1.1.7) must be set up in order to perform the configuration of OID Authenticator in WebLogic Domain.
+
+These are the four sample LDIF files provided in the application zip (INSTALL_DIR/alloc/application/alloc14/ldifs):
+
+§ RGBU-oid-create-groups.ldif
+
+§ RGBU-oid-create-users.ldif
+
+§ RGBU-oid-delete-groups.ldif
+
+§ RGBU-oid-delete-users.ldif
+
+Note: You may use the existing users and existing groups if the enterprise users and groups are already available in the LDAP. The users provided in the LDIF files above may not be required to use the application. For more information, refer to the Retail Role Hierarchy section in the Implementing Functional Security of the Oracle Retail Allocation Operation Guide.
+
+Note: If applying patch 14.1.1 to an existing 14.1 Allocation install and if you had imported the users and groups using RGBU-oid-create-users.ldif and RGBU-oid-create-groups.ldif in 14.1, you will need to delete those users and groups using the RGBU-oid-delete-users.ldif and RGBU-oid-delete-groups.ldif files from 14.1 Allocation application zip and reimport the users and groups using the above scripts from 14.1.1 Allocation application zip. This step is needed as there are changes in the users and groups LDIFs in 14.1.1 patch.
+
+The steps given below can be used to import the Groups and Users into the LDAP using the LDIF files RGBU-oid-create-groups.ldif and RGBU-oid-create-users.ldif.
+
+IMPORTANT Note: If you are using the above LDIF files to set up the users and groups, you must update the RGBU-oid-create-user.ldif LDIF file with your password for the userpassword attribute for all the users mentioned in the RGBU-oid-create-user.ldif LDIF file. The changes must be done before importing the users LDIF file RGBU-oid-create-users.ldif into the LDAP. Once the users are imported into the LDAP, remove the userpassword attribute value from the LDIF file. Refer to the Oracle Internet Directory Administration Guide for OID password policies for setting up passwords.
+
+User DN and Group DN values (example:dc=us,dc=oracle,dc=com) may need to be updated based on the DN values in your OID.
+
+Note: LDIF files can also be imported in other ways, but the steps below are using ODSM console. ODSM needs to be installed and up and running to perform the steps below.
+
+The LDIF RGBU-oid-delete-groups.ldif can be used as needed if you need to delete the groups created from the groups creation LDIF RGBU-oid-create-groups.ldif.
+
+The LDIF RGBU-oid-delete-users.ldif can be used if you need to delete the users created from the users LDIF file RGBU-oid-create-users.ldif.
+
+1.Login to ODSM console:
+
+http://<oidhost>:<port>/odsm
+
+2.Go to the Groups container or Group DN value.
+
+Group DN is defined at the time of OID install. Here we are using the example as cn=Groups,dc=us,dc=oracle,dc=com.
+
+3.Right click cn=Groups and select Import LDIF.
+
+4.Click Browse. Select the LDIF file RGBU-oid-create-groups.ldif which has been downloaded from the media. Click OK.
+
+The Entries successfully imported message will be shown after the import is completed. Groups can be verified under GROUP DN, example: cn=Groups,dc=us,dc=oracle,dc=com.
+
+5.Go to Users container or User DN value.
+
+User DN is defined at the time of OID install. Here we are using the example as cn=Users,dc=us,dc=oracle,dc=com. Right Click cn=Users and select Import LDIF.
+
+6.Click Browse and select the LDIF file RGBU-oid-create-users.ldif to import the Users in LDAP.
+
+Users in the LDIF will be imported and Users can be verified in your User DN location, example: cn=Users,dc=us,dc=oracle,dc=com.
+
+The group cn=Administrators and user cn=weblogic must have been added to your OID as part of OID documentation. If it is not added already, create the cn=weblogic user and cn=Administrators group and add cn=weblogic user as a uniquemember in cn=Administrators group. Following LDIF scripts can be used for the creation of the user (cn=weblogic) and group (cn=Administrators).
+
+Note: DN value need to be changed based on your DN value in OID.
+
+For Example:
+
+cn=weblogic user LDIF:
+
+dn: cn=weblogic,cn=Users,dc=us,dc=oracle,dc=com
+
+description: A user for the 'Administrators' role.
+
+objectclass: inetOrgPerson
+
+objectclass: organizationalPerson
+
+objectclass: person
+
+objectclass: top
+
+objectclass: orcluser
+
+objectclass: orcluserV2
+
+objectclass: orclIDXPerson
+
+cn: weblogic
+
+orclsamaccountname: weblogic
+
+sn: weblogic
+
+uid: weblogic
+
+givenname: weblogic
+
+displayname: weblogic
+
+userpassword: <your password here>
+
+employeeNumber:
+
+middleName:
+
+orclHireDate:
+
+telephoneNumber:
+
+facsimileTelephoneNumber:
+
+mail: weblogic@rgbu.generated.oracle.com
+
+postalAddress:
+
+street:
+
+postalCode:
+
+title:
+
+employeeType:
+
+cn= Administrators group LDIF:
+
+dn: cn=Administrators,cn=groups,dc=us,dc=oracle,dc=com
+
+objectclass: groupOfUniqueNames
+
+objectclass: orclGroup
+
+objectclass: top
+
+cn: Administrators
+
+description: Administrators
+
+displayname: Administrators
+
+uniquemember: cn=weblogic,cn=users,dc=us,dc=oracle,dc=com
+
+Retail Application Security Roles Manager
+
+Retail Application Security Roles Manager (RASRM) is a tool to facilitate the customization of default RGBU role mappings to suit your business role model. This new application can be deployed along with the Allocation application to manage the application policies of Allocation. A new installer screen is added, so you can opt for this application which gets deployed to the managed server of the Allocation application. Once deployment is complete, you should be able to access this application from the main page of Allocation. You can modify the application roles and their mappings to enterprise roles from RASRM (application shown below).
+
+Only the user with System Administrator privilege can access RASRM from the Allocation.
+
+As part of the Allocation install, RASRM gets installed with one default role SYSTEM_ADMINISTRATOR_ JOB role. The same job role will also exist in Allocation's jazn-data.xml file. The below options can be used for the set up.
+
+Option 1:
+
+Create the SYSTEM_ADMINISTRATOR_JOB role in your LDAP and assign that role to a user who intends to execute the role mapping process.
+
+Option 2:
+
+Create a job role in your LDAP and map the intended job role in the LDAP to the SYSTEM_ADMINISTRATOR_JOB role using enterprise manager.
+
+Since the user is part of the SYSTEM_ADMINISTRATOR_JOB role, the user first accesses the Allocation application and then launches RASRM for role mapping from the user menu of Allocation.
+
+Note: SYSTEM_ADMINISTRATOR_JOB role must have been already created if using the sample LDIF files which are provided as part of the Allocation application zip file.
+
+Clustered Installations  Preinstallation Steps
+
+Skip this section if you are not clustering the application server.
+
+1.Make sure that you are able to start and stop the managed servers that are part of the Allocation Cluster from the WebLogic Admin Console.
+
+There are no additional steps before running the installer for Allocation.
+
+(Optional) Analyze Changes in the Patch
+
+Note: See Appendix: Analyze Tool for details and instructions to run the Analyze Tool. This appendix also contains screens and fields in the tool.
+
+Run the Oracle Retail Allocation Application Installer
+
+Once you have a managed server that is configured and started, you can run the Oracle Retail Allocation application installer. This installer configures and deploys the Oracle Retail Allocation application.
+
+Note: See Appendix: Oracle Retail Allocation Application Installer Screens for details about every screen and field in the application installer.
+
+Note: It is recommended that the installer be run as the same UNIX account which owns the application server ORACLE_HOME files.
+
+1.Change directories to INSTALL_DIR/alloc/application.
+
+2.Set the ORACLE_HOME, JAVA_HOME, and WEBLOGIC_DOMAIN_HOME environment variables. ORACLE_HOME should point to your WebLogic installation. . JAVA_HOME should point to the Java JDK 1.7+. This is typically the same JDK which is being used by the WebLogic domain where Application is getting installed. WEBLOGIC_DOMAIN_HOME should point to the full path of the domain into which Allocation will be installed.
+
+3.If a secured datasource is going to be configured you also need to set ANT_OPTS so the installer can access the key and trust store that is used for the datasource security:
+
+export ANT_OPTS="-Djavax.net.ssl.keyStore=<PATH TO KEY STORE> -Djavax.net.ssl.keyStoreType=jks -Djavax.net.ssl.keyStorePassword=<KEYSTORE PASSWORD> -Djavax.net.ssl.trustStore=<PATH TO TRUST STORE> -Djavax.net.ssl.trustStoreType=jks -Djavax.net.ssl.trustStorePassword=<TRUSTSTORE PASSWORD>"
+
+An example of this would be:
+
+export ANT_OPTS="-Djavax.net.ssl.keyStore/u00/webadmin/product/identity.keystore -Djavax.net.ssl.keyStoreType=jks -Djavax.net.ssl.keyStorePassword=retail123 -Djavax.net.ssl.trustStore/u00/webadmin/product/identity.truststore -Djavax.net.ssl.trustStoreType=jks -Djavax.net.ssl.trustStorePassword=retail123"
+
+4.If you are using an X server such as Exceed, set the DISPLAY environment variable so that you can run the installer in GUI mode (recommended). If you are not using an X server, or the GUI is too slow over your network, unset DISPLAY for text mode.
+
+5.Run the install.sh script. This launches the installer. After installation is completed, a detailed installation log file is created (alloc14install.<timestamp>.log). See Appendix: Oracle Retail Allocation Application Installer Screens for illustrations of installer screens and details about what information needs to be entered on each screen.
+
+Resolving Errors Encountered During Application Installation
+
+If the application installer encounters any errors, it halts execution immediately. You can run the installer in silent mode so that you do not have to re-enter the settings for your environment. See Appendix: Installer Silent Mode in this document for instructions on silent mode.
+
+See Appendix: Common Installation Errors in this document for a list of common installation errors.
+
+Because the application installation is a full reinstall every time, any previous partial installations are overwritten by the successful installation.
+
+Post-Installation Steps
+
+Update the following settings in WebLogic:
+
+Transaction Time Out
+
+The transaction time out is set at the Domain Level in Weblogic console
+
+1.Login to the WebLogic Console.
+
+2.Navigate to AllocDomain/JTA/Timeout Seconds.
+
+3.Set Timeout Seconds to 1200000.
+
+WebLogic Redelivery Limit
+
+1.Login to the WebLogic Console.
+
+2.Click the JMS Modules link on the Home Screen. The JMS Module screen is displayed.
+
+3.Under the list of JMS Modules, click the allocJMSModule. The Queue List is displayed.
+
+4.Click the calcQueue.
+
+5.Click the Delivery Failure tab.
+
+6.Set the Redelivery Limit to 0 instead of -1.
+
+RAFAsyncTaskDBDS Timeout
+
+1.Login to the WebLogic Console.
+
+2.Click the Data Sources link on the Home Screen. The Data Source screen is displayed.
+
+3.Under the list of Data Sources, click the RAFAsyncTaskDBDS data source.
+
+4.Click the Connection Pool tab.
+
+5.Expand the Advanced divider.
+
+6.Click the Transaction tab.
+
+7.Check the Set XA Transaction Timeout checkbox.
+
+8.Set the XA Transaction Timeout to 162000.
+
+Data Source Capacity
+
+Depending on your planned load, you may need to increase the capacity on the Allocation data sources to accommodate more concurrent connections. When increasing this setting, ensure that your Allocation database has processes setting large enough to accommodate the new maximum.
+
+1.Login to the WebLogic Console.
+
+2.Click the Data Sources link on the Home Screen. The Data Source screen is displayed.
+
+3.Under the list of Data Sources, click the ApplicationDBDS data source.
+
+4.Click the Connection Pool tab.
+
+5.Set the Maximum Capacity to 1000.
+
+6.Repeat for all data sources.
+
+Manual Updates to System Options
+
+In this release of Allocation, after following the installation steps, you should manually update the ALC_SYSTEM_OPTIONS table in the Allocation owning schema to the correct settings for your environment with the below settings:
+
+§ INST_SCHEMA_OWNER  provide the Allocations schema owner
+
+§ TP_BATCH_PROVIDER_URL  format as follows <t3://AppServer:Port> Where AppServerHost is the hostname where the Allocation Server has been deployed. Port is the Allocation managed server port, eg:18003 (your alloc-server port).
+
+How to Increase Max JMS messages
+
+The following steps are not mandatory, but only intended to use as per your environment needs if required.
+
+WebLogic uses the Work Manager to execute the Java Messages. Work Manager prioritizes tasks in queue and allocates the thread based on an execution model. To optimize the Java Messaging Services it is highly recommended that the Work Manager is configured most effectively per each customers expected user volumes. The maximum number of threads constraint should be set to a number that is appropriate for the maximum number of anticipated Allocation users on the system at any given time.
+
+Steps to Configure WebLogic Work Manager
+
+From WebLogic Console navigate to Work Manager pane (Domain->Environment
+
+->Work Manager)
+
+Create Maximum thread constraint
+
+1.Click New.
+
+2.Select the Maximum Thread Constraint radio button and click Next.
+
+3.Give a Name (MaxThreads) and specify maximum number of consumers needed for your Application. Click Next.
+
+4.Select Target as <alloc-server> and click Finish.
+
+Create Work Manager
+
+1.Click New.
+
+2.Select the Work Manager radio button and click Next.
+
+3.Give a Name (AllocWorkManager) and click Next.
+
+4.Select Target as <alloc-server> and click Finish.
+
+5.Go back to Domain-Environments->Work Manager, choose and edit the work manager you just created: AllocWorkManager.
+
+6.Assign Max thread constraint to MaxThreads as configured above.
+
+Clustered Installations  Post-Installation Steps
+
+If you are installing the Oracle Retail Allocation application to a clustered WebLogic environment, extra steps are required to complete the installation. In these instructions, the application server node with the ORACLE_HOME you used for the Oracle Retail Allocation installer is referred to as the master node. All other nodes are referred to as remote nodes.
+
+1.The Oracle Retail Installation creates security, batch, and configuration files in the $WEBLOGIC_DOMAIN_HOME/retail/<alloc_application_name>/directory. Copy this directory to each remote node of the cluster, matching the full path of the location of this directory on the master node.
+
+Test the Oracle Retail Allocation Application
+
+After the application installer completes you should have a working Oracle Retail Allocation application installation. To launch the application, open a web browser and go to http://host:httpport/contextroot/faces/pages_home
+
+Examples:
+
+http://myhost:18003/alloc14/faces/pages_home
+
+myhost is the hostname and Port is the port of alloc-server where Allocation application has been deployed.
+
+§You should use a user/password that you built in the previous section of this install guide Load LDIF files in LDAP.
+
+The default, preloaded user supplied in the LDIF scripts for testing this installed application is ALLIE_ALLOCATOR; the password is <the password which you have given in the LDIF file RGBU-oid-create-users.ldif as part of loading LDIF files into the LDAP>.
+
+Allocation Batch Scripts
+
+The Allocation application installer configures and installs the batch scripts under <RETAIL_HOME>/alloc-batch/batch.).
+
+Batch user is entered as part of the install and the user (Example: Alex_Administrator) gets created in the wallet (<retail_ home>/orpatch/config/javaapp_alloc
+
+at the time of install.
+
+Verify the entry was created in the wallet under the retail_installer partition by running the dump_credentials.sh script and passing in the batch wallet location.
+
+Example:
+
+./dump_credentials.sh <retail_ home>/orpatch/config/javaapp_alloc
+
+Application level key partition name:retail_installer
+
+User Name Alias:dsallocAlias User Name:RMSUSER
+
+User Name Alias:alloc14 User Name:Alex_Administrator
+
+User Name Alias:wlsAlias User Name:weblogic
+
+You will need the alias for running the batch scripts.
+
+You must run the batch script with a Java wallet in the form of <allocbatchscript>.ksh <Alex Administrator alias>, where <Alex_Administrator alias> is the alias given in the Batch Details screen of the Appinstaller. For example: ./AllocBatchscript.ksh alloc14
+
+Note: The JAVA_HOME used by batch is configured in the AllocBatch.ksh script by the Oracle Retail Allocation application installer using the JAVA_HOME of the installer.
+
+If a new batch user needs to be created in the wallet, follow the procedure below.
+
+Run the save_credential.sh script, passing in a unique alias, the location to the batch wallet(<retail_ home>/orpatch/config/javaapp_alloc
+
+), retail_installer for the partition name, and the username which needs to be created. This user must be in LDAP and must have valid roles in LDAP. Please refer the Oracle Retail Allocation Operations Guide for more information on the batch user.
+
+You will need the alias you chose when you are running the batch scripts.
+
+Example:
+
+./save_credential.sh -a alloc14a -l <retail_ home>/orpatch/config/javaapp_alloc
+
+-p alloc14 -u Alex1_Administrator
+
+In the above, alloc14a is the new alias (this needs to be unique), retail_installer is the partition name and Alex1_Administrator is the new user. Do not use the usernames with spaces as save_credential.sh script does not load the complete username when spaces are used for usernames.
+
+Online Help
+
+The application installer automatically installs Online Help to the proper location. It is accessible from the help links within the application.
+
+Single Sign-On
+
+Skip this section if Oracle Retail Allocation is not used within an Oracle Single Sign-On environment.
+
+Note: This section assumes the Oracle WebLogic Server has already been registered with the Oracle Access Manager (OAM) via the oamreg tool. See the Oracle Single Sign-On (OAM using webgate) documentation for details.
+
+If you are using Oracle Retail Allocation in an Oracle Single Sign-On environment, then the Allocation root context must be protected. Modify the following files.
+
+§ mod_wl_ohs.conf located in <WEBLOGIC_HOME>/Oracle_WT1/instances/instance1/config/OHS/ohs1
+
+LoadModule weblogic_module "${ORACLE_HOME}/ohs/modules/mod_wl_ohs.so"
+
+<IfModule weblogic_module>
+
+</IfModule>
+
+<Location /console>
+
+WebLogicHost <weblogichostname>
+
+WebLogicPort <AdminServerPort>
+
+SetHandler weblogic-handler
+
+</Location>
+
+<Location /alloc14/>
+
+WebLogicHost <weblogichostname>
+
+WebLogicPort <Allocserverport>
+
+SetHandler weblogic-handler
+
+WLCookieName ALC_CORESESSIONID
+
+</Location>
+
+<Location /adfAuthentication>
+
+WebLogicHost <weblogichostname>
+
+WebLogicPort <Allocserverport>
+
+SetHandler weblogic-handler
+
+</Location>
+
+Note: In the above, modify alloc14 with the context root name used for installing Allocation application.
+
+Adding Logout URI
+
+After checking that the default authenticator's control flag is set correctly as per the OAM documentation, and that the order of the providers is correct, add an OAM SSO provider and restart all servers as described below.
+
+Connect to the WebLogic domain using WLST and run the following command:
+
+addOAMSSOProvider(loginuri="/<appcontextroot>/adfAuthentication", logouturi="/oamsso/logout.html")
+
+Example:
+
+<WEBLOGIC_HOME>/common/bin/wlst.sh
+
+Connect() and proceed with the above step
+
+RETL
+
+The Allocation application installer contains RETL files under INSTALL_DIR/ alloc/application/alloc14/retl. Copy the files from this location to your existing RETL installation under the directory RETLforALLOC.
+
+5
+
+Oracle Retail Patching Process
+
+The patching process for many Oracle Retail products has been substantially revised from prior releases. Automated tools are available to reduce the amount of manual steps when applying patches. To support and complement this automation, more information about the environment is now tracked and retained between patches. This information is used to allow subsequent patches to identify and skip changes which have already been made to the environment. For example, the patching process uses a database manifest table to skip database change scripts which have already been executed.
+
+The enhanced product patching process incorporates the following:
+
+§ Utilities to automate the application of Oracle Retail patches to environments.
+
+§ Unified patches so that a single patch can be applied against Database, Forms, Java applications, Batch, etc. installations.
+
+§ Database and Environment manifests track versions of files at a module level.
+
+§ Centralized configuration distinguishes installation types (Database, Forms, Java, Batch, etc.).
+
+§ Patch inventory tracks the patches applied to an environment.
+
+These enhancements make installing and updating Oracle Retail product installations easier and reduce opportunities for mistakes. Some of these changes add additional considerations to patching and maintaining Oracle Retail product environments. Additional details on these considerations are found in later sections.
+
+Supported Products and Technologies
+
+With version 14.1.1, several additional products and technologies are supported by the enhanced patching process. The utilities, processes and procedures described here are supported with the following products and listed technologies:
+
+Product
+
+Supported Technology
+
+Oracle Retail Merchandising System (RMS)
+
+§ Database scripts
+
+§ Batch scripts
+
+§ RETL scripts
+
+§ Data Conversion Scripts
+
+§ Forms
+
+§ BI Publisher Reports
+
+Oracle Retail Warehouse Management System (RWMS)
+
+§ Database scripts
+
+§ Batch scripts
+
+§ Forms
+
+§ BI Publisher Reports
+
+Oracle Retail Price Management (RPM)
+
+§ Database scripts (included with RMS)
+
+§ Java Application
+
+§ Batch scripts
+
+Oracle Retail Invoice Matching (ReIM)
+
+§ Database scripts (included with RMS)
+
+§ Java Application
+
+§ Batch scripts
+
+Oracle Retail Allocation
+
+§ Database scripts (included with RMS)
+
+§ Java Application
+
+§ Batch scripts
+
+Oracle Retail Sales Audit (ReSA)
+
+§ Database scripts (included with RMS)
+
+§ Java Application
+
+Oracle Retail Analytics (RA)
+
+§ Database scripts
+
+Oracle Retail Advanced Science Engine (ORASE)
+
+§ Database scripts
+
+§ Batch scripts
+
+Oracle Retail Application Security Role Manager (RASRM)
+
+§ Java Application
+
+Patch Concepts
+
+During the lifecycle of an Oracle Retail environment, patches are applied to maintain your system. This maintenance may be necessary to resolve a specific issue, add new functionality, update to the latest patch level, add support for new technologies, or other reasons.
+
+A patch refers to a collection of files to apply to an environment. Patches could be cumulative, such as the 14.1.0 or 14.1.1 release, or incremental, such as a hot fix for just a few modules. Patches may contain updates for some or all components of a product installation including database, application code, forms, and batch. In a distributed architecture the same patch may need to be applied to multiple systems in order to patch all of the components. For example, if a patch contains both database and application changes, the patch would need to be applied to both the database server and the application server.
+
+The top-level directory for the installation of an Oracle Retail product is referred to as the RETAIL_HOME. Underneath RETAIL_HOME are all of the files related to that product installation, as well as configuration and metadata necessary for the Oracle Retail Patch Assistant to maintain those files. In some cases the runtime application files also exist under RETAIL_HOME. For example, the compiled RMS forms, compiled RMS batch files, or Java Application batch scripts.
+
+Patching Utility Overview
+
+Patches are applied and tracked using utilities that are specifically designed for this purpose. The primary utility is described briefly below and additional information is available in later sections.
+
+Oracle Retail Patch Assistant (ORPatch)
+
+ORPatch is the utility used to apply patches to an Oracle Retail product installation. It is used in the background by the installer when creating a new installation or applying a cumulative patch. It is used directly to apply an incremental patch to an environment.
+
+Oracle Retail Merge Patch (ORMerge)
+
+ORMerge is a utility to allow multiple patches to be combined into a single patch. Applying patches individually may require some steps to be repeated. Merging multiple patches together allows these steps to be run only once. For example, applying several incremental patches to database packages will recompile invalid objects with each patch. Merging the patches into a single patch before applying them will allow invalid objects to be recompiled only once.
+
+Oracle Retail Compile Patch (ORCompile)
+
+ORCompile is a utility to compile components of Oracle Retail products outside of a patch. It allows RMS Forms, RMS Batch, and RWMS Forms to be fully recompiled even if no patch has been applied. It also contains functionality to recompile invalid database objects in product schemas.
+
+Oracle Retail Deploy Patch (ORDeploy)
+
+ORDeploy is a utility to deploy components of Oracle Retail Java products outside of a patch. It allows RPM, ReIM, Allocation and ReSA java applications to be redeployed to WebLogic even if a patch has not been applied. It contains functionality to optionally include or not include Java customizations when redeploying.
+
+Changes with 14.1
+
+Many products and technologies are supported by the enhanced patching process for the first time in 14.1. In those cases all of the content in this chapter is new with 14.1.
+
+MMHOME changed to RETAIL_HOME
+
+For RMS and RWMS, which were previously supported in 14.0, there is a change when using ORPatch and related tools. Previously the MMHOME environment variable was used to refer to the RMS and RWMS installation area. Starting with 14.1, RETAIL_HOME is now used to refer to the installation area. So where previously it was necessary to set MMHOME before executing ORPatch, you must now set RETAIL_HOME.
+
+Note: RMS Batch continues to use MMHOME to refer to the area where batch is installed, and requires it to be set when executing batches. The change to using RETAIL_HOME relates only to ORPatch and related utilities.
+
+Java batch script location
+
+For Java products with batch scripts, starting with 14.1 the location of batch scripts has been changed to $RETAIL_HOME/<app>-batch. Previously batch scripts were stored within the WebLogic domain in the retail directory. Credential store files continue to be stored within the WebLogic domain.
+
+Patching Considerations
+
+Patch Types
+
+Oracle Retail produces two types of patches for their products: cumulative and incremental.
+
+Cumulative Patches
+
+A cumulative patch includes all of the files necessary to patch an environment to a specific level or build a new environment at that level. Examples of cumulative patches would be 14.1.1, 14.1.2, and so on. Cumulative patches come with a standard Oracle Retail installer and so can be applied to an environment with the installer rather than with ORPatch or other utilities.
+
+Incremental Patches
+
+An incremental patch includes only selected files necessary to address a specific issue or add a feature. Examples of incremental patches would be a hot fix for a specific defect. Incremental patches do not include an installer and must be applied with ORPatch.
+
+Incremental Patch Structure
+
+An Oracle Retail incremental patch generally contains several files and one or more subdirectories. The subdirectories contain the contents of the patch, while the individual files contain information about the patch and metadata necessary for patching utilities to correctly apply the patch. The most important files in the top-level directory are the README.txt, the manifest files.
+
+README File
+
+The README.txt file contains information about the incremental patch and how to apply it. This may include manual steps that are necessary before, after or while applying the patch. It will also contain instructions on applying the patch with ORPatch.
+
+Manifest Files
+
+Each patch contains manifest files which contain metadata about the contents of a patch and are used by ORPatch to determine the actions necessary to apply a patch. Patches should generally be run against all installations a product in an environment, and ORPatch will only apply the changes from the patch that are relevant to that installation.
+
+Note: Cumulative patches use a different patch structure because they include a full installer which will run ORPatch automatically.
+
+Version Tracking
+
+The patching infrastructure for 14.1 tracks version information for all files involved with a product installation. The RETAIL_HOME now contains files which track the revision of all files within the RETAIL_HOME including batch, forms, database, Java archives and other files. In addition, records of database scripts that have been applied to the product database objects are kept within each database schema.
+
+Apply all Patches with Installer or ORPatch
+
+In order to ensure that environment metadata is accurate all patches must be applied to the Oracle Retail product installation using patching utilities. For cumulative patches this is done automatically by the installer. For incremental patches ORPatch must be used directly. This is especially important if database changes are being applied, in order to ensure that the database-related metadata is kept up-to-date.
+
+Environment Configuration
+
+A configuration file in $RETAIL_HOME/orpatch/config/env_info.cfg is used to define the details of a specific Oracle Retail environment. This file defines:
+
+§ The location of critical infrastructure components such as the ORACLE_HOME on a database or middleware server.
+
+§ The location of Oracle Wallets to support connecting to the database users.
+
+§ The type of file processing which is relevant to a particular host. For example, if this is a host where database work should be done, or a host where batch compilation should be done, a host where Java applications should be deployed, etc. This allows a single database, forms and batch patch to be run against all types of hosts, applying only the relevant pieces on each server.
+
+§ Other configuration necessary to determine proper behavior in an environment.
+
+Retained Installation Files
+
+The RETAIL_HOME location of an Oracle Retail product installation contains all of the files associated with that installation. This can include database scripts, Java files, Forms, Batch, RETL and Data Conversion files as with previous versions and also includes all database scripts. This allows objects to be reloaded during patching, including any necessary dependencies.
+
+Reloading Content
+
+In order to ensure that database contents and generated files exactly match patched versions, when applying cumulative patches some content is regenerated even if it does not appear to have changed.
+
+On a cumulative patch this includes:
+
+§ All re-runnable database content will be reloaded
+
+ Packages and Procedures
+
+ Database Types (excluding RIB objects)
+
+ Control scripts
+
+ Triggers
+
+ WebService jars and packages
+
+ Form Elements
+
+§ All RMS and RWMS forms files will be recompiled
+
+§ All RMS batch files will be recompiled
+
+When applying incremental patches, only changed files will be reloaded. However this does not apply to RMS batch, which is fully recompiled with any change.
+
+Java Hotfixes and Cumulative Patches
+
+When applying cumulative patches to Java applications components with ORPatch, all hotfixes related to base product ear files included with the patch will be rolled back. This increases the likelihood of a successful deployment because hotfixes may not be compatible with updated product ear files, or may already be included with the ear. Before applying a cumulative patch to Java applications, check the patch documentation to determine which hotfixes are not included in the ear. Then work with Oracle Support to obtain compatible versions of the fixes for the updated ear version. In some cases this may be the same hotfix, in which case it can be re-applied to the environment. In other cases a new hotfix may be required.
+
+Backups
+
+Before applying a patch to an environment, it is extremely important to take a full backup of both the RETAIL_HOME file system and the Oracle Retail database. Although ORPatch makes backups of files modified during patching, any database changes cannot be reversed. If a patch fails which contains database changes, and cannot be completed, the environment must be restored from backup.
+
+Disk Space
+
+When patches are applied to an environment, the old version of files which are updated or deleted are backed up to $RETAIL_HOME/backups/backup-<timestamp>. When applying large patches, ensure there is sufficient disk space on the system where you unzip the patch or the patching process may fail. Up to twice as much disk space as the unzipped patch may be required during patching.
+
+In addition to backups of source files, the existing compiled RMS or RWMS Forms and RMS Batch files are saved before recompilation. These backups may be created during patches:
+
+§ Batch lib directory in $RETAIL_HOME/oracle/lib/bin-<timestamp>
+
+§ Batch proc directory in $RETAIL_HOME/oracle/proc/bin-<timestamp>
+
+§ Forms toolset directory in $RETAIL_HOME/base/toolset/bin-<timestamp>
+
+§ Forms forms directory in $RETAIL_HOME/base/forms/bin-<timestamp>
+
+Periodically both types of backup files can be removed to preserve disk space.
+
+Patching Operations
+
+Running ORPatch
+
+ORPatch is used to apply patches to an Oracle Retail product installation. When applying a patch which includes an installer, ORPatch does not need to be executed manually as the installer will run it automatically as part of the installation process. When applying a patch that does not include an installer, ORPatch is run directly.
+
+ORPatch performs the tasks necessary to apply the patch:
+
+§ Inspects the patch metadata to determine the patch contents and patch type.
+
+§ Reads the environment configuration file to determine which product components exist in this installation.
+
+§ Assembles a list of patch actions which will be run on this host to process the patch.
+
+§ Executes pre-checks to validate that all patch actions have the necessary configuration to proceed.
+
+§ Compares version numbers of files from the patch against the files in the environment.
+
+§ Backs up files which will be updated.
+
+§ Copies updated files into the installation.
+
+§ Loads updated files into database schemas, if applicable.
+
+§ Recompiles RMS batch, if applicable.
+
+§ Recompiles RMS forms, if applicable.
+
+§ Constructs updated Java archives and deploys them to WebLogic, if applicable
+
+§ Updates Java batch files and libraries, if applicable
+
+§ Records the patch in the patch inventory.
+
+If a patch does not contain updated files for the database or system, no action may be taken. If a previously failed ORPatch session is discovered, it will be restarted.
+
+Preparing for Patching
+
+Before applying a patch to your system, it is important to properly prepare the environment.
+
+Single Patching Session
+
+It is extremely important that only a single ORPatch session is active against a product installation at a time. If multiple patches need to be applied, you can optionally merge them into a single patch and apply one patch to the environment. Never apply multiple patches at the same time.
+
+Shutdown Applications
+
+If a patch updates database objects, it is important that all applications are shutdown to ensure no database objects are locked or in use. This is especially important when applying changes to Oracle Retail Integration Bus (RIB) objects as types in use will not be correctly replaced, leading to ORA-21700: object does not exist or marked for delete errors when restarting the RIB.
+
+Backup Environment
+
+Before applying a patch to an environment, it is important to take a full backup of both the RETAIL_HOME file system and the retail database. Although ORPatch makes backups of files modified during patching, any database changes cannot be reversed. If a patch which contains database changes fails and cannot be completed, the environment must be restored from backup.
+
+Log Files
+
+When applying a patch, ORPatch will create a number of log files which contain important information about the actions taken during a patch and may contain more information in the event of problems. Log files are created in the $RETAIL_HOME/orpatch/logs directory. Logs should always be reviewed after a patch is applied.
+
+After a patch session the log directory will contain at a minimum an ORPatch log file and may also contain other logs depending on the actions taken. The following table describes logs that may exist.
+
+Unzip Patch Files
+
+Before executing ORPatch, the patch files must be unzipped into a directory. This directory will be passed to ORPatch as the -s <source directory> argument on the command-line when applying or analyzing a patch.
+
+Location of ORPatch
+
+The ORPatch script will be located in $RETAIL_HOME/orpatch/bin.
+
+Command Line Arguments
+
+ORPatch behavior is controlled by several command-line arguments. These arguments may be actions or options. Command and option names can be specified in upper or lower case, and will be converted to upper-case automatically. Arguments to options, for example the source directory patch, will not be modified.
+
+ORPatch command-line actions:
+
+Note: An action is required and only one action can be specified at a time.
+
+ORPatch command-line arguments:
+
+Analyzing the Impact of a Patch
+
+In some cases, it may be desirable to see a list of the files that will be updated by a patch, particularly if files in the environment have been customized. ORPatch has an analyze mode that will evaluate all files in the patch against the environment and report on the files that will be updated based on the patch.
+
+To run ORPatch in analyze mode, include analyze on the command line. It performs the following actions:
+
+§ Identifies files in the environment which the patch would remove.
+
+§ Compares version numbers of files in the patch to version numbers of files in the environment.
+
+§ Prints a summary of the number of files which would be created, updated or removed.
+
+§ Prints an additional list of any files that would be updated which are registered as being customized.
+
+§ Prints an additional list of any files which are in the environment and newer than the files included in the patch. These files are considered possible conflicts as the modules in the patch may not be compatible with the newer versions already installed. If you choose to apply the patch the newer versions of modules in the environment will NOT be overwritten.
+
+§ If a Java custom file tree is detected, prints a detailed analysis of the modules within Java ear files that differ from the current ear file on the system.
+
+§ Saves details of the files that will be impacted in $RETAIL_HOME/orpatch/logs/detail_logs/analyze/details.
+
+This list of files can then be used to assess the impact of a patch on your environment.
+
+To analyze a patch, perform the following steps:
+
+1.Log in as the UNIX user that owns the product installation.
+
+2.Set the RETAIL_HOME environment variable to the top-level directory of your product installation.
+
+export RETAIL_HOME=/u00/oretail/14.1/tst
+
+3.Set the PATH environment variable to include the orpatch/bin directory
+
+export PATH=$RETAIL_HOME/orpatch/bin:$PATH
+
+4.Set the JAVA_HOME environment variable if the patch contains Java application files.
+
+export JAVA_HOME=/u00/oretail/java_jdk
+
+Note: If the JAVA_HOME environment variable is not specified, the value from RETAIL_HOME/orpatch/config/env_info.cfg will be used.
+
+5.Create a staging directory to contain the patch, if it does not already exist.
+
+mkdir p $RETAIL_HOME/stage
+
+6.Download the patch to the staging directory and unzip it.
+
+7.Execute orpatch to analyze the patch.
+
+orpatch analyze -s $RETAIL_HOME/stage/patch123456
+
+8.Repeat the patch analysis on all servers with installations for this product environment.
+
+9.Evaluate the list(s) of impacted files.
+
+For more information on registering and analyzing customizations, please see the Customization section later in this document.
+
+Applying a Patch
+
+Once the system is prepared for patching, ORPatch can be executed to apply the patch to the environment. The patch may need to be applied to multiple systems if it updates components that are installed on distributed servers.
+
+To apply a patch, perform the following steps:
+
+1.Log in as the UNIX user that owns the product installation.
+
+2.Set the RETAIL_HOME environment variable to the top-level directory of your product installation.
+
+export RETAIL_HOME=/u00/oretail/14.1/tst
+
+3.Set the PATH environment variable to include the orpatch/bin directory
+
+export PATH=$RETAIL_HOME/orpatch/bin:$PATH
+
+4.Set the DISPLAY environment variable if the patch contains Forms.
+
+export DISPLAY=localhost:10.0
+
+Note: If the DISPLAY environment variable is not specified, the value from RETAIL_HOME/orpatch/config/env_info.cfg will be used.
+
+5.Set the JAVA_HOME environment variable if the patch contains Java application files.
+
+export JAVA_HOME=/u00/oretail/java_jdk
+
+Note: If the JAVA_HOME environment variable is not specified, the value from RETAIL_HOME/orpatch/config/env_info.cfg will be used.
+
+6.Create a staging directory to contain the patch, if it does not already exist.
+
+mkdir p $RETAIL_HOME/stage
+
+7.Download the patch to the staging directory and unzip it.
+
+8.Review the README.txt included with the patch. If manual steps are specified in the patch, execute those steps at the appropriate time.
+
+9.Shutdown applications.
+
+10.Execute ORPatch to apply the patch.
+
+orpatch apply -s $RETAIL_HOME/stage/patch123456
+
+11.After ORPatch completes, review the log files in $RETAIL_HOME/orpatch/logs.
+
+12.Repeat the patch application on all servers with installations for this product environment.
+
+13.Restart applications.
+
+Restarting ORPatch
+
+If ORPatch is interrupted while applying a patch, or exits with an error, it saves a record of completed work in a restart state file in $RETAIL_HOME/orpatch/logs. Investigate and resolve the problem that caused the failure, then restart ORPatch.
+
+By default when ORPatch is started again, it will restart the patch process close to where it left off. If the patch process should not be restarted, add -new to the command-line of ORPatch.
+
+Please note that starting a new patch session without completing the prior patch may have serious impacts that result in a patch not being applied correctly. For example, if a patch contains database updates and batch file changes and ORPatch is aborted during the load of database objects, abandoning the patch session will leave batch without the latest changes compiled in the installation.
+
+Listing the Patch Inventory
+
+After a patch is successfully applied by ORPatch the patch inventory in $RETAIL_HOME/orpatch/inventory is updated with a record that the patch was applied. This inventory contains a record of the patches applied, the dates they were applied, the patch type and products impacted.
+
+To list the patch inventory, perform the following steps:
+
+1.Log in as the UNIX user that owns the product installation.
+
+2.Set the RETAIL_HOME environment variable to the top-level directory of your product installation.
+
+export RETAIL_HOME=/u00/oretail/14.1/tst
+
+3.Set the PATH environment variable to include the orpatch/bin directory
+
+export PATH=$RETAIL_HOME/orpatch/bin:$PATH
+
+4.Execute orpatch to list the inventory.
+
+orpatch lsinventory
+
+Exporting Environment Metadata
+
+ORPatch functionality is driven based on additional metadata that is stored in the environment to define what version of files are applied to the environment, and which database scripts have been applied to database schemas. This environment metadata is used to analyze the impact of patches to environments and controls what actions are taken during a patch. The metadata is stored in several locations depending on the type of information it tracks and in some cases it may be desirable to extract the metadata for analysis outside of ORPatch. For example, Oracle Support could ask for the metadata to be uploaded to assist them in triaging an application problem.
+
+ORPatch provides a capability to export all of the metadata in an environment into a single directory and to automatically create a zip file of that content for upload or transfer to another system. The exact metadata collected from the environment depends on the products installed in the RETAIL_HOME.
+
+ORPatch metadata exported:
+
+Exports of environment metadata are always done to the $RETAIL_HOME/support directory. When exporting metadata, you must specify the expname argument and define the name that should be given to the export. The name is used for the directory within $RETAIL_HOME/support and for the name of the zip file.
+
+To extract an environments metadata, perform the following steps:
+
+1.Log in as the UNIX user that owns the product installation.
+
+2.Set the RETAIL_HOME environment variable to the top-level directory of your product installation.
+
+export RETAIL_HOME=/u00/oretail/14.1/tst
+
+3.Set the PATH environment variable to include the orpatch/bin directory
+
+export PATH=$RETAIL_HOME/orpatch/bin:$PATH
+
+4.Execute orpatch to export the metadata.
+
+orpatch exportmetadata expname test_env
+
+This example would export all metadata from the environment to the $RETAIL_HOME/support/test_env directory. A zip file of the metadata would be created in $RETAIL_HOME/support/test_env.zip.
+
+Note: The $RETAIL_HOME/support/<name> directory should be empty or not exist prior to running exportmetadata in order to ensure accurate results.
+
+Comparing Environment Metadata
+
+Once metadata has been exported from an environment, it can be used to compare the environment manifest metadata of two environments. ORPatch provides a capability to compare metadata of the current environment with the exported metadata of another environment. Note that even though there are many types of metadata exported by ORPatch, only environment manifest metadata is evaluated during comparisons. Metadata comparison happens in four phases: product comparison, patch comparison, ORPatch action comparison, and module-level comparison.
+
+Product comparison compares the products installed in one environment with the products installed in another environment. Patch comparison compares the patches applied in one environment with the patches applied in another environment, for common products. This provides the most summarized view of how environments differ. Patches which only apply to products on one environment are not included in the comparison.
+
+Since each patch may impact many files, the comparison then moves on to more detailed analysis. The third phase of comparison is to compare the enabled ORPatch actions between environments. These actions roughly correspond to the installed components of a product. For example, one environment may have database and forms components installed while another has only forms. Action comparison identifies components that are different between environments. The final phase of comparison is at the module level for actions that are common between environments. Modules which exist only on one environment, or exist on both environments with different revisions, or which are flagged as customized are reported during the comparison.
+
+Differences between environment metadata are reported in a summarized fashion during the ORPatch execution. Details of the comparison results are saved in $RETAIL_HOME/orpatch/logs/detail_logs/compare/details. One CSV file is created for each phase of comparison: product_details.csv, patch_details.csv, action_details.csv and module_details.csv.
+
+In order to be compared by ORPatch, exported metadata must be placed in the $RETAIL_HOME/support directory. The metadata should exist in the same structure that it was originally exported in. For example, if the metadata was exported to $RETAIL_HOME/support/test_env on another system, it should be placed in $RETAIL_HOME/support/test_env on this system.
+
+When reporting differences between two environments, ORPatch uses names to refer to the environments. These names are defined as part of the diffmetadata command. The
+
+expname parameter, which defines the directory containing the metadata, is also used as the name when referring to the exported metadata. The srcname parameter defines the name to use when referring to the current environment. As an example, if you had exported the test environments metadata and copied it to the dev environments $RETAIL_HOME/support/test_env directory, you could run orpatch diffmetadata -expname test_env -srcname dev_env. The detail and summary output would then refer to things that exist on dev but not test, revisions in the test environment versus revisions in the dev environment, etc.
+
+ORPatch will automatically export the environments current metadata to $RETAIL_HOME/support/compare prior to starting the metadata comparison.
+
+To compare two environments metadata, perform the following steps:
+
+1.Export the metadata from another environment using orpatch exportmetadata.
+
+2.Transfer the metadata zip from the other system to $RETAIL_HOME/support.
+
+3.Log in as the UNIX user that owns the product installation.
+
+4.Set the RETAIL_HOME environment variable to the top-level directory of your product installation.
+
+export RETAIL_HOME=/u00/oretail/14.1/dev
+
+5.Set the PATH environment variable to include the orpatch/bin directory
+
+export PATH=$RETAIL_HOME/orpatch/bin:$PATH
+
+6.Unzip the metadata zip file.
+
+unzip test_env.zip
+
+7.Execute orpatch to compare the metadata
+
+orpatch diffmetadata expname test_env srcname dev_env
+
+This example would compare the current environment against the metadata extracted in $RETAIL_HOME/support/test_env directory.
+
+Note: The $RETAIL_HOME/support/compare directory will be automatically removed before environment metadata is exported at the start of the comparison.
+
+Reverting a Patch
+
+In general it is best to either completely apply a patch, or restore the entire environment from the backup taken before starting the patch. It is important to test patches in test or staging environments before applying to production. In the event of problems, Oracle Retail recommends restoring the environment from backup if a patch is not successful.
+
+Note: Reverting patches in an integrated environment can be extremely complex and there is no fully automated way to revert all changes made by a patch. Restoring the environment from a backup is the recommended method to remove patches.
+
+It is, however, possible to revert small patches using the backups taken by ORPatch during a patch. This will restore only the files modified, and it is still necessary to restore the database if any changes were made to it.
+
+Note: Reverting a patch reverts only the files modified by the patch, and does not modify the database, or recompile forms or batch files after the change.
+
+When multiple patches have been applied to an environment, reverting any patches other than the most recently applied patch is strongly discouraged as this will lead to incompatible or inconsistent versions of modules applied to the environment. If multiple patches are going to be applied sequentially it is recommended to first merge the patches into a single patch that can be applied or reverted in a single operation.
+
+To revert a patch, perform the following steps:
+
+1.Log in as the UNIX user that owns the product installation.
+
+2.Set the RETAIL_HOME environment variable to the top-level directory of your product installation.
+
+export RETAIL_HOME=/u00/oretail/14.1/tst
+
+3.Set the PATH environment variable to include the orpatch/bin directory
+
+export PATH=$RETAIL_HOME/orpatch/bin:$PATH
+
+4.Identify the backup directory in $RETAIL_HOME/backups that contains the backup from the patch you want to restore.
+
+§ The backup directory will contain a patch_info.cfg file which contains the name of the patch the backup is from.
+
+§ It is possible to have two directories for the same patch, if ORPatch was updated during the patch. It is not possible to revert the updates to ORPatch. Select the backup directory that does not contain orpatch files.
+
+§ If it is not clear which backup directory to use, restore the environment from backup
+
+5.Execute orpatch to revert the environment using the contents of the backup directory
+
+orpatch revert s $RETAIL_HOME/backups/backup-11232013-152059
+
+6.Restore the database from backup if the patch made database changes
+
+7.Use the orcompile script to recompile forms if the patch included RMS or RWMS forms files
+
+orcompile a RMS t FORMS
+
+orcompile a RWMS t FORMS
+
+8.Use the orcompile script to recompile batch if the patch included RMS batch files
+
+orcompile a RMS t BATCH
+
+9.Use the ordeploy script to redeploy the appropriate Java applications if the patch included Java files
+
+ordeploy a RPM t JAVA
+
+ordeploy a REIM t JAVA
+
+ordeploy a ALLOC t JAVA
+
+ordeploy a RESA t JAVA
+
+Merging Patches
+
+When patches are applied individually some ORPatch tasks such as compiling forms and batch files or deploying Java archives are performed separately for each patch. This can be time-consuming. An alternative is to use the ORMerge utility to combine several patches into a single patch, reducing application downtime by eliminating tasks that would otherwise be performed multiple times. Patches merged with ORMerge are applied with ORPatch after the merge patch is created.
+
+Source and Destination Directories
+
+ORMerge uses source and destination areas in order to merge patch files. The source area is a single directory that contains the extracted patches to merge. The destination area is the location where the merged patch will be created. If a file exists in one or more source patches, only the highest revision will be copied to the merged patch.
+
+The source and destination directories should exist under the same parent directory. That is, both the source and destination directories should be subdirectories of a single top-level directory.
+
+The source directory must have all patches to be merged as immediate child directories. For example if three patches need to be merged the directory structure would look like this:
+
+Source and Destination Directory Example
+
+In the example above, the manifest.csv and patch_info.cfg files for each patch to be merged must exist in source/patch1, source/patch2, and source/patch3.
+
+ORMerge Command-line Arguments
+
+Running the ORMerge Utility
+
+To merge patches, perform the following steps:
+
+1.Log in as the UNIX user that owns the product installation.
+
+2.Set the RETAIL_HOME environment variable to the top-level directory of your product installation.
+
+export RETAIL_HOME=/u00/oretail/14.1/tst
+
+3.Set the PATH environment variable to include the orpatch/bin directory
+
+export PATH=$RETAIL_HOME/orpatch/bin:$PATH
+
+4.Create a staging directory to contain the patches.
+
+mkdir p $RETAIL_HOME/stage/merge/src
+
+5.Download the patches to the staging directory and unzip them so that each patch is in a separate subdirectory.
+
+6.Review the README.txt included with each patch to identify additional manual steps that may be required. If manual steps are specified in any patch, execute them at the appropriate time when applying the merged patch.
+
+7.Create a destination directory to contain the merged patches.
+
+mkdir -p $RETAIL_HOME/stage/merge/dest
+
+8.Execute ORMerge to merge the patches.
+
+ormerge -s $RETAIL_HOME/stage/merge/src d $RETAIL_HOME/stage/merge/dest name merged_patch
+
+The merged patch can now be applied as a single patch to the product installation using ORPatch.
+
+Compiling Application Components
+
+In some cases it may be desirable to recompile RMS Forms, RWMS Forms or RMS Batch outside of a product patch. The ORCompile utility is designed to make this easy and remove the need to manually execute make or frmcmp commands which can be error-prone. ORCompile leverages ORPatch functions to ensure that it compiles forms and batch exactly the same way as ORPatch. In addition ORCompile offers an option to compile invalid database objects using ORPatch logic.
+
+ORCompile takes two required command line arguments each of which take an option. Arguments and options can be specified in upper or lower case.
+
+ORCompile Command Line Arguments
+
+ORCompile Argument Options
+
+Application
+
+Type
+
+Description
+
+RMS
+
+BATCH
+
+Compile RMS Batch programs
+
+RMS
+
+FORMS
+
+Compile RMS Forms
+
+RWMS
+
+FORMS
+
+Compile RWMS Forms
+
+RMS
+
+DB
+
+Compile invalid database objects in the primary RMS schema
+
+RMS
+
+DB-ASYNC
+
+Compile invalid database objects in the RMS_ASYNC_USER schema
+
+ALLOC
+
+DB-ALC
+
+Compile invalid database objects in the Allocations user schema
+
+ALLOC
+
+DB-RMS
+
+Compile invalid database objects in the RMS schema
+
+REIM
+
+DB
+
+Compile invalid database objects in the RMS schema
+
+RME
+
+DB
+
+Compile invalid database objects in the RME schema
+
+ASO
+
+DB
+
+Compile invalid database objects in the ASO schema
+
+RA
+
+DB-DM
+
+Compile invalid database objects in the RA DM schema
+
+RA
+
+DB-RABATCH
+
+Compile invalid database objects in the RA batch schema
+
+RA
+
+DB-RMSBATCH
+
+Compile invalid database objects in the RA RMS batch schema
+
+RA
+
+DB-FEDM
+
+Compile invalid database objects in the RA front-end schema
+
+Note: Compiling RMS type DB, ReIM type DB, and Allocation type DB-RMS, are all identical as they attempt to compile all invalid objects residing in the RMS schema.
+
+Running the ORCompile utility
+
+To compile files, perform the following steps:
+
+1.Log in as the UNIX user that owns the product installation.
+
+2.Set the RETAIL_HOME environment variable to the top-level directory of your product installation.
+
+export RETAIL_HOME=/u00/oretail/14.1/tst
+
+3.Set the PATH environment variable to include the orpatch/bin directory
+
+export PATH=$RETAIL_HOME/orpatch/bin:$PATH
+
+4.Execute orcompile to compile the desired type of files.
+
+orcompile a <app> -t <type>
+
+ORCompile Examples
+
+Compile RMS Batch.
+
+orcompile -a RMS -t BATCH
+
+Compile RWMS Forms.
+
+orcompile -a RWMS -t FORMS
+
+Compile invalid objects in the RA DM schema.
+
+orcompile -a RA -t DB-DM
+
+Compile invalid objects in the RMS owning schema.
+
+orcompile -a RMS -t DB
+
+Deploying Application Components
+
+In some cases it may be desirable to redeploy Java applications outside of a product patch. For example, when troubleshooting a problem, or verifying the operation of the application with different WebLogic settings. Another situation might include wanting to deploy the application using the same settings, but without customizations to isolate behavior that could be related to customized functionality.
+
+The ordeploy utility is designed to make this easy and remove the need to re-execute the entire product installer when no configuration needs to change. ORDeploy leverages Oracle Retail Patch Assistant functions to ensure that it deploys applications exactly the same way as ORPatch. In addition ORDeploy offers an option to include or not include custom Java files, to ease troubleshooting.
+
+ORDeploy takes two required command line arguments each of which take an option. Arguments and options can be specified in upper or lower case.
+
+ORDeploy Command Line Arguments
+
+ORDeploy Argument Options
+
+Running the ORDeploy utility
+
+To deploy Java applications, perform the following steps:
+
+1.Log in as the UNIX user that owns the product installation.
+
+2.Set the RETAIL_HOME environment variable to the top-level directory of your product installation.
+
+export RETAIL_HOME=/u00/oretail/14.1/tst
+
+3.Set the PATH environment variable to include the orpatch/bin directory
+
+export PATH=$RETAIL_HOME/orpatch/bin:$PATH
+
+4.Execute ORDeploy to deploy the desired Java application.
+
+ordeploy a <app> -t <type>
+
+ORDeploy Examples
+
+Deploy RPM.
+
+ordeploy -a RPM -t JAVA
+
+Deploy ReIM without including Java customizations.
+
+ordeploy -a REIM -t JAVANOCUSTOM
+
+Maintenance Considerations
+
+The additional information stored within the RETAIL_HOME and within database schemas adds some considerations when performing maintenance on your environment.
+
+Database Password Changes
+
+Oracle wallets are used to protect the password credentials for connecting to database schemas. This includes all database schemas used during an install. If the password for any of these users is changed the wallets entry must be updated.
+
+The wallet location is configurable but by default is in the following locations:
+
+Location
+
+Installation Type
+
+$RETAIL_HOME/orpatch/rms_wallet
+
+RMS Database
+
+RMS Batch
+
+$RETAIL_HOME/orpatch/rms_wallet_app
+
+RMS Forms
+
+$RETAIL_HOME/orpatch/rwms_wallet
+
+RWMS Database
+
+$RETAIL_HOME/orpatch/rwms_wallet_app
+
+RWMS Forms
+
+$RETAIL_HOME/orpatch/oraso_wallet
+
+ASO Database
+
+$RETAIL_HOME/orpatch/orme_wallet
+
+RME Database
+
+$RETAIL_HOME/orpatch/ra_wallet
+
+RA Database
+
+The wallet alias for each schema will be <username>_<dbname>. Standard mkstore commands can be used to update the password.
+
+For example:
+
+mkstore -wrl $RETAIL_HOME/orpatch/rms_wallet modifyCredential rms_rmsdb rms01 rmspassword
+
+This command will update the password for the RMS01 user to rmspassword in the alias rms_rmsdb.
+
+The Oracle wallets are required to be present when executing ORPatch. Removing them will prevent you from being able to run ORPatch successfully. In addition the Oracle wallet location is referenced in the RMS batch.profile, and in the default RMS and RWMS Forms URL configuration, so removing them will require reconfiguration of batch and forms. If batch and forms were reconfigured after installation to use other wallet files, it is possible to backup and remove the wallets, then restore them when running ORPatch.
+
+WebLogic Password Changes
+
+Java wallets are used to protect the password credentials used when deploying Java products. This includes the WebLogic administrator credentials, LDAP connection credentials, batch user credentials and any other credentials used during an install. If the password for any of these users is changed the wallets entry must be updated, or the Java product installation can be run again.
+
+The wallet location is in the following locations:
+
+Location
+
+Installation Type
+
+$RETAIL_HOME/orpatch/config/javapp_rpm
+
+RPM Java
+
+$RETAIL_HOME/orpatch/config/javapp_reim
+
+ReIM Java
+
+$RETAIL_HOME/orpatch/config/javapp_alloc
+
+Allocation Java
+
+$RETAIL_HOME/orpatch/config/javapp_resa
+
+RESA Java
+
+$RETAIL_HOME/orpatch/config/javaapp_rasrm
+
+RASRM Java
+
+The wallet aliases will be stored in the retail_installer partition. The names of the aliases will vary depending on what was entered during initial product installation.
+
+The dump_credentials.sh script can be used to list the aliases in the wallet.
+
+For example:
+
+cd $RETAIL_HOME/orpatch/deploy/retail-public-security-api/bin
+
+./dump_credentials.sh $RETAIL_HOME/orpatch/config/javapp_alloc
+
+Apapplication level key partition name:retail_installer
+
+User Name Alias:dsallocAlias User Name:rms01app
+
+User Name Alias:BATCH-ALIAS User Name:SYSTEM_ADMINISTRATOR
+
+User Name Alias:wlsAlias User Name:weblogic
+
+The easiest way to update the credential information is to re-run the Java product installer. If you need to manually update the password for a credential, the save_credential.sh script can be used.
+
+For example:
+
+cd $RETAIL_HOME/orpatch/deploy/retail-public-security-api/bin
+
+./save_credential.sh l $RETAIL_HOME/orpatch/config/javapp_alloc p retail_installer a wlsAlias u weblogic
+
+This command will prompt for the new password twice and update the aslias wlsAlias, username weblogic with the new password.
+
+Infrastructure Directory Changes
+
+The RETAIL_HOME/orpatch/config/env_info.cfg file contains the path to the database ORACLE_HOME on database or RMS Batch installations, to the WebLogic Forms and Reports ORACLE_HOME and ORACLE_INSTANCE on RMS or RWMS Forms installations, and to the WEBLOGIC_DOMAIN_HOME, WL_HOME and MW_HOME on Java product installations. If these paths change, the related configuration variables in the env_info.cfg file must be updated.
+
+DBManifest Table
+
+The table dbmanifest within Oracle Retail database schemas is used to track the database scripts which have been applied to the schema. It is critical not to drop or truncate this table. Without it, ORPatch will attempt to re-run scripts against the database which have already been applied which can destroy a working environment. Similarly, if copying a schema from one database to another database, ensure that the dbmanifest table is preserved during the copy.
+
+RETAIL_HOME relationship to Database and Application Server
+
+The RETAIL_HOME associated with an Oracle Retail product installation is critical due to the additional metadata and historical information contained within it. If a database or application installation is moved or copied, the RETAIL_HOME related to it should be copied or moved at the same time.
+
+Jar Signing Configuration Maintenance
+
+The RPM product installation includes an option to configure a code signing certificate so that jar files modified during installation or patching are automatically re-signed. This configuration is optional, but recommended. If it is configured, the code signing keystore is copied during installation to $RETAIL_HOME/orpatch/config/jarsign/orpkeystore.jks. The keystore password and private key password are stored in a Java wallet in the $RETAIL_HOME/orpatch/config/jarsign directory. The credentials are stored in a wallet partition called orpatch:
+
+Alias
+
+Username
+
+Description
+
+storepass
+
+discard
+
+Password for the keystore
+
+keypass
+
+discard
+
+Password for the private key
+
+The keystore file and passwords can be updated using the product installer. This is the recommended way to update the signing configuration.
+
+If only the credentials need to be updated, the sign_jar.sh script can be used.
+
+5.Log in as the UNIX user that owns the product installation.
+
+6.Set the RETAIL_HOME environment variable to the top-level directory of your installation.
+
+export RETAIL_HOME=/u00/oretail/14.1/tst
+
+7.Change directories to the location of sign_jar.sh
+
+cd $RETAIL_HOME/orpatch/deploy/bin
+
+8.Execute sign_jar.sh
+
+sign_jar.sh changepwd
+
+9.When prompted, enter the new keystore password
+
+10.When prompted, enter the new private key password
+
+Customization
+
+Patching Considerations with Customized Files and Objects
+
+In general, the additional capabilities provided by the ORPatch should make it easier to evaluate the potential impacts of patches to your customizations of Oracle Retail products. However, the additional metadata maintained by the Oracle Retail patching utilities does add some considerations when making customizations.
+
+General Guidelines
+
+It is always preferred to customize applications by extension rather than by direct modification. For example, adding new database objects and forms rather than modifying existing Oracle Retail objects and forms. You can also leverage built-in extension points such as User Defined Attributes, the Custom Flexible Attribute Solution, or seeded customization points in ADF Applications.
+
+It is strongly discouraged to directly modify Oracle Retail database objects, especially tables, as your changes may be lost during patching or may conflict with future updates. When adding or modifying database objects, Oracle Retail recommends that all objects be added with scripts to ensure that they can be rebuilt if necessary after a patch.
+
+Custom Database Objects
+
+When you create new database objects, Oracle Retail recommends placing them in an Oracle database schema specifically for your customizations. You must use synonyms and grants to allow the Oracle Retail product schema owner and other users to access your objects, and use synonyms and grants to allow your customizations to access Oracle Retail objects. A separate schema will ensure that your customizations are segregated from base Oracle Retail code.
+
+ORPatch expects that there will be no invalid objects in the database schemas it manages after a patch is applied. For this reason adding extra objects to the product schema could result in failures to apply patches as changes to base objects may cause custom objects to go invalid until they are updated. In this situation, manually update the custom objects so that they compile, and restart the patch.
+
+Custom Forms
+
+When creating new custom forms, Oracle Retail recommends placing them in a separate directory specifically for your customizations. This directory should be added to the FORMS_PATH of your RMS or RWMS Forms URL configuration to allow the forms to be found by the Forms Server. This will ensure that your customizations are segregated from base Oracle Retail code. If you choose to place customizations in the Forms bin directory, then your custom forms will need to be recopied each time Forms are fully recompiled.
+
+ADF Application Customization
+
+Oracle Retail ADF-based applications such as Allocation and ReSA can be customized using a process called seeded customization. The customization process involves using JDeveloper in Customizer mode to create changes to product configurations, and then building a MAR archive containing the changes. The generated MAR is deployed to the MDS repository used by the application and applied to the application at runtime. These types of customizations are handled outside of ORPatch and are not reported during patch analysis or tracked by the custom file registration utility. More information can be found in the respective product customization guides.
+
+Custom Compiled Java Code
+
+When customizing Oracle Retail Java-based products such as RPM and ReIM via product source code, ORPatch supports automatically adding compiled customizations into the application ear file prior to deployment. This allows customizations to be applied to the application without directly modifying the base product ear, enabling customizations and defect hotfixes to co-exist when they do not change the same file or a dependent file. See the later Custom Compiled Java Code section for additional information and considerations.
+
+Analyze Patches when Customizations are Present
+
+Whenever you have customized a product by directly modifying Oracle Retail files or database objects, it is important to ensure you analyze each the files that will be updated by a patch before applying the patch. This will allow you to identify any customized files which may be overwritten by the patch and either merge your customization with the new version of the file, or re-apply the customization after applying the patch.
+
+Manifest Updates
+
+If you choose to customize Oracle Retail files directly, it is extremely important not to update the revision number contained in the env_manifest.csv. This could cause future updates to the file to be skipped, invalidating later patch applications as only a partial patch would be applied. The customized revision number for modified files will need to be tracked separately.
+
+Registering Customized Files
+
+The ORPatch contains utilities and functionality to allow tracking of files that have been customized through direct modification. This process is referred to as registering a customized file. Registration only works for files which are shipped by Oracle Retail. It is not possible to register new files created in the environment as part of extensions or customizations.
+
+When patches are analyzed with ORPatch, special reporting is provided if any registered files would be updated or deleted by the patch. Customized files impacted by the patch are listed at the end of the analysis report from ORPatch. The detail files generated during the analyze will contain a column called customized which will have a Y for any files which were registered as customized. This allows easier identification of customizations which will be overwritten by a patch.
+
+All files delivered by Oracle Retail are considered base and so when they are applied to an environment any registrations of those files as customized will revert back to un-customized. Each time a patch overwrites customized files, you must re-register the files as customized once you have applied customizations.
+
+To register customized files, use the $RETAIL_HOME/orpatch/bin/orcustomreg script.
+
+The orcustomerg script operates in one of two modes: registration and list.
+
+§ Registration mode registers or unregisters one or more files as customized.
+
+§ List mode lists all files in the environment that are registered as customized.
+
+Command Line Arguments for Registration Mode
+
+Notes:
+
+§ At least one of -f or -bulk is required.
+
+§ If neither -register nor -unregister is specified, the default is -register.
+
+§ File names specified with -f must either be fully-qualified or be relative to RETAIL_HOME. The same is true for filenames specified within a -bulk file.
+
+Command Line arguments for list mode
+
+Running the orcustomreg Script
+
+Perform the following procedure to run the orcustomreg script:
+
+1.Log in as the UNIX user that owns the product installation.
+
+2.Set the RETAIL_HOME environment variable to the top-level directory of your product installation.
+
+export RETAIL_HOME=/u00/oretail/14.1/tst
+
+3.Set the PATH environment variable to include the orpatch/bin directory
+
+export PATH=$RETAIL_HOME/orpatch/bin:$PATH
+
+4.Execute orcustomreg script to register the desired file(s).
+
+orcustomreg register f <file>
+
+Examples of using the orcustomreg Script
+
+Register $RETAIL_HOME/dbsql_rms/Cross_Pillar/control_scripts/source/oga.sql as customized.
+
+orcustomreg -f dbsql_rms/Cross_Pillar/control_scripts/source/oga.sql
+
+Unregister customizations for $RETAIL_HOME/dbsql_rwms/Triggers/Source/TR_WAVE.trg
+
+orcustomreg unregister f $RETAIL_HOME/dbsql_rwms/Triggers/Source/TR_WAVE.trg
+
+Bulk register several files as customized.
+
+echo $RETAIL_HOME/oracle/proc/src/mrt.pc > custom.txt
+
+echo $RETAIL_HOME/oracle/proc/src/saldly.pc >> custom.txt
+
+echo $RETAIL_HOME/oracle/proc/src/ccprg.pc >> custom.txt
+
+orcustomreg bulk custom.txt
+
+List all files registered as customized.
+
+orcustomreg list
+
+Custom Compiled Java Code
+
+When customizing Oracle Retail Java-based products such as RPM and ReIM via product source code, ORPatch supports automatically adding compiled customizations into the application ear file prior to deployment. This allows customizations to be applied to the application without directly modifying the base product ear, enabling customizations and defect hotfixes to co-exist when they do not change the same file or a dependent file
+
+This functionality is enabled by creating a directory called $RETAIL_HOME/javaapp_<app>/custom, where <app> is the application the customizations apply to. Files stored within this directory will be combined with the base product ear files before the application is deployed to WebLogic. ORPatch will attempt to consider customizations stored within the custom directory during patch analysis by triggering more detailed ear file change analysis to assist with identifying which customizations might be impacted by changes in the patches.
+
+Note: It is not possible, nor necessary, to register compiled Java customizations with the orcustomreg tool.
+
+As with other customization techniques for other technologies, Oracle Retail recommends making Java customizations in new files as much as possible, versus overwriting base product or configuration files. In the past it was necessary to build complete replacement product ear files, but this method of customization is no longer required nor recommended. Replacement ear and jar files will not contain the META-INF/env_manifest.csv files which are required in order to be able to apply incremental patches. Instead, compile the specific Java classes being customized and place them along with any custom configuration files in $RETAIL_HOME/javaapp_<app>/custom.
+
+Building Deployable ear files
+
+When constructing the product ear file to deploy to WebLogic, ORPatch applies changes to the ear file in a specific order, with files from later steps overwriting files in earlier steps. The resulting ear is stored in $RETAIL_HOME/javaapp_<app>/deploy, and then deployed to WebLogic.
+
+Sequence for ORPatch Java Product ear file updates
+
+Order
+
+File Type
+
+Location
+
+1
+
+Base product ear
+
+$RETAIL_HOME/javaapp_<app>/base
+
+2
+
+Updated configuration files
+
+$RETAIL_HOME/javaapp_<app>/config
+
+3
+
+Oracle Retail-supplied hotfixes
+
+$RETAIL_HOME/javaapp_<app>/internal
+
+4
+
+Compiled customizations
+
+$RETAIL_HOME/javaapp_<app>/custom
+
+Merging Custom Files
+
+When merging files from the custom directory with the product ear, ORPatch uses the directory path of the files within custom to calculate where the file should be stored within the ear. This allows arbitrary nesting of files, even when placing files within jars stored in jars, stored within the ear. The following examples below use RPM, but apply to adding compiled customizations to any Java-based product.
+
+Custom directory location and product ear location Examples
+
+Analyzing patches when customizations are present
+
+When analyzing a patch which contains a base product ear and the custom directory contains files, ORPatch will automatically trigger a more detailed analysis of the changes coming in a patch. This includes calculating what files inside the product ear have been added, removed or updated and which files appear to be customized based on the contents of the custom directory. The detailed results of the ear file comparison during patch analysis will be saved in javaapp_<app>_archive_compare_details.csv. Any custom files which appeared to be impacted by the patch are saved in javapp_<app>_archive_custom_impacts.csv. Both files will be in the $RETAIL_HOME/orpatch/logs/detail_logs/analyze/details directory.
+
+Note: This detailed analysis is not available when analyzing individual hotfixes, so special care must be taken when applying hotfixes to a customized product installation, to ensure there are no conflicts between customizations and hotfix changes.
+
+Customizations and cumulative patches
+
+By default, when applying a cumulative patch, ORPatch will not include customizations in the deployed product ear, even if they are present in the appropriate directory. This allows verification that the application is functioning properly using base code, before applying customizations. After verifying the initial deployment, use ORDeploy with the -t JAVA option to construct and deploy the product ear including customizations.
+
+If customizations need to be removed outside of a patch, use ORDeploy with the -t JAVANOCUSTOM option to create and deploy an ear containing only Oracle Retail code. To force ORPatch to include customizations in the deployed ear even when applying a cumulative patch, set JAVAAPP_<app>_INCLUDE_CUSTOM=Y in the $RETAIL_HOME/orpatch/config/env_info.cfg file.
+
+Changing configuration files
+
+It is possible to directly change product configuration files in $RETAIL_HOME/javaapp_<app>/config. These updates can be deployed to the environment using the ORDeploy utility. However, the config directory is completely recreated each time the product installer is used. This means that modifications will be lost and must be manually reapplied after each installer run. It is recommended to make configuration changes via the installer where possible, and retain the ant.install.properties file for use in later installer sessions.
+
+Extending Oracle Retail Patch Assistant with Custom Hooks
+
+The default ORPatch actions and processing logic is sufficient to install and patch the base Oracle Retail product code. However there may be situations where custom processing is desired during patching activities such as executing a shell script prior to the start of patching, or running a SQL script at the end of the patch.
+
+ORPatch supports extensions in the form of custom hooks. These hooks allow external scripts to be run at specific points during ORPatch processing.
+
+ORPatch Processing
+
+Action
+
+ORPatch supports a variety of actions which define the steps necessary to apply updates to a particular area of the Oracle Retail application. Each action is generally specific to updates to a single technology or logical component of the environment. For example, one action might handle making updates to the RMS database schema, while a separate action is responsible for compiling RWMS forms, and a different action deploys the RPM Java application. These actions are enabled and disabled within the environment configuration file, allowing ORPatch to determine what types of changes to apply to each product installation.
+
+ORPatch Actions
+
+Phase
+
+ORPatch processes patches in phases. Each action relevant to a patch and host is provided an opportunity to process the patch for each phase. The standard phases which allow hooks are:
+
+Configuring Custom Hooks
+
+Custom hooks are configured in a configuration file RETAIL_HOME/orpatch/config/custom_hooks.cfg. The configuration file is a simple text file where blank lines and lines starting with # are ignored and all other lines should define a custom hook.
+
+To define a custom hook, a line is added to the file in the form:
+
+<hook name>=<fully qualified script>
+
+The hook name must be in upper case and is in the form:
+
+<action name>_<phase name>_<sequence>
+
+The action name is any action name understood by ORPatch. The phase name is one of the five phase names from the table above. The sequence is either START or END. Hooks defined with a sequence of START are run before the actions phase is invoked. Hooks defined with a sequence of END are run after the actions phase is invoked.
+
+Multiple scripts can be associated with a single hook by separating the script names with a comma. If a hook name appears in the configuration file multiple times only the last entry will be used.
+
+The script defined as a custom hook must be an executable shell script that does not take any arguments or inputs. The only environment variable that is guaranteed to be passed to the custom hook is RETAIL_HOME. The script must return 0 on success and non-zero on failure.
+
+If an action is a DBSQL action (i.e. has a name like DBSQL_), the custom hook can optionally be a .sql file. In this case the SQL script will be run against the database schema that the DBSQL action normally executes against. The SQL script must not generate any ORA- or SP2- errors on success. In order to be treated as a database script, the extension of the file defined as the custom hook must be .sql in lower-case. Any other extension will be treated as if it is a shell script. If you have database scripts with different extensions, they must be renamed or wrapped in a .sql script.
+
+When using the PRECHECK phase and START sequence, please note that the custom hook will be executed prior to any verification of the configuration. Invalid configuration, such as invalid database username/password or a non-existent

@@ -1,0 +1,785 @@
+Articles | Volume 4, issue 3
+
+https://doi.org/10.5194/gmd-4-543-2011
+
+© Author(s) 2011. This work is distributed under
+
+the Creative Commons Attribution 3.0 License.
+
+https://doi.org/10.5194/gmd-4-543-2011
+
+© Author(s) 2011. This work is distributed under
+
+the Creative Commons Attribution 3.0 License.
+
+Model description paper
+
+01 Jul 2011
+
+Model description paper | | 01 Jul 2011
+
+The HadGEM2-ES implementation of CMIP5 centennial simulations
+
+C. D. Jones, J. K. Hughes, N. Bellouin, S. C. Hardiman, G. S. Jones, J. Knight, S. Liddicoat, F. M. O'Connor, R. J. Andres, C. Bell, K.-O. Boo, A. Bozzo, N. Butchart, P. Cadule, K. D. Corbin, M. Doutriaux-Boucher, P. Friedlingstein, J. Gornall, L. Gray, P. R. Halloran, G. Hurtt, W. J. Ingram, J.-F. Lamarque, R. M. Law, M. Meinshausen, S. Osprey, E. J. Palin, L. Parsons Chini, T. Raddatz, M. G. Sanderson, A. A. Sellar, A. Schurer, P. Valdes, N. Wood, S. Woodward, M. Yoshioka, and M. Zerroukat
+
+C. D. Jones
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+J. K. Hughes
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+N. Bellouin
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+S. C. Hardiman
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+G. S. Jones
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+J. Knight
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+S. Liddicoat
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+F. M. O'Connor
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+R. J. Andres
+
+Environmental Sciences Division, Oak Ridge National Laboratory, Oak Ridge, TN 37831-6335, USA
+
+C. Bell
+
+Meteorology Dept, University of Reading, Reading, RG6 6BB, UK
+
+deceased, 20 June 2010
+
+K.-O. Boo
+
+National Institute of Meteorological Research, Korea Meteorological Administration, Korea
+
+A. Bozzo
+
+School of GeoSciences, University of Edinburgh, The King's Buildings, Edinburgh EH9 3JW, UK
+
+N. Butchart
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+P. Cadule
+
+Institut Pierre-Simon Laplace, UniversitÃ© Pierre et Marie Curie Paris VI, 4 Place de Jussieu, case 101, 75252 cedex 05 Paris, France
+
+K. D. Corbin
+
+Centre for Australian Weather and Climate Research, CSIRO Marine and Atmospheric Research, Aspendale, Victoria, Australia
+
+now at: Colorado State University, Fort Collins, USA
+
+M. Doutriaux-Boucher
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+P. Friedlingstein
+
+College of Engineering, Mathematics and Physical Sciences, University of Exeter, Exeter, EX4 4QF, UK
+
+J. Gornall
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+L. Gray
+
+National Centre for Atmospheric Science, Department of Physics, University of Oxford, Oxford, OX1 3PU, UK
+
+P. R. Halloran
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+G. Hurtt
+
+Department of Geography, University of Maryland, College Park, MD 21403, USA
+
+Pacific Northwest National Laboratory, Joint Global Change Research Institute, University of Maryland, College Park, MD 20740, USA
+
+W. J. Ingram
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+Department of Physics, University of Oxford, Oxford, OX1 3PU, UK
+
+J.-F. Lamarque
+
+Atmospheric Chemistry Division, UCAR, Boulder, USA
+
+R. M. Law
+
+Centre for Australian Weather and Climate Research, CSIRO Marine and Atmospheric Research, Aspendale, Victoria, Australia
+
+M. Meinshausen
+
+Earth System Analysis, Potsdam Institute for Climate Impact Research, Germany
+
+S. Osprey
+
+National Centre for Atmospheric Science, Department of Physics, University of Oxford, Oxford, OX1 3PU, UK
+
+E. J. Palin
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+L. Parsons Chini
+
+Department of Geography, University of Maryland, College Park, MD 21403, USA
+
+T. Raddatz
+
+Max Planck Institute for Meteorology, Hamburg, Germany
+
+M. G. Sanderson
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+A. A. Sellar
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+A. Schurer
+
+School of GeoSciences, University of Edinburgh, The King's Buildings, Edinburgh EH9 3JW, UK
+
+P. Valdes
+
+School of Geographical Sciences, University of Bristol, Bristol BS81SS, UK
+
+N. Wood
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+S. Woodward
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+M. Yoshioka
+
+School of Geographical Sciences, University of Bristol, Bristol BS81SS, UK
+
+M. Zerroukat
+
+Met Office Hadley Centre, Exeter, EX1 3PB, UK
+
+Related subject area
+
+Climate and Earth system modeling
+
+Yeti 1.0: a generalized framework for constructing bottom-up emission inventories from traffic sources at road-link resolutions
+
+Edward C. Chan, Joana LeitÃ£o, Andreas Kerschbaumer, and Timothy M. Butler
+
+Geosci. Model Dev., 16, 1427–1444, https://doi.org/10.5194/gmd-16-1427-2023,https://doi.org/10.5194/gmd-16-1427-2023, 2023
+
+Short summary
+
+Short summary
+
+Yeti is a Handbook Emission Factors for Road Transport-based traffic emission inventory written in the Python 3 scripting language, which adopts a generalized treatment for activity data using traffic information of varying levels of detail introduced in a systematic and consistent manner, with the ability to maximize reusability. Thus, Yeti has been conceived and implemented with a high degree of data and process symmetry, allowing scalable and flexible execution while affording ease of use.
+
+Analysis of systematic biases in tropospheric hydrostatic delay models and construction of a correction model
+
+Haopeng Fan, Siran Li, Zhongmiao Sun, Guorui Xiao, Xinxing Li, and Xiaogang Liu
+
+Geosci. Model Dev., 16, 1345–1358, https://doi.org/10.5194/gmd-16-1345-2023,https://doi.org/10.5194/gmd-16-1345-2023, 2023
+
+Short summary
+
+Short summary
+
+The traditional tropospheric zenith hydrostatic delay (ZHD) model's bias is usually thought negligible, yet it still reaches 10 mm sometimes and would lead to millimeter-level position errors for space geodetic observations. Therefore, we analyzed the biasâ characteristics and present a grid model to correct the traditional ZHD formula. When verifying the efficiency based on data from the ECMWF (European Centre for Medium-Range Weather Forecasts), ZHD biases were rectified by ~50 %.
+
+A new precipitation emulator (PREMU v1.0) for lower-complexity models
+
+Gang Liu, Shushi Peng, Chris Huntingford, and Yi Xi
+
+Geosci. Model Dev., 16, 1277–1296, https://doi.org/10.5194/gmd-16-1277-2023,https://doi.org/10.5194/gmd-16-1277-2023, 2023
+
+Short summary
+
+Short summary
+
+Due to computational limits, lower-complexity models (LCMs) were developed as a complementary tool for accelerating comprehensive Earth system models (ESMs) but still lack a good precipitation emulator for LCMs. Here, we developed a data-calibrated precipitation emulator (PREMU), a computationally effective way to better estimate historical and simulated precipitation by current ESMs. PREMU has potential applications related to land surface processes and their interactions with climate change.
+
+Simulating marine neodymium isotope distributions using Nd v1.0 coupled to the ocean component of the FAMOUSâMOSES1 climate model: sensitivities to reversible scavenging efficiency and benthic source distributions
+
+Suzanne Robinson, Ruza F. Ivanovic, Lauren J. Gregoire, Julia Tindall, Tina van de Flierdt, Yves Plancherel, Frerk PÃ¶ppelmeier, Kazuyo Tachikawa, and Paul J. Valdes
+
+Geosci. Model Dev., 16, 1231–1264, https://doi.org/10.5194/gmd-16-1231-2023,https://doi.org/10.5194/gmd-16-1231-2023, 2023
+
+Short summary
+
+Short summary
+
+We present the implementation of neodymium (Nd) isotopes into the ocean model of FAMOUS (Nd v1.0). Nd fluxes from seafloor sediment and incorporation of Nd onto sinking particles represent the major global sources and sinks, respectively. However, model–data mismatch in the North Pacific and northern North Atlantic suggest that certain reactive components of the sediment interact the most with seawater. Our results are important for interpreting Nd isotopes in terms of ocean circulation.
+
+CMIP6 simulations with the compact Earth system model OSCAR v3.1
+
+Yann Quilcaille, Thomas Gasser, Philippe Ciais, and Olivier Boucher
+
+Geosci. Model Dev., 16, 1129–1161, https://doi.org/10.5194/gmd-16-1129-2023,https://doi.org/10.5194/gmd-16-1129-2023, 2023
+
+Short summary
+
+Short summary
+
+The model OSCAR is a simple climate model, meaning its representation of the Earth system is simplified but calibrated on models of higher complexity. Here, we diagnose its latest version using a total of 99 experiments in a probabilistic framework and under observational constraints. OSCAR v3.1 shows good agreement with observations, complex Earth system models and emerging properties. Some points for improvements are identified, such as the ocean carbon cycle.
+
+Application of a satellite-retrieved sheltering parameterization (v1.0) for dust event simulation with WRF-Chem v4.1
+
+Sandra L. LeGrand, Theodore W. Letcher, Gregory S. Okin, Nicholas P. Webb, Alex R. Gallagher, Saroj Dhital, Taylor S. Hodgdon, Nancy P. Ziegler, and Michelle L. Michaels
+
+Geosci. Model Dev., 16, 1009–1038, https://doi.org/10.5194/gmd-16-1009-2023,https://doi.org/10.5194/gmd-16-1009-2023, 2023
+
+Short summary
+
+Short summary
+
+Ground cover affects dust emissions by reducing wind flow over the immediate soil surface. This study reviews a method for estimating ground cover effects on wind erosion from satellite-detected terrain shadows. We conducted a case study for a US dust event using the Weather Research and Forecasting with Chemistry (WRF-Chem) model. Adding the shadow-based method for ground cover effects markedly improved simulated results and may lead to better dust modeling outcomes in vegetated drylands.
+
+The pseudo-global-warming (PGW) approach: methodology, software package PGW4ERA5 v1.1, validation, and sensitivity analyses
+
+Roman Brogli, Christoph Heim, Jonas Mensch, Silje Lund SÃ¸rland, and Christoph SchÃ¤r
+
+Geosci. Model Dev., 16, 907–926, https://doi.org/10.5194/gmd-16-907-2023,https://doi.org/10.5194/gmd-16-907-2023, 2023
+
+Short summary
+
+Short summary
+
+The pseudo-global-warming (PGW) approach is a downscaling methodology that imposes the large-scale GCM-based climate change signal on the boundary conditions of a regional climate simulation. It offers several benefits in comparison to conventional downscaling. We present a detailed description of the methodology, provide companion software to facilitate the preparation of PGW simulations, and present validation and sensitivity studies.
+
+AttentionFire_v1.0: interpretable machine learning fire model for burned-area predictions over tropics
+
+Fa Li, Qing Zhu, William J. Riley, Lei Zhao, Li Xu, Kunxiaojia Yuan, Min Chen, Huayi Wu, Zhipeng Gui, Jianya Gong, and James T. Randerson
+
+Geosci. Model Dev., 16, 869–884, https://doi.org/10.5194/gmd-16-869-2023,https://doi.org/10.5194/gmd-16-869-2023, 2023
+
+Short summary
+
+Short summary
+
+We developed an interpretable machine learning model to predict sub-seasonal and near-future wildfire-burned area over African and South American regions. We found strong time-lagged controls (up to 6â8 months) of local climate wetness on burned areas. A skillful use of such time-lagged controls in machine learning models results in highly accurate predictions of wildfire-burned areas; this will also help develop relevant early-warning and management systems for tropical wildfires.
+
+Cell tracking of convective rainfall: sensitivity of climate-change signal to tracking algorithm and cell definition (Cell-TAO v1.0)
+
+Edmund P. Meredith, Uwe Ulbrich, and Henning W. Rust
+
+Geosci. Model Dev., 16, 851–867, https://doi.org/10.5194/gmd-16-851-2023,https://doi.org/10.5194/gmd-16-851-2023, 2023
+
+Short summary
+
+Short summary
+
+Cell-tracking algorithms allow for the study of properties of a convective cell across its lifetime and, in particular, how these respond to climate change. We investigated whether the design of the algorithm can affect the magnitude of the climate-change signal. The algorithm's criteria for identifying a cell were found to have a strong impact on the warming response. The sensitivity of the warming response to different algorithm settings and cell types should thus be fully explored.
+
+ICON-Sapphire: simulating the components of the Earth system and their interactions at kilometer and subkilometer scales
+
+Cathy Hohenegger, Peter Korn, Leonidas Linardakis, RenÃ© Redler, Reiner Schnur, Panagiotis Adamidis, Jiawei Bao, Swantje Bastin, Milad Behravesh, Martin Bergemann, Joachim Biercamp, Hendryk Bockelmann, Renate Brokopf, Nils BrÃ¼ggemann, Lucas Casaroli, Fatemeh Chegini, George Datseris, Monika Esch, Geet George, Marco Giorgetta, Oliver Gutjahr, Helmuth Haak, Moritz Hanke, Tatiana Ilyina, Thomas Jahns, Johann Jungclaus, Marcel Kern, Daniel Klocke, Lukas Kluft, Tobias KÃ¶lling, Luis Kornblueh, Sergey Kosukhin, Clarissa Kroll, Junhong Lee, Thorsten Mauritsen, Carolin Mehlmann, Theresa Mieslinger, Ann Kristin Naumann, Laura Paccini, Angel Peinado, Divya Sri Praturi, Dian Putrasahan, Sebastian Rast, Thomas Riddick, Niklas Roeber, Hauke Schmidt, Uwe Schulzweida, Florian SchÃ¼tte, Hans Segura, Radomyra Shevchenko, Vikram Singh, Mia Specht, Claudia Christine Stephan, Jin-Song von Storch, Raphaela Vogel, Christian Wengel, Marius Winkler, Florian Ziemen, Jochem Marotzke, and Bjorn Stevens
+
+Geosci. Model Dev., 16, 779–811, https://doi.org/10.5194/gmd-16-779-2023,https://doi.org/10.5194/gmd-16-779-2023, 2023
+
+Short summary
+
+Short summary
+
+Models of the Earth system used to understand climate and predict its change typically employ a grid spacing of about 100 km. Yet, many atmospheric and oceanic processes occur on much smaller scales. In this study, we present a new model configuration designed for the simulation of the components of the Earth system and their interactions at kilometer and smaller scales, allowing an explicit representation of the main drivers of the flow of energy and matter by solving the underlying equations.
+
+Ocean Modeling with Adaptive REsolution (OMARE; version 1.0) â refactoring the NEMO model (version 4.0.1) with the parallel computing framework of JASMIN â Part 1: Adaptive grid refinement in an idealized double-gyre case
+
+Yan Zhang, Xuantong Wang, Yuhao Sun, Chenhui Ning, Shiming Xu, Hengbin An, Dehong Tang, Hong Guo, Hao Yang, Ye Pu, Bo Jiang, and Bin Wang
+
+Geosci. Model Dev., 16, 679–704, https://doi.org/10.5194/gmd-16-679-2023,https://doi.org/10.5194/gmd-16-679-2023, 2023
+
+Short summary
+
+Short summary
+
+We construct a new ocean model, OMARE, that can carry out multi-scale ocean simulation with adaptive mesh refinement. OMARE is based on the refactorization of NEMO with a third-party, high-performance piece of middleware. We report the porting process and experiments of an idealized western-boundary current system. The new model simulates turbulent and temporally varying mesoscale and submesoscale processes via adaptive refinement. Related topics and future work with OMARE are also discussed.
+
+Monthly-scale extended predictions using the atmospheric model coupled with a slab ocean
+
+Zhenming Wang, Shaoqing Zhang, Yishuai Jin, Yinglai Jia, Yangyang Yu, Yang Gao, Xiaolin Yu, Mingkui Li, Xiaopei Lin, and Lixin Wu
+
+Geosci. Model Dev., 16, 705–717, https://doi.org/10.5194/gmd-16-705-2023,https://doi.org/10.5194/gmd-16-705-2023, 2023
+
+Short summary
+
+Short summary
+
+To improve the numerical model predictability of monthly extended-range scales, we use the simplified slab ocean model (SOM) to restrict the complicated sea surface temperature (SST) bias from a 3-D dynamical ocean model. As for SST prediction, whether in space or time, the WRF-SOM is verified to have better performance than the WRF-ROMS, which has a significant impact on the atmosphere. For extreme weather events such as typhoons, the predictions of WRF-SOM are in good agreement with WRF-ROMS.
+
+stoPET v1.0: a stochastic potential evapotranspiration generator for simulation of climate change impacts
+
+Dagmawi Teklu Asfaw, Michael Bliss Singer, Rafael Rosolem, David MacLeod, Mark Cuthbert, Edisson Quichimbo Miguitama, Manuel F. Rios Gaona, and Katerina Michaelides
+
+Geosci. Model Dev., 16, 557–571, https://doi.org/10.5194/gmd-16-557-2023,https://doi.org/10.5194/gmd-16-557-2023, 2023
+
+Short summary
+
+Short summary
+
+stoPET is a new stochastic potential evapotranspiration (PET) generator for the globe at hourly resolution. Many stochastic weather generators are used to generate stochastic rainfall time series; however, no such model exists for stochastically generating plausible PET time series. As such, stoPET represents a significant methodological advance. stoPET generate many realizations of PET to conduct climate studies related to the water balance, agriculture, water resources, and ecology.
+
+URANOS v1.0 â the Ultra Rapid Adaptable Neutron-Only Simulation for Environmental Research
+
+Markus KÃ¶hli, Martin SchrÃ¶n, Steffen Zacharias, and Ulrich Schmidt
+
+Geosci. Model Dev., 16, 449–477, https://doi.org/10.5194/gmd-16-449-2023,https://doi.org/10.5194/gmd-16-449-2023, 2023
+
+Short summary
+
+Short summary
+
+In the last decades, Monte Carlo codes were often consulted to study neutrons near the surface. As an alternative for the growing community of CRNS, we developed URANOS. The main model features are tracking of particle histories from creation to detection, detector representations as layers or geometric shapes, a voxel-based geometry model, and material setup based on color codes in ASCII matrices or bitmap images. The entire software is developed in C++ and features a graphical user interface.
+
+Combining regional mesh refinement with vertically enhanced physics to target marine stratocumulus biases as demonstrated in the Energy Exascale Earth System Model version 1
+
+Peter A. Bogenschutz, Hsiang-He Lee, Qi Tang, and Takanobu Yamaguchi
+
+Geosci. Model Dev., 16, 335–352, https://doi.org/10.5194/gmd-16-335-2023,https://doi.org/10.5194/gmd-16-335-2023, 2023
+
+Short summary
+
+Short summary
+
+Models that are used to simulate and predict climate often have trouble representing specific cloud types, such as stratocumulus, that are particularly thin in the vertical direction. It has been found that increasing the model resolution can help improve this problem. In this paper, we develop a novel framework that increases the horizontal and vertical resolutions only for areas of the globe that contain stratocumulus, hence reducing the model runtime while providing better results.
+
+Evaluation of native Earth system model output with ESMValTool v2.6.0
+
+Manuel Schlund, Birgit Hassler, Axel Lauer, Bouwe Andela, Patrick JÃ¶ckel, RÃ©mi Kazeroni, Saskia Loosveldt Tomas, Brian Medeiros, Valeriu Predoi, StÃ©phane SÃ©nÃ©si, JÃ©rÃ´me Servonnat, Tobias Stacke, Javier Vegas-Regidor, Klaus Zimmermann, and Veronika Eyring
+
+Geosci. Model Dev., 16, 315–333, https://doi.org/10.5194/gmd-16-315-2023,https://doi.org/10.5194/gmd-16-315-2023, 2023
+
+Short summary
+
+Short summary
+
+The Earth System Model Evaluation Tool (ESMValTool) is a community diagnostics and performance metrics tool for routine evaluation of Earth system models. Originally, ESMValTool was designed to process reformatted output provided by large model intercomparison projects like the Coupled Model Intercomparison Project (CMIP). Here, we describe a new extension of ESMValTool that allows for reading and processing native climate model output, i.e., data that have not been reformatted before.
+
+WRFâML v1.0: a bridge between WRF v4.3 and machine learning parameterizations and its application to atmospheric radiative transfer
+
+Xiaohui Zhong, Zhijian Ma, Yichen Yao, Lifei Xu, Yuan Wu, and Zhibin Wang
+
+Geosci. Model Dev., 16, 199–209, https://doi.org/10.5194/gmd-16-199-2023,https://doi.org/10.5194/gmd-16-199-2023, 2023
+
+Short summary
+
+Short summary
+
+More and more researchers use deep learning models to replace physics-based parameterizations to accelerate weather simulations. However, embedding the ML models within the weather models is difficult as they are implemented in different languages. This work proposes a coupling framework to allow ML-based parameterizations to be coupled with the Weather Research and Forecasting (WRF) model. We also demonstrate using the coupler to couple the ML-based radiation schemes with the WRF model.
+
+The Euro-Mediterranean Center on Climate Change (CMCC) decadal prediction system
+
+Dario NicolÃ¬, Alessio Bellucci, Paolo Ruggieri, Panos J. Athanasiadis, Stefano Materia, Daniele Peano, Giusy Fedele, Riccardo HÃ©nin, and Silvio Gualdi
+
+Geosci. Model Dev., 16, 179–197, https://doi.org/10.5194/gmd-16-179-2023,https://doi.org/10.5194/gmd-16-179-2023, 2023
+
+Short summary
+
+Short summary
+
+Decadal climate predictions, obtained by constraining the initial condition of a dynamical model through a truthful estimate of the observed climate state, provide an accurate assessment of the near-term climate and are useful for informing decision-makers on future climate-related risks. The predictive skill for key variables is assessed from the operational decadal prediction system compared with non-initialized historical simulations so as to quantify the added value of initialization.
+
+Climate impacts of parameterizing subgrid variation and partitioning of land surface heat fluxes to the atmosphere with the NCAR CESM1.2
+
+Ming Yin, Yilun Han, Yong Wang, Wenqi Sun, Jianbo Deng, Daoming Wei, Ying Kong, and Bin Wang
+
+Geosci. Model Dev., 16, 135–156, https://doi.org/10.5194/gmd-16-135-2023,https://doi.org/10.5194/gmd-16-135-2023, 2023
+
+Short summary
+
+Short summary
+
+All global climate models (GCMs) use the grid-averaged surface heat fluxes to drive the atmosphere, and thus their horizontal variations within the grid cell are averaged out. In this regard, a novel scheme considering the variation and partitioning of the surface heat fluxes within the grid cell is developed. The scheme reduces the long-standing rainfall biases on the southern and eastern margins of the Tibetan Plateau. The performance of key variables at the global scale is also evaluated.
+
+Accelerated photosynthesis routine in LPJmL4
+
+Jenny Niebsch, Werner von Bloh, Kirsten Thonicke, and Ronny Ramlau
+
+Geosci. Model Dev., 16, 17–33, https://doi.org/10.5194/gmd-16-17-2023,https://doi.org/10.5194/gmd-16-17-2023, 2023
+
+Short summary
+
+Short summary
+
+The impacts of climate change require strategies for climate adaptation. Dynamic global vegetation models (DGVMs) are used to study the effects of multiple processes in the biosphere under climate change. There is a demand for a better computational performance of the models. In this paper, the photosynthesis model in the Lund–Potsdam–Jena managed Land DGVM (4.0.002) was examined. We found a better numerical solution of a nonlinear equation. A significant run time reduction was possible.
+
+Improving scalability of Earth system models through coarse-grained component concurrency â a case study with the ICON v2.6.5 modelling system
+
+Leonidas Linardakis, Irene Stemmler, Moritz Hanke, Lennart Ramme, Fatemeh Chegini, Tatiana Ilyina, and Peter Korn
+
+Geosci. Model Dev., 15, 9157–9176, https://doi.org/10.5194/gmd-15-9157-2022,https://doi.org/10.5194/gmd-15-9157-2022, 2022
+
+Short summary
+
+Short summary
+
+In Earth system modelling, we are facing the challenge of making efficient use of very large machines, with millions of cores. To meet this challenge we will need to employ multi-level and multi-dimensional parallelism. Component concurrency, being a function parallel technique, offers an additional dimension to the traditional data-parallel approaches. In this paper we examine the behaviour of component concurrency and identify the conditions for its optimal application.
+
+Temperature forecasting by deep learning methods
+
+Bing Gong, Michael Langguth, Yan Ji, Amirpasha Mozaffari, Scarlet Stadtler, Karim Mache, and Martin G. Schultz
+
+Geosci. Model Dev., 15, 8931–8956, https://doi.org/10.5194/gmd-15-8931-2022,https://doi.org/10.5194/gmd-15-8931-2022, 2022
+
+Short summary
+
+Short summary
+
+Inspired by the success of deep learning in various domains, we test the applicability of video prediction methods by generative adversarial network (GAN)-based deep learning to predict the 2 m temperature over Europe. Our video prediction models have skill in predicting the diurnal cycle of 2 m temperature up to 12 h ahead. Complemented by probing the relevance of several model parameters, this study confirms the potential of deep learning in meteorological forecasting applications.
+
+Pathfinder v1.0.1: a Bayesian-inferred simple carbonâclimate model to explore climate change scenarios
+
+Thomas Bossy, Thomas Gasser, and Philippe Ciais
+
+Geosci. Model Dev., 15, 8831–8868, https://doi.org/10.5194/gmd-15-8831-2022,https://doi.org/10.5194/gmd-15-8831-2022, 2022
+
+Short summary
+
+Short summary
+
+We developed a new simple climate model designed to fill a perceived gap within the existing simple climate models by fulfilling three key requirements: calibration using Bayesian inference, the possibility of coupling with integrated assessment models, and the capacity to explore climate scenarios compatible with limiting climate impacts. Here, we describe the model and its calibration using the latest data from complex CMIP6 models and the IPCC AR6, and we assess its performance.
+
+Inclusion of a cold hardening scheme to represent frost tolerance is essential to model realistic plant hydraulics in the Arcticâboreal zone in CLM5.0-FATES-Hydro
+
+Marius S. A. Lambert, Hui Tang, Kjetil S. Aas, Frode Stordal, Rosie A. Fisher, Yilin Fang, Junyan Ding, and Frans-Jan W. Parmentier
+
+Geosci. Model Dev., 15, 8809–8829, https://doi.org/10.5194/gmd-15-8809-2022,https://doi.org/10.5194/gmd-15-8809-2022, 2022
+
+Short summary
+
+Short summary
+
+In this study, we implement a hardening mortality scheme into CTSM5.0-FATES-Hydro and evaluate how it impacts plant hydraulics and vegetation growth. Our work shows that the hydraulic modifications prescribed by the hardening scheme are necessary to model realistic vegetation growth in cold climates, in contrast to the default model that simulates almost nonexistent and declining vegetation due to abnormally large water loss through the roots.
+
+Implementation and evaluation of the GEOS-Chem chemistry module version 13.1.2 within the Community Earth System Model v2.1
+
+Thibaud M. Fritz, Sebastian D. Eastham, Louisa K. Emmons, Haipeng Lin, Elizabeth W. Lundgren, Steve Goldhaber, Steven R. H. Barrett, and Daniel J. Jacob
+
+Geosci. Model Dev., 15, 8669–8704, https://doi.org/10.5194/gmd-15-8669-2022,https://doi.org/10.5194/gmd-15-8669-2022, 2022
+
+Short summary
+
+Short summary
+
+We bring the state-of-the-science chemistry module GEOS-Chem into the Community Earth System Model (CESM). We show that some known differences between results from GEOS-Chem and CESM's CAM-chem chemistry module may be due to the configuration of model meteorology rather than inherent differences in the model chemistry. This is a significant step towards a truly modular Earth system model and allows two strong but currently separate research communities to benefit from each other's advances.
+
+Assessment of JSBACHv4.30 as a land component of ICON-ESM-V1 in comparison to its predecessor JSBACHv3.2 of MPI-ESM1.2
+
+Rainer Schneck, Veronika Gayler, Julia E. M. S. Nabel, Thomas Raddatz, Christian H. Reick, and Reiner Schnur
+
+Geosci. Model Dev., 15, 8581–8611, https://doi.org/10.5194/gmd-15-8581-2022,https://doi.org/10.5194/gmd-15-8581-2022, 2022
+
+Short summary
+
+Short summary
+
+The versions of ICON-A and ICON-Land/JSBACHv4 used for this study constitute the first milestone in the development of the new ICON Earth System Model ICON-ESM. JSBACHv4 is the successor of JSBACHv3, and most of the parameterizations of JSBACHv4 are re-implementations from JSBACHv3. We assess and compare the performance of JSBACHv4 and JSBACHv3. Overall, the JSBACHv4 results are as good as JSBACHv3, but both models reveal the same main shortcomings, e.g. the depiction of the leaf area index.
+
+Importance of Ice Nucleation and Precipitation on Climate with the Parameterization of Unified Microphysics Across Scales version 1 (PUMASv1)
+
+Andrew Gettelman, Hugh Morrison, Trude Eidhammer, Katherine Thayer-Calder, Jian Sun, Richard Forbes, Zachary McGraw, Jiang Zhu, Trude Storelvmo, and John Dennis
+
+EGUsphere, https://doi.org/10.5194/egusphere-2022-980,https://doi.org/10.5194/egusphere-2022-980, 2022
+
+Short summary
+
+Short summary
+
+Clouds are a critical part of weather and climate prediction. In this work, we document updates and corrections to the description of clouds used in several Earth System Models. These updates include the ability to run the scheme on Graphics Processing Units (GPUs) and changes to the numerical description of precipitation, as well as a correction to ice number. There are big improvements in computational performance that can be achieved with GPU acceleration.
+
+Global biomass burning fuel consumption and emissions at 500 m spatial resolution based on the Global Fire Emissions Database (GFED)
+
+Dave van Wees, Guido R. van der Werf, James T. Randerson, Brendan M. Rogers, Yang Chen, Sander Veraverbeke, Louis Giglio, and Douglas C. Morton
+
+Geosci. Model Dev., 15, 8411–8437, https://doi.org/10.5194/gmd-15-8411-2022,https://doi.org/10.5194/gmd-15-8411-2022, 2022
+
+Short summary
+
+Short summary
+
+We present a global fire emission model based on the GFED model framework with a spatial resolution of 500 m. The higher resolution allowed for a more detailed representation of spatial heterogeneity in fuels and emissions. Specific modules were developed to model, for example, emissions from fire-related forest loss and belowground burning. Results from the 500 m model were compared to GFED4s, showing that global emissions were relatively similar but that spatial differences were substantial.
+
+Impact of increased resolution on the representation of the Canary upwelling system in climate models
+
+Adama Sylla, Emilia Sanchez Gomez, Juliette Mignot, and Jorge LÃ³pez-Parages
+
+Geosci. Model Dev., 15, 8245–8267, https://doi.org/10.5194/gmd-15-8245-2022,https://doi.org/10.5194/gmd-15-8245-2022, 2022
+
+Short summary
+
+Short summary
+
+Increasing model resolution depends on the subdomain of the Canary upwelling considered. In the Iberian Peninsula, the high-resolution (HR) models do not seem to better simulate the upwelling indices, while in Morocco to the Senegalese coast, the HR models show a clear improvement. Thus increasing the resolution of a global climate model does not necessarily have to be the only way to better represent the climate system. There is still much work to be done in terms of physical parameterizations.
+
+Assessing Responses and Impacts of Solar climate intervention on the Earth system with stratospheric aerosol injection (ARISE-SAI): protocol and initial results from the first simulations
+
+Jadwiga H. Richter, Daniele Visioni, Douglas G. MacMartin, David A. Bailey, Nan Rosenbloom, Brian Dobbins, Walker R. Lee, Mari Tye, and Jean-Francois Lamarque
+
+Geosci. Model Dev., 15, 8221–8243, https://doi.org/10.5194/gmd-15-8221-2022,https://doi.org/10.5194/gmd-15-8221-2022, 2022
+
+Short summary
+
+Short summary
+
+Solar climate intervention using stratospheric aerosol injection is a proposed method of reducing global mean temperatures to reduce the worst consequences of climate change. We present a new modeling protocol aimed at simulating a plausible deployment of stratospheric aerosol injection and reproducibility of simulations using other Earth system models: Assessing Responses and Impacts of Solar climate intervention on the Earth system with stratospheric aerosol injection (ARISE-SAI).
+
+Introducing the VIIRS-based Fire Emission Inventory version 0 (VFEIv0)
+
+Gonzalo A. Ferrada, Meng Zhou, Jun Wang, Alexei Lyapustin, Yujie Wang, Saulo R. Freitas, and Gregory R. Carmichael
+
+Geosci. Model Dev., 15, 8085–8109, https://doi.org/10.5194/gmd-15-8085-2022,https://doi.org/10.5194/gmd-15-8085-2022, 2022
+
+Short summary
+
+Short summary
+
+The smoke from fires is composed of different compounds that interact with the atmosphere and can create poor air-quality episodes. Here, we present a new fire inventory based on satellite observations from the Visible Infrared Imaging Radiometer Suite (VIIRS). We named this inventory the VIIRS-based Fire Emission Inventory (VFEI). Advantages of VFEI are its high resolution (~500 m) and that it provides information for many species. VFEI is publicly available and has provided data since 2012.
+
+Impact of physical parameterizations on wind simulation with WRF V3.9.1.1 under stable conditions at planetary boundary layer gray-zone resolution: a case study over the coastal regions of North China
+
+Entao Yu, Rui Bai, Xia Chen, and Lifang Shao
+
+Geosci. Model Dev., 15, 8111–8134, https://doi.org/10.5194/gmd-15-8111-2022,https://doi.org/10.5194/gmd-15-8111-2022, 2022
+
+Short summary
+
+Short summary
+
+A large number of simulations are conducted to investigate how different physical parameterization schemes impact surface wind simulations under stable weather conditions over the coastal regions of North China using the Weather Research and Forecasting model with a horizontal grid spacing of 0.5 km. Results indicate that the simulated wind speed is most sensitive to the planetary boundary layer schemes, followed by short-wave/long-wave radiation schemes and microphysics schemes.
+
+Advancing precipitation prediction using a new-generation storm-resolving model framework â SIMA-MPAS (V1.0): a case study over the western United States
+
+Xingying Huang, Andrew Gettelman, William C. Skamarock, Peter Hjort Lauritzen, Miles Curry, Adam Herrington, John T. Truesdale, and Michael Duda
+
+Geosci. Model Dev., 15, 8135–8151, https://doi.org/10.5194/gmd-15-8135-2022,https://doi.org/10.5194/gmd-15-8135-2022, 2022
+
+Short summary
+
+Short summary
+
+We focus on the recent development of a state-of-the-art storm-resolving global climate model and investigate how this next-generation model performs for precipitation prediction over the western USA. Results show realistic representations of precipitation with significantly enhanced snowpack over complex terrains. The model evaluation advances the unified modeling of large-scale forcing constraints and realistic fine-scale features to advance multi-scale climate predictions and changes.
+
+SURFER v2.0: a flexible and simple model linking anthropogenic CO2 emissions and solar radiation modification to ocean acidification and sea level rise
+
+Marina MartÃ­nez Montero, Michel Crucifix, Victor Couplet, Nuria Brede, and Nicola Botta
+
+Geosci. Model Dev., 15, 8059–8084, https://doi.org/10.5194/gmd-15-8059-2022,https://doi.org/10.5194/gmd-15-8059-2022, 2022
+
+Short summary
+
+Short summary
+
+We present SURFER, a lightweight model that links CO2 emissions and geoengineering to ocean acidification and sea level rise from glaciers, ocean thermal expansion and Greenland and Antarctic ice sheets. The ice sheet module adequately describes the tipping points of both Greenland and Antarctica. SURFER is understandable, fast, accurate up to several thousands of years, capable of emulating results obtained by state of the art models and well suited for policy analyses.
+
+A new bootstrap technique to quantify uncertainty in estimates of ground surface temperature and ground heat flux histories from geothermal data
+
+Francisco JosÃ© Cuesta-Valero, Hugo Beltrami, Stephan Gruber, Almudena GarcÃ­a-GarcÃ­a, and J. Fidel GonzÃ¡lez-Rouco
+
+Geosci. Model Dev., 15, 7913–7932, https://doi.org/10.5194/gmd-15-7913-2022,https://doi.org/10.5194/gmd-15-7913-2022, 2022
+
+Short summary
+
+Short summary
+
+Inversions of subsurface temperature profiles provide past long-term estimates of ground surface temperature histories and ground heat flux histories at timescales of decades to millennia. Theses estimates complement high-frequency proxy temperature reconstructions and are the basis for studying continental heat storage. We develop and release a new bootstrap method to derive meaningful confidence intervals for the average surface temperature and heat flux histories from any number of profiles.
+
+Modeling the topographic influence on aboveground biomass using a coupled model of hillslope hydrology and ecosystem dynamics
+
+Yilin Fang, L. Ruby Leung, Charles D. Koven, Gautam Bisht, Matteo Detto, Yanyan Cheng, Nate McDowell, Helene Muller-Landau, S. Joseph Wright, and Jeffrey Q. Chambers
+
+Geosci. Model Dev., 15, 7879–7901, https://doi.org/10.5194/gmd-15-7879-2022,https://doi.org/10.5194/gmd-15-7879-2022, 2022
+
+Short summary
+
+Short summary
+
+We develop a model that integrates an Earth system model with a three-dimensional hydrology model to explicitly resolve hillslope topography and water flow underneath the land surface to understand how local-scale hydrologic processes modulate vegetation along water availability gradients. Our coupled model can be used to improve the understanding of the diverse impact of local heterogeneity and water flux on nutrient availability and plant communities.
+
+Impacts of the ice-particle size distribution shape parameter on climate simulations with the Community Atmosphere Model Version 6 (CAM6)
+
+Wentao Zhang, Xiangjun Shi, and Chunsong Lu
+
+Geosci. Model Dev., 15, 7751–7766, https://doi.org/10.5194/gmd-15-7751-2022,https://doi.org/10.5194/gmd-15-7751-2022, 2022
+
+Short summary
+
+Short summary
+
+The two-moment bulk cloud microphysics scheme used in CAM6 was modified to consider the impacts of the ice-crystal size distribution shape parameter (Î¼i). After that, how the Î¼i impacts cloud microphysical processes and then climate simulations is clearly illustrated by offline tests and CAM6 model experiments. Our results and findings are useful for the further development of Î¼i-related parameterizations.
+
+A modeling framework to understand historical and projected ocean climate change in large coupled ensembles
+
+Yona Silvy, ClÃ©ment Rousset, Eric Guilyardi, Jean-Baptiste SallÃ©e, Juliette Mignot, Christian EthÃ©, and Gurvan Madec
+
+Geosci. Model Dev., 15, 7683–7713, https://doi.org/10.5194/gmd-15-7683-2022,https://doi.org/10.5194/gmd-15-7683-2022, 2022
+
+Short summary
+
+Short summary
+
+A modeling framework is introduced to understand and decompose the mechanisms causing the ocean temperature, salinity and circulation to change since the pre-industrial period and into 21st century scenarios of global warming. This framework aims to look at the response to changes in the winds and in heat and freshwater exchanges at the ocean interface in global climate models, throughout the 1850–2100 period, to unravel their individual effects on the changing physical structure of the ocean.
+
+TriCCo v1.1.0 â a cubulation-based method for computing connected components on triangular grids
+
+Aiko Voigt, Petra Schwer, Noam von Rotberg, and Nicole Knopf
+
+Geosci. Model Dev., 15, 7489–7504, https://doi.org/10.5194/gmd-15-7489-2022,https://doi.org/10.5194/gmd-15-7489-2022, 2022
+
+Short summary
+
+Short summary
+
+In climate science, it is helpful to identify coherent objects, for example, those formed by clouds. However, many models now use unstructured grids, which makes it harder to identify coherent objects. We present a new method that solves this problem by moving model data from an unstructured triangular grid to a structured cubical grid. We implement the method in an open-source Python package and show that the method is ready to be applied to climate model data.
+
+Estimation of missing building height in OpenStreetMap data: a French case study using GeoClimate 0.0.1
+
+JÃ©rÃ©my Bernard, Erwan Bocher, Elisabeth Le Saux Wiederhold, FranÃ§ois Leconte, and ValÃ©ry Masson
+
+Geosci. Model Dev., 15, 7505–7532, https://doi.org/10.5194/gmd-15-7505-2022,https://doi.org/10.5194/gmd-15-7505-2022, 2022
+
+Short summary
+
+Short summary
+
+OpenStreetMap is a collaborative project aimed at creaing a free dataset containing topographical information. Since these data are available worldwide, they can be used as standard data for geoscience studies. However, most buildings miss the height information that constitutes key data for numerous fields (urban climate, noise propagation, air pollution). In this work, the building height is estimated using statistical modeling using indicators that characterize the building's environment.
+
+The Moist Quasi-Geostrophic Coupled Model: MQ-GCM 2.0
+
+Sergey Kravtsov, Ilijana Mastilovic, Andrew McC. Hogg, William K. Dewar, and Jeffrey R. Blundell
+
+Geosci. Model Dev., 15, 7449–7469, https://doi.org/10.5194/gmd-15-7449-2022,https://doi.org/10.5194/gmd-15-7449-2022, 2022
+
+Short summary
+
+Short summary
+
+Climate is a complex system whose behavior is shaped by multitudes of processes operating on widely different spatial scales and timescales. In hierarchical modeling, one goes back and forth between highly idealized process models and state-of-the-art models coupling the entire range of climate subsystems to identify specific phenomena and understand their dynamics. The present contribution highlights an intermediate climate model focussing on midlatitude ocean–atmosphere interactions.
+
+Pace v0.1: A Python-based Performance-Portable Implementation of the FV3 Dynamical Core
+
+Johann Dahm, Eddie Davis, Florian Deconinck, Oliver Elbert, Rhea George, Jeremy McGibbon, Tobias Wicky, Elynn Wu, Christopher Kung, Tal Ben-Nun, Lucas Harris, Linus Groner, and Oliver Fuhrer
+
+EGUsphere, https://doi.org/10.5194/egusphere-2022-943,https://doi.org/10.5194/egusphere-2022-943, 2022
+
+Short summary
+
+Short summary
+
+It is hard for scientists to write efficient code which runs fast on all kinds of supercomputers. They like writing Python because it is easier to read and use. We re-wrote a Fortran code that simulates weather and climate into Python. The Python code re-writes itself to a much faster language to run on either normal processors or graphics cards. On one big computer system, our code is 3.5–4x faster on its graphics cards than the original code is on its processors.
+
+Transport parameterization of the Polar SWIFT model (version 2)
+
+Ingo Wohltmann, Daniel Kreyling, and Ralph Lehmann
+
+Geosci. Model Dev., 15, 7243–7255, https://doi.org/10.5194/gmd-15-7243-2022,https://doi.org/10.5194/gmd-15-7243-2022, 2022
+
+Short summary
+
+Short summary
+
+The study evaluates the performance of the Data Assimilation Research Testbed (DART), equipped with the recently added forward operator Radiative Transfer for TOVS (RTTOV), in assimilating FY-4A visible images into the Weather Research and Forecasting (WRF) model. The ability of the WRF-DART/RTTOV system to improve the forecasting skills for a tropical storm over East Asia and the Western Pacific is demonstrated in an Observing System Simulation Experiment framework.
+
+Analog data assimilation for the selection of suitable general circulation models
+
+Juan Ruiz, Pierre Ailliot, Thi Tuyet Trang Chau, Pierre Le Bras, ValÃ©rie Monbet, Florian SÃ©vellec, and Pierre Tandeo
+
+Geosci. Model Dev., 15, 7203–7220, https://doi.org/10.5194/gmd-15-7203-2022,https://doi.org/10.5194/gmd-15-7203-2022, 2022
+
+Short summary
+
+Short summary
+
+We present a new approach to validate numerical simulations of the current climate. The method can take advantage of existing climate simulations produced by different centers combining an analog forecasting approach with data assimilation to quantify how well a particular model reproduces a sequence of observed values. The method can be applied with different observations types and is implemented locally in space and time significantly reducing the associated computational cost.
+
+Uncertainty and sensitivity analysis for probabilistic weather and climate-risk modelling: an implementation in CLIMADA v.3.1.0
+
+Chahan M. Kropf, Alessio Ciullo, Laura Otth, Simona Meiler, Arun Rana, Emanuel Schmid, Jamie W. McCaughey, and David N. Bresch
+
+Geosci. Model Dev., 15, 7177–7201, https://doi.org/10.5194/gmd-15-7177-2022,https://doi.org/10.5194/gmd-15-7177-2022, 2022
+
+Short summary
+
+Short summary
+
+Mathematical models are approximations, and modellers need to understand and ideally quantify the arising uncertainties. Here, we describe and showcase the first, simple-to-use, uncertainty and sensitivity analysis module of the open-source and open-access climate-risk modelling platform CLIMADA. This may help to enhance transparency and intercomparison of studies among climate-risk modellers, help focus future research, and lead to better-informed decisions on climate adaptation.
+
+Grid refinement in ICON v2.6.4
+
+GÃ¼nther ZÃ¤ngl, Daniel Reinert, and Florian Prill
+
+Geosci. Model Dev., 15, 7153–7176, https://doi.org/10.5194/gmd-15-7153-2022,https://doi.org/10.5194/gmd-15-7153-2022, 2022
+
+Short summary
+
+Short summary
+
+This article describes the implementation of grid refinement in the ICOsahedral Nonhydrostatic (ICON) model, which has been jointly developed at several German institutions and constitutes a unified modeling system for global and regional numerical weather prediction and climate applications. The grid refinement allows using a higher resolution in regional domains and transferring the information back to the global domain by means of a feedback mechanism.
+
+Classification of tropical cyclone containing images using a convolutional neural network: performance and sensitivity to the learning dataset
+
+SÃ©bastien Gardoll and Olivier Boucher
+
+Geosci. Model Dev., 15, 7051–7073, https://doi.org/10.5194/gmd-15-7051-2022,https://doi.org/10.5194/gmd-15-7051-2022, 2022
+
+Short summary
+
+Short summary
+
+Tropical cyclones (TCs) are one of the most devastating natural disasters, which justifies monitoring and prediction in the context of a changing climate. In this study, we have adapted and tested a convolutional neural network (CNN) for the classification of reanalysis outputs (ERA5 and MERRA-2 labeled by HURDAT2) according to the presence or absence of TCs. We tested the impact of interpolation and of "mixing and matching" the training and test sets on the performance of the CNN.
+
+The ICON-A model for direct QBO simulations on GPUs (version icon-cscs:baf28a514)
+
+Marco A. Giorgetta, William Sawyer, Xavier Lapillonne, Panagiotis Adamidis, Dmitry Alexeev, Valentin ClÃ©ment, Remo Dietlicher, Jan Frederik Engels, Monika Esch, Henning Franke, Claudia Frauen, Walter M. Hannah, Benjamin R. Hillman, Luis Kornblueh, Philippe Marti, Matthew R. Norman, Robert Pincus, Sebastian Rast, Daniel Reinert, Reiner Schnur, Uwe Schulzweida, and Bjorn Stevens
+
+Geosci. Model Dev., 15, 6985–7016, https://doi.org/10.5194/gmd-15-6985-2022,https://doi.org/10.5194/gmd-15-6985-2022, 2022
+
+Short summary
+
+Short summary
+
+This work presents a first version of the ICON atmosphere model that works not only on CPUs, but also on GPUs. This GPU-enabled ICON version is benchmarked on two GPU machines and a CPU machine. While the weak scaling is very good on CPUs and GPUs, the strong scaling is poor on GPUs. But the high performance of GPU machines allowed for first simulations of a short period of the quasi-biennial oscillation at very high resolution with explicit convection and gravity wave forcing.
+
+Further improvement and evaluation of nudging in the E3SM Atmosphere Model version 1 (EAMv1): simulations of the mean climate, weather events, and anthropogenic aerosol effects
+
+Shixuan Zhang, Kai Zhang, Hui Wan, and Jian Sun
+
+Geosci. Model Dev., 15, 6787–6816, https://doi.org/10.5194/gmd-15-6787-2022,https://doi.org/10.5194/gmd-15-6787-2022, 2022
+
+Short summary
+
+Short summary
+
+This study investigates the nudging implementation in the EAMv1 model. We find that (1) revising the sequence of calculations and using higher-frequency constraining data to improve the performance of a simulation nudged to EAMv1âs own meteorology, (2) using the relocated nudging tendency and 3-hourly ERA5 reanalysis to obtain a better agreement between nudged simulations and observations, and (3) using wind-only nudging are recommended for the estimates of global mean aerosol effects.
+
+HORAYZON v1.2: an efficient and flexible ray-tracing algorithm to compute horizon and sky view factor
+
+Christian R. Steger, Benjamin Steger, and Christoph SchÃ¤r
+
+Geosci. Model Dev., 15, 6817–6840, https://doi.org/10.5194/gmd-15-6817-2022,https://doi.org/10.5194/gmd-15-6817-2022, 2022
+
+Short summary
+
+Short summary
+
+Terrain horizon and sky view factor are crucial quantities for many geoscientific applications; e.g. they are used to account for effects of terrain on surface radiation in climate and land surface models. Because typical terrain horizon algorithms are inefficient for high-resolution (< 30 m) elevation data, we developed a new algorithm based on a ray-tracing library. A comparison with two conventional methods revealed both its high performance and its accuracy for complex terrain.
+
+Cited articles

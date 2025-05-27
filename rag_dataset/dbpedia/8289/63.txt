@@ -1,0 +1,117 @@
+For background to this topic see Boolean logic
+
+Boolean logic is used in nearly every Programming Language. Computer programming is a major use of Boolean logic. It allows us to translate real world problems into computer code.
+
+C, C++, and C#[]
+
+C, C++ and C# are three different computer programming languages that use very similar syntax. We can look at how Boolean logic is used in these languages however the and, or, and not operators are represented by different symbols to those used in mathematics.
+
+Operators[]
+
+Logical operators[]
+
+logical and & (also bitwise), && (short-circuit) logical or | (also bitwise), || (short-circuit) logical negation !
+
+Comparison operators[]
+
+Operators that go well with logical operators are:
+
+equal to == less than < less than or equal to <= greater than > greater than or equal to >= not equal to !=
+
+Other operators[]
+
+ternary conditional ? :
+
+If statement[]
+
+These logical operators are used to create logical statements by beginning the statement with if.
+
+To test the values which are stored in two variables called A and B then:
+
+if(A > 5 && B < 20)
+
+If the statement is true then the program code continues on the following statement. If the logical statement is false then the code skips the next statement.
+
+This statement is read as: if A is greater than 5 and B is less than 20 then process the following line.
+
+In actual fact, if statements can only handle boolean values; either true or false
+
+Where s is a string (i.e. not boolean variable)
+
+s=="example" despite s and "example" being strings and not boolean variables, s=="example" is an equivalence so it produces an boolean value, that is why you can use it in a if statement.
+
+Even beyond programming the equivlance or the equals sign for that matter, is in itself a type of operator, it's not an arithmetical operator like addition or multiplication but a boolean operator.
+
+x and y in the equivalence x==y can be anything (within programming; restricted to possible data types or object types) but the result of x==y (where == is thought of as an operator) is a boolean; either true or false.
+
+Using Boolean Algebra to simplify code[]
+
+Remember that in arithmetic, the binary operators + {\displaystyle +} and × {\displaystyle \times} and their inverses − {\displaystyle -} and ÷ {\displaystyle \div} take in two inputs and output a value.
+
+In Boolean algebra, the equals sign itself is also an operators. Take this simple equation
+
+x = 10 {\displaystyle x=10}
+
+Neither of those are Boolean values in any sense, the LHS and RHS are an expressions, neither of these are true or false, but together with the equals sign, the equation (boolean expression) will output the boolean value, if the input x is equal than 10, then the output will be "true", if x is not 10 then it will output the value of false. You can't involve numbers directly in boolean algebra but you can involve equations.
+
+In the following, x must equal 10 and y must be 15 for the expression to out the value of true.
+
+( x = 10 ) ∧ ( y = 15 ) {\displaystyle (x=10) \and (y=15) }
+
+The following is written in Pseudocode where "==" can mean equal to = {\displaystyle =} , equivalent to ⇔ {\displaystyle \Leftrightarrow} or identical to ≡ {\displaystyle \equiv} . In a lot of languages, x=255 on its own will mean you are assigning the value 255 to variable x, sometimes they will use ":=" for assignment to make it clear.
+
+Where is x is a boolean variable and f is a procedure.
+
+If (x==true) {
+
+f();
+
+}
+
+In most programming languages it is possible to remove the "==true" because x itself is a statement. If (x) {
+
+f();
+
+}
+
+Equivalences such as "==" are the most commonly use but with knowledge of boolean algebra you do not have to use them all the time. Because of this you can simplify If (x == true and y== true) {
+
+f();
+
+}
+
+as
+
+If (x and y) {
+
+f();
+
+}
+
+Because "x and y" itself produces a boolean value.
+
+You may also use the following instead of equivalence:
+
+Greater than: >
+
+Less than: <
+
+Greater than or equal to: >= or => depending on the language.
+
+Less than or equal to: <= or =< depending on the language.
+
+Not equal to: !=
+
+The not operator may either be the exclamation mark "!" or the word "not", because of this, you don't need to write. If (x!=true) {
+
+f();
+
+} You can shorten that and just write If (!x) {
+
+f();
+
+} or If (Not x) {
+
+f();
+
+}

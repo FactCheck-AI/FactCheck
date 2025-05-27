@@ -1,0 +1,97 @@
+Answer
+
+First, clean the absorber surface with a tissue, using Umicore #2 Substrate Cleaner, acetone or methanol. Then dry the surface with another tissue. Please note that a few absorbers (Pyro-BB, 10K-W, 15K-W, 16K-W and 30K-W) cannot be cleaned with this method. Instead, simply blow off the dust with clean air or nitrogen. Don't touch these absorbers. Also, HE sensors (such as the 30(150)A-HE-17) should not be cleaned with acetone.
+
+Note: These suggestions are made without guarantee. The cleaning process may result in scratching or staining of the surface in some cases and may also change the calibration.
+
+Answer
+
+The Pyro-C sensors have a "user threshold" feature allowing the user to adjust the measurement threshold in noisy environments. Increasing the threshold will prevent triggering on noisy signals and allow accurate measurment of energy and frequency, as long as the laser pulses are larger than the noise.
+
+The trigger level can be adjusted up to 25% of full scale, however operation depends on the pulse width setting. For pulse width settings below ~0.25ms, the minimum energy that can be measured accurately is approximately 40% above the user threshold setting. Pulses below this energy level will trigger the sensor down to the user threshold level, but accuracy is compromised.
+
+For pulse width settings above ~0.25ms, accuracy is good all the way down to the threshold. If the laser pulse width is less than 1/2 the setting, the minimum energy corresponds to the setting. However, with longer laser pulse widths, the minimum energy will be higher, rising to approximately twice the user threshold level when the laser pulse width is equal to the sensor pulse width setting.
+
+It is recommended always to set the user threshold to the minimum possible setting to retain best energy accuracy in any given situation. See the user manual for further information on how to use the user threshold.
+
+Answer
+
+The problem is most probably false triggering caused by acoustic vibration. If the pulse frequency as shown on the meter jumps around, then acoustic vibration is almost certainly the problem. Pyroelectric sensors are sensitive to vibration, and they in fact detect acoustic pulses through the same physical mechanism with which they detect laser pulses. On the more sensitive scales of sensitive sensors such as the PE9 and PE10, they may be very sensitive to vibration. You can see this by setting such a sensor to a low energy scale (e.g. 2 mJ) and clapping your hand once, just above the sensor's surface; you will get a reading.
+
+The Ophir PE-C series sensors have a trigger level that can be set to above the level causing false triggering but below the level you wish to measure. You may set the user adjustable threshold to above the noise level to eliminate the false triggering. An additional solution may be to put an acoustically absorbing material such as a thin piece of soft foam plastic under the base of the sensor to damp out any vibration; acoustic noise carries primarily through the base (rather than through the air).
+
+Answer
+
+The problem is most probably acoustic vibration. Pyroelectric sensors are sensitive to vibration as well as heat. On the most sensitive scales of sensitive sensors such as the PE9 and PE10, they may be very sensitive to vibration. The PE-C series of pyroelectric sensors have an adjustable threshold so you can set the threshold to a value above the noise level but below energies you want to measure and thus eliminate false triggering. You may also try putting a soft pliable material under the base of the sensor to damp out the vibrations.
+
+Answer
+
+Yes, with certain limitations. Here are the points to be aware of:
+
+Vega, Nova II, StarLite, StarBright meters and Juno PC interface: Full support of all features
+
+All other instruments (Nova/Orion and LaserStar meters, as well as USBI, Pulsar, and Quasar PC interfaces): Support the Pyro-C sensors, except for the following features: Only 2 of the 5 pulse width settings are available.
+
+User selectable threshold is not available.
+
+In addition to the above: When using a Pyro-C sensor with the Nova (or Orion) meter, the "Nova PE-C Adapter" (Ophir p/n 7Z08272) is required.
+
+Answer
+
+The old pyro sensors and the newer PE-C sensors are almost identical. The differences between them are as follows:
+
+More compact
+
+User Threshold – minimum energy threshold (below which the sensor will not trigger) can be selected according to users' needs
+
+Measures longer pulses (up to 20ms depending on model)
+
+Has up to 5 pulse width settings as opposed to only 2 pulse width settings
+
+Disadvantages:
+
+Smaller size and therefore:
+
+May need a heat sink (P/N 7Z08267) in order to stand up to higher average powers
+
+May need a mechanical size adapter (P/N 7Z08273) if it must fit into an existing mechanical jig designed for the older models
+
+Meters and Software Support:
+
+StarLite, Juno, Vega, & Nova II fully support the Pyro-C series. Laserstar, Pulsar, USBI, Quasar, and Nova / Orion with adapter* partially support the Pyro-C series:
+
+Only 2 of the 5 pulse width settings are available
+
+Lowest measureable energy cannot be selected (no User Threshold).
+
+StarLab software supports both Pyro-C and older pyro series.
+
+*Note: The PE-C series will only operate with Nova / Orion meters with an additional adapter Ophir P/N 7Z08272 (see details in Ophir website).
+
+Wavelength Setting Names:
+
+If you have your own software for communicating with the sensor, it may be important to note that for some models, the names of the wavelength settings are a bit different between the old pyro and the new PE-C, even though they mean exactly the same thing.
+
+For example, with diffuser OUT, the settings in the PE50BB-DIF-V2 are called “<.8u” (i.e. visible, represented by a calibration point at 532nm that covers the full visible range), and “106” (i.e. 1064nm), while in the PE50BB-DIF-C these same settings are called “532” (i.e. 532nm, the calibration point for the visible) and “1064”.
+
+Answer
+
+In theory, if a beam is completely parallel and fits within the aperture of a sensor, then it should make no difference at all what the distance is. It will be the same number of photons (ignoring absorption by the air, which is negligible except in the UV below 250nm). If, nevertheless, you do see such a distance dependence, there could be one of the following effects happening:
+
+If you are using a thermal type power sensor, you might actually be measuring heat from the laser itself. When very close to the laser, the thermal sensor might be “feeling” the laser’s own heat. That would not, however, continue to have an effect at more than a few cm distance unless the light source is weak and the heat source is strong.
+
+Beam geometry – The beam may not be parallel and may be diverging. Often, the lower intensity wings of the beam have greater divergence rate than the main portion of the beam. These may be missing the sensor's aperture as the distance increases. To check that you'd need to use a profiler, or perhaps a BeamTrack PPS (Power/Position/Size) sensor.
+
+If you are measuring pulse energies with a diffuser-based pyroelectric sensor: Some users find that when they start with the sensor right up close to the laser and move it away, the readings drop sharply (typically by some 6%) over the first few cm. This is likely caused by multiple reflections between the diffuser and the laser device, which at the closest distance might be causing an incorrectly high reading. You should back off from the source by at least some 5cm, more if the beam is not too divergent.
+
+Needless to say, it’s also important to be sure to have a steady setup. A sensor held by hand could easily be moved around involuntarily, which could cause partial or complete missing of the sensor’s aperture at increasing distance, particularly for an invisible beam.
+
+Answer
+
+When logging energy measurements on a PC with the StarLab software from a Pyro sensor via either a Nova-II, or Vega, or a USB enabled StarLite meter, the timestamp for each Energy pulse measured in the log is provided entirely by the clock on the PC which has millisecond resolution. (Note: Because a timestamp provided by a multitasking Windows PC is not from a true real time system, there could be instances where the timestamp is not well synced with the actual energy pulse measurement in the log, depending on how ‘burdened’ the computer was at any particular moment.)
+
+When logging energy measurements on a PC with the StarLab software from a Pyro sensor via either a StarBright, Juno or Pulsar, each of these meters provides a precise microsecond resolution timestamp from their on-board clock.
+
+This timestamp is synced to the Energy measurement and the data is written together in the log. The precise on-board clock in the StarBright, Juno or the Pulsar is used here to determine the time differences between measurements - rather than the PC clock which is used here just to set the initial baseline time of the log. This is the best method to log Energy if timing of pulses is critical.
+
+As opposed to Pyro Energy measurements, when logging Power measurements on a PC via StarLab with either Photodiode or Thermopile sensors, where fast measurements are not required anyway, the log timestamp is provided entirely by the millisecond resolution clock on the PC when connected to any of our meters.

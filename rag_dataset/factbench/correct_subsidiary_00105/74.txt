@@ -1,0 +1,127 @@
+Analysis of Borland/Visigenic VisiBroker family
+
+by Maria Gina Sian
+
+Introduction
+
+Founded in 1983, Borland is one of the leading providers of software products for corporate application developers. It provides a family of rapid application development tools and scalable middleware technology. In the past, Borland has focused primarily on the goal of "making development easier".
+
+In 1997, Borland expanded this goal to include distributed object computing. To help reach this goal, it acquired Visigenic in 1998, which is a leading supplier of object middleware based on the CORBA standard."The joint vision will target a solution that not only sets the standard for high-performance, but will also make it as easy to create distributed, multi-tier applications as it is to create two-tier client/server applications today" [Inprise Corporate White Paper].By supporting CORBA, the VisiBroker product family is one of the tools that support this vision.
+
+Comparison Points
+
+Product Family
+
+The VisiBroker family of products consists of the following:
+
+VisiBroker for Java ORB and VisiBroker for C++ ORB - CORBA ORB for both Java and C++ environments
+
+VisiBroker Integrated Transaction Service (ITS) - Transaction solution for distributed object applications
+
+VisiBroker SSL Pack and VisiBroker Gatekeeper - Provides authentication, encryption, and network security to distributed applications
+
+VisiBroker Naming Service - Implementation of the CORBA Naming Service
+
+VisiBroker Event Service - Implementation of the CORBA Event Service
+
+VisiBroker Manager - Provides visual access to ORB information and configuration
+
+Compliance to CORBA
+
+The VisiBroker for Java ORB and for C++ ORB are fully compliant with CORBA ORB version 2.1 specification. According to Visigenics, VisiBroker is the first CORBA 2.0 ORB completely written in Java.
+
+Architecture
+
+VisiBroker has a native implementation of OMG's Internet-Inter-ORB Protocol (IIOP). This ensures the interoperability of VisiBroker objects with other ORB objects.
+
+VisiBroker supports single-threading and multi-threading. It provides two thread models for multithreaded servers: thread-per-session and thread pooling. Under the thread-per-session architecture, each new client that connects results in a new worker thread being created to serve that client. When the client disconnects, its designated worker thread is destroyed. Under the thread pooling architecture, one worker thread is assigned to a client request but only for the duration of that request, and not for the lifetime of the client connection. After the request is completed, the thread is placed in a pool of available of threads and is free to service other client requests. This architecture reduces the overhead from creating and destroying threads since threads are constantly being reused. [VisiBroker for C++ Programmer's Guide, Chapter 8 "Managing Threads and Connections"].
+
+Targeted Programming Languages and Platforms
+
+The VisiBroker ORB is available for the C++ and Java environments. Through the IIOP implementation, objects in either ORB can communicate to each other, as well as to other ORB vendor objects. VisiBroker is available in many platforms including Sun Solaris HP-UX, IBM AIX, SGI IRIX, Digital UNIX, and Windows 95/NT.
+
+Development, Administration, and Deployment
+
+The development process for a VisiBroker application is similar to most CORBA ORBs. First, you write your specifications using IDL. Then, you use the VisiBroker's IDL compiler to generate the client stub code and the server skeleteon code. For the VisiBroker for C++ ORB, you use the idl2cpp command. For the VisiBroker for Java ORB, you use the idl2java command. After running the IDL compiler, you then write the client code, which includes initializing the ORB, binding to the appropriate objects, and invoking the necessary methods. At the same time, you can also write the server code, which includes implemented the required methods and the server's main routine. Once the client code has been completed, you then compile and link it with the client stub. Similarly, you compile and link the server code with the server skeleton once the server code has been completed. Before you can run the client and the server, you also need to start the Smart Agent. Once that it started, you can start the server and run the client program. The VisiBroker ORB must be installed on every client and server machine.
+
+VisiBroker provides the following set of tools for administering the ORB during the development phase.
+
+VisiBroker Manager - provides a graphical tool for managing distributed objects [This is a separate product and is not included with the ORB.]
+
+irep - manages the Interface Repository
+
+oad - manages the Object Activation Daemon (OAD)
+
+oadutil list - lists ORB object implementation registered with the OAD
+
+oadutil reg - registers an ORB object implementation with the OAD
+
+oadutil unreg - unregisters an ORB object implementation with the OAD
+
+osagent - manages the Smart Agent
+
+osfind - reports on objects running on a given network
+
+idl2ir - allows you to populate an interface repository with interfaces defined in an IDL file
+
+idl2cpp - generates C++ stubs and skeletons from an IDL file
+
+idl2java - generates Java stubs and skeletons from an IDL file
+
+For detailed information about these tools, see Chapter 6 "Using Administration tools" in VisiBroker for C++ Installation and Administration Guide and Chapter 3, "Programming tools" in the VisiBroker for C++ Reference.
+
+Accessing CORBA Objects
+
+In order for the client program to communicate with the server object, it needs to first obtain a reference to that object. In VisiBroker, there are 3 ways to obtain an object reference. One is by invoking the bind method. This method is automatically included in your object by the IDL compiler. When the bind method is called, the ORB contacts the Smart Agent to locate an object implementation that offers the requested interface. When an object implementation is found, the ORB connects the client program to the object implementation. If the object implementation is on a separate process as the client program, the ORB creates a proxy object upon connection, which the client uses to invoke methods on. "VisiBroker automatically determines the most efficient way to establish a connection between a client program and an object implementation" [VisiBroker for C++ Programmer's Guide, Chapter 5 "Accessing distributed objects with object references"].
+
+Another way of obtaining an object reference is by stringification. VisiBroker provides an object_to_string() method that converts an object reference to a string. To convert the string to an actual object reference, the string_to_object() method can be used.
+
+A third way of obtaining an object reference is through the VisiBroker Naming Service (see Implemented CORBA Services section below).
+
+COM/CORBA Integration
+
+"Visigenics supports software bridges to enable communications between DCOM and CORBA objects. VisiBridge allows ActiveX controls implemented in Web pages, Visual Basic applications, or OLE-enabled applications to interoperate with CORBA objects. Developers using ActiveX-enabled development environments can transparently access CORBA objects over the Internet or corporate intranet without having to know CORBA" [Inprise Corporate White Paper]
+
+Implemented CORBA Services
+
+VisiBroker provides implementation of the following services:
+
+Naming Service. This service allows you to associate one or more logical names with an object implementation and store those names in a namespace. As mentioned above, the Naming Service is also one of the ways that a client program can obtain an object reference. For the main differences between locating an object implementation using the Naming Service and using the Smart Agent, see the Naming and Event Services Programmer's Guide.
+
+Event Service. This service "provides a facility that de-couples the communication between objects. It provides a supplier-consumer communications model that allows multiple supplier objects to send data asynchronously to multiple consumer objects through an event channel" [Installation and Administration Guide, Chapter 2 "VisiBroker Basics"].
+
+Transaction. The VisiBroker Integrated Transaction Service "simplifies the complexity of transaction management by integrating an essential set of services into one product--including transactions, integration with databases and legacy systems, and administration tools for managing enterprise applications." One of these services is the Transaction Service. This component is a compliant implementation of the CORBA Transaction Service, version 1.1, that manages the completion of the transaction. It works with objects at the ORB level to coordinate and manage a transaction's commit or rollback. It also interacts with an application when a transaction begins or coordinates the transaction's commit or abort across multiple objects" [ITS Administrator's Guide, Chapter 2 "VisiBroker ITS Basics"].
+
+Security. "VisiBroker's optional SSL feature uses the industry-standard Secure Sockets Layer Version 3 (SSL) protocol, developed by Netscape Communications Corporation, to establish secure connections between clients and servers" [VisiBroker for C++ SSL Pack Programmer's Guide, Chaper 2 "Getting Started with SSL"]. It provides important security features such as authentication, privacy, and integrity.
+
+Persistence. "VisiBroker allows you to implement objects that persist beyond the life of the implementation server by saving the objects to a text file, database, or object database. When an object implementation is activated, the object is initialized from the storage device and when the object is deactivated, its state is saved to the storage device" [VisiBroker for C++ Programmer's Guide, Chapter 18 "Enabling object persistence using the Object Database Activator"].
+
+Partnerships and Awards
+
+Inprise has partnerships with companies such as Netscape, Cisco, Oracle, and Novell. Inprise claims that through such partnerships, "VisiBroker has become the de facto CORBA solution" [VisiBroker 3.2 for Java and C++ Solution Sheet].
+
+VisiBroker won DBMS Magazine's 1997 Readers' Choice Award for Best Object Request Broker [Borland to Acquire Visigenic Press Release, 11/18/97]. A study by the Object Consulting Inc., which compared IONA's OTM and Inprise's ITS technology based on factors such as performance, scalability, and throughput, concluded that ITS outperforms the OTM in several factors [Object Consulting Inc. CORBA/OTS Performance].
+
+Pricing
+
+VisiBroker 3.0 for Java costs $1995 per developer on Windows and $2995 per developer on Unix. This does not include the Naming and Event services.
+
+Related References
+
+Inprise Corporation
+
+Borland
+
+Object Consulting Inc.
+
+Object Management Group
+
+Java Developer's Journal
+
+CORBA Comparison Project
+
+ORB Comparison
+
+Introduction
+
+IONA Orbix family

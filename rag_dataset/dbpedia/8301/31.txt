@@ -1,0 +1,7 @@
+Your summary is almost right but it does not reflect the essence of what mesos represents. The vision of mesosphere, the Company behind the project, is to create a "Datacenter Operating System" and the mesos is the kernel of it in analogy to the kernel of a normal OS. The API is not limited to Java, you can use C, C++, Java/Scala, or Python. If you have set-up your mesos cluster, as you describe in your question and want to use your resources, you usually do this through a framework instead of running your workload directly on it. This doesn't mean that this is complicated here is a very small example in Scala which demonstrates this. Frameworks exist for multiple popular distributed data processing systems like Apache Spark, Apache Cassandra. There are other frameworks such as Chronos a cron on data center level or Marathon which allows you to run Docker based applications.
+
+Update:
+
+Yes, mesos will take care about the placement in the cluster as that's what a kernel does -- scheduling and management of limited resources. The setup you have sketched raises several obvious questions, however.
+
+Layers below mesos: Installing mesos on CoreOS is possible but cumbersome as I think. This is not a typical scenario for running mesos -- usually it is moved to the lowest possible layer (above Ubuntu in your case). So I hope you have good reasons for running CoreOS and a hypervisor.

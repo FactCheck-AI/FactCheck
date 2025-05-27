@@ -1,0 +1,89 @@
+Writing a Python xinetd Server
+
+Yesterday I discovered the xinetd; an internet services daemon. I immediately liked the idea of writing simple services that work on stdin and stdout but that can be accessed over the internet via sockets. So, I set out to write a simple Python server that can be integrated with xinetd. Here is the server:
+
+#!/usr/bin/python
+
+import sys
+
+request = ''
+
+while True:
+
+data = sys.stdin.readline().strip()
+
+request = request + data + '<br>'
+
+if data == "":
+
+print 'HTTP/1.0 200 OK'
+
+print ''
+
+print '<html><body><p>'+request+'</p></body></html>'
+
+sys.stdout.flush()
+
+break;
+
+I am assuming that a web browser will connect to my server, the server will then 'echo' the request back to the browser allowing the browser to display the request. As you can see the input is received via stdin and output is returned via stdout.
+
+If xinetd is not already installed then you will obviously have to install it first. Since I am doing this on Ubuntu the following works for me:
+
+sudo apt-get install xinetd
+
+After installing xinetd you need to create a config file for the service. I called my service http_echo and my config file (located in /etc/xinetd.d) is named similarly; http_echo. My configuration file looks like this:
+
+service http_echo
+
+{
+
+protocol = tcp
+
+disable = no
+
+port = 9991
+
+flags = REUSE
+
+socket_type = stream
+
+wait = no
+
+user = johan
+
+server = /home/johan/code/http_echo/http_echo
+
+log_on_failure += USERID
+
+}
+
+Most of this file is quite self explanatory. Please refer to the xinetd documentation for more information.The port property should make the service run on the specified port without having to add an entry in the services file (/etc/services) . I have had to add an entry in my services file to make this setup work:
+
+http_echo 9991/tcp
+
+Then simply restart the xinetd service:
+
+sudo /etc/init.d/xinetd restart
+
+Pointing a browser to the server on the specified port (9991), will yield the pleasing results below:
+
+GET / HTTP/1.1
+
+Host: localhost:9991
+
+Connection: keep-alive
+
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/532.0 (KHTML, like Gecko) Chrome/3.0.195.33 Safari/532.0
+
+Cache-Control: max-age=0
+
+Accept: application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5
+
+Accept-Encoding: gzip,deflate,sdch
+
+Accept-Language: en-US,en;q=0.8
+
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.3
+
+And that is how simple it is to write a service in Python that runs under xinetd.

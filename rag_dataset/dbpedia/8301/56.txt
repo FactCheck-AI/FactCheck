@@ -1,0 +1,45 @@
+Apache Mesos is an open source distributed systems kernel and the distributed systems kernel for Mesosphere’s DC/OS distributed platform.
+
+Mesos Containerizers
+
+Mesos has support for containerizers for running commands and applications within isolated containers. Mesos supports Docker and its own Mesos containerizer format. The Mesos containerizer provides lightweight containerization with cgroups/namespaces isolation without actual isolation. The hab pkg export mesos command creates a mostly empty base filesystem with the application and the Chef Habitat Supervisor and packages it into a compressed tarball.
+
+Marathon Applications
+
+Marathon is a container orchestration platform for Mesos and DC/OS, handling the scheduling and deployment of applications. Marathon applications support Docker and the Mesos container formats, wrapping them in JSON metadata describing the resources needed to deploy the application. Once the application has been deployed to Marathon, it schedules it across the Mesos cluster and ensures the application is running optimally.
+
+Export to a Mesos Container and Marathon Application
+
+You can create native Mesos containers from Chef Habitat packages by following these steps:
+
+Create an interactive studio in any directory with the hab studio enter command.
+
+Install or build the Chef Habitat package from which you want to create a Marathon application, for example:
+
+$ hab pkg install yourorigin/yourpackage
+
+Run the Mesos exporter on the package.
+
+$ hab pkg export mesos yourorigin/yourpackage
+
+This will create a Mesos container-format tarball in the results directory, and also print the JSON needed to load the application into Marathon. Note that the tarball needs to be uploaded to a download location and the "uris" in the JSON need to be updated manually. This is an example of the output:
+
+{ "id": "yourorigin/yourpackage", "cmd": "/bin/id -u hab &>/dev/null || /sbin/useradd hab; /bin/chown -R hab:hab *; mount -t proc proc proc/; mount -t sysfs sys sys/;mount -o bind /dev dev/; /usr/sbin/chroot . ./init.sh start yourorigin/yourpackage", "cpus": 0.5, "disk": 0, "mem": 256, "instances": 1, "uris": [ "https://storage.googleapis.com/mesos-habitat/yourorigin/yourpackage-0.0.1-20160611121519.tgz" ] }
+
+Note that the default resource allocation for the application is very small: 0.5 units of CPU, no disk, one instance, and 256MB of memory. To change these resource allocations, pass different values to the Mesos exporter as command line options (defaults are documented with --help).
+
+From the DC/OS web interface, launch the Marathon Service.
+
+Select “Create Application”.
+
+Click on the “JSON Mode” selector and enter the JSON output of the Mesos exporter and click “Create Application”.
+
+Marathon will then deploy the application and enter the “Running” status.
+
+Debugging
+
+You can get to the output from the running application by clicking on the “Marathon” service from the DC/OS “Services” tab. Select the application and the “Log Viewer” and choose either the “Error” or “Output” to see stderr and stdout respectively. If you have SSH access into the nodes, the Mesos container directories are beneath /var/lib/mesos/slave/slaves.
+
+Future Enhancements
+
+This is a basic integration, there are many improvements yet to be made. Here are a few examples:

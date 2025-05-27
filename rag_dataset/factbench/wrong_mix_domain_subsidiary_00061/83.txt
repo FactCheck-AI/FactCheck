@@ -1,0 +1,41 @@
+View the status of the actual deployment operation:
+
+The HTTP POST request that you used in the previous step returned the operation name in the name field, which you use with the GET method of the apps.operations collection to check the status of the deployment operation.
+
+For example, if the name field of the response is:
+
+"name": "apps/[MY_PROJECT_ID]/operations/89729825-ef1f-4ffa-b3e3-e2c25eb66a85"
+
+Then you send the following HTTP GET request:
+
+GET https://appengine.googleapis.com/v1/apps/[MY_PROJECT_ID]/operations/89729825-ef1f-4ffa-b3e3-e2c25eb66a85
+
+Example cURL command:
+
+curl -H "Authorization: Bearer [MY_ACCESS_TOKEN]" https://appengine.googleapis.com/v1/apps/[MY_PROJECT_ID]/operations/89729825-ef1f-4ffa-b3e3-e2c25eb66a85
+
+Where [MY_ACCESS_TOKEN] is your access token and [MY_PROJECT_ID] is the ID of project where you deployed the version.
+
+Example response:
+
+{ "done": true, "metadata": { "@type": "type.googleapis.com/google.appengine.v1.OperationMetadataV1", "endTime": "2015-05-29T17:13:20.424Z", "insertTime": "2015-05-29T17:12:44.679Z", "method": "google.appengine.v1.Versions.CreateVersion", "target": "apps/[MY_PROJECT_ID]/services/default/versions/v1", "user": "me@example.com" }, "name": "apps/[MY_PROJECT_ID]/operations/89729825-ef1f-4ffa-b3e3-e2c25eb66a85", "response": { "@type": "type.googleapis.com/google.appengine.v1.Version", "creationTime": "2015-05-29T17:12:46.000Z", "deployer": "me@example.com", "id": "v1", "name": "apps/[MY_PROJECT_ID]/services/default/versions/v1", "runtime": "python27", "servingStatus": "SERVING", "threadsafe": true, } }
+
+To learn more about polling long running operations, see the google.longrunning RPC reference.
+
+Verify that the version was created in your App Engine application:
+
+To view details about the version, you use the GET method of the apps.services.versions collection. You must specify the version that you deployed in the HTTP GET request, for example:
+
+GET https://appengine.googleapis.com/v1/apps/[MY_PROJECT_ID]/services/default/versions/v1
+
+Example cURL command:
+
+curl -H "Authorization: Bearer [MY_ACCESS_TOKEN]" https://appengine.googleapis.com/v1/apps/[MY_PROJECT_ID]/services/default/versions/v1
+
+Where [MY_ACCESS_TOKEN] is your access token and [MY_PROJECT_ID] is the ID of project where you deployed the version.
+
+Example response:
+
+{ "creationTime": "2015-05-29T17:12:46.000Z", "deployer": "me@example.com", "deployment": { "files": { "my-python-app.py": { "sha1Sum": "7cffbdaa9fcfa46e5e58269bfe336dd815de0566", "sourceUrl": "https://storage.googleapis.com/[YOUR_BUCKET_ID]/my-application/logo.jpg", }, "logo.jpg": { "sha1Sum": "13f7ea1e24f7cd2de5c66660525f2b509da37c14", "sourceUrl": "https://storage.googleapis.com/[YOUR_BUCKET_ID]/my-application/my-python-app.py" } } }, "handlers": [ { "authFailAction": "AUTH_FAIL_ACTION_REDIRECT", "login": "LOGIN_OPTIONAL", "script": { "scriptPath": "my-python-app.application", }, "securityLevel": "SECURE_OPTIONAL", "urlRegex": "/.*" } ] "id": "v1", "name": "apps/[MY_PROJECT_ID]/services/default/versions/v1", "runtime": "python27", "servingStatus": "SERVING", "threadsafe": true, }
+
+GET https://appengine.googleapis.com/v1/apps/[MY_PROJECT_ID]/services/default/versions/v1?view=FULL

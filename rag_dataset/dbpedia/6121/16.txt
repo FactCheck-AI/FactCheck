@@ -1,0 +1,61 @@
+I just took a double stacked PCB apart for cleaning, and when I reconnected the ribbon connectors, I realised that I had them back to front. The PCB was working before about with GFX glitches but now I get nothing. Have I killed it. I’m beside myself.
+
+roostaar2020-02-25 02:04:18
+
+It’s a a double dragon PCB
+
+I did a continuity test on the ribbon pins when connected in either orientation, and the continuity is exactly the same. So, at least it cannot be that?
+
+I was ultra careful when I took the PCB apart for cleaning. I used switch cleaner and 99.9% IPA. Lots of both. And gentle toothbrush/cotton buds.
+
+I let the boards dry for 4 days too before returning.
+
+When I connect the board to my Jamma cabinet, I get black screen, no sound at all. And weirdly, my 12v rail seems to stop working. My marquee has 12v LED powered from the arcade PSU. These do not light when DD PCB is connected.
+
+Prior to cleaning, DD did briefly work to test, no sound though (PSU does have the required -5v) and many GFX glitches. After seeing that it powered on ok, I went straight to cleaning the board.
+
+I have tried a different Jamma PCB in the cab and it works fine. Sound, picture and LED marquee working.
+
+What can I have done???
+
+You probably haven't done anything these things can happen anytime. I'd try disconnecting your 12 volt from the power supply and see if the the board boots up without it. I think the 12volt is only used in the sound amp circuit so if you say the sound was not working maybe something's blown there shorting to ground possibly compromising the power supply.
+
+Is it an original or a bootleg? If you do get it to boot up maybe a few pics of the graphics issues as these invariably are down to TTL or ram failure unfortunately on this PCB set . Post a photo of the PCB if you can too.
+
+On DD it could well be the ribbon cables or try pushing down a little on the sides of the pcb to see if there is some flexibility in connections from being stored horizontally for a long time.
+
+As others have said it may have already been in a bad state and would have stopped working on the next couple of power cycles anyway, even without cleaning. I did have a DD which needed to be powered on for a number of minutes before showing signs of life when not used for a while.
+
+jimmerd2020-02-25 08:32:33
+
+Yeah that's correct but I think the actual amp uses 12volt to power it,you could probably trace the 12volt from the edge connector and find it may just go through a couple of caps and then to the amp. I think much of the actual sound uses the -5volt to avoid interference. I think tbh that amp has probably blown internally shorting the 12v to ground and that should really shut your PSU down,it could be one of the electrolytic caps on the 12volt line too. Either way I'd hope it would boot to what you had before if the 12volt was removed from the board, can't remember if the 12volt went through a couple of transistors beyond pin 28 of the edge connector on the edge of the board to drive the coin meters or not but if so they could short out too but again without the 12volt they shouldn't interfere with the boot up
+
+Unless I've missed something, from the schematics it looks like the 12v JUST does the Audio Amp, and the -5v JUST does the audio opamps (dual voltage 5/-5v), and not checked by the RESET, so neither would stop the game running.
+
+With the Jamma edge connector removed, check continuity between 12v and GND pins, as you don't want to destroy your PSU.
+
+To start with, try some basic tests like, make sure that there's a good 5v on the IC's on the board, check your CPU is receiving a clock, see what the RESET line is doing on the CPU, and see if Video Sync output is pulsing.
+
+Thank you all for your input guys!
+
+I finally got a moment to check over the board.
+
+5v & GND we’re indeed shorting at the edge connector.
+
+I disconnected the two boards from each other and the short went away.
+
+I had also used non-insulated metal standoffs on either side of the lower board , when I took these off, the short went away with both boards connected.
+
+The PCB is now working on the cabinet! Yay! I felt like crying last night. So glad I haven’t killed it. I would never have forgiven myself.
+
+The sound was only disabled for demo mode (despite me thinking I had got the DIPs set otherwise) and the sound works great in the game.
+
+Just played all the way through. Have got background glitches in vertical bands throughout most of the game and very noticeable on the title screen.
+
+What is the best way to upload photos here? Have only been accessing on my phone so far.
+
+Thank you again chaps. Massive respect to all.
+
+This fault looks familiar. Could be a ROM or ROM socket issue. Remove one ROM at a time from the PCB on the bottom board. See if the graphics problem alters in any way as you remove and replace them one at a time. Start in the bottom corner and you’ll get an idea of which ROM is doing what. Be careful not to put the ROMs back in the wrong orientation. If you remove a ROM and it makes no difference to the image you may have found your fault. That’s what I’d try if you don’t have an EPROM programmer.
+
+Good luck.jonhughes2020-02-26 07:05:02

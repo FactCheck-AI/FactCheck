@@ -1,0 +1,43 @@
+I'm attempting to add suricata package to my OpenWrt build. I've added the package/network/suricata Makefile (see below) to the source tree.
+
+make package/network/suricata/check V=sc FIXUP=1 and make package/network/suricate/download both succeed without issues or errors
+
+However, on the full compile, or make package/network/suricata/compile, I get the following error:
+
+checking for ./suricata-update/setup.py... configure: error: cannot check for file existence when cross compiling
+
+Any suggestions on what I can do to resolve this?
+
+package/network/suricata/Makefile:
+
+# # Copyright (C) 2006-2015 OpenWrt.org # # This is free software, licensed under the GNU General Public License v2. # See /LICENSE for more information. # include $(TOPDIR)/rules.mk PKG_NAME:=suricata PKG_VERSION:=4.1.4 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz PKG_SOURCE_URL:=https://www.openinfosecfoundation.org/download/ PKG_HASH:=2da50d91f92adf8b1af930f388361f76424420b88f553f610e2780e4240f2009 PKG_FIXUP:=autoreconf PKG_FIXUP:=patch-libtool PKG_FIXUP:=gettext-version PKG_INSTALL:=1 include $(INCLUDE_DIR)/package.mk include $(INCLUDE_DIR)/nls.mk define Package/suricata SUBMENU:=Firewall SECTION:=net CATEGORY:=Network DEPENDS:=+libyaml +libpcap +libpcre +jansson +libnetfilter-queue +libmagic +libnfnetlink +libpthread +libnss +zlib $(ICONV_DEPENDS) TITLE:=OISF Suricata IDS URL:=https://www.openinfosecfoundation.org/ endef CONFIGURE_ARGS = \ --prefix="/usr" \ --sysconfdir="/etc" \ --enable-nfqueue \ --enable-gccprotect \ --enable-debug \ --enable-pie \ --host=$(ARCH) define Package/suricata/install $(INSTALL_DIR) $(1)/usr/bin $(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/suricata $(1)/usr/bin/suricata $(INSTALL_DIR) $(1)/usr/lib $(CP) $(PKG_INSTALL_DIR)/usr/lib/* $(1)/usr/lib/ $(INSTALL_DIR) $(1)/usr/lib/pkgconfig $(INSTALL_DIR) $(1)/etc/suricata $(CP) \ $(PKG_BUILD_DIR)/suricata.yaml \ $(PKG_BUILD_DIR)/classification.config \ $(PKG_BUILD_DIR)/threshold.config \ $(PKG_BUILD_DIR)/reference.config \ $(1)/etc/suricata/ $(INSTALL_DIR) $(1)/etc/suricata/rules $(CP) $(PKG_BUILD_DIR)/rules/*.rules $(1)/etc/suricata/rules/ $(INSTALL_DIR) $(1)/etc/init.d $(INSTALL_BIN) ./files/suricata.init $(1)/etc/init.d/suricata $(INSTALL_DIR) $(1)/etc/suricata $(CP) ./files/suricata.yaml $(1)/etc/suricata/ endef $(eval $(call BuildPackage,suricata))
+
+I found this, may help; https://github.com/seanlinmt/suricata
+
+I am interested about all this...
+
+There were two PRs to add Suricata into official OpenWrt packages repository, but the first one couldn't be accepted as there was no response to the feedback, which was provided and the last one has the same issues, but also as was pointed out by @anon45274024 Suricata for their next release will be using Rust.
+
+More details can be found in this PR:
+
+Thanks all. I'll keep this in mind.
+
+I've opened Bug 3073 with Suricata.
+
+While I see the PR @Pepe it seems like it was x86_64 throughout. Mine is trying to be crossed to mips64, which of course complicates things! Even then, the commenter had to add a --disable-suricata-update flag. That helped me, but not having the updater made me feel less than stellar.
+
+I will take heed of the requests in that commit though! Thank you for pointing it out.
+
+Well, I managed to get suricata to compile, although because of the missing cross-compile checks in the source, I had to use --disable-suricata-update and --disable-rust. Now to test it in a live environment and see what happens.
+
+I'm using 4.1.4, so the requirement for Rust is looming, but not here yet for what I'm trying to do. I'd love to see a rust-lang and cargo package, but I'm not sure I'm up to creating it myself just yet.
+
+Suricata installs, but I'm getting an error when starting it..
+
+root@OpenWrt:/etc/suricata# suricata -c /etc/suricata/suricata.yaml -s /etc/suricata/rules/signatures.rules -i eth0 -vv 8/7/2019 -- 07:12:03 - <Notice> - This is Suricata version 4.1.4 RELEASE 8/7/2019 -- 07:12:03 - <Info> - CPUs/cores online: 2 8/7/2019 -- 07:12:03 - <Error> - [ERRCODE: SC_ERR_MAGIC_LOAD(197)] - magic_load failed: could not find any valid magic files!
+
+libmagic is set as a dependency for my Suricata build, so it is also installed. However, no .mgc file is on the system.
+
+root@OpenWrt:/usr/lib# ls *mag lrwxrwxrwx 1 root root 17 Jan 1 1970 libmagic.so.1 -> libmagic.so.1.0.0 -rwxr-xr-x 1 root root 145424 Jul 2 22:32 libmagic.so.1.0.0
+
+I'm working my way through it, and will be going to the Suricata resources since OpenWrt doesn't have a Suricata package, but any help I can get will certainly be helpful. If nothing else, if I can get it working, I'll toss the package on my github and see if anyone else wants it. At least for now, it seems to be trying to work

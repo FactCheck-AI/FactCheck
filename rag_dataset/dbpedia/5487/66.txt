@@ -1,0 +1,157 @@
+1. What is Tape Backup?
+
+In the on-premises world, tape storage is a system in which magnetic tape is used as a recording media to store data. With rapidly growing data volumes, tape storage is the most suitable system for data storage requiring large capacity in the on-premises systems. Tape storage is not used only for backup in case of system failure, but also for archiving data for long-term storage.
+
+Tape backup is a term typically applied to old/outdated technologies, but tapes are still being used to back up the data. Many large enterprises like banks, hospitals, telecommunication organizations rely on tapes to ensure important data is securely stored for long term usage. Storing data on tapes is a time consuming process as it requires more time to read and write from/into tapes, involving human intervention and requires storage facility.
+
+2. Business Background
+
+Customer Scenario: The customer’s existing enterprise data warehouse is connected with tape systems –
+
+Decommissioned Datawarehouse tapes (Decommissioned Teradata Platform): Holds datasets from the database that holds legacy customer data which are marked for data retention. The typical cold back up frequency is weekly for all datasets. Data stored in tapes is static post the data warehouse platform decommission and is stored in Teradata readable format.
+
+Current Teradata Platform: Purpose of back up is operational recovery or to hold historical data for dashboard summary reports. The back up process is a weekly cold back up, each week the complete database image is backed up. For recovery, only latest database image is used. Data is in Teradata readable format.
+
+3. Business Requirements
+
+The recovery process is largely manual and requires coordination among data centres (Tape mounting), DBA (Recovery). The tapes hold data that is in Teradata native format - ARC. No viable alternate tool or solution is available for read/recover/format conversion. The Teradata Platform is capacity constrained - so a physical recovery to the database must be in chunks and immediately export to an alternate storage.
+
+Teradata Archive format: The archive format used by Teradata is a proprietary format called ARC, which stands for Archive.
+
+The ARC file format is optimised for high-speed data retrieval and storage efficiency, with a focus on compressing and compacting the data for long-term storage.
+
+The archive format is designed to ensure that archived data can be restored quickly and efficiently when needed, while minimizing the storage space required for long-term retention.
+
+4. Solution Approach
+
+4.1 Tape Data Extraction to NFS (Network File System)
+
+The recovery will use as is recovery process from Tape and can be performed in chunks of 5 TB.
+
+To load Teradata archive files from tapes to the Teradata database, you can use the Teradata ARC utility.
+
+The ARC utility provides a set of tools for managing archive data, including backup, restore, and data migration.
+
+A chunk of objects can be read/recovered into the Teradata platform.
+
+Once successfully recovered, they can be exported to a secured NFS in Parquet format.
+
+To export data from Teradata database, you can use the Teradata Export utility, which is a command-line tool that allows you to export data from tables in Teradata database to external files or databases.
+
+Parquet format is chosen over Text Format as delimited format loses any text formatting that has been applied and will fail if there are special characters or the delimiter appears within the data.
+
+The process will be repeated until all datasets are exported to the secured NFS. Possible approaches to perform one time migration tape data to Azure.
+
+4.2 Tape Data Movement
+
+Once the Teradata Tape data is exported to the NFS Drive, the below options were considered to move the tape data to Azure.
+
+Azure Data Box Family (Offline mode)
+
+Azure Express Route (Online mode)
+
+Azure Import/Export Job (Online mode)
+
+Az Copy (Online mode)
+
+Azure Data Factory (Online mode)
+
+The decision on the approach to upload the Teradata archive files to Azure - whether to go with Azure Data Box or transfer data over internet or Azure Express route is really dependent on the time it takes to transfer the data. For example, a 100TB export, over a 70MBps connection with 100% bandwidth at all times, would take ~140 days to upload the data. The decision point can be dependent on the ETA for the transfer of data - say if over 10 days to upload the data should make use of the Azure Databox service, the number of days can be dependent on how much time the customer can allocate for the data movement.
+
+The focus of this blog is to look at an offline data transfer mode using Azure Databox family due to the large volume of tape archives to be migrated to cloud.
+
+4.3 Azure Data Box Family
+
+These are the options for offline data transfer.
+
+4.3.1 Azure Data Box
+
+Customer is provided a storage device with a maximum of usable storage capacity of 80 TB by Microsoft.
+
+Data Box can be quickly set up via a local web UI.
+
+To import data into Azure, customer copies tape data onto the storage device and ship it back to Azure data centre. From Azure data centre, data on the storage device is uploaded to Azure.
+
+Supports Azure Blobs, files, managed disks and ADLS Gens accounts.
+
+Suitable for one time migration and initial bulk transfer.
+
+4.3.2 Azure Data Box Disk
+
+Customer is provided with 1 to 5 solid-state disks (SSDs) by Microsoft. Each disk is encrypted and has a storage capacity of 8TB.
+
+Data Box Disk can be configured, connect and unlock via the Azure portal.
+
+To import data into Azure, customer copies tape data onto the disks and ship it back to Azure data centre. From Azure data centre, data on disks is uploaded to Azure.
+
+Supports Azure Blobs, files, managed disks and ADLS Gens accounts.
+
+Suitable for one time migration, incremental transfer and periodic uploads.
+
+4.3.3 Azure Data Box Heavy
+
+Customer is provided a Data Box Heavy device with a maximum of usable storage capacity of 800 TB by Microsoft.
+
+Data Box Heavy can be quickly set up via a local web UI.
+
+To import data into Azure, customer copies tape data onto the storage device and ship it back to Azure data centre. From Azure data centre, data on the storage device is uploaded to Azure.
+
+Supports Azure Blobs, files, managed disks and ADLS Gens accounts.
+
+Suitable for one time migration, initial bulk transfer and periodic uploads.
+
+4.4 Azure ExpressRoute
+
+Azure ExpressRoute allows customers to create private connection between their on-premises infrastructure and Azure infrastructure. Customers can transfer data over a secure and dedicated connection because their data does not travel over the public internet. This is an online data transfer option with high throughput with speeds of up to 10 Gbps when connecting to Azure. With ExpressRoute Direct, the customer can get speed up to 100 Gbps.
+
+4.5 Azure Import/Export Job
+
+Azure Import job can be used to securely import data from tape backup to Azure files or Azure storage. In this import option,
+
+The customer must supply their own disk drives.
+
+Data is copied to the client disk drives via Import/Export client tool.
+
+Data must be encrypted with BitLocker.
+
+Data can be copied to 1 storage only.
+
+Data volume start from 1TB and send up to 10 disks per order.
+
+Below is an example of the Import Job Flow.
+
+5. Decision: Why Data Box?
+
+Azure Data Box is chosen as an option based on the requirements. The customer can copy on-premises data into the storage device from their data centre in an offline mode. The copy activity can be done on 10-Gbps network interfaces from the customer data centre to the Data Box. The device then is shipped back to Azure data centre for the data to be uploaded onto Azure ADLS Gen2 accounts.
+
+Azure Data Box supports data copy across 10 Azure ADLS Gen accounts.
+
+The data size of tape backup is 65TB and Azure Data Box has a maximum of usable storage capacity of 80 TB. Therefore, Azure Data Box is a better option compared to Data Disks with a maximum of usable storage of 35TB or Data Box Heavy with a maximum of usable storage of 800TB.
+
+Data is secured via:
+
+The Data Box has a rugged casing secured by tamper-resistant screws and tamper-evident stickers.
+
+The data on the device is always encrypted with an AES 256-bit encryption.
+
+Data Box can only be unlocked with a password that obtained from Azure portal by authorised users.
+
+Once data is uploaded to Azure, the disks on the device are wiped clean in accordance with NIST 800-88r1 standards.
+
+High-level process flow
+
+6. Data Flow of an Azure Data Box
+
+An import order typically consists of the following steps:
+
+7. Tape Data Rehydration (Azure Storage account)
+
+For the customer requirement, once tape data has been uploaded into Azure Storage account, the access tier of the storage account will be changed to the ‘archive’ tier. The ‘archive’ tier is an offline tier where data is rarely accessed and data cannot be read or modified.
+
+To read data from ‘archive’ tier storage account, the offline data will have to be rehydrated to an online tier either the ‘Hot’ or ‘Cool’ tier. Two rehydration options are:
+
+Copy offline blob to an ‘Hot’ or ‘Cool’ tier with the Copy Blob operation.
+
+Change the blob access tier from ‘archive’ to ‘Hot’ or ‘Cool’ tier using the Set Blob Tier operation.
+
+8. References

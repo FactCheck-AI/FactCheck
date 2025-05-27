@@ -1,0 +1,15 @@
+Extended locales such as "en_US" are already supported in the Contao Check and will be supported in the Contao core in the upcoming feature release (Contao 3.1). But when do they make sense?
+
+Let us take German as an example, which is mainly spoken in Germany (de_DE), Austria (de_AT) and Switzer­land (de_CH). It is not a problem to register the three translations on transifex.com or to create web site root pages for the different regions in the Contao site structure. However, there is also a two-character locale (de), which one of the three translations has to be mapped to.
+
+Define a default variant
+
+If there is more than one variant, you (the translator teams) have to make one of them the default one. In my example above, this would be "de_DE", because most of the German-speaking people live in Germany.
+
+Register the two-character locale
+
+The default variant is then registered with its two-character locale only, which means that there will never be a "de_DE" translation, because it is already represented by just "de". (Yes, I did that wrong in the Contao Check myself.) Once there is a default translation, other variants like "de_CH" can be added to e.g. create a Swiss-German translation.
+
+Two-character locales are obligatory
+
+Even if it is likely that your translation will not be the default, e.g. if there was no German translation yet and you would start with the Swiss German one, you would have to register your translation as "de" and not as "de_CH". It is no problem at all to change the locale later if other variants are added, but it would be a prob­lem if there was only a "de_CH" translation and no "de" translation: German-speaking users outside Switzer­land would never see the German labels.

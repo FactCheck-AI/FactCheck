@@ -1,0 +1,51 @@
+I want to publish package about sdl_mixer, it's a native package. I did as tutorial said. I put .dll .hand .lib files into package content, but the final package didn't work. So what is right way to create c++ nuget package?
+
+Another question: I found in nuget, most native c++ package are published in two packages, for example:
+
+sdl2_ttf.v140
+
+sdl2_ttf.v140.redist
+
+What is difference between those two files? And how can I publish my packages like that?
+
+Update:
+
+I followed the tutorial on how to publish native packages. I have written the following autopkg file
+
+nuget{ nuspec { id = MySdl_mixer; version :2.0.0.0; title: sdl mixer; authors: { Sam Lantinga, Stephane Peter, Ryan Gordon}; owners: {spartawhy117}; licenseUrl: "http://libsdl.org/license.php"; projectUrl: "http://libsdl.org/index.php"; iconUrl:""; requireLicenseAcceptance:false; summary:Nothing; description: @"SDL_mixer is a sample multi-channel audio mixer library.... "; releaseNotes: "Release of C++ "; copyright:Copyright 2015; tags: {v140 ,sdl_mixer , native, CoApp }; }; files { #defines { Include = include\; Bin = bin64\; Lib = lib64\; } include:{"${Include}*"}; [x64,v140,debug,desktop]{ lib: ${Lib}SDL2_mixer.lib; bin: ${Bin}SDL2_mixer.dll； } [x64,v140,release,desktop]{ lib: ${Lib}SDL2_mixer.lib; bin: ${Bin}SDL2_mixer.dll； } }; targets { Defines += HAS_SDLMIXER; }; }
+
+Running the command Write-NuGetPackage .\sdl_mixer.autopkg returns an error unexpected input of the end. What is the problem here?
+
+I searched around for days until I found there is really no help out there on the internet at all. I did managed to piece together how to do it, and through trial and error got it working well. Which I have documented here:
+
+https://digitalhouseblog.wordpress.com/2019/08/22/how-to-make-a-nuget-package-for-c/
+
+But I'll summarize here anyways:
+
+Gather or stage your native library files into a folder of your choosing.
+
+Create a *.nuspec file in that folder.
+
+Edit the *.nuspec file to include the files you want to include in your package.
+
+Create a *.props file
+
+Call nuget pack to create the package.
+
+Push the nuget package to a feed somewhere.
+
+Create a packages.config file.
+
+Edit the visual studio project file to import the *.props file
+
+Notice that the nuget tools inside the visual studio IDE are NEVER used. You have to do a LOT manually. See the link for full details and explanations.
+
+0xced
+
+26k1111 gold badges105105 silver badges257257 bronze badges
+
+answered Aug 22, 2019 at 20:25
+
+C.J.C.J.
+
+16k1010 gold badges6464 silver badges7979 bronze badges

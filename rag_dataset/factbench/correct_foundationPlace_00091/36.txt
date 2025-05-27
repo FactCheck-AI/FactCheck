@@ -1,0 +1,41 @@
+The fallout from zero-day exploits targeting organizations using Palo Alto Networks’ firewalls is expanding as researchers observed several thousand vulnerable devices containing evidence of varying levels of exploitation.
+
+Shadowserver scanned for the existence of files left behind by attackers’ exploits on Saturday and discovered 6,634 devices it deemed vulnerable and likely exploited, the nonprofit cybersecurity research foundation said in an analysis released Sunday. The number of vulnerable Palo Alto Networks devices dropped below 6,000 on Monday.
+
+But Palo Alto Networks questioned the veracity of Shadowserver’s findings and said few exploits resulted in significant compromises.
+
+“We do not believe a compromise can be confirmed remotely via an external scan based on the exploits currently seen,” a Palo Alto Networks spokesperson said Monday via email. “Shadowserver seems to be guessing the version of GlobalProtect instances but may not be factoring in mitigations applied on the device.”
+
+Of the exploits Unit 42 observed, “a very limited number of compromises” led to interactive command execution.
+
+The forensic evidence Shadowserver observed includes artifacts from exploitation, including 0-byte files created on the device. “This does not mean a device was compromised, and indeed does not factor in mitigations in place,” Shadowserver CEO Piotr Kijewski said via email.
+
+“What we are reporting on is whether devices are patched or not. When they are not patched we report them as possibly vulnerable, when we see some evidence of exploit runs we report them as vulnerable,” Kijewski said.
+
+Shadowserver’s analysis, which is shared daily with over 200 national computer security incident response teams, underscores the potential mechanism by which attackers could initiate follow-on attacks on unpatched devices or those already exploited.
+
+Palo Alto Networks hasn’t said how many impacted devices are exploited. The majority of exploits it’s observed to date were either unsuccessful or merely a scan by attackers seeking PAN-OS firewall devices that could be exploited, the company’s threat intelligence team said in a Friday update on its original threat brief.
+
+The security vendor categorized the exploitation activity across four levels:
+
+Level 0 involves unsuccessful exploitation attempts marked by forensic artifacts the attacker left behind when they attempted to access the customer network.
+
+Level 1 exploits involve a successfully compromised device. In these cases the attacker created a 0-byte file on the firewall, but achieved “minimal exploit chain success.”
+
+Level 2 exploits include the discovery of a file on the device the attacker copied to a location accessible via web request, however it’s unknown if the file was subsequently downloaded.
+
+Level 3 exploits are marked by signs of interactive command execution, including shell-based backdoors, code injection, file downloads and command runs.
+
+Palo Alto Networks described level 2 exploits as “limited” and level 3 compromises as “very limited.”
+
+The command injection vulnerability CVE-2024-3400, which has a CVSS of 10, allows an unauthenticated attacker to execute arbitrary code with root privileges and impacts the GlobalProtect gateway or portal VPN feature on some PAN-OS devices.
+
+Wendi Whitmore, SVP of Unit 42, said the threat intelligence division is providing incident response services to all existing retainer clients for the CVE at no additional cost. “Hotfixes are available and all in-scope organizations should apply them immediately,” Whitmore said Friday in a LinkedIn post.
+
+The company first became aware of the zero-day vulnerability and active exploits on April 10 when researchers at Volexity discovered the activity. “One impacted customer reached out about a suspicious exfiltration attempt that was caught in their environment on April 10,” the Palo Alto Networks spokesperson said.
+
+Zero-day exploits were underway for at least two weeks before Volexity made its discovery.
+
+Palo Alto Networks last week expanded the group of devices affected by the vulnerability, retracted a secondary mitigation action, and warned attempted exploits and attacks were accelerating after multiple third parties disclosed proof of concepts for the CVE.
+
+The spreading exploit activity marks another wave of attacks hitting network devices and security hardware in enterprise environments. Financially-motivated and nation-state linked attackers widely exploited vulnerabilities in devices sold by Citrix, Ivanti and Barracuda during the last year.

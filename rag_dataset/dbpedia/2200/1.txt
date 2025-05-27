@@ -1,0 +1,41 @@
+Hello,
+
+I have the following problem and I don’t understand why: I’m using Note Performer 3 for an orchestral score.
+
+Looking at the Percussion Instrument Playing Techniques for the Snare Drum instrument I can see that Rim techniques is realised by the Top Left to Bottom Right slash notehead.
+
+At the same time, the NP Orchestral Percussion map shows Rim technique connected with the Snare (rimshot, snare on) sound.
+
+Now, if I select a Snare Drum note and change its head to Slashed Noteheads (Top Left to Bottom Right) the notation changes but not the sounds, that is still the natural one.
+
+What I’ve missed?
+
+There are multiple entries for MIDI note 40 in the percussion map. I wonder whether you might have more luck if you either delete the duplicate row for note 40 in the percussion map for ‘Rimshot’, or if you go to the Percussion Instrument Playing Techniques dialog and change the slashed notehead to produce ‘Rimshot’ rather than ‘Rim’.
+
+The attached trivial project plays back correctly for me with NotePerformer, without needing to do anything. Does it play back correctly for you?
+
+np-snares.dorico.zip (416 KB)
+
+I have the same problem as Claudio. YOUR file plays back fine, but it was made in a newer version of D… creating a similar file from scratch in 2.2.10 doesn’t work…
+
+Despite me using a development build there’s nothing about my file that should be different from yours. Try going to the Percussion Maps dialog, choosing the two NotePerformer maps, and doing ‘Reset to Factory’ to make sure you’ve got the most up-to-date versions in your present project.
+
+No difference I’m afraid… There’s one thing, with your file the playing techniques show up in the Playing technique lane in Play mode, whereas a native file here only says Natural…
+
+Daniel I have exactly the same behaviour described by fratveno: your score sounds fine, the one I’ve created similar to your doesn’t. Moreover the Play Techniques are not displayed in Play mode.
+
+I’ve tried to reset the Percussion Map without any effect (this is already a problem I’ve reported to Wallander, because Wind Gong is Mapped to Low Conga).
+
+snare-drum.dorico.zip (408 KB)
+
+Although I can’t explain why, I think this is something to do with the way you’ve input the notes: can you try inputting the notes using the Y key to input a default pitch, rather than hitting e.g. A–G or playing on your MIDI keyboard, and switching to the other playing techniques using Alt+up/down arrow?
+
+I think I resolved the mystery. One has to either select the technique by doing alt-(up/down-)arrow before the note is entered (Y) or apply the same procedure (alt-SHIFT-(up/down-)arrow) on existing notes. My problem was assuming that just changing the noteheads by rightclick/noteheads/… would trigger the correct playing technique.
+
+Ah, no – you can’t do that. You absolutely do have to select the appropriate playing techniques. A notehead override is just that, an override of the notehead.
+
+Thank you very much Daniel.
+
+I tried but using Y and A/B/C/E/F after having selected the right playing technique and it worked. Before I just did the notehead override, this is why it didn’t worked. Moreover after having understood how alt-shift-(up/down-)arrow worked, it is very fast.
+
+If I select ‘rim shot’ (or indeed any option containing the word ‘rim’) with Shift+P, I get this double question mark; it also happens if I change the notehead first. Since the playback sound is fine, I can easily use Shift+X to write the word ‘rimshot’, but - in general terms - under what circumstances does this double question mark appear?

@@ -1,0 +1,131 @@
+Program of the lecture "Introduction to Systems Biology" (WS0506)
+
+This tutorial for the module "Dynamics" guides you through the tools
+
+Model setup as ordinary differential equations and their simulation with the public domain software Copasi. The predecessor Gepasi had become widely used in academia but is not developed further. Instead of using Gepasi we start with the new (still under construction) software by the same groups (Kummer lab at EML Heidelberg and Mendes lab at Virginia Bioinformatics Institute). The software is available for Mac, Windows and Linux PCs and can be run either in a well organised Graphical User Interface (GUI) mode or a fast and command controlled batch (SE) mode. In later tutorials we will encounter Copasi again, which besides simulations can also perform metabolic control analysis (Tutorial 3) and structural analysis (Tutorial 4).
+
+Creation and validation of SBML files describing your model in machine-readable format, and exchange of models between different software. SBML is not a software but a programming language developed by the Sysbio community. A less specialised companion standard is CellML which we will not use here.
+
+Analysing parameter dependencies of steady and oscillatory states with public domain bifurcation analysis software XPP-AUT by Bard Ermentrout (University of Pittsburgh). XPP-AUT comes as open source or precompiled for Mac, Windows and Linux PCs. We will use XPP-AUT again in Tutorial 2.
+
+Step by step, you can analyse 2 (+1) prepared biological examples using the above tools at increasing level of difficulty. In case of problems, intermediate results are available for download and restart of the subsequent steps. To download a linked file, hold down the right mouse button and select Save Link As...
+
+The simple enzyme-catalysed reaction E+S <-> ES -> E+P and the Michaelis-Menten approximation (cf. lecture 3)
+
+Start Copasi: Tell the computer where to find Copasi by
+
+> setenv COPASIDIR /usr/local/bin/
+
+Start the software Copasi by
+
+> /usr/local/bin/CopasiUI &
+
+Copasi will display messages in the shell, just ignore them.
+
+Docu: The documentation of the software is downloadable as pdf but not required for the following. Copasi is controled by selecting properties from the tree on the left and filling corresponding forms in the window on the right. Today we only need basic features and only use a small fraction of the tree items. Our model will work with most of the default settings but anything could be adjusted or renamed if you wish.
+
+Model info and units: Click on Model (top item in left tree), then give your model a name and define the physical units (time in minutes, volume in milli liters and molecule quantities in milli molar) of all the numbers in your model. Each time when you are ready with such a form, click the Commit button.
+
+Tree of model details: Next you need to enter chemical reactions and Copasi will create the corresponding variables. Click on the + infront of Model (item in left tree) and then click the + for Biochemical (expands more details of the model) and select Reactions (item in subtree).
+
+First reaction: Click in the form field below Equation and enter (with space between letters and symbols) E + S = ES
+
+For Copasi the = denotes a reversible reaction.
+
+Next reaction: Press the Return key and enter the second reaction ES -> E + P , again Return. The two letters -> denote an irreversible reaction.
+
+Parameters: Click Parameter Overview in the left tree and check your model. Each reaction has been interpreted with mass action kinetics by default (rate = konstant*product of substrate conc.) and its parameters have been initialised. Each reaction starts counting its own parameters with 1,2,.. hence we get many k1 but each of them is specific for its reaction and they may all have different values. To adjust the values click on them and set k1 and k2 of reaction both to 10000 and the k1 of reaction_1 to 200.
+
+Init. Cond.: Besides parameters we also need to set initial conditions (i.e. the concentrations at the start of a simulation or experiment) for S=10milliM, E=100microM and no complex and no product. Then click Commit.
+
+Save: You should now save your model by clicking File and Save or the disc icon in the top menu. If the following steps produce unexpected results with your model setup then compare with this reference file after download and Open in Copasi. You can then reload your file and make corrections.
+
+Run simulation: Next we want to simulate the time courses of the concentrations. The results could be exported as table of numbers into a file and/or be plotted. To do the latter, click on Output (major tree item) and Plots. Press the button: Add default plot. Then click on Tasks (major tree item) and Time Course, there press Run.
+
+Plot results: A new window with the concentration versus time curves should open. These are the simulation results. Think about why and where each of the curves moves up or down, use the Zoom (click in menu bar and drag with left mouse button, right mouse button brings you back to full scale). By clicking on the boxes with the variable names at the bottom you can switch hide/show individual curves.
+
+Reports: If the simulated data looks interesting, you can save it (click save data... in menu bar, then e.g. name it T1_enzyme_data1.txt). You can check the content of the produced data file in a terminal with
+
+> more enzyme_data1.txt
+
+The data table has a header line with the variable names followed by all time steps running from top to bottom. Each line shows all concentration values separated by tabs. One may import this data into different software (e.g. MatLab or xmgrace) for further analysis and plotting. Alternatively (only read this if it was boring so far) you can precisely control the structure of the data table by clicking the tree item Reports under Output and then click New. This creates an output instruction named report, click on the report item under Reports and select time and important concentrations by clicking the Item button and subsequent menu entries. All this is useful if you work with large models and many variables but want to concentrate on a few of them. Once the output instruction report is ready you can click the Report button in the Time Course simulation form and specify a file name for report. After clicking Run the data will be directly written to the file in the format you specified and with the possibility of subsequently appending data to the same file. Reports may automatically be filled with a lot more information than just the concentration values.
+
+SBML creation: Another way (besides data files) of communication with other software is to export your model in a defined format or language that most sysbio software understands. The native Copasi format (used to save your model under point 9.) containes all the details that Copasi needs for its unique features but that make no sense for and is not understood by other software and vice versa. Hence in the top menu under File and Export SBML, Copasi offers to create a model description file written in SBML, e.g. T1_enzyme1.xml). After exporting the SBML again go to the shell and check its content with
+
+> more enzyme1.xml
+
+Note the definition of the species=variables and reactions with the simple kinetic laws.
+
+SBML validation: If you receive SBML files from collaborators and experience problems, the first check is whether the file confirms with the standard and hence whether the problem is yours or that of your collaborator. There is stable stand-alone validation software but here we use the convenient online service at sbml.org. You can upload your SBML file and click Validate. Moreover by clicking visualize you can view an automated layout of your reaction network.
+
+Additional task that may be skipped: Here is a wrong SBML file for down- and upload which will provoke some warnings. Compare the reference and wrong SBML files using the terminal with
+
+> diff T1_enzyme1_bug.xml T1_enzyme1_bug.xml
+
+Did the online validator spot all bugs?
+
+Alternative reaction: Next we add to the existing model a more compact version of the same reactions. As in 4.-6. you can enter S2 -> P2 as the third reaction. Also set the same initial conditions as originally. By default this will be interpreted as mass action kinetics whereas we have learnt from Jörn Starruß in lecture 3 that an irreversible Michaelis-Menten kinetics can under some conditions be used to account for the first two reactions together.
+
+Henri-Michaelis-Menten: Click in the tree on the + infront of the Reactions item and then click reaction_2 to select the appropriate kinetics from a pull down menu. Then click on the parameter values and enter those values calculated from the 3 rate constants of the original reactions.
+
+Simulation: First we have to update the plot instructions (if you like also the report instructions) since new variables were introduced. Click on ConcentrationPlot under the item Plots under Output. Click New curve... and include [S2](t) and [P2](t). Also let them be plotted with symbols. Then click Run in the Time Course form. The plot should redraw and show more data than originally. Did you expect the new data to look like that?
+
+Parameter Change: Click on Plots to add another default plot and inactivate the first plot to preserve its data for comparison. Switch to symbols for the Michaelis-Menten curves in the new plot. In the Parameter overview take a 10 times higher enzyme concentration and adjust parameters k1 of reaction_1 and k2 of reaction to maintain the same V and Km in reaction_2. Run the simulation again and you should get another plot that you can compare with the original one. If needed, here is the corresponding Copasi file T1_enzyme2.cps.
+
+Discover: If you didn't have enough yet, keep playing with the parameters (all k1 and k2 at various [E](0)) to get a feeling for the validity of the steady state approximation. You may also try to plot the product formation FLUX versus the substrate concentration and observe Km and V in the saturation curve.
+
+Stochastic simulations: Here we want to study the S -> P reaction at low particle numbers. First delete the original 2 reactions (E+S=ES,ES->E+P), alternatively the stochastic algorithm requires you to rewrite the reversible reaction as two irreversible ones. You keep the S -> P reaction and deselect from the plots the curves that are no longer needed. Under Model go down to the compartment form and reduce the volume of the compartment to 1e-18 which reduces the particle numbers down to several thousands. under Time Course choose particle number plot from the Output Assistent and rerun the deterministic simulation. The results should look familiar to you. Now deactivate the concentration plot to freeze the image. Rerun the simulation after selecting the stochastic method (which translates the macroscopic rates into reaction probablilities according to Gillespie). After comparing the results, further decrease the volume (under compartment item) to 1e-19 and 1e-20, at each step rerun the stochastic simulation, did the results change? The continuous, deterministic approach still visible in the frozen window generally assumes large particle numbers.
+
+Next you can run multiple stochstic simulations for the same parameters by selecting Multiple Task, in the Parameter Scan form select New scan item = Repeat ... Create. Click Run and observe the plot, increase the number of repeats to 100 and run again. What does the average of these simulations do, what behaviour of the deviations do you expect for infinitely many runs?
+
+MAPK cascade can oscillate and amplify signals (cf. lecture 2)
+
+Model retrieval: General properties of the MAPK cascade, e.g. amplification and oscillations, have been analysed by B. Kholodenko in Eur. J. Biochem. 267, 1583 (2000). We can download the model used by him from public model repositories. Download the corresponding SBML file from BioModels.net. If you could not get it then try again here.
+
+Simulation: Create a plot and then run a simulation over the same period as in Fig. 2 of the paper. You should see oscillations, hide some of the curves, we want to concentrate on the output of the cascade: [MAPK-PP].
+
+Stability analysis of steady states: To confirm the oscillatory state, one can check the stability of coexisting steady states. Click Tasks and Steady-State, then Run in the Steady-State form. In the presented results table click to the Stability-tab on the right. How are the (in-)stability of steady states and the oscillations related to the calculated Eigenvalues? We will learn more about this in lecture 6 by Diana Claußnitzer.
+
+Manual parameter scan: The output [MAPK-PP] of the cascade depends on the input which is the parameter V1: the strength of activation of the MAPKKK due to Ras-GTP. Hence the dependence of [MAPK-PP] on V1 is of interest. Repeat the Time Course simulations for decreasing values of V1 (less and less input) from 2.5 down to 0.1. You need to jump between the Time Course and the Parameter Overview. If something look interesting try to explain it in terms of the Stability analysis of steady states which you then would need to run for the respective V1 like above.
+
+Games corner: Those who think they are too fast may read in the documentation of Copasi about sliders and use a slider for V1 in time course simulations.
+
+Automated parameter scan for steady states: The steady state turned out to be the dominant (attracting) solution for low input values as opposed to the oscillations at large input values. Next we want to better resolve the dependence of [MAPK-PP] on V1 by means of Copasi's automated scanning. First create a new plot with [MAPK-PP] versus V1. Next click on the Multiple Task and Parameter Scan items and then click Parameter Scan...Create! on the form. Select Steady State in the Task box and choose V1 in the Scan box with 10 intervals between 0 and 0.1. Then click Run. You should see a single curve in a new plot. Compare the form of the curve to the Michaelis-Menten relations that are used for all reactions. The latter are linear for small input values. Repeat the parameter scan up to 2.5 where the oscillations were seen initially. Copasi can compute the steady states but for the oscillations we need to rerun individual time courses. If all this didn't work, try again with T1_mapk.cps.
+
+Bifurcation analysis with XPP-AUT: Specialised bifurcation analysis software like AUTO can follow steady states and their stability for changing parameters like Copasi above but does also calculate simple and complex, stable and unstable oscillations and other asymptotic solutions. Here we use AUTO with the user-friendly face of XPP in order to better understand the relation between oscillations and (in)stabilities of coexisting steady states. You can hide the Copasi windows for a while, download the MAPK model T1_mapk.xpp translated from SBML into XPP, also download a parameter set T1_mapk.osc.set and start XPP-AUT from the command line with
+
+> /usr/bin/xppaut T1_mapk.xpp&
+
+Now you should see a black screen for results (right) and some control menus (all over), all this is called XPP.
+
+Select FILE and BELL OFF, then READ SET for importing some preset instructions for XPP from the downloaded T1_mapk1.osc.set.
+
+Run the same time course simulation as with Copasi by selecting INITIALCONDS and GO (keyboard shortcut: I G ).
+
+Next we want to obtain the same oscillation by means of bifurcation analysis of periodic solutions instead of simulation. To start a bifurcation analysis, obtain a steady state first by opening the PAR(-ameter) window from the top menu, then setting the input stimulus (V1=)V100001.l=0.1.
+
+Now simulate again by pressing I G, which you will hardly notice on the output screen as the concentration of MAPK_2 (doubly phosphorylated) is very low now.
+
+Start the bifurcation analysis software AUTO via FILE and AUTO or by pressing F A. A new window opens, this is called AUTO. In the new AUTO window click AXES, Hi-Lo and select MAPK_2 (as function of V1000001.l), and as bounds for the diagram 0,0,3,300, then OK.
+
+Under NUMERICS set Nmax=1000, NPr=1000, ParMax=2.5, which limits the part of the parameter space that AUTO should analyse, then OK.
+
+Now your ready for RUN of STEADY STATEs.
+
+The main window shows the bifurcation diagram with the value of the steady state as a function of the selected parameter V1. The lables 1 and 3 are the start and end of the branch, as limited by the user. But lable 2 denotes a special situation where two complex conjugate eigenvalues of the steady state change their real part, called a Hopf-bifurcation (the theory will be presented to us by Diana Claußnitzer).
+
+To select the Hopf-bifurcation (HB) you can click GRAP and switch between the lables by pressing the Tab-key until it describes the HB in the text window below, note the analytically computed period of the oscillations and press Enter. Next you can compute all oscillatory solutions by RUN and PERIODIC.
+
+The diagram gains two thick curves that show the MAXIMUM and MINIMUM of MAPK_2(t) oscillations. The branch stops at V1=2.5.
+
+GRAP this final lable. Did the period of the oscillation increase or decrease with larger V1? Press Enter.
+
+If this did not work, you can continue from the saved results T1_mapk_bif1.xpp.auto by selecting FILE and LOAD DIAGRAM.
+
+Click on the XPP window which has now automatically set your selected lable as initial condition. Run a simulation with I G which should look like the original oscillating profile, compare the period, max and min between the simulation and the bifurcation diagram.
+
+You now know the basic procedure of a bifurcation analysis which can subsequently be repeated beyond the initially analysed parameter range, or in other directions in parameter space. An interesting task for yourself may be to continue the location of the HB in a two-parameter plane of V1 and KI00001.l (=KI). To do so you need to set the second parameter and run TWO PARAMETERS. Note, in addition the period is always adjusted automatically.
+
+Detailed signal transduction model for EGF (cf. lecture 1)
+
+Just to let you get an impression of how far the construction of large models has advanced, have a look at the pdf of the network map for EGF signalling. Then download the corresponding SBML file and import it into Copasi. Inspect the model which cannot be simulated yet, what is missing? How many variables (metabolites) have been defined? Copasi calculates conservation relations that are implicit in the reaction network. Go to Tasks, Conservation to find out how many such relations exist in the model, hence how many linearly independent ODEs need to be simulated with or without explicitely considering the conservation relations? The work has been published in Molecular Systems Biology.

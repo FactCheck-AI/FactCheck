@@ -1,0 +1,27 @@
+Добрый день, на форуме нашла статью как вывести в карточке товара список складов и остатками.
+
+Собственно само решение
+
+- Find and copy ProductController.php from "controllers/front/"
+
+- Paste it to "override/controllers/front"
+
+- Open the new file
+
+FIND
+
+public function initContent() { parent::initContent(); if (!$this->errors) {
+
+AFTER, INSERT
+
+$id_product = (int)Tools::getValue('id_product'); $sql = 'SELECT name,physical_quantity FROM ps_warehouse,ps_stock WHERE id_product ='.$id_product.' AND ps_warehouse.id_warehouse = ps_stock.id_warehouse'; if ($results = Db::getInstance()->ExecuteS($sql)) foreach ($results as $row) $warehouses[] = array($row['name'],$row['physical_quantity']); $this->context->smarty->assign(array( 'warehouse' => $warehouses));
+
+- Open product.tpl from "themes/default-bootstrap" (or whatever your theme is)
+
+- Where you want to display the warehouses names and available stocks :
+
+PASTE
+
+<p>Warehouse(s) :</p> {foreach from=$warehouse item=w} {if $w[1]>0} <p>{$w[0]} ({$w[1]})</p> {/if} {/foreach}
+
+Это решение на моей версии 1.6.1.24 заработало. Подскажите пожалуйста как вывести рядом с остатком цену с каждого склада, так как в зависимости от закупок у товаров бывают разные цены по скаладам

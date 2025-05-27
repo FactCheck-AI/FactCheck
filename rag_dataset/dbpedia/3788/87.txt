@@ -1,0 +1,27 @@
+According to What are the strangely named components in Wikipedia file paths, you need to run md5 to find out url. Now wikipedia allows hotlinking, so:
+
+If you have utf-8 encoded $name, you need to do the following:
+
+$filename = replace($name, ' ', '_'); $digest = md5($filename); $folder = $digest[0] . '/' . $digest[0] . $digest[1] . '/' . urlencode($filename); $url = 'http://upload.wikimedia.org/wikipedia/commons/' . $folder;
+
+The same can be used for thumbnails.
+
+There is now a simpler way to hotlink the files on Wikipedia using the Special:FilePath page. Hence, if you want to link the file Example.jpg on English Wikipedia, you can use https://en.wikipedia.org/wiki/Special:FilePath/Example.jpg.
+
+Similar links should work for other Wikimedia Foundation sites (e. g. Wikimedia Commons).
+
+Details and recommendations regarding hotlinking can be found on Wikimedia's Commons:Reusing_content_outside_Wikimedia.
+
+Here is a JavaScript implementation of a working PHP answer (credits to Yuri Baburov):
+
+var name = "filename.jpg"; var filename = name.replace(/ /g, "_"); var digest = md5(filename); var folder = digest[0] + '/' + digest[0] + digest[1] + '/' + encodeURIComponent(filename); var url = 'http://upload.wikimedia.org/wikipedia/commons/' + folder;
+
+Note that you must include external md5() function (https://github.com/blueimp/JavaScript-MD5); it is not native to JS.
+
+Have you tried http://en.wikipedia.org/wiki/File:filename.jpg ? Even if the files are located on Wikimedia Commons, the above URL should still work.
+
+Edit: Are you trying to hotlink the image? If so, Wikipedia prohibits hotlinking. http://commons.wikimedia.org/wiki/Commons:Reusing_content_outside_Wikimedia#Hotlinking
+
+Update 10-Jan-2019: Hotlinking is now permitted:
+
+Hotlinking or InstantCommons: It is possible to use files directly on Commons within another website, by setting up a MediaWiki wiki with InstantCommons, ...

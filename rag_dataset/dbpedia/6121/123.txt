@@ -1,0 +1,45 @@
+I bought a Double Dragon from ebay a few months ago (not working). It had yellow and white garbage on the screen and would not boot to the self test mode. I decided to try and swap out the main cpu, a HD63C09 at IC41. after changing out the cpu with a new IC i got the test screen but it stops after it checks rom 4. It should then go on to check the HM637A01 at IC38 but it locks up after check rom 4. I have swapped several chips that i suspected may be preventing the test from continuing, including a Tmm2015 at IC22, a LS245 at IC37 and on the video board a LS61 at IC55. I checked around some pins with the logic probe, Im getting clock and the reset is High. I have gone as far as i can go without just shotgunning the whole board and hoping for a lucky guess. There is a lot of repair logs for Double Dragon but not with this particular problem. The closest i have found was someone getting the same thing at the test screen but that was because the 63701 was not seated right in the socket. It turns out that the 63701 is also programmed, so i corrupted the bin file in mame to see what i would get and it just shows the 63701 turning up with an error.
+
+this is a link to the schematics for anyone who wants to give it a shot http://www.jammarcade.net/files/Schematics/Arcade/Double Dragon.pdf
+
+I would appreciate any help someone can give me on this. Thanks in advance....
+
+Servo
+
+Sorry about the picture, my camera was out of sync with the screen
+
+What made you change out the main CPU out of interest? I have a similar fault on a DD bootleg and my first thought is to change out the Toshiba 6116 RAM above the main CPU code ROMs (which I see you also changed)
+
+The final test on the test screen is to test the 63701 (as I see you know already) - so this would be the next thing to look at, even though it comes up in MAME with an error when it's corrupted, it may be shorted in some way causing the freezing instead.
+
+I'd try removing it from the board completely and seeing what happens, if you get the same effect (ROM tests pass and then freeze) you know where your problem is and you can check traces, check anything connected to that IC and then from there work out replacement options
+
+I'd try removing it from the board completely and seeing what happens, if you get the same effect (ROM tests pass and then freeze) you know where your problem is and you can check traces, check anything connected to that IC and then from there work out replacement options
+
+xodaraP,
+
+thanks for the response. To be honest with you I've been working on this board so much i forgot what made me change out the main cpu, probably was something i saw with the logic probe or just out of due diligence. obviously there were multiple problems with the board. I can see another problem i might have down the road even if i get it to boot past the rom checks, the picture has jail bars which looks like a whole other issue.
+
+If i remove the 63701 from the board and turn the game on i get the same screen, work ram and roms check ok but freezes before the final check. I bought a 63701 from ebay and tried it and get the same result. I know that that cpu has a program which i am unable to flash But even if there was no program on the IC and that IC was the reason the game was not booting, i would still get an error message with the replacement chip, so that makes me believe that the issue is not the chip at all but somewhere else down the line. I change out the TMM2015 so im pretty sure that's not the issue. went over it a few times and don't see any cold solders or broken traces, I also socket the chip so its all new solder. I had read that someone had a similar problem on an Australian arcade forum and that they had reprogrammed one of the roms to skip the rom check. I don't even remember where i saw it and it didn't go into much detail. but that got me thinking about where the rom check is, is the program in one of the roms and can that be the problem? checked all the roms against the mames and they come back fine.
+
+I do know that if you pull the 63701 on a working board you'll get the issue im having. It will not show an error with the chip, it will just not show up at all and freeze. don't know if that tells us something.
+
+Anyway thanks for the responses and please keep them coming, any ideas would help cause im stuck at this point.
+
+Servo
+
+.
+
+Have you got a ROM programmer? Have you dumped and checked the ROMs are good?
+
+Could be that it's freezing up trying to run whatever code comes after the tests on the boot screen
+
+Does the HALT line on the CPU go (low I think is active on that CPU) when it freezes? Pin 40
+
+I checked all the eproms yesterday and one on them, the the one at 21j-0-1 came back bad. this is a rom for the sound CPU, the 63701 that wont come up in a rom check. I thought I had it, it had to be the cause of this bad rom, its for the sound cpu right.....no, no change. I then checked pin 40 on the main cpu, the 63C09 which is the halt line and its showing high. dont know if thats what its supposed to do.
+
+Im really stuck now, if anyone else has seen this before or has an idea please let me know.
+
+Thanks again
+
+Servo

@@ -1,0 +1,45 @@
+Hi,
+
+I'm kind of expecting a no to this question, but I noticed whilst setting up inbound SSL inspection for a client the other day that if the Cert on the Palo Alto and the cert on the SSL web server do not match then the firewall will refuse to decrypt the traffic and just pass it though as SSL using the server certificate.
+
+It would be great to be able to use a different cert on the Palo for a variety of reasons, number on being for Exchange client access servers, often my clients are using internally signed SSL certs for the CAS but want to use a standard SSL cert from the likes of godaddy/verisign/etc externally. They do this because SAN certs can be pricey and it the verification processes with the CA's are more stringent for SAN certs which can be a pain.
+
+Did I miss something in the certificate policy that stopped this working or is it by design?
+
+Likewise it would be handy to be able to do SSL handoff on the palo and allow HTTP between the firewall and the server internally and SSL out to the rest of the world. I doubt this is possible though.
+
+Thanks for reading, any feedback gratefully received.
+
+For inbound decryption the firewall does not act as a proxy for the SSL session, so there is only one session between the client and the web server. This configuration is similar to taking a capture of the SSL session and then manually decrypting it with the certificate's private key. The firewall simply decrypts each packet and performs decryption, then the original packet received is transmitted to the host.
+
+In a proxy configuration there are two distinct SSL sessions, a client to firewall, and firewall to server segment. The feature you are looking for might be closer to the behavior of the current outbound/proxy decryption except being able to control the certificate offered by the firewall to the client.
+
+View solution in original post
+
+When you create your SSL Decryption policy for inbound inspection, you can specify the certificate. If you are asking whether you can create multiple policies that will send multiple certificates based on what the client is requesting, the answer to that is no. While technically feasible, it would require that the client send the server_name extension in the Client Hello packet - something that is not required.
+
+I would recommend requesting that from your account team as a feature enhancement. I would phrase it as "add a feature to select a certificate based on the server_name extension in the Client Hello packet".
+
+Beyond that, a wildcard certificate from a CA might be a middle ground between a single name and a SAN cert. But if you do have clients using multiple domains, the only other option would be adding additional IPs to your external interface, changing DNS to reflect those IPs for the different domains, and then having different SSL inbound inspection rules based on those IPs.
+
+Hope this helps!
+
+Greg
+
+Hi Greg,
+
+Thank you very much for your reply and I'm sorry the the lateness of mine!
+
+We're not looking to offer different certs based on the client request just one that isnt identical to the cert on the internal server.. for example
+
+webmail.mycompany.com >>>>>> webmail.mycompany.local
+
+SSL Cert on PAN Internally signed Cert on Exchange / Web Server
+
+Currently my understanding is that unless the certificates are identical on both the PAN and internal server decryption will not happen.
+
+I hope that makes sense.. I'll reproduce this ASAP to show the exact errors that occur in the system log.
+
+For inbound decryption the firewall does not act as a proxy for the SSL session, so there is only one session between the client and the web server. This configuration is similar to taking a capture of the SSL session and then manually decrypting it with the certificate's private key. The firewall simply decrypts each packet and performs decryption, then the original packet received is transmitted to the host.
+
+In a proxy configuration there are two distinct SSL sessions, a client to firewall, and firewall to server segment. The feature you are looking for might be closer to the behavior of the current outbound/proxy decryption except being able to control the certificate offered by the firewall to the client.

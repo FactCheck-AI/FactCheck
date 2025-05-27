@@ -1,0 +1,107 @@
+Most computer vision applications demand input images to meet their specific requirements [1-8]. Take tax detection for example, the input image must be clear and complete. Otherwise, the corresponding algorithm cannot complete the target detection task. The image data under fog, special weather, and lighting are usually not clear enough to be used directly. Further processing is required to obtain the expected visual quality of the images [9-17]. At present, many computer vision systems are installed in outdoor environments and low-temperature water environments. Their performance is easily affected by light distribution [18-24]. To complete different vision tasks, e.g., object detection, object recognition, and object retrieval, low-light images must be enhanced by different methods to achieve different processing effects.
+
+Inspired by image-to-curve transform and multi-exposure fusion, Wang et al. [25] proposed a new method to treat the low-light image enhancement task as an extended problem with multiple virtual exposures, using nonlinear intensity mapping. Considering the difficulty for existing image-to-curve methods to obtain the desired detail and recover the expected brightness in any one iteration without relying on any ground truth, a virtual multi-exposure fusion strategy was proposed to merge the outputs of these different iterations. Global structure and local texture have different effects on image enhancement tasks. Xu et al. [26] proposed a structured texture awareness network (STANet), which successfully exploits the structure and texture features of low-light images to improve perceptual quality. A fusion sub-network with attention mechanism was used to explore the intrinsic correlation between global and local features. Furthermore, a color loss function was introduced to alleviate the color distortion in the enhanced images, thus optimizing the proposed STANet model. Lu and Gan [27] studied low-light face recognition and authentication based on image enhancement. Light processing and Gaussian filtering were employed to suppress and eliminate the low-light effect of such images. Then, the basic framework and objective functions of existing generative adversarial networks (GANs) were modified. By learning the mapping of side and front faces in multi-pose face images in the image space, a cross-pose GAN was built to convert faces of different poses into front faces. Experimental results show that their model is effective. The low-light images captured in non-uniformly light environments typically degrade with scene depth and corresponding ambient lighting. This degradation can lead to severe loss of target information in the degraded image morphology, making the detection of salient targets more challenging due to low-contrast properties and the effects of artificial light. Xu et al. [28] put forward an image enhancement method to facilitate the detection of salient objects in low-light images. This model directly embeds a physical illumination model into a deep neural network to describe the degradation of low-light images, where ambient light is treated as a point-wise variable, which varies with local content.
+
+Currently, low-light images are mainly processed by image enhancement based on non-physical imaging model. These methods boast the advantages of low computational complexity and fast processing speed, but cannot effectively restore the original details of the image and cannot solve the problem of image blur. The image generation based on deep learning can generate clear images containing a lot of details and information. But this approach must be supported by enough image samples and powerful machine computing power. Thus, the use conditions are relatively harsh, and the ideal processing effect cannot be obtained when the environment changes. To solve the problem, this paper explores low-light image enhancement and target detection based on deep learning. Section 2 constructs a simplified expression for the optical imaging model of low-light images, and proposes a Haze-line for color correction of low-light images, which can effectively enhance low-light images based on the global background light and medium transmission rate of the optical imaging model of such images. Section 3 details the network framework adopted by the proposed low-light image enhancement model: the framework includes two deep domain adaptation modules that realize domain transformation and image enhancement, respectively, and presents the loss functions of the model. To detect targets based on the output enhanced image, a joint enhancement and target detection method was proposed for low-light images. The effectiveness of the constructed model was demonstrated through experiments.
+
+In real scenes, noise and illumination changes are the main reasons for image degradation. Hence, it is possible to construct the following simplified expression for the optical imaging model of low-light images. Let a be a point in a low-light scene; Φ be the wavelengths of the red, green, and blue color channels; ZLΦ(a)eΦ(a) be the direct luminance component, which depicts the attenuation of scene light in the low-light environment; XΦ be the global background light; ZLΦ(a) be the radiance of the scene at point a. Then, the degraded low-light image TXΦ(a) captured by the computer vision system can be expressed as:
+
+$\begin{align} & T{{X}_{\Phi }}\left( a \right)=Z{{L}_{\Phi }}\left( a \right){{e}_{\Phi }}\left( a \right)+{{X}_{\Phi }}\left( a \right)\left( 1-{{e}_{\Phi }}\left( a \right) \right),\Phi \in \left\{ s,h,y \right\} \\ \end{align}$ (1)
+
+Let γΦ be the wavelength-dependent medium attenuation coefficient; δ(a) be the distance from the computer vision system to the surface of the target to be detected. Then, the medium transmission rate eΦ(a) can be defined as the energy ratio of medium ZLΦ(a) reflected from point a to the computer vision system in the scene:
+
+${{e}_{\Phi }}\left( a \right)=\exp \left( -{{\gamma }_{\Phi }}\delta \left( a \right) \right)$ (2)
+
+eΦ(a) characterizes the effect of light on the color and contrast of a low-light image, as it propagates in a low-light environment. In formula (1), XΦ(1-eΦ(a)) characterizes the illumination backscattering component of the low-light environment. Therefore, the effective enhancement of low-light images aims to estimate XΦ and eΦ(a), two key parameters for the effective enhancement of low-light images.
+
+In the traditional sense, Haze-line cannot adequately account for the attenuation of light from different wavelengths in low-light images. This paper proposes a Haze-line for color correction of low-light images, which can effectively enhance low-light images based on the global background light and medium transmittance of the optical imaging model of low-light images.
+
+The edge map of the scene is first generated, and then thresholded to obtain the mean color of the background light pixels of the largest connected component of the low-light image, that is, the global background light of the low-light image.
+
+The size of the medium transmission rate eΦ(a) depends on δ(a) and γΦ. To ensure that the red, green and blue color channels have different attenuation coefficients, this paper first estimates the attenuation ratio of the blue and green color channels and that of the blue and red color channels:
+
+${{\gamma }_{ys}}={{\gamma }_{y}}/{{\gamma }_{s}},{{\gamma }_{yh}}={{\gamma }_{y}}/{{\gamma }_{h}}$ (3)
+
+The three color channels can be expressed by combining formulas (1) and (2):
+
+$\begin{align} & T{{X}_{s}}-{{X}_{s}}=\text{exp}\left( -{{\gamma }_{s}}p \right)\cdot \left( Z{{L}_{s}}-{{X}_{s}} \right) \\ & T{{X}_{h}}-{{X}_{h}}=\text{exp}\left( -{{\gamma }_{h}}p \right)t\cdot \left( Z{{L}_{h}}-{{X}_{h}} \right) \\ & T{{X}_{y}}-{{X}_{y}}=\text{exp}\left( -{{\gamma }_{y}}p \right)t\cdot \left( Z{{L}_{y}}-{{X}_{y}} \right) \\ \end{align}$ (4)
+
+The powers of the red and green channels are increased to γy/γs and γy/γh, respectively:
+
+$\begin{align} & {{\left( T{{X}_{s}}-{{X}_{s}} \right)}^{\frac{{{\gamma }_{y}}}{{{\gamma }_{s}}}}}= \text{exp}\left( -{{\gamma }_{s}}p\frac{{{\gamma }_{y}}}{{{\gamma }_{s}}} \right)\cdot {{\left( Z{{L}_{s}}-{{X}_{s}} \right)}^{\frac{{{\gamma }_{y}}}{{{\gamma }_{s}}}}} ={{e}_{y}}\cdot {{\left( T{{X}_{s}}-{{X}_{s}} \right)}^{\frac{{{\gamma }_{y}}}{{{\gamma }_{s}}}}} \\ & {{\left( T{{X}_{h}}-{{X}_{h}} \right)}^{\frac{{{\gamma }_{y}}}{{{\gamma }_{h}}}}}= \text{exp}\left( -{{\gamma }_{h}}p\frac{{{\gamma }_{y}}}{{{\gamma }_{h}}} \right)\cdot {{\left( Z{{L}_{h}}-{{X}_{h}} \right)}^{\frac{{{\gamma }_{y}}}{{{\gamma }_{h}}}}} ={{e}_{y}}\cdot {{\left( T{{X}_{h}}-{{X}_{h}} \right)}^{^{\frac{{{\gamma }_{y}}}{{{\gamma }_{h}}}}}} \\ \end{align}$ (5)
+
+Let ey(a) be the unknown medium transmission rate of each pixel of the low-light image. Combining formula (5) with formula (3), we have:
+
+$\left[\begin{array}{l}\left(T X_s(a)-X_s\right)^{\gamma_{y s}} \\ \left(T X_h(a)-X_h\right)^{\gamma_{y h}} \\ \left(T X_y(a)-X_y\right)\end{array}\right]=e_y(a)\left[\begin{array}{l}\left(Z L_s(a)-X_s\right)^{\gamma_{y s}} \\ \left(Z L_h(a)-X_h\right)^{\gamma_{y h}} \\ \left(Z L_y(a)-X_y\right)\end{array}\right]$ (6)
+
+The formula of Haze-line is similar to the above formula. Thus, the initial transmission rate and estimation can be completed by clustering pixels into the Haze-line. After estimating XΦ and eΦ(a), ZL(a) can be further enhanced by:
+
+$\begin{align} & ZL\left( a \right)={{X}_{\Phi }}+\frac{TX\left( a \right)-{{X}_{\Phi }}}{\text{exp}\left( -{{\gamma }_{\Phi }}p\left( a \right) \right)} ={{X}_{\Phi }}+\frac{TX\left( a \right)-{{X}_{\Phi }}}{\text{exp}\left( {{\gamma }_{d}}/{{\gamma }_{y}} \right)} \\ \end{align}$ (7)
+
+According to the features of different low-light ambient light sources, multiple effective enhancements of low-light images are selected based on different attenuation coefficients. Next, the low-light image with the smallest difference between the average values of red, green, and blue channels is selected as the effective enhancement result, i.e., the final output.
+
+This section details the network framework (Figure 1) of the proposed low-light image enhancement model. The framework realizes the transfer of different light scenes, and includes two depth domain adaptation modules that realize domain transform and image enhancement, respectively. Besides, the authors also introduced the loss functions used by the model.
+
+In the low-light image enhancement model, the domain transform module is to transform the original low-light image into the style of the normal light scene image, while ensuring the structure, the content and other semantic information of the low-light image. Let A be the sample set of low-light images degraded in the real scene; B be the corresponding sample set of normal light images. A and B are imported to the domain transform module. Firstly, the coarse-grained similarity between the low-light images and the normal light images is calculated based on the maximum average deviation distance. Then, the highly similar images are selected and imported to the image translation network. Let Γ( ) be the mapping of the original variable to the regenerated kernel Hilbert space. Then, the maximum average deviation distance can be calculated by:
+
+${{\Omega }^{2}}\left( A,B \right)=\left\| \sum\limits_{i=1}^{{{m}_{1}}}{\Gamma \left( {{a}_{i}} \right)}-\sum\limits_{j=1}^{{{m}_{2}}}{\Gamma \left( {{b}_{i}} \right)} \right\|_{F}^{2}$ (8)
+
+The selected color-enhanced image is input into the image translation network H for domain transform, and the output image is represented by B*. Another image translation network G performs the reverse transform, which converts the translated image A* back to the low-light image B*. In addition, two adversarial discriminators PB and PA are introduced to the low-light image enhancement model. This paper correlates the domain transform of H and G with PB and PA. PB encourages H to convert A to B*, minimizing the difference between B* and B, while PA exerts the opposite effect on G.
+
+The domain transform module can convert the original low-light image A into B*, and the low-light scene style can be changed into the color style of the image in the normal scene while ensuring its basic properties. Y* can be regarded as a normal scene image with the original low-light image content and structure. In Y*, the color shift of the low-light scene is eliminated by the domain transform module, but there is still the problem of poor image visibility due to light scattering. To effectively enhance the clear details of the image, an image enhancement module is set up.
+
+Figure 1. Framework of low-light image enhancement model
+
+The framework of the image enhancement network draws on the dehazing network structure, that is, the traditional encoder-decoder network. Specifically, the synthetic foggy image Bhc and the clear image NSI are constructed in the normal scene. Then, B*, Bhc and NSI are used to train the constructed network. The domain difference between Y* and Bhc must be eliminated to allow the model trained on the Bhc sample set adaptable for low-light image enhancement. This problem is solved by introducing a domain adaptation mechanism, that is, introducing Y* into the training sample set in an unsupervised manner.
+
+In the training of the low-light image enhancement model, two loss functions, the domain transform loss function and the image enhancement loss function, are employed. The domain transformation module includes the adversarial discriminant networks PX and PV, and the corresponding generation networks HV→X and HX→V. The adversarial loss function of HV→X can be expressed as:
+
+$\begin{align} & S{{V}_{GAN}}\left( {{H}_{V\to X}},{{P}_{X}},{{A}_{V}},{{A}_{X}} \right) \\ & ={{T}_{{{a}_{x}}\tilde{\ }{{o}_{data}}\left( {{a}_{x}} \right)}}\left[ \log {{P}_{X}}\left( {{a}_{x}} \right) \right] \\ & +{{T}_{{{a}_{v}}\tilde{\ }{{o}_{data}}\left( {{a}_{v}} \right)}}\left[ log\left( 1-{{P}_{X}}\left( {{H}_{V\to X}}\left( {{a}_{v}} \right) \right) \right) \right] \\ \end{align}$ (9)
+
+HV→X tries to learn to transform the image aq from the low-light scene AV to the intermediate domain AX with the color style of the normal scene image, thereby generating the low-light image av→x. Thus, PX is unable to distinguish av→x from the normal scene image ax. For HX→V,, a similar adversarial loss function SVGAN(HX→V, PV, AX, AV) can be constructed.
+
+To normalize the training of the image translation network, the cycle consistency loss function can be constructed as:
+
+$\begin{align} & S{{V}_{cyc}}\left( {{H}_{V\to X}},{{H}_{X}}_{\to V} \right) \\ & ={{T}_{{{a}_{v}}\tilde{\ }{{o}_{dana}}\left( {{a}_{v}} \right)}}\left[ {{\left\| {{H}_{X\to V}}\left( {{H}_{V\to X}}\left( {{a}_{v}} \right) \right)-{{a}_{v}} \right\|}_{1}} \right] \\ & +{{T}_{{{a}_{x}}\tilde{\ }{{o}_{dana}}\left( {{a}_{x}} \right)}}\left[ {{\left\| {{H}_{V\to X}}\left( {{H}_{X\to V}}\left( {{a}_{x}} \right) \right)-{{a}_{x}} \right\|}_{1}} \right] \\ \end{align}$ (10)
+
+The above formula completes the L1-norm constraint of au and HX→V(HV→X(av)), as well as ax and HV→X(HX→V(ax)). Let av→av→x→ax→v and ax→ax→v→av→x be the forward translation cycle and the reverse translation cycle, respectively. For image av in domain Av, av can be returned to the original low-light image by av→av→x→ax→v; ax can be returned to the original normal scene image by ax→ax→v→av→x.
+
+To effectively enhance all texture information from low-light images, this paper introduces a cycle-aware consistency loss, which combines the extracted high and low features that ensure the original image structure. Let || ||2 be the standard L2-norm; ψ be the feature extractor. Then, we have:
+
+$\begin{align} & S{{V}_{perceptual}}\left( {{H}_{V\to X}},{{H}_{X\to V}} \right) \\ & =\left\| \psi \left( {{a}_{v}} \right)-\psi \left( {{H}_{X\to V}}\left( {{H}_{V\to X}}\left( {{a}_{v}} \right) \right) \right) \right\|_{2}^{2} \\ & +\left\| \psi \left( {{a}_{x}} \right)-\psi \left( {{H}_{V\to X}}\left( {{H}_{X\to V}}\left( {{a}_{x}} \right) \right) \right) \right\|_{2}^{2} \\ \end{align}$ (11)
+
+Further, to ensure the content and structure information between the input and output images of HV→X and HX→V, the following authentication loss function can be adopted:
+
+$\begin{align} & S{{V}_{identity}}\left( {{H}_{V\to X}},{{H}_{X}}\to V \right) \\ & ={{T}_{{{a}_{x}}\tilde{\ }{{o}_{dana}}\left( {{a}_{x}} \right)}}\left[ {{\left\| {{H}_{V\to X}}\left( {{a}_{x}} \right)-{{a}_{x}} \right\|}_{1}} \right] \\ & +{{T}_{{{a}_{v}}\tilde{\ }{{o}_{dana}}\left( {{a}_{v}} \right)}}\left[ {{\left\| {{H}_{X\to V}}\left( {{a}_{v}} \right)-{{a}_{v}} \right\|}_{1}} \right] \\ \end{align}$ (12)
+
+Let μ1 and μ2 be the weights of the component loss functions. The overall loss function of the domain transform module can be given by:
+
+$\begin{align} & S{{V}_{style}}\left( {{H}_{V\to X}},{{H}_{X\to V}} \right) \\ & =S{{V}_{GAN}}\left( {{H}_{V\to X}},{{P}_{X}},{{A}_{V}},{{A}_{X}} \right) \\ & +S{{V}_{GAN}}\left( {{H}_{X\to V}},{{P}_{V}},{{A}_{X}},{{A}_{V}} \right) \\ & +S{{V}_{cyc}}\left( {{H}_{V\to X}},{{H}_{X\to V}} \right) \\ & +{{\Phi }_{1}}S{{V}_{perceptual}}\left( {{H}_{V\to X}},{{H}_{X\to V}} \right) \\ & +{{\Phi }_{\text{2}}}S{{V}_{identity}}\left( {{H}_{V\to X}},{{H}_{X\to V}} \right) \\ \end{align}$ (13)
+
+The proposed low-light image enhancement model is trained by a new sample set composed of the enhanced low-light images generated by the domain transform module, and a sample set composed of the synthetic foggy and clear images. For the image enhancement loss function, the standard mean squared error loss function in the supervised branch of the image enhancement model is adopted to minimize the difference between the final output images PKX and BX:
+
+$S{{O}_{MSE}}=\left\| P{{K}_{X}}-{{B}_{X}} \right\|_{2}^{2}$ (14)
+
+To generate enhanced low-light images with the same features as clear images in normal scenes, it is necessary to constrain the dehazing network module in the unsupervised branch of the image enhancement model, which can be achieved by total variational loss and dark channel loss. The total variational loss can be expressed as:
+
+$S{{O}_{UI}}={{\left\| {{\nabla }_{f}}P{{K}_{V\to X}} \right\|}_{1}}+{{\left\| {{\nabla }_{u}}P{{K}_{V\to X}} \right\|}_{1}}$ (15)
+
+Let $\nabla_f$ and $\nabla_u$ be the horizontal gradient operator and the vertical gradient operator, respectively; PKV→X be the translated low-light image; a and b be the coordinates of the low-light image; DCP be the dark channel; DR be the color channel; Θ(a) be the local block centering at a. Then, the dark channel prior can be expressed as:
+
+$DCP\left( a \right)=\underset{d\in s,h,y}{\mathop{min}}\,\left( \underset{b\in \Theta \left( a \right)}{\mathop{min}}\,\left( DR\left( b \right) \right) \right)$ (16)
+
+The dark channel loss function that can achieve regularization of the enhanced low-light image can be expressed as:
+
+$S{{O}_{dark}}={{\left\| DR\left( P{{K}_{V\to X}} \right) \right\|}_{1}}$ (17)
+
+Let μ1 and μ2 be the weights of the component loss functions, respectively. Combining the domain transform loss function and image enhancement loss function, the complete loss function expression of the image enhancement module can be expressed as:
+
+$S{{O}_{TOTAL}}=S{{O}_{MSE}}+{{\mu }_{1}}S{{O}_{UI}}+{{\mu }_{2}}S{{O}_{DCP}}$ (18)
+
+Figure 2 intuitively shows the combined use scheme of the loss functions of the image enhancement module.
+
+Figure 2. Combinatory use of loss functions of image enhancement module
+
+Figure 3. Framework of low-light image joint enhancement and target detection
+
+To realize the target detection based on the output enhanced image, this paper proposes a joint enhancement and target detection method for low-light images. The framework of the method is shown in Figure 3. To effectively improve the accuracy of target detection, the model generates an enhanced low-light image that is beneficial to target detection based on the feature correlation between low-light image enhancement and target detection. The specific process is as follows: input the original low-light image, enhance it through the image enhancement module, and then detect the target in the enhanced low-light image through the low-light image target detection module in the dotted frame in Figure 3, and finally output the detected target.

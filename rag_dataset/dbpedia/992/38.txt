@@ -1,0 +1,11 @@
+Found one more on my own:
+
+Maybe the most simple way to see the length of an OSM way element in a kind of data layer is to load the area (or just the way) in the editor Merkaartor http://wiki.openstreetmap.org/wiki/Merkaartor.
+
+You only need to hover over the way with the mouse, or select it. The length is displayed in the information panel on the right of the screen.
+
+OSM data contains only the geometries stored as nodes, ways and relations. If you want to obtain the some statistics on an element, you will need to work with tools like Postgis or specialized program.
+
+Postgis 1.5 has a new geography type which can be used to return numbers like length, area in meters. You would need to use osm2pgsql to import your data and then create a geography column based on the geometry column created by osm2psql.
+
+This method is quite complicated and should mostly be used for more advanced users.

@@ -1,0 +1,49 @@
+Remove-MSIApplications
+
+Removes all MSI applications matching the specified application name.
+
+Removes all MSI applications matching the specified application name. Enumerates the registry for installed applications matching the specified application name and uninstalls that application using the product code, provided the uninstall string matches "msiexec".
+
+Removes all versions of software that match the name "Adobe Flash"
+
+Removes all versions of software that match the name "Adobe"
+
+@('Is64BitApplication', $false, 'Exact'), @('Publisher', 'Oracle Corporation', 'Exact') )
+
+Removes all versions of software that match the name "Java 8 Update" where the software is 32-bits and the publisher is "Oracle Corporation".
+
+Removes all versions of software that match the name "Java 8 Update" and also have "Oracle Corporation" as the Publisher; however, it does not uninstall "Java 8 Update 45" of the software. NOTE: If only specifying a single row in the two-dimensional arrays, the array must have the extra parentheses and leading comma as in this example.
+
+Removes all versions of software that match the name "Java 8 Update"; however, it does not uninstall "Java 8 Update 45" of the software. NOTE: If only specifying a single row in the two-dimensional array, the array must have the extra parentheses and leading comma as in this example.
+
+@('Is64BitApplication', $true, 'Exact'), @('DisplayName', 'Java 8 Update 45', 'Exact'), @('DisplayName', 'Java 8 Update 4*', 'WildCard'), @('DisplayName', 'Java \d Update \d{3}', 'RegEx'), @('DisplayName', 'Java 8 Update', 'Contains'))
+
+Removes all versions of software that match the name "Java 8 Update"; however, it does not uninstall 64-bit versions of the software, Update 45 of the software, or any Update that starts with 4.
+
+The name of the application to uninstall. Performs a contains match on the application display name by default.
+
+Specifies that the named application must be matched using the exact name.
+
+Specifies that the named application must be matched using a wildcard search.
+
+Overrides the default parameters specified in the XML configuration file. Uninstall default is: "REBOOT=ReallySuppress /QN".
+
+Adds to the default parameters specified in the XML configuration file. Uninstall default is: "REBOOT=ReallySuppress /QN".
+
+Two-dimensional array that contains one or more (property, value, match-type) sets that should be used to filter the list of results returned by Get-InstalledApplication to only those that should be uninstalled. Properties that can be filtered upon: ProductCode, DisplayName, DisplayVersion, UninstallString, InstallSource, InstallLocation, InstallDate, Publisher, Is64BitApplication
+
+Two-dimensional array that contains one or more (property, value, match-type) sets that should be excluded from uninstall if found. Properties that can be excluded: ProductCode, DisplayName, DisplayVersion, UninstallString, InstallSource, InstallLocation, InstallDate, Publisher, Is64BitApplication
+
+Include matches against updates and hotfixes in results.
+
+Overrides the default logging options specified in the XML configuration file. Default options are: "/L*v".
+
+Overrides the default log file name. The default log file name is generated from the MSI file name. If LogName does not end in .log, it will be automatically appended. For uninstallations, by default the product code is resolved to the DisplayName and version of the application.
+
+Returns ExitCode, STDOut, and STDErr output from the process.
+
+Continue if an error occured while trying to start the processes. Default: $true.
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters.
+
+More reading on how to create arrays if having trouble with -FilterApplication or -ExcludeFromUninstall parameter: http://blogs.msdn.com/b/powershell/archive/2007/01/23/array-literals-in-powershell.aspx

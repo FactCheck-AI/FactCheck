@@ -1,0 +1,109 @@
+System requirements
+
+To run Contao successfully, the web server must meet these system requirements. Contao was originally developed for the familiar LAMP stack, but runs on any web server that provides a current version of PHP and MySQL.
+
+Software Recommendations
+
+The minimum requirements depend on whether you are installing the latest or the Long Term Support version. All maintained versions of Contao are compatible with the latest PHP and MySQL versions. Therefore, we recommend to always use them.
+
+PHP: Version 7.4+ (latest patch version)
+
+MySQL: Version 8.0+ or equivalent MariaDB server
+
+PHP Extensions
+
+Extension NameContao 4Contao 5DOM (ext-dom)requiredrequiredPCRE (ext-pcre)requiredrequiredIntl (ext-intl)requiredrequiredPDO (ext-pdo)requiredrequiredZLIB (ext-zlib)requiredrequiredJSON (ext-json)requiredrequiredCurl (ext-curl)requiredrequiredMbstring (ext-mbstring)requiredrequiredGD (ext-gd)required1required1Imagick (ext-imagick)requires GD, Imagick or Gmagick1requires GD, Imagick or Gmagick1Gmagick (ext-gmagick)requires GD, Imagick or Gmagick1requires GD, Imagick or Gmagick1File Information (ext-fileinfo)requiredrequiredSodium (ext-sodium)-required for PHP 8.3+2
+
+All required extensions are enabled by default in current PHP versions. However, some hosting providers explicitly disable them. The requirements are automatically checked during installation via the Contao Manager or Composer.
+
+PHP configuration (php.ini)
+
+These are the recommended settings for the ideal operation of Contao. A different configuration does not mean that Contao does not work, but may cause unexpected behavior or performance degradation/slow reactions.
+
+Configuration NameWeb ProcessCommand LineNotesmemory_limitminimum 256M-1 (unlimited)max_execution_timeminimum 300 (unlimited)file_uploadsOnnot applicableupload_max_filesizeminimum 32Mnot applicablepost_max_sizelike upload_max_filesizenot applicablemax_input_vars1000not applicableMay need to be increased if many extensions are installed. Increase if the user access rights cannot be saved correctly.opcache.enable1 (enabled)0 (disabled)Disabling the opcode cache has a significant negative impact on performance.opcache.enable_cli0 (disabled)0 (disabled)opcache.max_accelerated_files16000 empfohlennot applicableA lower value may cause an unnecessary slowdown.safe_modeOffOffopen_basedirNULLNULLIf active, make sure that the system’s temporary directory can be accessed.
+
+MySQL Configuration
+
+MySQL storage engine InnoDB (default since MySQL 5.7)
+
+MySQL option innodb_large_prefix = 1 (enabled by default since MySQL 5.7.7)
+
+MySQL option innodb_file_format = Barracuda (not necessary any more since MySQL 8.0)
+
+MySQL option innodb_file_per_table = 1 (enabled by default since MySQL 5.6.7)
+
+MySQL character set utf8mb4
+
+Minimum PHP Requirements
+
+Contao 5.0 and later
+
+PHP Version 8.1.0 or higher is required.
+
+Contao 4.13 (LTS)
+
+PHP Version 7.4.0 or higher is required.
+
+Contao 4.9 (LTS)
+
+PHP Version 7.2.0 or higher is required.
+
+Images can be processed with the PHP extensions GD (ext-gd), Imagick (ext-imagick) or Gmagick (ext-gmagick). Contao automatically detects and uses the best available extension.
+
+Contao 4.4 (LTS)
+
+PHP Version 5.6.0 or higher is required.
+
+The GD extension (ext-gd) is required for image processing.
+
+Switching the PHP version
+
+In case you want to switch the PHP version of an already running PHP instance, you should always run a full composer update after switching. This is especially important when switching between major versions, e.g. from PHP 7.x to 8.x - or vice versa. This ensures compatibility of your installed packages with the respective PHP version, since each package (including Contao itself, installed Contao extensions and other third-party packages) can require specific PHP versions and PHP extensions that it needs and is known to be compatible with.
+
+In case you are using the Contao Manager, you can run the composer update process in the maintenance section under Composer Dependencies:
+
+MySQL minimum requirements
+
+Although Contao uses the Doctrine DBAL database abstraction layer, no database server types other than MySQL (or a compatible fork like MariaDB) are currently supported.
+
+Contao has been successfully tested on MySQL servers version 5.7 / 8.0 (and equivalent MariaDB versions) with InnoDB table format. The use of utf8 instead of the utf8mb4 character set results in a worse UTF8 support (e.g. no emojis).
+
+If the above recommended options cannot be enabled on your server, please configure a different character set in your config/config.yaml file:
+
+It is further recommended to run MySQL in “strict mode” to prevent corrupt or truncated data and to guarantee data integrity.
+
+To enable it, add the following to your my.cnf or my.ini file or make sure that the setting is adjusted accordingly:
+
+[mysqld] … sql_mode="TRADITIONAL" …
+
+If the setting cannot be enabled on your server, please configure the connection options in your config/config.yaml file:
+
+Web server
+
+Modern hosting environments of today allow customers to access their account via an SSH terminal. This is not only a more secure connection than traditional unencrypted FTP, but also allows efficient debugging and the development of the application.
+
+It is recommended to use PHP-FPM or a similar FastCGI setup for the PHP stack. Contao can perform background tasks (such as indexing the page content) without the browser waiting for the response by using fastcgi_finish_request().
+
+Hosting configuration
+
+In Contao, all publicly accessible files are located in the web/ subfolder of the installation. Set the document root of the installation via the admin panel of the hosting provider to this subfolder and set up a database on this occasion.
+
+Example: example.com points to the directory /www/example/web
+
+(since 4.12 Following the Symfony standard, the public subfolder of /web has been renamed to /public. If there is a /web directory in your installation, Contao will automatically use it instead of /public).
+
+Therefore, a separate (sub)domain is required for each Contao installation.
+
+since 4.13 If your installation is still using the folder /web as its public directory, explicitly set it in the composer.json of the project in order to be prepared for future versions of contao:
+
+see also: https://symfony.com/doc/current/configuration/override_dir_structure.html#override-the-public-directory
+
+Web server configuration
+
+Within the configuration of your web server you will need to make sure that all requests are processed by the index.php in the public directory, typically via URL rewriting. How to achieve this depends on the type of web server you are running. The most common ones are Apache and NGINX:
+
+You can also find more information about the configuration of your web server in the Symfony documentation.
+
+Provider-specific settings
+
+There are a few major Internet service providers that offer special settings for running Contao. Fortunately, they are only the exception to the rule. The provider-specific settings can be found in the German Contao forum. You can get optimal hosting packages for Contao from the Contao partners in the service category “Web hosting”.

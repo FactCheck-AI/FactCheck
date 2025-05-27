@@ -1,0 +1,47 @@
+Hi, I am managing the docsearch configuration for https://docs.contao.org/.
+
+The Contao documentation consists of two parts:
+
+A developer documentation under docs.contao.org/dev/
+
+A manual under docs.contao.org/manual/
+
+The manual is split up into two languages:
+
+English: docs.contao.org/manual/en/
+
+German: docs.contao.org/manual/de/
+
+The goal is to show search results from both the manual and the developer documentation. However:
+
+On docs.contao.org/dev/ it should show search results from developer documentation & the English manual.
+
+On docs.contao.org/manual/en/ it should show search results from developer documentation & the English manual.
+
+On docs.contao.org/manual/de/ it should show search results from the developer documentation & the German manual.
+
+For this purpose I would introduce a new attribute called type and add
+
+<meta name="docsearch:type" content="…">
+
+to the page. So on docs.contao.org/dev/ and docs.contao.org/manual/en/ the filter logic should be:
+
+type:dev OR (type:manual AND language:en)
+
+On docs.contao.org/manual/de/ the filter logic should be:
+
+type:dev OR (type:manual AND language:de)
+
+However the facetFilters do not seem to allow such a combination. It would only allow
+
+(type:dev OR type:manual) AND language:de
+
+for example, and that would be wrong, since there is no German version of the developer documentation.
+
+Do I need to introduce a separate attribute that already integrates the language, so I can do
+
+type:dev OR type:manual_de
+
+type:dev OR type:manual_en
+
+? Or am I missing something?

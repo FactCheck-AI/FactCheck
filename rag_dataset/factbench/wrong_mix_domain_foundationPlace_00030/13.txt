@@ -1,0 +1,145 @@
+Describe most preferred embodiment of the present invention below with reference to accompanying drawings in detail.
+
+Fig. 2 shows the synoptic diagram according to multi-layer data structure of the present invention.
+
+As shown in the figure, the user profile 100 that is used for a user or one group of user comprises personal information 110, a plurality of (0,1 ..., n) service recorder 120, user preference information 130 and a plurality of authorized user message 140.
+
+That user preference information 130 comprises is a plurality of (0,1 ..., n) the unique user preference information 130 (1), and unique user preference information 130 (1) comprises a user preference item 130 (1)-1 and user preferences/do not like 130 (1)-2 and describes 130 (1)-3.
+
+Personal information 110 also comprises title, sex, age and user's date of birth except that user ID.
+
+Service recorder 120 comprise about when (year, month, data, time), where (a client ID or position), how (information of the operation taking place as when to put or to stop such as broadcast, playback, time-out, soon) and what information (Information ID) are used.
+
+Because can be by writing down collection condition, as collecting the time of writing down service recorder being classified, so can allow to exist a plurality of service recorders.
+
+Authorized user message 140 points out to allow the information of user capture.For example, it comprises about the information of the channel that is requested and is not requested to be used for to watch television broadcasting with about the information of basic channel and charging channel.
+
+User preference information 130 can comprise a plurality of unique user preference informations 130 (1), 130 (2) ..., 130 (n).
+
+Each unique user preference information 130 (1) can comprise a user preference item 130 (1)-1,130 (1)-2 and explanatory notes 130 (1)-3 of user preferences/do not like.
+
+Identify a plurality of unique user preference informations 130 (1), 130 (2) at needs ..., under the situation of 130 (n), explanatory note 130 (1)-3 has been described the application conditions of each user preference information 130 that is included in the user preference information 130.When utilizing explanatory note 130 (1)-3 to constitute a multi-user preference information, the user selects to use required unique user preference information according to explanatory note, or selects required unique user preference information automatically.
+
+In this, because each unique user preference information can comprise a plurality of unique user preference informations, form a stratiform tree construction so have in user preference item and each between the user preference item of the value of hobby of a user preferences/not.The numerical value that increases one by one between available 1 (user least likes) of the value of hobby of user preferences/not and 10 (user likes most) is represented, also can represent with a binary numeral.User preferences/the value of hobby can be with representing with every corresponding information access times aggregate-value yet.
+
+Fig. 3 shows the multiplet according to the user preference item of the present invention's unique user preference information shown in Figure 2 structure, wherein according to the environment or the condition of user's system for use in carrying, the user preference item is arranged out multilevel hierarchy.
+
+For example, difference is provided with the user preference value (being unique user preference information 130 (k)) of user preference value (i.e. a unique user preference information 130 (m)) that family uses information, work place use information and the user preference value of the information used under different condition.In addition, as shown in Figure 3, below unique user preference information 130 (m), can arrange the user preference item (1-1,1-2,1-3 ...), and the user preference item (1-1,1-2,1-3 ...) below, can arrange other user preference items (2-1,2-2,2-3 ...).
+
+Fig. 4 shows in detail the layer structure according to user preference item shown in Figure 2 of the present invention.
+
+An entertainment item 130 (1)-11 is divided into following: music 130 (1)-111, film 130 (1)-112, opera, game shows, on-the-spot interview, physical culture, variety show program and concert.
+
+Music item 130 (1)-111 is divided into classic 130 (1)-1111 and pop music item 130 (1)-1112.
+
+Film item 130 (1)-112 is divided into following: action movie 130 (1)-1121, thriller 130 (1)-1122, comedy 130 (1)-1123, horror film 130 (1)-1124, documentary film, opera film, science fiction film, film for children.
+
+Pop music item 130 (1)-1122 can be divided into following: rock music, folk rhyme, heavy metal, dance music, the Cenozoic (nwe age), Blues, jazz, trot, country music.
+
+As the classification of entertainment item 130 (1)-11, news item 130 (1)-12 can be divided into policy item 130 (1)-121 and physical culture item 130 (1)-122 etc.
+
+Fig. 5 shows layer structure according to the user preferences of user's used tool according to the present invention.
+
+As shown in the figure, film only is being provided or is only providing in the equipment of music, according to being provided with and managing each unique user preference information (1-1, a 1-2, a 1-3), with a general structure 200 be divided into minor structure (200-1,200-2,200-3).
+
+In view of the above, can utilize explanatory note unique user preference information (1-1, a 1-2, a 1-3) is classified and to manage.
+
+Fig. 6-the 10th represents the form of unique user preference information shown in Figure 2.Can be by the layer structure of several mode presentation graphs 2.
+
+Fig. 6 shows the form according to the layer structure shown in Figure 2 of the upper strata item identifier of the tagging symbol that has utilized a user preference item of the present invention and upper-layer user's preferences.
+
+Method shown in Figure 6 has can be to represent the advantage of layer structure with the irrelevant predetermined format of its progression.
+
+Fig. 7 is according to the present invention, shows the form of layer structure shown in Figure 2 by the encoding scheme of utilizing the item identifier shown in Fig. 6.
+
+When the highest number in the multistage layer structure was scheduled, method shown in Figure 7 was effective.Particularly, shorter to the access time of upper strata item and lower floor's item in this method, and need less relatively storage space.
+
+Item identifier can be divided into the field with certain bits and/or byte (i.e. 2 bytes), its number identical with progression (promptly 4 grades), and each field can be represented as item identifier (the one 2 byte, the 22 byte of each grade, the 32 byte, the 42 byte).
+
+That is to say that be divided under the situation of 42 byte field at one 8 byte item identifier, first field has top item identifier, next field has the item identifier of next stage.In 4 grades of layer structures, neither one is " 0 " in 4 fields of the item identifier of afterbody item.
+
+In view of the above, become in the 4th field under the situation of " 0 ", the field of the superiors becomes item identifier, and all becomes in third and fourth field under the situation of " 0 ", and second field becomes item identifier.
+
+For example, in the user preference item, the item identifier in " Cenozoic " is 1-17-181-205, and " Cenozoic " item represents that it belongs to " pop music " item that item identifier is 1-17-181-0.
+
+Another example is, in the user preference item, item identifier is that 1-17-181-0's " pop music " item belongs to " music " that item identifier is 1-17-0-0, and item identifier to be 1-17-00-0's " music " item belong to item identifier is 1-0-0-0 " amusement ".
+
+Simultaneously, identifier is that " amusement " of 1-0-0-0 comprises that the item identifier form is each of 1-*-*-*.Especially, " amusement " item comprises that the form as the even lower level item is each of 1-*-0-0.
+
+In this method, the identifier of each depends on the identifier of upper strata item, and distinguishes every by the identifier that change belongs to a field.
+
+Therefore, each field is from " 0 " beginning and with field of 2 byte representations, thereby an item can comprise 65535 rudimentary items.
+
+Fig. 8 is according to the present invention, shows the form of layer structure shown in Figure 2 by the unique user preference information that utilizes leaf node in the stratiform tree construction.
+
+Owing to only utilize the relevant information of lowermost layer item in the layer structure just can extract upper strata item and relevant user preference value, can calculate the user preference value of upper strata item in real time and even without the user preference value of storage upper strata item, can drop-out yet, so the method shown in the figure is useful, that is, this method does not need very big storage space.
+
+As mentioned above, represent that with utilizing encoding scheme the method for unique user preference information structure is the same, also can utilize encoding scheme to represent unique user preference information structure with same effect.
+
+Fig. 9 is according to the present invention, shows the form of layer structure shown in Figure 1 by utilizing a catalogue.
+
+With reference to Fig. 9, every by the item identifier definition, thus produce an item catalogue, and the item identifier that defines in the utilization catalogue is retrieved the structural relation between upper strata item and the lower floor's item.
+
+Although having always, the method for a utilization catalogue presentation layer shape structure concerns the shortcoming that is defined within the catalogue to confirm the branch guide structure between the user preference item with reference to a catalogue, but from the storage space of needs minimum and on the angle that increases easily, deletes, this method is useful.
+
+Simultaneously, to Fig. 9, in the method that is used for representing user preference information, the method that is used for after input information user preference information being edited comprises user's input type with reference to Fig. 6, automatically updating type and mixed type.
+
+User's input type is a kind of when the user uses customizing messages, receives the user preferences that is used for the used information of user/do not like by dialog box, thereby upgrades the method for a user preferences.
+
+Automatically updating type is a kind of when the user uses customizing messages, considers the method for upgrading user preferences in a preassigned with the corresponding user preference item of the used information of user automatically.
+
+Mixed type is meant the method for having mixed user's input type and automatic updating type, and wherein the information of user's input has a certain weights value that depends on which user preferences is updated.
+
+After like/not liking by the said method compiles user, in order to retrieve the required information of user or to recommend and provide information to the user, two kinds of methods are arranged: a kind of method is the user preference item that will use and each user preferences/do not like directly and compare, and another kind of method is to use standardized user preferences/do not like.
+
+Like/do not like for automatic compiles user on user's information service recorder basis, it is the sorting item that uses information according to each that a kind of method is arranged, and all adds 1 from the superiors to the orlop.
+
+Simultaneously, in user preference item catalogue, the unique user preference information is continued under editor's the situation, for example, by only utilizing the user preference item information in songstress " C " and " Cenozoic ", also can upgrade the user preferences relevant simultaneously, as " amusement " under songstress " C " and " Cenozoic " with the upper strata item, " music ", " pop music ", " people ", items such as " songstresses ".
+
+Figure 10 is the form that shows the directory entry that is used for the user preference item according to the present invention.
+
+With reference to Figure 10, concerning whole or subitem catalogue, utilize one group to have the unique user preference information of the value of hobby of user preferences/not and show that the explanatory note of the applicable elements of each unique user preference information represents each user preference information.Constitute by this way, edit and manage hierarchy with a plurality of user preference items.
+
+The record of item catalogue comprises a user preference item identifier, a user preference item, a grade and a upper strata item identifier.
+
+The user preference item identifier is used to discern each user preference item, and the user preference item indicates to offer user's the information content.
+
+Grade is pointed out the hierarchy position of each the user preference item below the position at the middle and upper levels.The grade of the superiors is " 0 ".
+
+The upper strata item identifier represents which in upper-layer user's preferences each user preference item belong to.In tree structure, the upper strata item identifier has a upper-layer user's preferences under itself.
+
+Produce and management item catalogue and this project are recorded in the storage unit that is the user by the informant.
+
+Storage unit the user comprises under the situation of a catalogue, and the item catalogue that is present in user's the storage unit must have the content identical with the informant.If variation has taken place informant's item catalogue content, then user's item catalogue also should change.
+
+For example, like the music " S " of songstress " C " and music " S " to be included in " Cenozoic ", to shown in Figure 9, constituted user " A " preference information relevant with songstress " S " as Fig. 6 user " A ".
+
+Figure 11 A and 11B show the structure when editor's hierarchical data structure information, wherein Figure 11 A show have a stratiform data structure according to the present invention information by the structure before being edited, Figure 11 B shows according to the present invention has the information of stratiform data structure by the structure after editing.
+
+For example, when music " S " is registered in the user preference information,, divide to go into " musicï¼pop musicï¼folk rhyme 130 (1)-111M " with music " S " owing to there is not " Cenozoic " this music style (that is, an item).
+
+But, in " Cenozoic " pop music 130 (1)-111N and music link having occurred with this new music style during as one-level, " Cenozoic " is separated and be included into to music " S " from " folk rhyme " when, user preferences can be updated on user's the information service recorder automatically.
+
+In detail, when snatch of music " S " was classified for the first time, the user reduced the user preference value of snatch of music " S " pro rata and increase user preference value when " musicï¼pop musicï¼Cenozoic " access times as new sorting item increases according to the access times in " musicï¼pop musicï¼folk rhyme " item.
+
+In the same way, when the snatch of music of variation has taken place treatment classification, can create a user preferences according to information service recorder rather than User Recognition about " musicï¼pop musicï¼Cenozoic " item of new registration.In this case, the information service recorder should comprise that the access times of information maybe can calculate the information of access times.
+
+Figure 12 A and 12B show the classification situation about changing that is registered in the item in the catalogue, and wherein Figure 12 A shows the form of a catalogue before foundation the present invention is changed, and Figure 12 B shows the form of a catalogue after foundation the present invention is changed.
+
+The lower floor's item that belongs to pop music and classical music item automatically changes to lower floor's item of " artï¼auditory artï¼pop music " and " artï¼auditory artï¼classical music " item from lower floor's item of " amusementï¼musicï¼pop music " and " amusementï¼musicï¼classical music " item.
+
+The method of a change catalogue may need extra arithmetical operation.For example, comprise under the situation of all item identifiers of upper level, can change item identifier at each.
+
+As mentioned above, classification at the user preference item has taken place under the situation of variation, in the user preference information with entertainment item and music item, the corresponding user preferences of upper strata item that is pop music item and classical music item reduces pro rata with the user preferences that is produced by pop music item and classical music item, as the then increase pro rata of user preferences of " art " and " auditory art " item of sorting item newly.
+
+In addition, when the customer requirements informant recommended fresh information or utilize user preference information to be connected with the informant with service recorder, the informant can recommend information the most popular with users.
+
+In the method that is used for changing the multi-layer data structure, by utilizing the item of user interface change user preferences/do not like.
+
+As mentioned above, foundation has the user preference information structure of sandwich construction and utilizes the multimedia messages of this structure that method is provided, depend on which different information this environment can provide, and provide a kind of hierarchical data structure that user preferences can be provided, this user preferences to be used to provide the user required information.
+
+By automatically or according to the user selecting to utilize correct unique user preference information, the hierarchical data structure that is made of user preferences receives the user to be suitable for his or she information of situation of living in and becomes possibility.
+
+In addition, because the user preference item has hierarchy, can define the different brackets of user preference item.And, during layer user preference item rather than undermost user preference item, utilize the lower floor's user preference item information that belongs to the selected item classification to provide detailed information in the choice to the user.And, utilize the user preferences of low-grade user preference item, can constitute the user preferences of high-grade user preference item.
+
+The present invention can several forms that do not depart from essential characteristic of the present invention be implemented, and it should also be understood that the foregoing description is not subjected to the restriction of aforementioned specification, also should be within the protection domain that claims limited to the modification that the present invention made.

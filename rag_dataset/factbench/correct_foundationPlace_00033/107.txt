@@ -1,0 +1,47 @@
+At Mark Logic Corporation, we make an XML server. The product’s name is (ever so subtly) MarkLogic Server, or just MarkLogic for short.
+
+This post provides some Q&A that helps you understand how we think about (or in marketing speak, “position”) our product.
+
+What is an XML server?
+
+A special-purpose database management system (DBMS) built for handling XML content. (MarkLogic Server is, in fact, a special case of this category because it is architected to handle markup in general. We have implemented XML because it’s the obvious choice today, but were another markup language to take off, my technical team tells me it would not be hard to transition to it.)
+
+What do you mean by content?
+
+In short, anything but data. That is, anything that isn’t exclusively the numerical and short-text fields (e.g., name, birthday, social security number, address, phone, salary) that relational and other prior-generation DBMSs were designed to accommodate. At Mark Logic we usually take content to mean documents, though over time I suspect we will move to a broader definition as more and more multimedia content gets markup added to it.
+
+Is MarkLogic really a DBMS?
+
+Yes. If you think of an RDBMS as server where SQL goes in and tables come back, then you can think of MarkLogic in the exact same way: XQuery goes in and XML comes back. That is, if you a view a DBMS as a system that processes a query language, then MarkLogic is very much a DBMS.
+
+If you take a more internal viewpoint and say a DBMS is something that provides storage, transactions, concurrency, and backup and recovery, then MarkLogic qualifies as a DBMS as well. For example, MarkLogic supports concurrency, ACID transactions, backup and recovery, and read-consistent snapshots, among other core DBMS features.
+
+As an aside, I had this question myself when I joined Mark Logic. So on my third day, I asked John Pilat, formerly VP of software engineering for server technologies at Oracle and now a part-time technology strategist at Mark Logic, if MarkLogic was indeed a “real” DBMS. His three-word answer, typical of his pithy style, was “bits on iron.” Which I very much took for yes.
+
+Is MarkLogic really a search engine?
+
+Since MarkLogic architect and company founder Christopher Lindblad PhD is a search guy, there is most certainly a lot of search engine technology in MarkLogic. Specifically, the product uses search-engine-style indexing (but does so at a sub-document level) and search-engine-style clustering for scaleability.
+
+So while I would not say that MarkLogic is really a search engine, I would say that it uses a lot of search-engine technology — which is one of the things that makes MarkLogic unique.
+
+What’s the best metaphor for MarkLogic?
+
+I think of MarkLogic as a car that looks like a DBMS on the outside, but when you open up the hood, you find a motor that looks more like a search engine than a traditional DBMS.
+
+If MarkLogic is really a DBMS, then why you drone on about search?
+
+Simply because MarkLogic competes with search engines today.
+
+Most customers know that RDBMSs do not handle content well. Sometimes we find customers who have been struggling for 18 months trying to build content applications on Oracle. But usually we find people who don’t bother to try using an RDBMS (and just leave content on the file system) or who do the the spiritual DBMS equivalent of not trying and simply stuff the content into BLOBs and then use a search engine to index it.
+
+But either way, they hope to get query functionality from a search engine, which:
+
+Almost certainly was never designed to handle XML. (I’ll do an upcoming post on how search engines view XML as “that stuff that gets in the way of the text”.)
+
+From a DBMS viewpoint is a one-trick pony (i.e., the one query the search engine runs is: return a list of links to documents containing word or phrase)
+
+Requires you to do a lot of content processing that should have been done in XQuery and processed by the server instead in Java/DOM on a middle tier
+
+We show these people a better way to build content applications.
+
+So the net answer to this question is that since no traditional DBMS is up for the job, most customers turn to search engines to try and solve a DBMS problem. Until they find us, that is.

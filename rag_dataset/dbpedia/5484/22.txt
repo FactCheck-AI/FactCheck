@@ -1,0 +1,69 @@
+We may be a bit biased, but the storage media of yesteryear has so much more personality than that of today. Yes, it’s a blessing to have terabyte SD cards smaller than your pinky nail and be able to access its data with mind-boggling speed. But there’s a certain charm to a mass storage device that can potentially slice off your finger.
+
+We’re overstating the dangers of the venerable paper tape reader, of course, a mass storage device that [David Hansel] recreated a few years back but we only just became aware of. That seems a bit strange since we’ve featured his Arduino-based Altair 8800 simulator, which is what this tape reader is connected to. Mechanically, the reader is pretty simple — just a wooden frame to hold the LEGO Technic wheels used as tape reels, and some rollers to guide the tape through a read head. That bit is custom-made and uses a pair of PCBs, one for LEDs and one for phototransistors. There are nine of each — eight data bits plus the index hole — and the boards are sandwiched together to guide the paper tape.
+
+The main board has an ATmega328 which reads the parallel input from the read head and controls the tape motor. That part is important thanks to Altair Basic’s requirement for a 100- to 200-ms delay at the end of each typed line. The tape reader, which is just being used as sort of a keyboard wedge, can “type” a lot faster than that, so the motor speed is varied using PWM control as line length changes.
+
+Continue reading “Homebrew Reader Brings Paper Tape Programs Back To Life” →
+
+If you are a ham radio operator of a certain age, you probably remember ads for “The Instructograph,” a mechanical device for learning Morse code. [Our Own Devices] has an ancient specimen of the machine and shows us how it works in the video below. The machine is a model of simplicity. You wind up a spring-driven motor like you would for an old record player or music box. A slider sets the playback rate, and paper tape starts to spin.
+
+The paper tape looks like computer tape, but since it only has literal long and short notches, it has two distinct sides. When you learned one set of messages, you could flip the tape over and get more practice that way. How did the machine read the paper tape? With a mechanical contact. Literally, if the paper had a hole in it, you made the circuit. If it didn’t, the circuit was broken. A buzzer and batteries or some other kind of sounder was all you needed.
+
+The company was in business for 50 years. The newer versions had more electronics, but they always used the paper tape mechanism to store the code practice sessions. A 1962 ad noted that the machine could play back the tapes from three words a minute up to 40. You could buy or rent the machine, and we always assumed it was pretty pricey for its day. Around 1965, a new unit would cost $53 but did not include a headset or a key. So that was actually more reasonable than we expected. In 1965, a brand-name clock radio cost about $50, so it wasn’t any more than that.
+
+Everyone has their own favorite method for learning code, especially [Ludwig Koch]. At least you don’t have to learn Alex-style.
+
+Continue reading “Machine Teaches Morse Code” →
+
+Computing used to run on punch cards. Great stacks of cards would run middling programs, with data output onto more punched cards in turn. [Nii] has built a machine in this vein, capable of punching binary into paper tape.
+
+The machine is run by a stepper motor, which is charged with feeding the paper tape through the machine in steady steps. A series of vertically-actuated solenoids punch holes in the paper tape as directed. The machine buzzes and clicks away like the best electromechanical computing devices of the mid-century era.
+
+To what end, we couldn’t possibly say. One user noted the machine was punching seemingly random binary into the paper tape, and [Nii] has not provided any explanation as to the machine’s higher purpose. Regardless, whatever it is doing, it looks like it’s doing it well. Feel free to speculate in the comments.
+
+Impressively, the petite device will be demonstrated at MF-TOKYO, the 7th Annual Metal Forming Fair in Tokyo this year. We’re sure the clickity-clack will be muchly appreciated in person. Video after the break.
+
+Continue reading “Paper Punching Machine Looks Like Cute Piece Of Computer History Past” →
+
+These days, data is as likely as not to be “in the cloud.” Otherwise, it’s probably on a USB flash drive or SD card. But in the old days, paper tape was a widespread way to store and retrieve data. A common way to start the day at the office was to toggle in a few dozen bytes of bootloader code, thread a bigger bootloader tape into your TeleType paper tape reader, and then get your coffee while the more capable bootloader clunked its way into memory. Then you could finish your brew while loading the tape with your compiler or whatever you wanted. [Scott Baker] has a Heathkit H8 and decided using a paper tape machine with it and some of his other gear would be fun.
+
+Instead of a TeleType, [Scott] picked up a used paper tape machine from FANUC intended for the CNC industry. They are widely available on the surplus market, although a working machine might run you $500. [Scott] paid $200, so he had some work to do to make the unit operational.
+
+Paper tape had a few varieties. For computer work, you usually had a tape that could hold eight holes across, one for each bit in a byte. However, there are also 6-bit and 5-bit tapes for special purposes or different encodings (old TeleTypes used 5-bit characters in Baudot). The paper choice varied too. You could get plain paper, oiled paper, which maybe didn’t jam as often, and Mylar, which is less likely to shred up when it does jam.
+
+To make things even more difficult, the machines all worked a little differently as well. Sure, punches almost all use solenoids. But the tape transport was sometimes a pinch roller and sometimes a sprocket-style drive. Reading the holes could be done with mechanical contacts or optically. Some punches left little “hanging chads” on the tape, so you didn’t have to empty a confetti box to throw away the chad.
+
+The repair job was interesting. Inside the machine is an 8051 microcontroller. There was no clock, and the circuit used two custom modules. One was simply a crystal, and the other was an oscillator. Removing both allowed a modern can oscillator to replace both modules. The next problem was a fried serial output driver. Replacing that got things working except for random resets due to a faulty brown-out reset circuit. That was easy to fix, too.
+
+Of course, if you are really cheap, it is easy to make a paper tape reader from 8 phototransistors, and pulling tape through by hand isn’t unheard of. It can even talk USB. We’ve even seen a conference badge that can read tapes.
+
+Continue reading “Let’s Listen To A Tape — Paper Tape” →
+
+[Scott M. Baker] wants a paper tape punch for his retrocomputer collection. That’s fine with us, we don’t judge. In fact, these electromechanical peripherals from the past have a lot going for them, especially the noise. But alas, such things are a little hard to come by these days, and rolling one from scratch would be a difficult proposition indeed. What to do?
+
+Luckily, we live in the future, and eBay holds all sorts of wonders, including these typesetter keyboards from the 1970s, which [Scott] promptly reverse-engineered. We’ll get to the details in a minute, but first, can we just take a moment to think about the workflow these things were part of? These aren’t terminals — they lack any kind of IO apart from the punched paper tape they spewed out. The operator’s job was to punch in copy without any kind of feedback that they were hitting the right keys, and just sent the paper tap record of the session off to the typesetting machines. And you think your job sucks.
+
+To give this thing an interface, [Scott] first had to revive the power supply, whose capacitors had seen sunnier days. With that out of the way, he set about understanding the CPU-less machine by analyzing its 7400-series logic, as well as planning how to make the native 6-bit output into a more manageable 8-bit. Thankfully, the tape punch already had solenoids for the top two bits, but finding a way to drive them wasn’t trivial.
+
+The solution was to bypass a buffer so that the bits for the desired character can be set with a Raspberry Pi and an ATF22V10 programmable logic device. That’s enough to force the punch to do its thing; actually getting it to talk to something else, perhaps even [Scott]’s Heathkit H-8 computer.
+
+Continue reading “Reverse-Engineering Helps Typesetting Machine Punch Paper Tape Again” →
+
+Input devices consisting of optical readers for punched paper tape have been around since the earliest days of computing, so why stop now? [Jürgen]’s Paper Tape Reader project connects to any modern computer over USB, acting like a serial communications device. Thanks to the device’s automatic calibration, it works with a variety of paper materials. As for reading speed, it’s pretty much only limited to how fast one can pull tape through without damaging it.
+
+While [Jürgen]’s device uses LEDs and phototransistors to detect the presence or absence of punched holes, it doesn’t rely on hardware calibration. Instead, the device takes analog readings of each phototransistor, and uses software-adjusted thresholds to differentiate ones from zeros. This allows it to easily deal with a wide variety of tape types and colors, even working with translucent materials. Reading 500 characters per second isn’t a problem if the device has had a chance to calibrate.
+
+Interested in making your own? The build section of the project has all the design files; it uses only through-hole components, and since the device is constructed from a stack of 1.6 mm thick PCBs, there’s no separate enclosure needed.
+
+Paper tape and readers have a certain charm to them. Cyphercon 4.0 badges featured tape readers, and we’ve even seen the unusual approach of encoding an I2C byte stream directly onto tape.
+
+There’s nothing quite like going to a museum and being given a tour by a docent who really knows their way around the exhibits. When that docent has first hand experience in the subject matter, the experience is enhanced even further. So you can imagine our excitement when hacker, maker, and former DEC mainframe memory engineer [Ned Utzig] published a tour of what he calls “Memories of Weird Memories of Computers Past.” [Ned] expertly guides us through each technology, adding flavor and nuance to an already fascinating subject.
+
+The tour begins with early storage media such as IBM punch cards, and then walks us through time to the paper tape, vacuum tubes, and even complex vats of mercury — all used for the sake of storing data either permanently or temporarily.
+
+Next in the exhibit is an impressive CRT hack that isn’t unlike modern DRAM. The tour continues on to ferrite core memory such as that used on mainframes, minicomputers, and even the Apollo Guidance Computer. Each type is examined for its strengths and weaknesses and its place in computing history.
+
+We really appreciated the imaginative question posed toward the end of the article. We won’t give it away here- it’s worth it to go give The Mad Ned Memo a read.
+
+Is obsolete technology your cup of tea? Perhaps an Arduino based experiment with core memory will scratch the itch, or maybe storing data in thin air will bring back memories of computers gone by.

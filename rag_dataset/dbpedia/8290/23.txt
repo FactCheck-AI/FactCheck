@@ -1,0 +1,73 @@
+An HTTP service for xinetd written in bash
+
+This is written as a starting framework example for servicing HTTP requests to obtain health of some local service that is desired to be monitored. It can also be used on the command line to obtain the same health information.
+
+If you need a monitoring application that is heavy in client connections, or needs to store stateful information, consider writing a daemon that runs on its own as opposed to an xinetd application. However, if your needs are light, and you want HTTP REST-like capabilities, perhaps this meets your needs.
+
+Version 0.3 was updated to parse HA Proxy's X-Haproxy-Server-State HTTP header when HAProxy uses the configuration option httpchk with http-check send-state. By default, this xinetd script can send results back to HA Proxy with both option tcp-check and option httpchk without differing configuration. See HA Proxy Use below.
+
+Edit the xinetdhttpservice.sh file, modifying the script at the bottom to add your custom code. Look for the section titled "Add your health checking logic below". You can modify or remove the example code that is in this section.
+
+get_http_req_uri_params_value <param-name>
+
+This function will obtain the value of a paramter provided in the HTTP request.
+
+get_haproxy_server_state_value <param-name>
+
+This function will obtain the value of a paramter provided in the HTTP request header X-Haproxy-Server-State.
+
+http_response <http-code> <message>
+
+This function will return a HTTP response and exit. It will do nothing and return if the --http-response option is not set to 1, or if the request came from the command line and not as a HTTP request.
+
+decrease_health_value
+
+This function will decrease the global health value
+
+decrease_health_value
+
+display_health_value
+
+This function displays the global helath value in a HTTP response or standard output for the command line, and then exits.
+
+display_health_value
+
+HTTP GET
+
+HTTP POST
+
+HTTP POST Config: MAX_HTTP_POST_LENGTH
+
+At the top of the xinetdhttpservice.sh bash script, there is a global variable that define the maximum allowed length of posted data. Posted data that has a length greater than this will be cut off.
+
+MAX_HTTP_POST_LENGTH=200
+
+HTTP POST Config: READ_BUFFER_LENGTH
+
+If a non-compliant HTTP client is posting data that is shorter than the Content-Length, then the READ_BUFFER_LENGTH should be set to 1. By default this value is the size of the Content-Length, which is more efficient.
+
+Note: The maximum length of posted data that is accepted is the Content-Length or the MAX_HTTP_POST_LENGTH, whichever is shorter. If the HTTP client is posting data, yet provides a Content-Length of 0, no data will be read in.
+
+linux$ xinetdhttpservice.sh Success
+
+To configure this script as an xinetd service, add the xinetdhttpservice_config file to the system /etc/xinetd.d/ directory.
+
+Then restart xinetd
+
+CentOS-Flavors$ systemctl restart xinetd
+
+Then query the service via a HTTP call
+
+First setup the xinetd service, as described previously. Once setup, you should be able to get the service status via TCP or HTTP check in HAProxy. This can be tested as follows. Both TCP and HTTP checks will work without differing configuration in the xinetd_bash_http_service script because the http_response function only delivers output if the client made an HTTP request.
+
+Testing the health checks
+
+Ensure xinetd script outputs for both HTTP and TCP
+
+Configure HA Proxy
+
+Copyright (C) 2018 Center for the Application of Information Technologies, Western Illinois University. All rights reserved.
+
+Apache License 2.0, see LICENSE.
+
+This program is free software.

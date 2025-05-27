@@ -1,0 +1,31 @@
+Linux Installation for COPASI 4.31 and newer
+
+As of version 4.31 we do provide a self extracting script for installations of COPASI. This script either automatically extracts the COPASI files (if the -e option is given). Or COPASI will be installed into the given directory, and a .desktop file will be created and registered (so that you can directly start the COPASI GUI from your window manager).
+
+Download the installer from the Download page (it will be named something like COPASI-*-Linux-64bit.sh).
+
+Make the file executable: chmod +x COPASI-*-Linux-64bit.sh
+
+Run the installer: ./COPASI-*-Linux-64bit.sh. At this point the the installation script will ask where to extract files temporarily to (defaults to /tmp), where the files should be installed to (defaults to /opt/COPASI/{version}/), and where or whether to install a .desktop file.
+
+Linux Installation for older COPASI versions
+
+Download the Linux (recommended) installation package.
+
+Expand the contents of the tarball into a directory of choice with tar -xzvf COPASI-*-Linux-*bit.tar.gz.
+
+CopasiUI is a dynamically linked executables, and has no library dependencies except the glibc shared library, CopasiSE has no library dependencies.
+
+Optionally, add the environment variable COPASIDIR to your start up script. The value must be the absolute path for the directory "copasi" created during extraction.
+
+Linux Alternative Installation
+
+Download the Linux (all static) installation package.
+
+Expand the contents of the tarball into a directory of choice with tar -xzvf COPASI-*-Linux-*bit.tar.gz.
+
+CopasiUI and CopasiSE are the executables, and have no library dependencies except that they need glibc version 2.3.6 (it may not run well with older versions.)
+
+Optionally, add the environment variable COPASIDIR to your start up script. The value must be the absolute path for the directory "copasi" created during extraction.
+
+Please note, you will have to replace the* above with the build number of your package.

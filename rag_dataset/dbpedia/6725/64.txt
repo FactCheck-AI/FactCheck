@@ -1,0 +1,63 @@
+My boss has given me a challenge. The challenge is to keep one of his students from getting to the forbidden domain sites that I have listed in SonicWall. Using a regular student laptop and his credentials, he was able to get to facebook in about 10 minutes.
+
+The student went to a web site and down loaded a program that allowed him to get to facebook and on SonicWall it showed as 0.0.0.0 for web site or it was google.
+
+Can this be stopped? Is there anything in SonicWall that I can set to detect this?
+
+Thanks,
+
+Tony
+
+Sonicwall can’t outright prevent proxies, but it might be able to prevent website proxies , if you have web filtering in place you can deny the “proxy” group and it’ll get rid of most of those websites as an option.
+
+If you force IE on students you can lock down the ability to change proxy settings .
+
+You might be able to do the same with GPO for Firefox .
+
+Doesn’t have to of downloaded a program… Could be that he found an online proxy to get around it or used HTTPs which i don’t think is setup for scanning by default?
+
+Anyway have you locked down http and https in your firewall so you can only surf via the sonicwall proxy? If so does sonicwall have any dyanmic category stuff in it so you can block proxies?
+
+While changing your firewall to only allow OPENDNS dns service, also filter your outgoing firewall to allow only your needed ports(FTP, HTTP, Https, NTP, etc), it takes a bit for the odd service such as a weather station put you can always allow all ports from a single ip if you need to…
+
+Then make sure your last rule is to block everything else.
+
+We use Lightspeed and OpenDns for content filtering and don’t have a problem with proxies…
+
+2 things that you have to be able to block: Ultrasurf & sites like stupidcensorship.com (you cant just block the site stupidcensorship.com
+
+because they offer a download for your home computer… so you have to block sites “LIKE” it also make sure you are blocking the HTTPS version.
+
+I replaced my (really old) sonicwall with pfsense and I’m also using a feature it has to use lists for peerguardian to block sites … Currently if your not is int the USA you can’t access our SIS. I also have some Ads, spyware & botnets blocked along with some proxies.
+
+the other option with your content filter is to white-list things instead of blacklisting them. In other words making a list of allowed sites, its very-long & very time consuming…, and only allowing those sites…
+
+The OpenDNS idea is an option, but it prevents you from using Non-ODNS sources as secondary and tertiary servers. Personally that kills it for me.
+
+I’m assuming the “student laptop” is provided by the school, if that’s the case you should be able to get away with disabling the ability to manually enter proxies, blocking web proxies, and then locking down your laptops to prevent software from running.
+
+What you’d most likely want to do is prevent writing to C, and program execution from removable devices and network drives.
+
+On top of preventing proxy software or games, this would also reduce attacks coming from flash drives.
+
+Another thought, while less restrictive on your students, is a bit more time consuming is to modify the local machine’s host file to include known proxies (google “proxy list” and you’ll get a bunch of easy to find ones) and redirect them to localhost.
+
+It doesn’t really need to be bulletproof, just stop it enough to deter the few users doing this. Eventually they’ll stop trying.
+
+It took him a little longer to get around this time.
+
+I see that he used a HTTPS to go around SonicWall this time.
+
+If I click on the configure button by content filter type in the content filter list I see that there is another button to click Enable IP based HTTPS Content Filtering:
+
+Will this help? I am going to try it and see.
+
+The kid is using one of the school laptops and he is doing it at school.
+
+This also is a challenge by my boss to see if I can stop it. He thinks that it cannot be stopped and it is no use in trying. He also thinks that by using open source and TOR that the kid cannot be stopped.
+
+I disagree and I know that there are programs out there just for this problem.
+
+P.S. You should be able to get a trial DPI-SSL license and if it works for you, academic pricing may be available. If you don’t have the NSA model, then the OpenDNS and Limey’s suggestion of befriending the offender make sense as next steps. Best to learn hacking from the hackers.
+
+Locking out https as Scott suggested earlier gets to be an administrative burden. We do it at our call centers but it does take effort; although, having so little exposure to web-based malware has benefits too. Enable SSL access either through permitted IP addresses in Allowed domains in CFS or through SSL Control (matching certificate names) to allow or deny access. SSL Control is free under Firewall Settings. See the link here: http://www.sonicwall.com/app/projects/file_downloader/document_lib.php?t=PG&id=251

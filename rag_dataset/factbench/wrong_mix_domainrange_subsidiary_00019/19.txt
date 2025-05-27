@@ -1,0 +1,973 @@
+Citation preview
+
+Gray Hat Hacking, Third Edition Reviews “Bigger, better, and more thorough, the Gray Hat Hacking series is one that I’ve enjoyed from the start. Always right on time information, always written by experts. The Third Edition is a must-have update for new and continuing security experts.” —Jared D. DeMott Principle Security Researcher, Crucial Security, Inc. “This book is a great reference for penetration testers and researchers who want to step up and broaden their skills in a wide range of IT security disciplines.” —Peter Van Eeckhoutte (corelanc0d3r) Founder, Corelan Team “I am often asked by people how to get started in the InfoSec world, and I point people to this book. In fact, if someone is an expert in one arena and needs a leg up in another, I still point them to this book. This is one book that should be in every security professional’s library—the coverage is that good.” —Simple Nomad Hacker “The Third Edition of Gray Hat Hacking builds upon a well-established foundation to bring even deeper insight into the tools and techniques in an ethical hacker’s arsenal. From software exploitation to SCADA attacks, this book covers it all. Gray Hat Hacking is without doubt the definitive guide to the art of computer security published in this decade.” —Alexander Sotirov Security Rockstar and Founder of the Pwnie Awards “Gray Hat Hacking is an excellent ‘Hack-by-example’ book. It should be read by anyone who wants to master security topics, from physical intrusions to Windows memory protections.” —Dr. Martin Vuagnoux Cryptographer/Computer security expert “Gray Hat Hacking is a must-read if you’re serious about INFOSEC. It provides a muchneeded map of the hacker’s digital landscape. If you’re curious about hacking or are pursuing a career in INFOSEC, this is the place to start.” —Johnny Long Professional Hacker, Founder of Hackers for Charity.org
+
+This page intentionally left blank
+
+Gray Hat Hacking The Ethical Hacker’s
+
+Handbook Third Edition Allen Harper, Shon Harris, Jonathan Ness, Chris Eagle, Gideon Lenkey, and Terron Williams
+
+New York • Chicago • San Francisco • Lisbon London • Madrid • Mexico City • Milan • New Delhi San Juan • Seoul • Singapore • Sydney • Toronto
+
+Copyright © 2011 by The McGraw-Hill Companies. All rights reserved. Except as permitted under the United States Copyright Act of 1976, no part of this publication may be reproduced or distributed in any form or by any means, or stored in a database or retrieval system, without the prior written permission of the publisher. ISBN: 978-0-07-174256-6 MHID: 0-07-174256-5 The material in this eBook also appears in the print version of this title: ISBN: 978-0-07-174255-9, MHID: 0-07-174255-7. All trademarks are trademarks of their respective owners. Rather than put a trademark symbol after every occurrence of a trademarked name, we use names in an editorial fashion only, and to the benefit of the trademark owner, with no intention of infringement of the trademark. Where such designations appear in this book, they have been printed with initial caps. McGraw-Hill eBooks are available at special quantity discounts to use as premiums and sales promotions, or for use in corporate training programs. To contact a representative please e-mail us at [email protected]. Information has been obtained by McGraw-Hill from sources believed to be reliable. However, because of the possibility of human or mechanical error by our sources, McGraw-Hill, or others, McGraw-Hill does not guarantee the accuracy, adequacy, or completeness of any information and is not responsible for any errors or omissions or the results obtained from the use of such information. TERMS OF USE This is a copyrighted work and The McGraw-Hill Companies, Inc. (“McGrawHill”) and its licensors reserve all rights in and to the work. Use of this work is subject to these terms. Except as permitted under the Copyright Act of 1976 and the right to store and retrieve one copy of the work, you may not decompile, disassemble, reverse engineer, reproduce, modify, create derivative works based upon, transmit, distribute, disseminate, sell, publish or sublicense the work or any part of it without McGraw-Hill’s prior consent. You may use the work for your own noncommercial and personal use; any other use of the work is strictly prohibited. Your right to use the work may be terminated if you fail to comply with these terms. THE WORK IS PROVIDED “AS IS.” McGRAW-HILL AND ITS LICENSORS MAKE NO GUARANTEES OR WARRANTIES AS TO THE ACCURACY, ADEQUACY OR COMPLETENESS OF OR RESULTS TO BE OBTAINED FROM USING THE WORK, INCLUDING ANY INFORMATION THAT CAN BE ACCESSED THROUGH THE WORK VIA HYPERLINK OR OTHERWISE, AND EXPRESSLY DISCLAIM ANY WARRANTY, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. McGraw-Hill and its licensors do not warrant or guarantee that the functions contained in the work will meet your requirements or that its operation will be uninterrupted or error free. Neither McGraw-Hill nor its licensors shall be liable to you or anyone else for any inaccuracy, error or omission, regardless of cause, in the work or for any damages resulting therefrom. McGraw-Hill has no responsibility for the content of any information accessed through the work. Under no circumstances shall McGraw-Hill and/or its licensors be liable for any indirect, incidental, special, punitive, consequential or similar damages that result from the use of or inability to use the work, even if any of them has been advised of the possibility of such damages. This limitation of liability shall apply to any claim or cause whatsoever whether such claim or cause arises in contract, tort or otherwise.
+
+n^netsec
+
+Swimming with the Sharks? Get Peace of Mind. Are your information assets secure? Are you sure? N2NetSecurity's Information Security and Compliance Services give you the peace of mind of knowing that you have the best of the best in information Security on your side. Our deep technical knowledge ensures that our solutions are innovative and efficient and our extensive experience will help you avoid common and costly mistakes. N2NetSecurity provides information security services to government and private industry. We are a certified Payment Card Industry Qualified Security Assessor (PCI QSA). Our talented team includes Black Hat Instructors, received a 2010 Department of Defense CIO Award, and has coauthored seven leading IT books including Gray Hat Hacking: The Ethical Hacker's Handbook and Security Information Event Management Implementation. Contact us for a Free Gap Assessment and see how we can help you get peace of mind.
+
+Get Back to Normal, Back to Business! N2NetSecurity, Inc. www.n2netsec.com
+
+[email protected]
+
+800.456.0058
+
+Stop Hackers in Their Tracks
+
+Hacking Exposed, 6th Edition
+
+Hacking Exposed Malware & Rootkits
+
+Hacking Exposed Computer Forensics, 2nd Edition
+
+24 Deadly Sins of Software Security
+
+Hacking Exposed Wireless, 2nd Edition
+
+Hacking Exposed: Web Applications, 3rd Edition
+
+Hacking Exposed Windows, 3rd Edition
+
+Hacking Exposed Linux, 3rd Edition
+
+Hacking Exposed Web 2.0
+
+IT Auditing, 2nd Edition
+
+IT Security Metrics
+
+Gray Hat Hacking, 3rd Edition
+
+Available in print and ebook formats Follow us on Twitter @MHComputing
+
+Boost Your Security Skills (and Salary) with Expert Tn ming for CISSP Certification The Shon Harris ClSSP'-Solution is the perfect self-study training package not only for the CISSP*0 candidate or those renewing certification, but for any security pro who wants to increase their security knowledge and earning potential. Take advantage of this comprehensive multimedia package that lets you learn at your own pace and in your own home or office. This definitive set includes: ^
+
+In class instruction at your home
+
+DVD set of computer-based training, over 34 hours of
+
+instruction on the Common Body of Knowledge, the 10 domains required for certification. CISSP55 All-in-One 5th Edition, the 1193 page best-
+
+" selling book by Shon Harris.
+
+0 2,200+ page CISSP® Student Workbook developed by Shon Harris.
+
+Complex concepts fully explained Everything you need to pass the CISSP1 exam.
+
+^Multiple hours of Shon Harris' lectures explaining the concepts in the CISSP® Student Workbook in MP3 format ^Bonus MP3 files with extensive review sessions for each domain.
+
+j Over 1,600 CISSP^ review questions to test your knowledge. 300+ Question final practice exam. more! Learn from the best! Leading independent authority and recognized CISSP'' training guru, Shon Harris, CISSPW, MCSE, delivers this definitive certification program packaged together and available for the first time.
+
+Order today! Complete info at
+
+http://logicalsecurity.com/cissp CISSP K a registered certification mark of the International Information Systems Settirily Certification Cunscrtiurn, Jnc., aTso known as (ISC)!. No f ridersemant by, affiliation or association with (ISC)? ie impFiad.
+
+To my brothers and sisters in Christ, keep running the race. Let your light shine for Him, that others may be drawn to Him through you. —Allen Harper To my loving and supporting husband, David Harris, who has continual patience with me as I take on all of these crazy projects! —Shon Harris To Jessica, the most amazing and beautiful person I know. —Jonathan Ness For my train-loving son Aaron, you bring us constant joy! —Chris Eagle To Vincent Freeman, although I did not know you long, life has blessed us with a few minutes to talk and laugh together. —Terron Williams
+
+ABOUT THE AUTHORS Allen Harper, CISSP, PCI QSA, is the president and owner of N2NetSecurity, Inc. in North Carolina. He retired from the Marine Corps after 20 years and a tour in Iraq. Additionally, he has served as a security analyst for the U.S. Department of the Treasury, Internal Revenue Service, and Computer Security Incident Response Center (IRS CSIRC). He regularly speaks and teaches at conferences such as Black Hat and Techno. Shon Harris, CISSP, is the president of Logical Security, an author, educator, and security consultant. She is a former engineer of the U.S. Air Force Information Warfare unit and has published several books and articles on different disciplines within information security. Shon was also recognized as one of the top 25 women in information security by Information Security Magazine. Jonathan Ness, CHFI, is a lead software security engineer in Microsoft’s Security Response Center (MSRC). He and his coworkers ensure that Microsoft’s security updates comprehensively address reported vulnerabilities. He also leads the technical response of Microsoft’s incident response process that is engaged to address publicly disclosed vulnerabilities and exploits targeting Microsoft software. He serves one weekend each month as a security engineer in a reserve military unit. Chris Eagle is a senior lecturer in the Computer Science Department at the Naval Postgraduate School (NPS) in Monterey, California. A computer engineer/scientist for 25 years, his research interests include computer network attack and defense, computer forensics, and reverse/anti-reverse engineering. He can often be found teaching at Black Hat or spending late nights working on capture the flag at Defcon. Gideon Lenkey, CISSP, is the president and co-founder of Ra Security Systems, Inc., a New Jersey–based managed services company, where he specializes in testing the information security posture of enterprise IT infrastructures. He has provided advanced training to the FBI and served as the president of the FBI’s InfraGard program in New Jersey. He has been recognized on multiple occasions by FBI director Robert Muller for his contributions and is frequently consulted by both foreign and domestic government agencies. Gideon is a regular contributor to the Internet Evolution website and a participant in the EastWest Institute’s Cybersecurity initiative. Terron Williams, NSA IAM-IEM, CEH, CSSLP, works for Elster Electricity as a Senior Test Engineer, with a primary focus on smart grid security. He formerly worked at Nortel as a Security Test Engineer and VoIP System Integration Engineer. Terron has served on the editorial board for Hakin9 IT Security Magazine and has authored articles for it. His interests are in VoIP, exploit research, SCADA security, and emerging smart grid technologies. Disclaimer: The views expressed in this book are those of the authors and not of the U.S. government or the Microsoft Corporation.
+
+About the Technical Editor Michael Baucom is the Vice President of Research and Development at N2NetSecurity, Inc., in North Carolina. He has been a software engineer for 15 years and has worked on a wide variety of software, from router forwarding code in assembly to Windows applications and services. In addition to writing software, he has worked as a security consultant performing training, source code audits, and penetration tests.
+
+CONTENTS AT A GLANCE
+
+Part I
+
+.....................
+
+1
+
+.................................
+
+3
+
+Chapter 1
+
+Ethics of Ethical Hacking
+
+Chapter 2
+
+Ethical Hacking and the Legal System
+
+Chapter 3
+
+Proper and Ethical Disclosure
+
+Part II
+
+.......................
+
+23
+
+.............................
+
+47
+
+.........................
+
+75
+
+................................
+
+77
+
+..............................
+
+93
+
+.........................................
+
+109
+
+Penetration Testing and Tools
+
+Chapter 4
+
+Social Engineering Attacks
+
+Chapter 5
+
+Physical Penetration Attacks
+
+Chapter 6
+
+Insider Attacks
+
+Chapter 7
+
+Using the BackTrack Linux Distribution
+
+Chapter 8
+
+Using Metasploit
+
+Chapter 9
+
+Managing a Penetration Test
+
+Part III
+
+viii
+
+Introduction to Ethical Disclosure
+
+Exploiting
+
+.....................
+
+125
+
+.......................................
+
+141
+
+..............................
+
+157
+
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 171
+
+Chapter 10
+
+Programming Survival Skills
+
+...............................
+
+173
+
+Chapter 11
+
+Basic Linux Exploits
+
+.....................................
+
+201
+
+Chapter 12
+
+Advanced Linux Exploits
+
+Chapter 13
+
+Shellcode Strategies
+
+Chapter 14
+
+Writing Linux Shellcode
+
+Chapter 15
+
+Windows Exploits
+
+Chapter 16
+
+Understanding and Detecting Content-Type Attacks
+
+Chapter 17
+
+Web Application Security Vulnerabilities
+
+Chapter 18
+
+VoIP Attacks
+
+Chapter 19
+
+SCADA Attacks
+
+.................................
+
+225
+
+.....................................
+
+251
+
+.................................
+
+267
+
+......................................
+
+297
+
+...........
+
+341
+
+.....................
+
+361
+
+...........................................
+
+379
+
+........................................
+
+395
+
+Contents
+
+ix Part IV
+
+Vulnerability Analysis
+
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 411
+
+Chapter 20
+
+Passive Analysis
+
+........................................
+
+Chapter 21
+
+Advanced Static Analysis with IDA Pro
+
+Chapter 22
+
+Advanced Reverse Engineering
+
+Chapter 23
+
+Client-Side Browser Exploits
+
+Chapter 24
+
+Exploiting the Windows Access Control Model
+
+Chapter 25
+
+413
+
+......................
+
+445
+
+............................
+
+471
+
+..............................
+
+495
+
+...............
+
+525
+
+Intelligent Fuzzing with Sulley
+
+.............................
+
+579
+
+Chapter 26
+
+From Vulnerability to Exploit
+
+..............................
+
+595
+
+Chapter 27
+
+Closing the Holes: Mitigation
+
+..............................
+
+617
+
+Part V
+
+Malware Analysis
+
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 633
+
+Chapter 28
+
+Collecting Malware and Initial Analysis
+
+......................
+
+635
+
+Chapter 29
+
+Hacking Malware
+
+.......................................
+
+657
+
+Index . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+673
+
+CONTENTS Preface . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . xxiii Acknowledgments . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . xxv Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . xxvii
+
+Part I Chapter 1
+
+Chapter 2
+
+Chapter 3
+
+x
+
+Introduction to Ethical Disclosure Ethics of Ethical Hacking
+
+.....................
+
+1
+
+.................................
+
+3
+
+Why You Need to Understand Your Enemy’s Tactics . . . . . . . . . . . . . . . Recognizing the Gray Areas in Security . . . . . . . . . . . . . . . . . . . . . . . . . How Does This Stuff Relate to an Ethical Hacking Book? . . . . . . . . . . Vulnerability Assessment . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Penetration Testing . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . The Controversy of Hacking Books and Classes . . . . . . . . . . . . . . . . . . The Dual Nature of Tools . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Recognizing Trouble When It Happens . . . . . . . . . . . . . . . . . . . . Emulating the Attack . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Where Do Attackers Have Most of Their Fun? . . . . . . . . . . . . . . . . . . . . Security Does Not Like Complexity . . . . . . . . . . . . . . . . . . . . . . .
+
+3 8 10 10 11 15 16 18 19 19 20
+
+Ethical Hacking and the Legal System
+
+.......................
+
+23
+
+The Rise of Cyberlaw . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Understanding Individual Cyberlaws . . . . . . . . . . . . . . . . . . . . . . . . . . 18 USC Section 1029: The Access Device Statute . . . . . . . . . . . . 18 USC Section 1030 of the Computer Fraud and Abuse Act . . 18 USC Sections 2510, et. Seq., and 2701, et. Seq., of the Electronic Communication Privacy Act . . . . . . . . . . . . . . . . . Digital Millennium Copyright Act (DMCA) . . . . . . . . . . . . . . . . Cyber Security Enhancement Act of 2002 . . . . . . . . . . . . . . . . . . Securely Protect Yourself Against Cyber Trespass Act (SPY Act) . . .
+
+23 25 25 29
+
+Proper and Ethical Disclosure
+
+38 42 45 46
+
+.............................
+
+47
+
+Different Teams and Points of View . . . . . . . . . . . . . . . . . . . . . . . . . . . . How Did We Get Here? . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . CERT’s Current Process . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Full Disclosure Policy—the RainForest Puppy Policy . . . . . . . . . . . . . . Organization for Internet Safety (OIS) . . . . . . . . . . . . . . . . . . . . . . . . . Discovery . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Notification . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Validation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Resolution . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Release . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Conflicts Will Still Exist . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . “No More Free Bugs” . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+48 49 50 52 54 54 55 57 59 61 62 63
+
+Contents
+
+xi
+
+Part II Chapter 4
+
+Chapter 5
+
+Chapter 6
+
+Chapter 7
+
+Case Studies . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Pros and Cons of Proper Disclosure Processes . . . . . . . . . . . . . . Vendors Paying More Attention . . . . . . . . . . . . . . . . . . . . . . . . . . So What Should We Do from Here on Out? . . . . . . . . . . . . . . . . . . . . . iDefense and ZDI . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+67 67 71 72 72
+
+Penetration Testing and Tools
+
+75
+
+Social Engineering Attacks
+
+.........................
+
+................................
+
+77
+
+How a Social Engineering Attack Works . . . . . . . . . . . . . . . . . . . . . . . . Conducting a Social Engineering Attack . . . . . . . . . . . . . . . . . . . . . . . . Common Attacks Used in Penetration Testing . . . . . . . . . . . . . . . . . . . The Good Samaritan . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . The Meeting . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Join the Company . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Preparing Yourself for Face-to-Face Attacks . . . . . . . . . . . . . . . . . . . . . . Defending Against Social Engineering Attacks . . . . . . . . . . . . . . . . . . .
+
+77 79 81 81 86 88 89 91
+
+Physical Penetration Attacks
+
+..............................
+
+93
+
+Why a Physical Penetration Is Important . . . . . . . . . . . . . . . . . . . . . . . . Conducting a Physical Penetration . . . . . . . . . . . . . . . . . . . . . . . . . . . . Reconnaissance . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Mental Preparation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Common Ways into a Building . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . The Smokers’ Door . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Manned Checkpoints . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Locked Doors . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Physically Defeating Locks . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Once You Are Inside . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Defending Against Physical Penetrations . . . . . . . . . . . . . . . . . . . . . . . .
+
+94 94 95 97 97 98 99 102 103 107 108
+
+Insider Attacks
+
+.........................................
+
+109
+
+Why Simulating an Insider Attack Is Important . . . . . . . . . . . . . . . . . . Conducting an Insider Attack . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Tools and Preparation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Orientation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Gaining Local Administrator Privileges . . . . . . . . . . . . . . . . . . . . Disabling Antivirus . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Raising Cain . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Defending Against Insider Attacks . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+109 110 110 111 111 115 116 123
+
+Using the BackTrack Linux Distribution
+
+.....................
+
+125
+
+BackTrack: The Big Picture . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Installing BackTrack to DVD or USB Thumb Drive . . . . . . . . . . . . . . . . Using the BackTrack ISO Directly Within a Virtual Machine . . . . . . . . Creating a BackTrack Virtual Machine with VirtualBox . . . . . . . Booting the BackTrack LiveDVD System . . . . . . . . . . . . . . . . . . . Exploring the BackTrack X Windows Environment . . . . . . . . . .
+
+125 126 128 128 129 130
+
+Gray Hat Hacking, The Ethical Hacker’s Handbook, Third Edition
+
+xii
+
+Chapter 8
+
+Chapter 9
+
+Part III Chapter 10
+
+Starting Network Services . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Persisting Changes to Your BackTrack Installation . . . . . . . . . . . . . . . . Installing Full BackTrack to Hard Drive or USB Thumb Drive . . . Creating a New ISO with Your One-time Changes . . . . . . . . . . . Using a Custom File that Automatically Saves and Restores Changes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Exploring the BackTrack Boot Menu . . . . . . . . . . . . . . . . . . . . . . . . . . . Updating BackTrack . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+130 131 131 134
+
+Using Metasploit
+
+.......................................
+
+141
+
+Metasploit: The Big Picture . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Getting Metasploit . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Using the Metasploit Console to Launch Exploits . . . . . . . . . . . . . . . . Exploiting Client-Side Vulnerabilities with Metasploit . . . . . . . . . . . . . Penetration Testing with Metasploit’s Meterpreter . . . . . . . . . . . . . . . . Automating and Scripting Metasploit . . . . . . . . . . . . . . . . . . . . . . . . . . Going Further with Metasploit . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+141 141 142 147 149 155 156
+
+Managing a Penetration Test
+
+135 137 139
+
+..............................
+
+157
+
+Planning a Penetration Test . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Types of Penetration Tests . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Scope of a Penetration Test . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Locations of the Penetration Test . . . . . . . . . . . . . . . . . . . . . . . . . Organization of the Penetration Testing Team . . . . . . . . . . . . . . Methodologies and Standards . . . . . . . . . . . . . . . . . . . . . . . . . . . Phases of the Penetration Test . . . . . . . . . . . . . . . . . . . . . . . . . . . Testing Plan for a Penetration Test . . . . . . . . . . . . . . . . . . . . . . . . Structuring a Penetration Testing Agreement . . . . . . . . . . . . . . . . . . . . . Statement of Work . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Get-Out-of-Jail-Free Letter . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Execution of a Penetration Test . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Kickoff Meeting . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Access During the Penetration Test . . . . . . . . . . . . . . . . . . . . . . . Managing Expectations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Managing Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Steady Is Fast . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . External and Internal Coordination . . . . . . . . . . . . . . . . . . . . . . . Information Sharing During a Penetration Test . . . . . . . . . . . . . . . . . . Dradis Server . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Reporting the Results of a Penetration Test . . . . . . . . . . . . . . . . . . . . . . Format of the Report . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Out Brief of the Report . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+157 157 158 158 158 159 159 161 161 161 162 162 162 163 163 163 164 164 164 164 168 169 169
+
+Exploiting
+
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 171
+
+Programming Survival Skills
+
+...............................
+
+173
+
+C Programming Language . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Basic C Language Constructs . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+173 173
+
+Contents
+
+xiii
+
+Chapter 11
+
+Sample Program . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Compiling with gcc . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Computer Memory . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Random Access Memory (RAM) . . . . . . . . . . . . . . . . . . . . . . . . . Endian . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Segmentation of Memory . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Programs in Memory . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Buffers . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Strings in Memory . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Pointers . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Putting the Pieces of Memory Together . . . . . . . . . . . . . . . . . . . . Intel Processors . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Registers . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Assembly Language Basics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Machine vs. Assembly vs. C . . . . . . . . . . . . . . . . . . . . . . . . . . . . . AT&T vs. NASM . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Addressing Modes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Assembly File Structure . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Assembling . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Debugging with gdb . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . gdb Basics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Disassembly with gdb . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Python Survival Skills . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Getting Python . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Hello World in Python . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Python Objects . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Strings . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Numbers . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Lists . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Dictionaries . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Files with Python . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Sockets with Python . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+178 179 180 180 180 181 181 182 182 182 183 184 184 184 185 185 188 189 189 190 190 191 192 192 193 193 193 195 196 197 197 199
+
+Basic Linux Exploits
+
+.....................................
+
+201
+
+Stack Operations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Function Calling Procedure . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Buffer Overflows . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Overflow of meet.c . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Ramifications of Buffer Overflows . . . . . . . . . . . . . . . . . . . . . . . . Local Buffer Overflow Exploits . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Components of the Exploit . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Exploiting Stack Overflows from the Command Line . . . . . . . . Exploiting Stack Overflows with Generic Exploit Code . . . . . . . Exploiting Small Buffers . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Exploit Development Process . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Control eip . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Determine the Offset(s) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+201 202 203 204 208 209 209 211 213 215 217 218 218
+
+Gray Hat Hacking, The Ethical Hacker’s Handbook, Third Edition
+
+xiv Determine the Attack Vector . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Build the Exploit Sandwich . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Test the Exploit . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+Chapter 12
+
+Chapter 13
+
+Chapter 14
+
+Advanced Linux Exploits
+
+221 222 222
+
+.................................
+
+225
+
+Format String Exploits . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . The Problem . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Reading from Arbitrary Memory . . . . . . . . . . . . . . . . . . . . . . . . . Writing to Arbitrary Memory . . . . . . . . . . . . . . . . . . . . . . . . . . . . Taking .dtors to root . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Memory Protection Schemes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Compiler Improvements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Kernel Patches and Scripts . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Return to libc Exploits . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Bottom Line . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+225 225 229 231 233 236 236 240 241 249
+
+Shellcode Strategies
+
+.....................................
+
+251
+
+User Space Shellcode . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . System Calls . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Basic Shellcode . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Port Binding Shellcode . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Reverse Shellcode . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Find Socket Shellcode . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Command Execution Code . . . . . . . . . . . . . . . . . . . . . . . . . . . . . File Transfer Code . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Multistage Shellcode . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . System Call Proxy Shellcode . . . . . . . . . . . . . . . . . . . . . . . . . . . . Process Injection Shellcode . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Other Shellcode Considerations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Shellcode Encoding . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Self-Corrupting Shellcode . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Disassembling Shellcode . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Kernel Space Shellcode . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Kernel Space Considerations . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+251 252 252 253 254 256 257 257 258 258 259 260 260 261 262 263 264
+
+Writing Linux Shellcode
+
+.................................
+
+267
+
+Basic Linux Shellcode . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . System Calls . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . System Calls by C . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . System Calls by Assembly . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Exit System Call . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . setreuid System Call . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Shell-Spawning Shellcode with execve . . . . . . . . . . . . . . . . . . . . Implementing Port-Binding Shellcode . . . . . . . . . . . . . . . . . . . . . . . . . Linux Socket Programming . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Assembly Program to Establish a Socket . . . . . . . . . . . . . . . . . . . Test the Shellcode . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+267 268 268 269 269 271 272 276 276 279 281
+
+Contents
+
+xv Implementing Reverse Connecting Shellcode . . . . . . . . . . . . . . . . . . . . Reverse Connecting C Program . . . . . . . . . . . . . . . . . . . . . . . . . . Reverse Connecting Assembly Program . . . . . . . . . . . . . . . . . . . . Encoding Shellcode . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Simple XOR Encoding . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Structure of Encoded Shellcode . . . . . . . . . . . . . . . . . . . . . . . . . . JMP/CALL XOR Decoder Example . . . . . . . . . . . . . . . . . . . . . . . . FNSTENV XOR Example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Putting the Code Together . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Automating Shellcode Generation with Metasploit . . . . . . . . . . . . . . . Generating Shellcode with Metasploit . . . . . . . . . . . . . . . . . . . . . Encoding Shellcode with Metasploit . . . . . . . . . . . . . . . . . . . . . .
+
+Chapter 15
+
+Chapter 16
+
+Windows Exploits
+
+284 284 285 287 287 288 288 289 291 294 294 295
+
+......................................
+
+297
+
+Compiling and Debugging Windows Programs . . . . . . . . . . . . . . . . . . Compiling on Windows . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Debugging on Windows with OllyDbg . . . . . . . . . . . . . . . . . . . . Writing Windows Exploits . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Exploit Development Process Review . . . . . . . . . . . . . . . . . . . . . ProSSHD Server . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Control eip . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Determine the Offset(s) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Determine the Attack Vector . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Build the Exploit Sandwich . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Debug the Exploit if Needed . . . . . . . . . . . . . . . . . . . . . . . . . . . . Understanding Structured Exception Handling (SEH) . . . . . . . . . . . . . Implementation of SEH . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Understanding Windows Memory Protections (XP SP3, Vista, 7, and Server 2008) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Stack-Based Buffer Overrun Detection (/GS) . . . . . . . . . . . . . . . Safe Structured Exception Handling (SafeSEH) . . . . . . . . . . . . . SEH Overwrite Protection (SEHOP) . . . . . . . . . . . . . . . . . . . . . . Heap Protections . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Data Execution Prevention (DEP) . . . . . . . . . . . . . . . . . . . . . . . . Address Space Layout Randomization (ASLR) . . . . . . . . . . . . . . Bypassing Windows Memory Protections . . . . . . . . . . . . . . . . . . . . . . . Bypassing /GS . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Bypassing SafeSEH . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Bypassing ASLR . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Bypassing DEP . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Bypassing SEHOP . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Summary of Memory Bypass Methods . . . . . . . . . . . . . . . . . . . .
+
+297 297 299 304 305 305 306 308 309 312 314 316 316 318 318 320 320 320 321 321 322 323 323 324 325 331 338
+
+Understanding and Detecting Content-Type Attacks
+
+...........
+
+341
+
+How Do Content-Type Attacks Work? . . . . . . . . . . . . . . . . . . . . . . . . . . Which File Formats Are Being Exploited Today? . . . . . . . . . . . . . . . . . . Intro to the PDF File Format . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+341 343 345
+
+Gray Hat Hacking, The Ethical Hacker’s Handbook, Third Edition
+
+xvi
+
+Chapter 17
+
+Chapter 18
+
+Chapter 19
+
+Analyzing a Malicious PDF Exploit . . . . . . . . . . . . . . . . . . . . . . . . . . . . Implementing Safeguards in Your Analysis Environment . . . . . Tools to Detect Malicious PDF Files . . . . . . . . . . . . . . . . . . . . . . . . . . . . PDFiD . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . pdf-parser.py . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Tools to Test Your Protections Against Content-type Attacks . . . . . . . . How to Protect Your Environment from Content-type Attacks . . . . . . Apply All Security Updates . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Disable JavaScript in Adobe Reader . . . . . . . . . . . . . . . . . . . . . . . Enable DEP for Microsoft Office Application and Adobe Reader . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+348 350 351 351 355 358 359 359 359
+
+Web Application Security Vulnerabilities
+
+.....................
+
+361
+
+Overview of Top Web Application Security Vulnerabilities . . . . . . . . . Injection Vulnerabilities . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Cross-Site Scripting Vulnerabilities . . . . . . . . . . . . . . . . . . . . . . . The Rest of the OWASP Top Ten . . . . . . . . . . . . . . . . . . . . . . . . . . SQL Injection Vulnerabilities . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . SQL Databases and Statements . . . . . . . . . . . . . . . . . . . . . . . . . . Testing Web Applications to Find SQL Injection Vulnerabilities . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Cross-Site Scripting Vulnerabilities . . . . . . . . . . . . . . . . . . . . . . . . . . . . Explaining “Scripting” . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Explaining Cross-Site Scripting . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+361 361 362 362 362 365
+
+VoIP Attacks
+
+360
+
+367 373 373 374
+
+...........................................
+
+379
+
+What Is VoIP? . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Protocols Used by VoIP . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . SIP . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Megaco H.248 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . H.323 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . TLS and DTLS . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . SRTP . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ZRTP . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Types of VoIP Attacks . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Enumeration . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . SIP Password Cracking . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Eavesdropping/Packet Capture . . . . . . . . . . . . . . . . . . . . . . . . . . . Denial of Service . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . How to Protect Against VoIP Attacks . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+379 380 381 382 382 383 384 384 384 384 386 386 387 393
+
+SCADA Attacks
+
+........................................
+
+395
+
+What Is SCADA? . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Which Protocols Does SCADA Use? . . . . . . . . . . . . . . . . . . . . . . . . . . . OPC . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ICCP . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Modbus . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . DNP3 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+395 396 396 396 397 398
+
+Contents
+
+xvii SCADA Fuzzing . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . SCADA Fuzzing with Autodafé . . . . . . . . . . . . . . . . . . . . . . . . . . . SCADA Fuzzing with TFTP Daemon Fuzzer . . . . . . . . . . . . . . . . Stuxnet Malware (The New Wave in Cyberterrorism) . . . . . . . . . . . . . . How to Protect Against SCADA Attacks . . . . . . . . . . . . . . . . . . . . . . . . .
+
+Part IV Chapter 20
+
+Chapter 21
+
+Chapter 22
+
+Vulnerability Analysis Passive Analysis
+
+399 399 405 408 408
+
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 411
+
+........................................
+
+413
+
+Ethical Reverse Engineering . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Why Bother with Reverse Engineering? . . . . . . . . . . . . . . . . . . . . . . . . . Reverse Engineering Considerations . . . . . . . . . . . . . . . . . . . . . . Source Code Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Source Code Auditing Tools . . . . . . . . . . . . . . . . . . . . . . . . . . . . . The Utility of Source Code Auditing Tools . . . . . . . . . . . . . . . . . Manual Source Code Auditing . . . . . . . . . . . . . . . . . . . . . . . . . . . Automated Source Code Analysis . . . . . . . . . . . . . . . . . . . . . . . . Binary Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Manual Auditing of Binary Code . . . . . . . . . . . . . . . . . . . . . . . . . Automated Binary Analysis Tools . . . . . . . . . . . . . . . . . . . . . . . . .
+
+413 414 415 416 416 418 420 425 427 427 441
+
+Advanced Static Analysis with IDA Pro
+
+......................
+
+445
+
+Static Analysis Challenges . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Stripped Binaries . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Statically Linked Programs and FLAIR . . . . . . . . . . . . . . . . . . . . . Data Structure Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Quirks of Compiled C++ Code . . . . . . . . . . . . . . . . . . . . . . . . . . Extending IDA Pro . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Scripting with IDC . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . IDA Pro Plug-In Modules and the IDA Pro SDK . . . . . . . . . . . . . Building IDA Pro Plug-Ins . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . IDA Pro Loaders and Processor Modules . . . . . . . . . . . . . . . . . .
+
+445 446 448 454 459 461 461 464 466 468
+
+Advanced Reverse Engineering
+
+............................
+
+471
+
+Why Try to Break Software? . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Overview of the Software Development Process . . . . . . . . . . . . . . . . . . Instrumentation Tools . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Debuggers . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Code Coverage Analysis Tools . . . . . . . . . . . . . . . . . . . . . . . . . . . Profiling Tools . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Flow Analysis Tools . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Memory Use Monitoring Tools . . . . . . . . . . . . . . . . . . . . . . . . . . Fuzzing . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Instrumented Fuzzing Tools and Techniques . . . . . . . . . . . . . . . . . . . . A Simple URL Fuzzer . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Fuzzing Unknown Protocols . . . . . . . . . . . . . . . . . . . . . . . . . . . . SPIKE . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+471 472 473 474 476 477 477 480 484 484 485 487 488
+
+Gray Hat Hacking, The Ethical Hacker’s Handbook, Third Edition
+
+xviii SPIKE Static Content Primitives . . . . . . . . . . . . . . . . . . . . . . . . . . SPIKE Proxy . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Sharefuzz . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+Chapter 23
+
+Chapter 24
+
+Client-Side Browser Exploits
+
+489 492 492
+
+..............................
+
+495
+
+Why Client-Side Vulnerabilities Are Interesting . . . . . . . . . . . . . . . . . . Client-Side Vulnerabilities Bypass Firewall Protections . . . . . . . Client-Side Applications Are Often Running with Administrative Privileges . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Client-Side Vulnerabilities Can Easily Target Specific People or Organizations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Internet Explorer Security Concepts . . . . . . . . . . . . . . . . . . . . . . . . . . . . ActiveX Controls . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Internet Explorer Security Zones . . . . . . . . . . . . . . . . . . . . . . . . . History of Client-Side Exploits and Latest Trends . . . . . . . . . . . . . . . . . Client-Side Vulnerabilities Rise to Prominence . . . . . . . . . . . . . Notable Vulnerabilities in the History of Client-Side Attacks . . Finding New Browser-Based Vulnerabilities . . . . . . . . . . . . . . . . . . . . . mangleme . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Mozilla Security Team Fuzzers . . . . . . . . . . . . . . . . . . . . . . . . . . . AxEnum . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . AxFuzz . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . AxMan . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Heap Spray to Exploit . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . InternetExploiter . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Protecting Yourself from Client-Side Exploits . . . . . . . . . . . . . . . . . . . . Keep Up-to-Date on Security Patches . . . . . . . . . . . . . . . . . . . . . Stay Informed . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Run Internet-Facing Applications with Reduced Privileges . . . .
+
+495 495
+
+Exploiting the Windows Access Control Model
+
+496 496 497 497 498 499 499 500 506 506 509 510 515 515 521 521 522 522 522 522
+
+...............
+
+525
+
+Why Access Control Is Interesting to a Hacker . . . . . . . . . . . . . . . . . . . Most People Don’t Understand Access Control . . . . . . . . . . . . . Vulnerabilities You Find Are Easy to Exploit . . . . . . . . . . . . . . . . You’ll Find Tons of Security Vulnerabilities . . . . . . . . . . . . . . . . . How Windows Access Control Works . . . . . . . . . . . . . . . . . . . . . . . . . . Security Identifier . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Access Token . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Security Descriptor . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . The Access Check . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Tools for Analyzing Access Control Configurations . . . . . . . . . . . . . . . Dumping the Process Token . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Dumping the Security Descriptor . . . . . . . . . . . . . . . . . . . . . . . . Special SIDs, Special Access, and “Access Denied” . . . . . . . . . . . . . . . . Special SIDs . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Special Access . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Investigating “Access Denied” . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+525 525 526 526 526 527 528 531 535 538 538 541 543 543 545 545
+
+Contents
+
+xix Analyzing Access Control for Elevation of Privilege . . . . . . . . . . . . . . . Attack Patterns for Each Interesting Object Type . . . . . . . . . . . . . . . . . . Attacking Services . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Attacking Weak DACLs in the Windows Registry . . . . . . . . . . . . Attacking Weak Directory DACLs . . . . . . . . . . . . . . . . . . . . . . . . . Attacking Weak File DACLs . . . . . . . . . . . . . . . . . . . . . . . . . . . . . What Other Object Types Are Out There? . . . . . . . . . . . . . . . . . . . . . . . Enumerating Shared Memory Sections . . . . . . . . . . . . . . . . . . . . Enumerating Named Pipes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Enumerating Processes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Enumerating Other Named Kernel Objects (Semaphores, Mutexes, Events, Devices) . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+Chapter 25
+
+Chapter 26
+
+Chapter 27
+
+Intelligent Fuzzing with Sulley
+
+553 554 554 560 564 569 573 573 574 575 576
+
+.............................
+
+579
+
+Protocol Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Sulley Fuzzing Framework . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Installing Sulley . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Powerful Fuzzer . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Blocks . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Monitoring the Process for Faults . . . . . . . . . . . . . . . . . . . . . . . . Monitoring the Network Traffic . . . . . . . . . . . . . . . . . . . . . . . . . . Controlling VMware . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Putting It All Together . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Postmortem Analysis of Crashes . . . . . . . . . . . . . . . . . . . . . . . . . Analysis of Network Traffic . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Exploring Further . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+579 581 581 581 584 588 589 589 590 592 593 594
+
+From Vulnerability to Exploit
+
+..............................
+
+595
+
+Exploitability . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Debugging for Exploitation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Initial Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Understanding the Problem . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Preconditions and Postconditions . . . . . . . . . . . . . . . . . . . . . . . . Repeatability . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Payload Construction Considerations . . . . . . . . . . . . . . . . . . . . . . . . . . Payload Protocol Elements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Buffer Orientation Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . Self-Destructive Shellcode . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Documenting the Problem . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Background Information . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Circumstances . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Research Results . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+596 596 597 601 602 603 611 612 612 613 614 614 614 615
+
+Closing the Holes: Mitigation
+
+..............................
+
+617
+
+Mitigation Alternatives . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Port Knocking . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Migration . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+617 618 618
+
+Gray Hat Hacking, The Ethical Hacker’s Handbook, Third Edition
+
+xx Patching . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Source Code Patching Considerations . . . . . . . . . . . . . . . . . . . . . Binary Patching Considerations . . . . . . . . . . . . . . . . . . . . . . . . . . Binary Mutation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Third-Party Patching Initiatives . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+Part V Chapter 28
+
+Chapter 29
+
+Malware Analysis
+
+619 620 622 626 631
+
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 633
+
+Collecting Malware and Initial Analysis
+
+......................
+
+635
+
+Malware . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Types of Malware . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Malware Defensive Techniques . . . . . . . . . . . . . . . . . . . . . . . . . . Latest Trends in Honeynet Technology . . . . . . . . . . . . . . . . . . . . . . . . . Honeypots . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Honeynets . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Why Honeypots Are Used . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Limitations of Honeypots . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Low-Interaction Honeypots . . . . . . . . . . . . . . . . . . . . . . . . . . . . . High-Interaction Honeypots . . . . . . . . . . . . . . . . . . . . . . . . . . . . Types of Honeynets . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Thwarting VMware Detection Technologies . . . . . . . . . . . . . . . . Catching Malware: Setting the Trap . . . . . . . . . . . . . . . . . . . . . . . . . . . . VMware Host Setup . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . VMware Guest Setup . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Using Nepenthes to Catch a Fly . . . . . . . . . . . . . . . . . . . . . . . . . . Initial Analysis of Malware . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Static Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Live Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Norman SandBox Technology . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+635 635 636 637 637 637 637 638 639 639 640 642 644 644 644 644 646 646 648 653
+
+Hacking Malware
+
+.......................................
+
+657
+
+Trends in Malware . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Embedded Components . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Use of Encryption . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . User Space Hiding Techniques . . . . . . . . . . . . . . . . . . . . . . . . . . . Use of Rootkit Technology . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Persistence Measures . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . De-obfuscating Malware . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Packer Basics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Unpacking Binaries . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Reverse-Engineering Malware . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Malware Setup Phase . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Malware Operation Phase . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Automated Malware Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+657 657 658 658 659 659 660 660 661 669 670 670 671
+
+Index . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+673
+
+PREFACE This book has been developed by and for security professionals who are dedicated to working in an ethical and responsible manner to improve the overall security posture of individuals, corporations, and nations.
+
+xxi
+
+ACKNOWLEDGMENTS Each of the authors would like to thank the editors at McGraw-Hill. In particular, we would like to thank Joya Anthony. You really kept us on track and helped us through the process. Your dedication to this project was truly noteworthy. Thanks. Allen Harper would like to thank his wonderful wife, Corann, and daughters, Haley and Madison, for their support and understanding through this third edition. It is wonderful to see our family grow stronger in Christ. I love you each dearly. In addition, Allen would like to thank the members of his Church for their love and support. In particular, Rob Martin and Ronnie Jones have been true brothers in the Lord and great friends. Also, Allen would like to thank other hackers who provided assistance through the process: Alex Sotirov, Mark Dowd, Alexey Sintsov, Shuichiro Suzuki, Peter Van Eeckhoutte, Stéfan Le Berre, and Damien Cauquil. Shon Harris would like to thank the other authors and the team members for their continued dedication to this project and continual contributions to the industry as a whole. Shon would also like to thank the crazy Fairbairn sisters—Kathy Conlon, Diane Marshall, and Kristy Gorenz for their lifelong support of Shon and her efforts. Jonathan Ness would like to thank Jessica, his amazing wife, for tolerating the long hours required for him to write this book (and hold his job, and his second job, and third “job,” and all the side projects). Thanks also to Didier Stevens for the generous help with Chapter 16 (and for providing the free PDF analysis tools at http://blog .didierstevens.com/programs/pdf-tools). Big thanks also to Terry McCorkle for his expert guidance and advice, which led to the current Chapter 17—you’re a life-saver, Terry! Finally, Jonathan would like to thank the mentors, teachers, coworkers, pastors, family, and friends who have guided him along his way, contributing more to his success than they’ll ever know. Chris Eagle would like to acknowledge all of the core members of the DDTEK crew. The hard work they put in and the skills they bring to the table never cease to amaze him. Gideon Lenkey would like to thank his loving and supportive family and friends who patiently tolerate his eccentric pursuits. He’d also like to thank all of the special agents of the FBI, present and retired, who have kept boredom from his door! Terron Williams would like to thank his lovely wife, Mekka, and his stepson, Christian Morris. The two of you are the center of my life, and I appreciate each and every second that we share together. God is truly good all of the time. In addition, Terron would like to thank his mother, Christina Williams, and his sister, Sharon Williams-Scott. There is not a moment that goes by that I am not grateful for the love and the support that you have always shown to me.
+
+xxii
+
+INTRODUCTION I have seen enough of one war never to wish to see another. —Thomas Jefferson I know not with what weapons World War III will be fought, but World War IV will be fought with sticks and stones. —Albert Einstein The art of war is simple enough. Find out where your enemy is. Get at him as soon as you can. Strike him as hard as you can, and keep moving on. —Ulysses S. Grant The goal of this book is to help produce more highly skilled security professionals who are dedicated to protecting against malicious hacking activity. It has been proven over and over again that it is important to understand one’s enemies, including their tactics, skills, tools, and motivations. Corporations and nations have enemies that are very dedicated and talented. We must work together to understand the enemies’ processes and procedures to ensure that we can properly thwart their destructive and malicious behavior. The authors of this book want to provide the readers with something we believe the industry needs: a holistic review of ethical hacking that is responsible and truly ethical in its intentions and material. This is why we are starting this book with a clear definition of what ethical hacking is and is not—something society is very confused about. We have updated the material from the first and second editions and have attempted to deliver the most comprehensive and up-to-date assembly of techniques, procedures, and material. Nine new chapters are presented and the other chapters have been updated. In Part I of this book we lay down the groundwork of the necessary ethics and expectations of a gray hat hacker. This section: • Clears up the confusion about white, black, and gray hat definitions and characteristics • Reviews the slippery ethical issues that should be understood before carrying out any type of ethical hacking activities • Reviews vulnerability discovery reporting challenges and the models that can be used to deal with those challenges • Surveys legal issues surrounding hacking and many other types of malicious activities • Walks through proper vulnerability discovery processes and current models that provide direction In Part II, we introduce more advanced penetration methods and tools that no other books cover today. Many existing books cover the same old tools and methods that have
+
+xxiii
+
+Gray Hat Hacking, The Ethical Hacker’s Handbook, Third Edition
+
+xxiv been rehashed numerous times, but we have chosen to go deeper into the advanced mechanisms that real gray hats use today. We discuss the following topics in this section: • Automated penetration testing methods and advanced tools used to carry out these activities • The latest tools used for penetration testing • Physical, social engineering, and insider attacks In Part III, we dive right into the underlying code and teach the reader how specific components of every operating system and application work, and how they can be exploited. We cover the following topics in this section: • Program Coding 101 to introduce you to the concepts you will need to understand for the rest of the sections • How to exploit stack operations and identify and write buffer overflows • How to identify advanced Linux and Windows vulnerabilities and how they are exploited • How to create different types of shellcode to develop your own proof-ofconcept exploits and necessary software to test and identify vulnerabilities • The latest types of attacks, including client-based, web server, VoIP, and SCADA attacks In Part IV, we go even deeper, by examining the most advanced topics in ethical hacking that many security professionals today do not understand. In this section, we examine the following: • Passive and active analysis tools and methods • How to identify vulnerabilities in source code and binary files • How to reverse-engineer software and disassemble the components • Fuzzing and debugging techniques • Mitigation steps of patching binary and source code In Part V, we have provided a section on malware analysis. At some time or another, the ethical hacker will come across a piece of malware and may need to perform basic analysis. In this section, you will learn about the following topics: • Collection of your own malware specimen • Analysis of malware, including a discussion of de-obfuscation techniques If you are ready to take the next step to advance and deepen your understanding of ethical hacking, this is the book for you. We’re interested in your thoughts and comments. Please send us an e-mail at [email protected]. Also, for additional technical information and resources related to this book and ethical hacking, browse to www.grayhathackingbook .com or www.mhprofessional.com/product.php?cat=112&isbn=0071742557.
+
+PART I
+
+Introduction to Ethical Disclosure ■ ■ ■
+
+Chapter 1 Chapter 2 Chapter 3
+
+Ethics of Ethical Hacking Ethical Hacking and the Legal System Proper and Ethical Disclosure
+
+This page intentionally left blank
+
+CHAPTER
+
+Ethics of Ethical Hacking This book has not been compiled and written to be used as a tool by individuals who wish to carry out malicious and destructive activities. It is a tool for people who are interested in extending or perfecting their skills to defend against such attacks and damaging acts. In this chapter, we’ll discuss the following topics: • Why you need to understand your enemy’s tactics • Recognizing the gray areas in security • How does this stuff relate to an ethical hacking book? • The controversy of hacking books and classes • Where do attackers have most of their fun?
+
+Why You Need to Understand Your Enemy’s Tactics Let’s go ahead and get the commonly asked questions out of the way and move on from there. Was this book written to teach today’s hackers how to cause damage in more effective ways? Answer: No. Next question. Then why in the world would you try to teach people how to cause destruction and mayhem? Answer: You cannot properly protect yourself from threats you do not understand. The goal is to identify and prevent destruction and mayhem, not cause it. I don’t believe you. I think these books are only written for profits and royalties. Answer: This book was written to actually teach security professionals what the bad guys already know and are doing. More royalties would be nice, too, so please buy two copies. Still not convinced? Why do militaries all over the world study their enemies’ tactics, tools, strategies, technologies, and so forth? Because the more you know about what your enemy is up to, the better idea you have as to what protection mechanisms you need to put into place to defend yourself.
+
+3
+
+1
+
+Gray Hat Hacking, The Ethical Hacker’s Handbook, Third Edition
+
+4 Most countries’ militaries carry out various scenario-based fighting exercises. For example, pilot units split up into the “good guys” and the “bad guys.” The bad guys use the same tactics, techniques, and methods of fighting as a specific enemy—Libya, Russia, United States, Germany, North Korea, and so on. The goal of these exercises is to allow the pilots to understand enemy attack patterns and to identify and be prepared for certain offensive actions, so they can properly react in the correct defensive manner. This may seem like a large leap—from pilots practicing for wartime to corporations trying to practice proper information security—but it is all about what the team is trying to protect and the risks involved. A military is trying to protect its nation and its assets. Many governments around the world have also come to understand that the same assets they have spent millions and perhaps billions of dollars to protect physically now face different types of threats. The tanks, planes, and weaponry still have to be protected from being blown up, but these same tanks, planes, and weaponry are now all run by and are dependent upon software. This software can be hacked into, compromised, or corrupted. Coordinates of where bombs are to be dropped can be changed. Individual military bases still need to be protected by surveillance and military police; this is physical security. Satellites and airplanes perform surveillance to watch for suspicious activities taking place from afar, and security police monitor the entry points in and out of the base. These types of controls are limited in monitoring all of the entry points into a military base. Because the base is so dependent upon technology and software—as every organization is today— and there are now so many communication channels present (Internet, extranets, wireless, leased lines, shared WAN lines, and so on), a different type of “security police” is required to cover and monitor all of these entry points into and out of the base. Okay, so your corporation does not hold top security information about the tactical military troop movement through Afghanistan, you don’t have the speculative coordinates of the location of bin Laden, and you are not protecting the launch codes of nuclear bombs—does that mean you do not need to have the same concerns and countermeasures? Nope. Just as the military needs to protect its assets, you need to protect yours. An interesting aspect of the hacker community is that it is changing. Over the last few years, their motivation has changed from just the thrill of figuring out how to exploit vulnerabilities to figuring out how to make revenue from their actions and getting paid for their skills. Hackers who were out to “have fun” without any real target in mind have, to a great extent, been replaced by people who are serious about gaining financial benefits from their activities. Attacks are not only getting more specific, but also increasing in sophistication. The following are just a few examples of this type of trend: • One of three Indian defendants was sentenced in September 2008 for an online brokerage hack, called one of the first federal prosecutions of a “hack, pump, and dump” scheme, in which hackers penetrate online brokerage accounts, buy large shares of penny stocks to inflate the price, and then net the profits after selling shares. • In December 2009, a Russian hacking group called the Russian Business Network (BSN) stole tens of millions of dollars from Citibank through the
+
+Chapter 1: Ethics of of Ethical Hacking
+
+5
+
+• A group of Russian, Estonian, and Moldovan hackers were indicted in November 2009, after stealing more than $9 million from a credit card processor in one day. The hackers were alleged to have broken the encryption scheme used at Royal Bank of Scotland’s payment processor, and then they raised account limits, created and distributed counterfeit debit cards, and withdrew roughly $9.4 million from more than 2,100 ATMs worldwide—in less than 12 hours. • Hackers using a new kind of malware made off with at least 300,000 Euros from German banks in August of 2009. The malware wrote new bank statements as it took money from victims’ bank accounts, changing HTML coding on an infected machine before a user could see it. Criminals are also using online scams in a bid to steal donations made to help those affected by the January 2010 earthquake in Haiti and other similar disasters. Fraudsters have set up fictitious websites or are falsely using the names of genuine charities to trick donors into sending them donations. If you can think of the crime, it is probably already taking place within the digital world. You can learn more about these types of crimes at www.cybercrime.gov. Malware is still one of the main culprits that costs companies the most amount of money. An interesting thing about malware is that many people seem to put it in a different category from hacking and intrusions. The fact is malware has evolved to become one of the most sophisticated and automated forms of hacking. The attacker only has to put some upfront effort into developing the software, and then with no more effort required from the attacker, the malware can do its damage over and over again. The commands and logic within the malware are the same components that attackers used to have to carry out manually. Sadly, many of us have a false sense of security when it comes to malware detection. In 2006, Australia’s CERT announced that 80 percent of antivirus software products commonly missed new malware attacks because attackers test their malware software against the most popular antivirus software products in the industry to hide from detection. If you compare this type of statistic with the amount of malware that hits the Internet hourly, you can get a sense of the level of vulnerability we are actually faced with. In 2008, Symantec had to write new virus signatures every 20 seconds to keep up with the onslaught of malware that was released. This increased to every 8 seconds by 2009. As of this writing, close to 4 million malware signatures are required for antivirus software to be up to date. The company Alinean has put together the cost estimates, per minute, for different organizations if their operations are interrupted. Even if an attack or compromise is not totally successful for the attacker (he or she does not obtain the desired asset), this in no way means that the company remains unharmed. Many times attacks and intrusions cause more of a nuisance and can negatively affect production and the normal department operations, which always correlates to costing the company more money in direct or indirect ways. These costs are shown in Table 1-1.
+
+PART I
+
+use of a piece of malware called “Black Energy.” According to Symantec, about half of all phishing incidents in 2008 were credited to the RBN.
+
+Gray Hat Hacking, The Ethical Hacker’s Handbook, Third Edition
+
+6 Business Application
+
+Estimated Outage Cost per Minute
+
+Supply chain management
+
+$11,000
+
+E-commerce
+
+$10,000
+
+Customer service
+
+$3,700
+
+ATM/POS/EFT
+
+$3,500
+
+Financial management
+
+$1,500
+
+Human capital management
+
+$1,000
+
+Messaging
+
+$1,000
+
+Infrastructure Table 1-1 Downtime Losses (Source: Alinean)
+
+$700
+
+A conservative estimate from Gartner pegs the average hourly cost of downtime for computer networks at $42,000. A company that suffers from worse than average downtime of 175 hours a year can lose more than $7 million per year. Even when attacks are not newsworthy enough to be reported on TV or talked about in security industry circles, they still negatively affect companies’ bottom lines. As stated earlier, an interesting shift has taken place in the hacker community, from joy riding to hacking as an occupation. Today, potentially millions of computers are infected with bots that are controlled by specific hackers. If a hacker has infected 10,000 systems, this is her botnet, and she can use it to carry out DDoS attacks or even lease these systems to others who do not want their activities linked to their true identities or systems. (Botnets are commonly used to spread spam, phishing attacks, and pornography.) The hacker who owns and runs a botnet is referred to as a bot herder. Since more network administrators have configured their mail relays properly and blacklists have been employed to block mail relays that are open, spammers have had to change tactics (using botnets), which the hacking community has been more than willing to provide—for a price. For example, the Zeus bot variant uses key-logging techniques to steal sensitive data such as usernames, passwords, account numbers, and credit card numbers. It injects fake HTML forms into online banking login pages to steal user data. Its botnet is estimated to consist of 3.6 million compromised computers. Zeus’s creators are linked to about $100 million in fraud in 2009 alone. Another botnet, the Koobface, is one of the most efficient social engineering–driven botnets to date. It spreads via social networking sites MySpace and Facebook with faked messages or comments from “friends.” When a user clicks a provided link to view a video, the user is prompted to obtain a necessary software update, like a CODEC—but the update is really malware that can take control of the computer. By early 2010, 2.9 million computers have knowingly been compromised. Of course, today many more computers have been compromised than has been reported.
+
+Chapter 1: Ethics of of Ethical Hacking
+
+7 The following are a few specific examples and trends of security compromises that are taking place today: • A massive joint operation between U.S. and Egyptian law enforcement, called “Operation Phish Pry,” netted 100 accused defendants. The twoyear investigation led to the October 2009 indictment of both American and Egyptian hackers who allegedly worked in both countries to hack into American bank systems, after using phishing lures to collect individual bank account information. • Social networking site Twitter was the target of several attacks in 2009, one of which shut service down for more than 30 million users. The DoS attack that shut the site down also interrupted access to Facebook and LinkedIn, affecting approximately 300 million users in total. • Attackers maintaining the Zeus botnet broke into Amazon’s EC2 cloud computing service in December 2009, even after Amazon’s service had received praise for its safety and performance. The virus that was used acquired authentication credentials from an infected computer, accessed one of the websites hosted on an Amazon server, and connected to the Amazon cloud to install a command and control infrastructure on the client grid. The high-performance platform let the virus quickly broadcast commands across the network. • In December 2009, a hacker posted an online-banking phishing application in the open source, mobile phone operating system Android. The fake software showed up in the application store, used by a variety of phone companies, including Google’s Nexus One phone. Once users downloaded the software, they entered personal information into the application, which was designed to look like it came from specific credit unions. • Iraqi insurgents intercepted live video feeds from U.S. Predator drones in 2008 and 2009. Shiite fighters attacked some nonsecure links in drone systems, allowing them to see where U.S. surveillance was taking place and other military operations. It is reported that the hackers used cheap software available online to break into the drones’ systems. • In early 2010, Google announced it was considering pulling its search engine from China, in part because of rampant China-based hacker attacks, which used malware and phishing to penetrate the Gmail accounts of human rights activists.
+
+PART I
+
+Security Compromises and Trends
+
+Gray Hat Hacking, The Ethical Hacker’s Handbook, Third Edition
+
+8 Some hackers also create and sell zero-day attacks. A zero-day attack is one for which there is currently no fix available and whoever is running the particular software that contains that exploitable vulnerability is exposed with little or no protection. The code for these types of attacks are advertised on special websites and sold to other hackers or organized crime rings.
+
+References Alinean www.alinean.com/ Computer Crime & Intellectual Property Section, United States Department of Justice www.cybercrime.gov Federal Trade Commission, Identity Theft Site http://www.ftc.gov/bcp/edu/ microsites/idtheft/ Infonetics Research www.infonetics.com Privacy Rights Clearinghouse, Chronology of Data Breaches, Security Breaches 2005-Present www.privacyrights.org/ar/ChronDataBreaches.htm#CP Robot Wars: How Botnets Work (Massimiliano Romano, Simone Rosignoli, and Ennio Giannini for hakin9) www.windowsecurity.com/articles/ Robot-Wars-How-Botnets-Work.html Zero-Day Attack Prevention http://searchwindowssecurity.techtarget.com/ generic/0,295582,sid45_gci1230354,00.html
+
+Recognizing the Gray Areas in Security Since technology can be used by the good and bad guys, there is always a fine line that separates the two. For example, BitTorrent is a peer-to-peer file sharing protocol that allows individuals all over the world to share files whether they are the legal owners or not. One website will have the metadata of the files that are being offered up, but instead of the files being available on that site’s web farm, the files are located on the user’s system who is offering up the files. This distributed approach ensures that one web server farm is not overwhelmed with file requests, but it also makes it harder to track down those who are offering up illegal material. Various publishers and owners of copyrighted material have used legal means to persuade sites that maintain such material to honor the copyrights. The fine line is that sites that use the BitTorrent protocol are like windows for all the material others are offering to the world; they don’t actually host this material on their physical servers. So are they legally responsible for offering and spreading illegal content? The entities that offer up files to be shared on a peer-to-peer sharing site are referred to as BitTorrent trackers. Organizations such as Suprnova.org, TorrentSpy, LokiTorrent, and Mininova are some of the BitTorrent trackers that have been sued and brought off-
+
+Chapter 1: Ethics of of Ethical Hacking
+
+9
+
+NOTE We go into laws and legal issues pertaining to various hacking activities in Chapter 2.
+
+There are multiple instances of the controversial concept of hactivism. Both legal and illegal methods can be used to portray political ideology. Is it right to try and influence social change through the use of technology? Is web defacement covered under freedom of speech? Is it wrong to carry out a virtual “sit in” on a site that provides illegal content? During the 2009 Iran elections, was it unethical for an individual to set up a site that showed upheaval about the potential corrupt government elections? When Israeli invaded Gaza, there were many website defacements, DoS attacks, and website highjackings. The claim of what is ethical versus not ethical probably depends upon which side the individuals making these calls reside.
+
+PART I
+
+line for their illegal distribution of copyrighted material. The problem is that many of these entities just pop up on some other BitTorrent site a few days later. BitTorrent is a common example of a technology that can be used for good and evil purposes. Another common gray area in web-based technology is search engine optimization (SEO). Today, all organizations and individuals want to be at the top of each search engine result to get as much exposure as possible. Many simple to sophisticated ways are available for carrying out the necessary tasks to climb to the top. The proper methods are to release metadata that directly relates to content on your site, update your content regularly, and create legal links and backlinks to other sites, etc. But, for every legitimate way of working with search engine algorithms, there are ten illegitimate ways. Spamdexing offers a long list of ways to fool search engines into getting a specific site up the ladder in a search engine listing. Then there’s keyword stuffing, in which a malicious hacker or “black hat” will place hidden text within a page. For example, if Bob has a website that carries out a phishing attack, he might insert hidden text within his page that targets elderly people to help drive these types of victims to his site. There are scraper sites that take (scrape) content from another website without authorization. The malicious site will make this stolen content unique enough that it shows up as new content on the Web, thus fooling the search engine into giving it a higher ranking. These sites commonly contain mostly advertisements and links back to the original sites. There are several other ways of manipulating search engine algorithms as well, for instance, creating link farms, hidden links, fake blogs, page hijacking, and so on. The crux here is that some of these activities are the right way of doing things and some of them are the wrong way of doing things. Our laws have not necessarily caught up with defining what is legal and illegal all the way down to SEO algorithm activities.
+
+Gray Hat Hacking, The Ethical Hacker’s Handbook, Third Edition
+
+10
+
+How Does This Stuff Relate to an Ethical Hacking Book? Corporations and individuals need to understand how the damage is being done so they understand how to stop it. Corporations also need to understand the extent of the threat that a vulnerability represents. Let’s take a very simplistic example. The company FalseSenseOfSecurity, Inc., may allow its employees to share directories, files, and whole hard drives. This is done so that others can quickly and easily access data as needed. The company may understand that this practice could possibly put the files and systems at risk, but they only allow employees to have unclassified files on their computers, so the company is not overly concerned. The real security threat, which is something that should be uncovered by an ethical hacker, is if an attacker can use this file-sharing service as access into a computer itself. Once this computer is compromised, the attacker will most likely plant a backdoor and work on accessing another, more critical system via the compromised system. The vast amount of functionality that is provided by an organization’s networking, database, and desktop software can be used against them. Within each and every organization, there is the all-too-familiar battle of functionality vs. security. This is the reason that, in most environments, the security officer is not the most well-liked individual in the company. Security officers are in charge of ensuring the overall security of the environment, which usually means reducing or shutting off many functionalities that users love. Telling people that they cannot access social media sites, open attachments, use applets or JavaScript via e-mail, or plug in their mobile devices to a network-connected system and making them attend security awareness training does not usually get you invited to the Friday night get-togethers at the bar. Instead, these people are often called “Security Nazi” or “Mr. No” behind their backs. They are responsible for the balance between functionality and security within the company, and it is a hard job. The ethical hacker’s job is to find these things running on systems and networks, and he needs to have the skill set to know how an enemy would use these things against the organization. This work is referred to as a penetration test, which is different from a vulnerability assessment, which we’ll discuss first.
+
+Vulnerability Assessment A vulnerability assessment is usually carried out by a network scanner on steroids. Some type of automated scanning product is used to probe the ports and services on a range of IP addresses. Most of these products can also test for the type of operating system and application software running and the versions, patch levels, user accounts, and services that are also running. These findings are matched up with correlating vulnerabilities in the product’s database. The end result is a large pile of reports that provides a list of each system’s vulnerabilities and corresponding countermeasures to mitigate the associated risks. Basically, the tool states, “Here is a list of your vulnerabilities and here is a list of things you need to do to fix them.”
+
+Chapter 1: Ethics of of Ethical Hacking
+
+11
+
+Penetration Testing A penetration test is when ethical hackers do their magic. They can test many of the vulnerabilities identified during the vulnerability assessment to quantify the actual threat and risk posed by the vulnerability. When ethical hackers are carrying out a penetration test, their ultimate goal is usually to break into a system and hop from system to system until they “own” the domain or environment. They own the domain or environment when they either have root privileges on the most critical Unix or Linux system or own the domain administrator account that can access and control all of the resources on the network. They do this to show the customer (company) what an actual attacker can do under the circumstances and current security posture of the network. Many times, while the ethical hacker is carrying out her procedures to gain total control of the network, she will pick up significant trophies along the way. These trophies can include the CEO’s passwords, company trade-secret documentation, administrative passwords to all border routers, documents marked “confidential” held on the CFO’s and CIO’s laptops, or the combination to the company vault. The reason these trophies are collected along the way is so the decision makers understand the ramifications of these vulnerabilities. A security professional can go on for hours to the CEO, CIO, or COO about services, open ports, misconfigurations, and hacker potential without making a point that this audience would understand or care about. But as soon as you show the CFO his next year’s projections, or show the CIO all of the blueprints to the next year’s product line, or tell the CEO that his password is “IAmWearingPanties,” they will all want to learn more about the importance of a firewall and other countermeasures that should be put into place. CAUTION No security professional should ever try to embarrass a customer or make them feel inadequate for their lack of security. This is why the security professional has been invited into the environment. He is a guest and is there to help solve the problem, not point fingers. Also, in most cases, any sensitive data should not be read by the penetration team because of the possibilities of future lawsuits pertaining to the use of confidential information.
+
+PART I
+
+To the novice, this sounds like an open and shut case and an easy stroll into network utopia where all of the scary entities can be kept out. This false utopia, unfortunately, is created by not understanding the complexity of information security. The problem with just depending upon this large pile of printouts is that it was generated by an automated tool that has a hard time putting its findings into the proper context of the given environment. For example, several of these tools provide an alert of “High” for vulnerabilities that do not have a highly probable threat associated with them. The tools also cannot understand how a small, seemingly insignificant, vulnerability can be used in a large orchestrated attack. Vulnerability assessments are great for identifying the foundational security issues within an environment, but many times, it takes an ethical hacker to really test and qualify the level of risk specific vulnerabilities pose.
+
+Gray Hat Hacking, The Ethical Hacker’s Handbook, Third Edition
+
+12 The goal of a vulnerability test is to provide a listing of all of the vulnerabilities within a network. The goal of a penetration test is to show the company how these vulnerabilities can be used against it by attackers. From here, the security professional (ethical hacker) provides advice on the necessary countermeasures that should be implemented to reduce the threats of these vulnerabilities individually and collectively. In this book, we will cover advanced vulnerability tools and methods as well as sophisticated penetration techniques. Then we’ll dig into the programming code to show you how skilled attackers identify vulnerabilities and develop new tools to exploit their findings. Let’s take a look at the ethical penetration testing process and see how it differs from that of unethical hacker activities.
+
+The Penetration Testing Process 1. Form two or three teams: • Red team—The attack team • White team—Network administration, the victim • Blue team—Management coordinating and overseeing the test (optional) 2. Establish the ground rules: • Testing objectives • What to attack, what is hands-off • Who knows what about the other team (Are both teams aware of the other? Is the testing single blind or double blind?) • Start and stop dates • Legal issues • Just because a client asks for it, doesn’t mean that it’s legal. • The ethical hacker must know the relevant local, state, and federal laws and how they pertain to testing procedures. • Confidentiality/Nondisclosure • Reporting requirements • Formalized approval and written agreement with signatures and contact information • Keep this document handy during the testing. It may be needed as a “get out of jail free” card
+
+Penetration Testing Activities 3. Passive scanning Gather as much information about the target as possible while maintaining zero contact between the penetration tester and the target. Passive scanning can include interrogating:
+
+Chapter 1: Ethics of of Ethical Hacking
+
+13 • The company’s website and source code • Whois database • Edgar database • Newsgroups • ARIN, RIPE, APNIC, LACNIC databases • Google, Monster.com, etc. • Dumpster diving 4. Active scanning Probe the target’s public exposure with scanning tools, which might include: • Commercial scanning tools • Banner grabbing • Social engineering • War dialing • DNS zone transfers • Sniffing traffic • Wireless war driving 5. Attack surface enumeration Probe the target network to identify, enumerate, and document each exposed device: • Network mapping • Router and switch locations • Perimeter firewalls • LAN, MAN, and WAN connections 6. Fingerprinting Perform a thorough probe of the target systems to identify: • Operating system type and patch level • Applications and patch level • Open ports • Running services • User accounts 7. Target system selection Identify the most useful target(s). 8. Exploiting the uncovered vulnerabilities Execute the appropriate attack tools targeted at the suspected exposures. • Some may not work. • Some may kill services or even kill the server. • Some may be successful.
+
+PART I
+
+• Social networking sites
+
+Gray Hat Hacking, The Ethical Hacker’s Handbook, Third Edition
+
+14 9. Escalation of privilege Escalate the security context so the ethical hacker has more control. • Gaining root or administrative rights • Using cracked password for unauthorized access • Carrying out buffer overflow to gain local versus remote control 10. Documentation and reporting Document everything found, how it was found, the tools that were used, vulnerabilities that were exploited, the timeline of activities, and successes, etc. NOTE A more detailed approach to penetration methodology is presented in Chapter 5.
+
+What Would an Unethical Hacker Do Differently? 1. Target selection • Motivations would be due to a grudge or for fun or profit. • There are no ground rules, no hands-off targets, and the white team is definitely blind to the upcoming attack. 2. Intermediaries • The attacker launches his attack from a different system (intermediary) than his own to make tracking back to him more difficult in case the attack is detected. • There may be several layers of intermediaries between the attacker and the victim. • Intermediaries are often victims of the attacker as well. 3. Next the attacker will proceed with penetration testing steps described previously. • Passive scanning • Active scanning • Footprinting • Target system selection • Fingerprinting • Exploiting the uncovered vulnerabilities • Escalation of privilege 4. Preserving access • This involves uploading and installing a rootkit, backdoor, Trojan’ed applications, and/or bots to assure that the attacker can regain access at a later time.
+
+Chapter 1: Ethics of of Ethical Hacking
+
+15 5. Covering his tracks • Hiding uploaded files • Hiding the active processes that allow the attacker to regain access • Disabling messages to security software and system logs to hide malicious processes and actions 6. Hardening the system • After taking ownership of a system, an attacker may fix the open vulnerabilities so no other attacker can use the system for other purposes. How the attacker uses the compromised systems depends upon what his overall goals are, which could include stealing sensitive information, redirecting financial transactions, adding the systems to his bot network, extorting a company, etc. The crux is that ethical and unethical hackers carry out basically the same activities only with different intentions. If the ethical hacker does not identify the hole in the defenses first, the unethical hacker will surely slip in and make himself at home.
+
+The Controversy of Hacking Books and Classes When books on hacking first came out, a big controversy arose pertaining to whether this was the right thing to do or not. One side said that such books only increased the attackers’ skills and techniques and created new attackers. The other side stated that the attackers already had these skills, and these books were written to bring the security professionals and networking individuals up to speed. Who was right? They both were. The word “hacking” is sexy, exciting, seemingly seedy, and usually brings about thoughts of complex technical activities, sophisticated crimes, and a look into the face of electronic danger itself. Although some computer crimes may take on some of these aspects, in reality it is not

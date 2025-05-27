@@ -1,0 +1,181 @@
+AMBER: building a box
+
+From: kepa koldo burusco <kepaquestions.yahoo.es>
+
+[7-XI-2006]
+
+Hi amber users!!!
+
+I am trying to do something apparently "wierd" and amber gives me problems all the time.
+
+I have built up a molecule made of 5 units. One is the central unit, and the other 4 are linked to that one. We are trying to study the bulk behaviour of a liquid enterely made from molecules of the same type. I mean, we are trying to create a solvent box surrounding our molecule with lots of molecules of the same type. We have been doing this with xLEaP typing:
+
+solvatebox new_petLin new_bPl 10.0
+
+and also
+
+solvateDontClip new_petLin new_bPl 10.0
+
+(new_petLin and new_bPl are "the same molecule", the different unit names are to allow easier ptraj analysis after running Molecular Dynamics)
+
+We have tried to enlarge/reduce the box size, to change the molecular conformation (unfolded/folded), to use different versions of xLEaP (amber 7 version and amber 8 version)... and each time we get an error message similar to the one attachd to this mail:
+
+The "solvent" molecules directly surrounding the "solute" molecule appear laking some residues due to avoid molecular overlaping, so on new "wierd" links are created among distant molecules.
+
+It seems that se algorithm that solvates molecules expect the solvent to be a single-unit molecule...
+
+We have also tried to delete the problematic molecules directly from the box aided by xLEaP windows tools once created, but "unfortunately" the software complains, xLEaP exists and the shell shows a "segmentation fault" message...
+
+So... any idea? any help? anybody knows how I could build my box avoiding problems such as these???
+
+Thank you very much in advance for your help.
+
+Kepa K. Burusco
+
+PhD Student
+
+Universidad Autonoma de Barcelona
+
+BARCELONA (Spain)
+
+---------------------------------
+
+LLama Gratis a cualquier PC del Mundo.
+
+Llamadas a fijos y m�viles desde 1 c�ntimo por minuto.
+
+http://es.voice.yahoo.com
+
+Welcome to LEaP!
+
+Sourcing leaprc: ./leaprc
+
+----- Source: /usr/local/amber7/dat/leap/cmd/leaprc.ff99
+
+----- Source of /usr/local/amber7/dat/leap/cmd/leaprc.ff99 done
+
+Log file: ./leap.log
+
+Loading parameters: ./parm99.dat
+
+Loading library: /usr/local/amber7/dat/leap/lib/all_nucleic94.lib
+
+Loading library: /usr/local/amber7/dat/leap/lib/all_amino94.lib
+
+Loading library: /usr/local/amber7/dat/leap/lib/all_aminoct94.lib
+
+Loading library: /usr/local/amber7/dat/leap/lib/all_aminont94.lib
+
+Loading library: /usr/local/amber7/dat/leap/lib/ions94.lib
+
+Loading library: /usr/local/amber7/dat/leap/lib/solvents.lib
+
+Loading parameters: ./extraParamIQLasem.par
+
+Reading force field mod type file (frcmod)
+
+Loading library: ./kepa.lib
+
+Loading library: ./IQLasem_fold.lib
+
+Loading library: ./glum.lib
+
+Loading library: ./itz.lib
+
+> solvateDontClip new_petLin new_bPl 10.0
+
+Solvent has no box, so preparing by making box including vdw
+
+(Use 'setBox centers' first if box was pre-equilibrated)
+
+Solute vdw bounding box: 20.017 19.249 19.388
+
+Total bounding box for atom centers: 40.017 39.249 39.388
+
+Solvent unit box: 20.130 17.947 16.051
+
+Total vdw box size: 40.260 53.841 48.153 angstroms.
+
+Volume: 104378.304 A^3
+
+Total mass 20823.218 amu, Density 0.331 g/cc
+
+Added 83 residues.
+
+> saveamberparm new_petLin box_petLin.top box_petLin.crd
+
+Checking Unit.
+
+WARNING: There is a bond of 16.971215 angstroms between:
+
+------- .R<li2 26>.A<C3 1> and .R<li2 28>.A<C3 1>
+
+WARNING: There is a bond of 23.170284 angstroms between:
+
+------- .R<li2 67>.A<C3 1> and .R<li2 71>.A<H24 35>
+
+WARNING: There is a bond of 14.589751 angstroms between:
+
+------- .R<li2 68>.A<C3 1> and .R<li2 71>.A<H13 17>
+
+ERROR: The unperturbed charge of the unit: 1.335000 is not integral.
+
+WARNING: The unperturbed charge of the unit: 1.335000 is not zero.
+
+-- ignoring the error and warnings.
+
+Building topology.
+
+Building atom parameters.
+
+Building bond parameters.
+
+Building angle parameters.
+
+Could not find angle parameter: CT - HC - CT
+
+Could not find angle parameter: CT - HC - CT
+
+Building proper torsion parameters.
+
+** No torsion terms for CT-CT-HC-CT
+
+** No torsion terms for HC-CT-HC-CT
+
+** No torsion terms for HC-CT-HC-CT
+
+** No torsion terms for CT-HC-CT-HC
+
+** No torsion terms for CT-HC-CT-CT
+
+** No torsion terms for CT-HC-CT-CT
+
+** No torsion terms for CT-CT-HC-CT
+
+** No torsion terms for HC-CT-HC-CT
+
+** No torsion terms for HC-CT-HC-CT
+
+** No torsion terms for CT-HC-CT-HC
+
+** No torsion terms for CT-HC-CT-CM
+
+** No torsion terms for CT-HC-CT-CT
+
+Building improper torsion parameters.
+
+total 352 improper torsions applied
+
+Building H-Bond parameters.
+
+Parameter file was not saved.
+
+-----------------------------------------------------------------------
+
+The AMBER Mail Reflector
+
+To post, send mail to amber.scripps.edu
+
+To unsubscribe, send "unsubscribe amber" to majordomo.scripps.edu
+
+Received on Wed Nov 08 2006 - 06:07:35 PST

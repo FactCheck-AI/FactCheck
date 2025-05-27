@@ -1,0 +1,393 @@
+Xinetd is a guardian that manages access to your computer from the internet. It is a daemon that runs all the time and listens on all of the ports for connection or service requests. If you do not run a server, you will not need xinetd. However, even if your computer is just for home use, you may need to allow others access to services on your computer at some point in the future. When you do, you will need to install xinetd to protect your computer from malicious activity.
+
+Operating system
+
+The xinetd utility was written for Unix and Unix-like systems. So, it will install on Linux and Mac OS, but not on Windows. The program is free to use and can be accessed from GitHub.
+
+You can obtain the program from this master repository and there is also one fork of the code. This is a well-known and reliable program that has been downloaded and installed many times, so you shouldn’t worry about the dangers of the program being a malicious fake.
+
+Purpose of xinetd
+
+The xinet system is intended to function as a server. You probably know that in a typical internet connection, one computer contacts another. The computer that initiates contact is called the “client” and the program that is contacted is the “server.” The usual reason for the connection is so that the client can get a service from the server. However, the contacted computer needs to have a program running, waiting for requests. This is the function of xinetd.
+
+The basic requirement for xinetd is that it will receive requests and forward them to the correct application, which is indicated by the port number that is written in the header of the arriving connection or service request. The xinetd program does not actually provide the requested service, but acts as a gatekeeper.
+
+Alternatives: xinetd vs inetd
+
+The developers of xinetd were not the first people to come up with the idea of a program that listens on the network for incoming requests. In fact, xinetd is intended as an improvement on the original program that performed this task, which is called inetd.
+
+The name “xinetd” is an abbreviation for “extended internet services daemon”. “Internet services daemon” describes the original inetd. With inetd you get the same server request monitoring that xinetd provides. However, this daemon has no defense mechanisms and so is now considered to be insecure.
+
+The old inetd didn’t work alone. It passed requests on to tcpd, which checked on permissions files (hosts.allow and hosts.deny). As the name suggests, tcpd handles TCP connection requests. However, it also examines UDP ports, so it is a Transport Layer interface implementation. You might also see mention of a TCP wrapper — this is just another name for tcpd. The inclusion of tcpd added some access control improvement. However, the permission process was driven by two manually-populated file, and so it wasn’t a very comprehensive security solution.
+
+Xinetd features
+
+The xinetd mode of operation is similar to that of inetd combined with tcpd. However, the xinetd solution has much better security features than the inetd/tcpd combination. Features of the daemon include:
+
+access control for TCP and UDP
+
+event logging that records connection success and failure
+
+access control based on time segments
+
+concurrent server limit – Denial of Service (DoS) attack defense
+
+log file size limit
+
+allocation of services to different interfaces, enabling certain services to be limited to the private network
+
+proxy function including network address translation
+
+Xinetd is able to operate as a mediator for RPC services. However, this function is not very well implemented. The lack of security feature in RPC has reduced the demand for access to that service, so it is doubtful that the developers of xinetd will spend time perfecting its RPC interface.
+
+Access control methods
+
+Like inetd, xinetd allows you to permit or block connections according to the requestor’s IP address. With inetd, you can also identify allowed and blocked connection sources by hostname or by domain name. Each of these options requires a lookup procedure. In the case of the hostnames option, you would need to have those names set up in your own network’s DNS system. For domains, you would probably be better off relying on the public DNS system.
+
+The choice of whether you identify requestors by IP address, hostname, or domain name is up to you. However, sticking with the IP address creates connections faster because it eliminates the need for a lookup phase.
+
+System configuration
+
+In order to use xinetd, you first need to install it and then update the configuration file. Essentially, the configuration file is your command center for xinetd. As this program is a daemon, once you start it, it will continue to run forever. It isn’t an interactive utility that you can adjust at the command line. All of your communication with the program occurs through the configuration file.
+
+The daemon will continue to check the config file whenever it receives a request from the outside world. It doesn’t load the configuration into memory when it starts up. That means you can adjust the performance of the daemon while it is running by changing the instructions held in the configuration file.
+
+The configuration file for xinet is much more important that the configuration systems for other utilities. This is because you can alter the instructions for the daemon through the configuration without needing to stop the xinetd program and restart it.
+
+Setting up the configuration file
+
+Look for the file /etc/xinetd.conf. This is the main configuration file for the program and it acts as a lookup table that the application reads in order to work out which connections to allow and which services to call.
+
+You can create the xinetd.conf file from an existing inetd.conf file with the xconv.pl program, which forms part of the package that you can download from the GitHub repository for xinetd. Run the conversion program with the following command:
+
+/usr/local/sbin/xconv.pl < /etc/inetd.conf > /etc/xinetd.conf
+
+The new configuration file is not perfect and it will need further modification before you can launch xinetd.
+
+Configuration file defaults section
+
+When you look in your newly-generated xinetd.conf file, you need to focus on two key configuration sections. The first of these is the defaults section and the second is the services section.
+
+As you probably already guessed, the defaults section tells xinetd what to do if it doesn’t find specific instructions for its current task in the services section.
+
+Some key options that you can set in the defaults section are:
+
+only_from
+
+no_access
+
+log_type
+
+log_on_success
+
+log_on_failure
+
+instances
+
+per_source
+
+The next sections explain these options in more detail.
+
+Access conditions
+
+Only_from and no_access effectively perform the same task, which is to block (no access) or permit (only_from) specific address or ranges of addresses. It is advisable to use one of these options to block everything by default and then build up a list of services lower down in the configuration file. By this strategy, you cover yourself if an event you didn’t account for occurs.
+
+These two options are also valid commands to include in the services section. So you can start off banning everything by default and then add in services. If there is a service section that relates to the connection request type that xinetd receives, it won’t look at the defaults section of the configuration.
+
+The instructions of only_from and no_access in a description for a service overrides the only_from and no_access statements in the defaults section.
+
+The format for these two options is
+
+<only_from | no_access> = <address | address range>
+
+Remember that the addresses can be expressed as IP addresses, hostnames, or domain names. However, it is better to stick to IP addresses. You can use CIDR notation to specify a range. Here are two examples of how you might use these options:
+
+no_access = 0.0.0.0/0
+
+This is probably the most common line in the defaults section because it blocks everyone. The defaults section is only there in the configuration file to tell xinetd what to do in the event of a service request that isn’t covered in the services section. You should work on the assumption that you will be able to provide specific instructions for every service type that your computer can provide, so it is reasonable to state that all other requests are blocked. As the doorman at an exclusive VIP party would say, “If you’re not on the list, you’re not getting in.”
+
+An alternative to this strategy is to let everyone in. You would implement this with:
+
+only_from = 0.0.0.0/0
+
+This policy doesn’t really make sense in the defaults section. The default section only gets referred to if you haven’t put in instructions for a service, so when xinetd resorts to the defaults, it has got a case that doesn’t have any instructions provided for it. So, allowing access in those circumstances would result in an error because you haven’t told xinetd what to do with the request. It is logical to use this catch-all only_from option within the description of a service, so this message would tell xinetd to allow requests from every possible source to use that service.
+
+Unfortunately, there is a feature of the only_from and no_access options that would create a conflict if you implemented a policy as described above. That is, both no_access and only_from are global and xinetd checks both of them every time it has a task to perform. So if you have both set, the daemon will validate the incoming request against that no_access statement in the defaults section even though there is a valid service configuration set up.
+
+This quirk of no_access and only_from being global can be overcome by deciding on a policy of only ever using one or the other in your xinetd.conf file. It is common practice to stick with only_from and ignore the no_access option. You can create a catch-all only instruction by leaving the address list blank in the defaults section, i.e., “only_from = ” and that will let the xinetd program use the only_from setting in the services descriptions. This will occur without raising a conflict because the defaults section only_from value gets overwritten by the service’s only_from setting.
+
+Annoyingly, if you don’t put an only_from or a no_access statement in the defaults section, xinetd will allow all connections that you haven’t covered in the services section, which will probably create an error.
+
+The format for listing several addresses as parameters of both of these options is to leave a space between each address (no commas). You can also include CIDR ranges in the list.
+
+Log file commands
+
+The log_type, log_on_success, and log_on_failure options all work together. Each has a series of constants that you need to feed into the option as parameters.
+
+Use the log_type attribute to give the path and name of a log file and use the log_on_success and log_on_failure attribute to specify which fields should be written into the log file record for each event.
+
+For example, you would write a log file address with:
+
+log_type = FILE /usr/log/internetlog
+
+Another option available with the log_type attribute is SYSLOG, which sets the message level for these events that will be reported by syslogd. Possible values are:
+
+daemon
+
+auth
+
+user
+
+local0-7
+
+An example would be:
+
+log_type = SYSLOG local1
+
+The SYLOG attribute is not essential and it is a lot less important than the FILE option. You really need to give your xinetd the name of a log file to write to; you don’t have to specify the Syslog level for event messages.
+
+The available reporting options for log_on_success are:
+
+PID – 0 if it is an internal xinetd service
+
+HOST – address of the client
+
+USERID – identity of the remote user
+
+EXIT – process exit status
+
+DURATION – session duration period
+
+The reporting options for log_on_failure are:
+
+HOST – address of the client
+
+USERID – identity of the remote user
+
+ATTEMPT – logs a failed access attempt
+
+RECORD – all available information about the client
+
+You can include multiple options on each log_on_success and log_on_failure lines and they should be separated by spaces without any type of punctuation. For example:
+
+log_type = FILE /usr/log/internetlog log_on_success = HOST PID USERID DURATION EXIT log_on_failure = HOST USERID ATTEMPT RECORD
+
+It is common practice to keep the log_type, log_in_success, and log_on_failure statements on successive lines in the file.
+
+Capacity controls
+
+Two more options that you need to put into xinetd.conf limit the number of simultaneous connections that your server should accept. This is an important factor and it is a simple, but powerful way to trounce Denial of Service (DoS) attacks. The two options that implement this strategy are instances and per_source.
+
+The instances option in the defaults section specifies the number of connections that xinetd will allow to run concurrently and the per_source option specifies the number of connection requests that the daemon will respond to from the same source address. Distributed Denial of Service attacks (DDoS) will get around the per_source limit, but not the instances option. Unfortunately, the implementation of this service limit will block out genuine users for the duration of the attack.
+
+The format for these two options is very straight forward:
+
+<instances | per_source> = number.
+
+The per_source value should be lower than the instances value.
+
+Defaults section example
+
+Putting together all of the details explained in this section, your xinetd.conf defaults statement should look like this:
+
+defaults { instances = 20 per_source = 5 log_type = FILE /usr/log/internetlog log_on_success = HOST PID USERID DURATION EXIT log_on_failure = HOST USERID ATTEMPT RECORD only_from = }
+
+Each xinetd.conf file should have a defaults statement. You don’t have to have any services statements.
+
+Service configuration sections
+
+For each of the services that you want your server to deliver, you should write a service instruction section in xinetd.conf. If you don’t write any services in the configuration file, xinetd will use the specifications laid out in the defaults section. You can also overwrite the settings defined in the defaults sections by restating those attributes with different values in the section written to define a service.
+
+Service types
+
+The attributes available for the services section is different for each of three categories of service. These are:
+
+INTERNAL
+
+UNLISTED
+
+RPC
+
+The category of service (INTERNAL/UNLISTED/RPC) can be specified with the attribute type. However, this attribute is not mandatory and is often left out.
+
+Service attribute definitions
+
+When writing an attribute specification, all fields are separated by spaces or carriage returns – you do not use any form of separator or punctuation in the definition.
+
+The layout of a service statement is the same for the defaults section:
+
+service
+
+{
+
+attribute operator value
+
+}
+
+The operator used for attribute statements is usually equals (“=“). Very few attribute allow values to be added to an existing list with “+=” or taken off a list with “-=” – in both of these cases, you write the operator without the quotes shown here.
+
+Here are the attributes that are available for an INTERNAL service type:
+
+socket_type
+
+flags
+
+nice
+
+wait
+
+protocol (if not listed in /etc/services)
+
+port (if not listed in /etc/services)
+
+cps
+
+access_times
+
+The attributes available for an RPC service are:
+
+socket_type
+
+flags
+
+user
+
+server
+
+server_args
+
+nice
+
+wait
+
+protocol
+
+rpc_version
+
+rpc_number
+
+cps
+
+access_times
+
+The UNLISTED service types can have any of the following attributes:
+
+socket_type
+
+flags
+
+user
+
+server
+
+server_args
+
+max_load
+
+nice
+
+wait
+
+protocol (if not listed in /etc/services)
+
+port (if not listed in /etc/services)
+
+access_times
+
+cps
+
+Service attribute purposes
+
+The meanings of these attributes are shown in the table below:
+
+The flags attribute can have the following values:
+
+IDONLY: only accept connections from clients that have an identification server
+
+NORETRY: prevents the creation of a new process on connection failure
+
+NAMEINARGS: the first argument in server_args is the server value. Used when calling tcpd
+
+In addition to the above attributes, the options that are available in the defaults section can also be written into a service’s definition. These are:
+
+only_from
+
+no_access
+
+log_type
+
+log_on_success
+
+log_on_failure
+
+instances
+
+per_source
+
+Using these attributes again will overwrite any values set for them in the defaults section. However, remember that the only_from and no_access attributes are global, so you must organize the use of these options to avoid conflicting parameters.
+
+Service declaration examples
+
+Here are two examples of the definition of a service.
+
+service ntalk { socket_type = dgram wait = yes user = nobody server = /usr/sbin/in.ntalkd access_times = 7:00-12:30 13:30-21:00 only_from = 192.168.1.0/24 }
+
+service ftp { socket_type = stream wait = no user = root server = /usr/sbin/in.ftpd server_args = -l instances = 4 nice = 10 }
+
+Note the usage of access_times in the ntalk definition. This uses two ranges of times with the from and to times separated by a dash (“–”) without spaces. The two time ranges are separated by a space. The time definitions use the 24-hour clock format.
+
+The only_from attribute in the ntalk definition limits access to this service so that only addresses on the local network can use it.
+
+The ntalk service has a socket_type of dgram, which means that it is a UDP service. The socket_type in the ftp definition is stream, which means that this is a TCP service.
+
+Create multiple instances of a service
+
+The services definition uses the service name as its identifier by default. However, you might want to create several copies of a service and give each different attributes. As the service name needs to correspond with the name used in the /etc/services file, getting several versions of a service running would be impossible. However, the id attribute enables this operating strategy.
+
+One very common usage of this scenario would be when you want to create different FTP servers for internal and external access. By this method, you can keep your file storage for the office completely separate from the downloadable files that you make available to the general public.
+
+In this usage case, you would define “Service ftp” twice. You would then give one instance the attribute id = ftp-internal and the other id = ftp-external. From then on, xinetd can distinguish between the two. In order to make each instance available to different audiences, you would use the only_from attribute to limit access to the ftp-internal service to just addresses on the network and access to the ftp-external service to all non-network addresses.
+
+Bind an address to a service
+
+The scenario of creating different services for internal and external users can be greatly helped by the bind attribute. The term “bind” is frequently used in TCP programming. It usually means to associate a connection to a port, thus creating an id for the session. In this case, however, “bind” means something different. In the example of the internal and external access to the FTP server, you could bind the computer’s network address to the ftp-internal instance and the public IP address of that computer to the ftp-external instance.
+
+In this example, it could be possible to leave out the only_from attribute in the service’s definition. However, it is safer to leave those restrictions in. So, the full definition of your internal and external FTP servers would be:
+
+service ftp { id = ftp-external server = /usr/sbin/in.ftpd server_args = -l instances = 4 only_from = 0.0.0.0/0 bind = 202.19.244.130 }
+
+service ftp { id = ftp-internal socket_type = stream server = /usr/sbin/in.ftpd server_args = -l only_from = 192.168.1.0/24 bind = 192.168.1.5 }
+
+This strategy requires that your FTP server has a static IP address allocated to it for public access. Also, you would need to set up your DHCP server to reserve the same address for your internal FTP server. Although the above scenario works when a single computer is used for both internal and external access, you can also allocate the addresses of separate computers for each FTP instance.
+
+Disable inetd-specific services
+
+There are three xinetd services that give information about the system.
+
+servers: report on the servers in use
+
+services: report on available services, their protocols, and their ports
+
+xadmin: combines the above two commands
+
+These services are a security weakness because they can be used by hackers to gain information about your network and server. Therefore, it is better to disable them. You can do this with the disabled attribute, which goes into your defaults definition. Just include the following line in your defaults section to remove these facilities:
+
+disabled = servers services xadmin
+
+With the configuration file changes detailed above, you can now start to use xinetd.
+
+Running xinetd
+
+You start xinetd at the command line. The command can also be run from a batch file, so you can add it to your computer’s startup procedures. The program can be run with the following options:
+
+It is also possible to launch xinetd without any options.
+
+Use xinetd
+
+If you have a Linux computer, you might have xinetd installed already. You can check by running xinetd -version. If your computer is running inetd instead, the chances are that you are not running Linux. Replace the program with xinetd and convert your configuration file from inetd compatibility to xinetd usage as explained above.
+
+Do you use xinetd at the moment? Leave a message in the Comments section below to share your experiences with the community.
+
+See also: 15 Best Free Syslog Servers
+
+Xinetd FAQs

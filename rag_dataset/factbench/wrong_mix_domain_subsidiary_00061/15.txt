@@ -1,0 +1,2339 @@
+Oracle® Retail Warehouse Management System
+
+Installation Guide
+
+Release 15.0
+
+E69042-03
+
+Oracle® Retail Warehouse Management System Installation Guide, Release 15.0
+
+Copyright © 2015, Oracle. All rights reserved.
+
+Primary Author: Nathan Young
+
+Contributors: Amandeep Bhatti, Santhosh Kumar NC
+
+This software and related documentation are provided under a license agreement containing restrictions on use and disclosure and are protected by intellectual property laws. Except as expressly permitted in your license agreement or allowed by law, you may not use, copy, reproduce, translate, broadcast, modify, license, transmit, distribute, exhibit, perform, publish, or display any part, in any form, or by any means. Reverse engineering, disassembly, or decompilation of this software, unless required by law for interoperability, is prohibited.
+
+The information contained herein is subject to change without notice and is not warranted to be error-free. If you find any errors, please report them to us in writing.
+
+If this is software or related documentation that is delivered to the U.S. Government or anyone licensing it on behalf of the U.S. Government, then the following notice is applicable:
+
+U.S. GOVERNMENT END USERS: Oracle programs, including any operating system, integrated software, any programs installed on the hardware, and/or documentation, delivered to U.S. Government end users are "commercial computer software" pursuant to the applicable Federal Acquisition Regulation and agency-specific supplemental regulations. As such, use, duplication, disclosure, modification, and adaptation of the programs, including any operating system, integrated software, any programs installed on the hardware, and/or documentation, shall be subject to license terms and license restrictions applicable to the programs. No other rights are granted to the U.S. Government.
+
+This software or hardware is developed for general use in a variety of information management applications. It is not developed or intended for use in any inherently dangerous applications, including applications that may create a risk of personal injury. If you use this software or hardware in dangerous applications, then you shall be responsible to take all appropriate fail-safe, backup, redundancy, and other measures to ensure its safe use. Oracle Corporation and its affiliates disclaim any liability for any damages caused by use of this software or hardware in dangerous applications.
+
+Oracle and Java are registered trademarks of Oracle and/or its affiliates. Other names may be trademarks of their respective owners.
+
+Intel and Intel Xeon are trademarks or registered trademarks of Intel Corporation. All SPARC trademarks are used under license and are trademarks or registered trademarks of SPARC International, Inc. AMD, Opteron, the AMD logo, and the AMD Opteron logo are trademarks or registered trademarks of Advanced Micro Devices. UNIX is a registered trademark of The Open Group.
+
+This software or hardware and documentation may provide access to or information about content, products, and services from third parties. Oracle Corporation and its affiliates are not responsible for and expressly disclaim all warranties of any kind with respect to third-party content, products, and services unless otherwise set forth in an applicable agreement between you and Oracle. Oracle Corporation and its affiliates will not be responsible for any loss, costs, or damages incurred due to your access to or use of third-party content, products, or services, except as set forth in an applicable agreement between you and Oracle.
+
+Value-Added Reseller (VAR) Language
+
+Oracle Retail VAR Applications
+
+The following restrictions and provisions only apply to the programs referred to in this section and licensed to you. You acknowledge that the programs may contain third party software (VAR applications) licensed to Oracle. Depending upon your product and its version number, the VAR applications may include:
+
+(i) the MicroStrategy Components developed and licensed by MicroStrategy Services Corporation (MicroStrategy) of McLean, Virginia to Oracle and imbedded in the MicroStrategy for Oracle Retail Data Warehouse and MicroStrategy for Oracle Retail Planning & Optimization applications.
+
+(ii) the Wavelink component developed and licensed by Wavelink Corporation (Wavelink) of Kirkland, Washington, to Oracle and imbedded in Oracle Retail Mobile Store Inventory Management.
+
+(iii) the software component known as Access Via licensed by Access Via of Seattle, Washington, and imbedded in Oracle Retail Signs and Oracle Retail Labels and Tags.
+
+(iv) the software component known as Adobe Flex licensed by Adobe Systems Incorporated of San Jose, California, and imbedded in Oracle Retail Promotion Planning & Optimization application.
+
+You acknowledge and confirm that Oracle grants you use of only the object code of the VAR Applications. Oracle will not deliver source code to the VAR Applications to you. Notwithstanding any other term or condition of the agreement and this ordering document, you shall not cause or permit alteration of any VAR Applications. For purposes of this section, "alteration" refers to all alterations, translations, upgrades, enhancements, customizations or modifications of all or any portion of the VAR Applications including all reconfigurations, reassembly or reverse assembly, re-engineering or reverse engineering and recompilations or reverse compilations of the VAR Applications or any derivatives of the VAR Applications. You acknowledge that it shall be a breach of the agreement to utilize the relationship, and/or confidential information of the VAR Applications for purposes of competitive discovery.
+
+The VAR Applications contain trade secrets of Oracle and Oracle's licensors and Customer shall not attempt, cause, or permit the alteration, decompilation, reverse engineering, disassembly or other reduction of the VAR Applications to a human perceivable form. Oracle reserves the right to replace, with functional equivalent software, any of the VAR Applications in future releases of the applicable program.
+
+.
+
+Contents
+
+Send Us Your Comments......................................................................................... xi
+
+Preface................................................................................................................... xiii
+
+Audience.............................................................................................................................................. xiii
+
+Related Documents........................................................................................................................... xiii
+
+Customer Support............................................................................................................................. xiii
+
+Review Patch Documentation....................................................................................................... xiii
+
+Improved Process for Oracle Retail Documentation Corrections........................................ xiv
+
+Oracle Retail Documentation on the Oracle Technology Network.................................... xiv
+
+Conventions........................................................................................................................................ xiv
+
+1 Preinstallation Tasks............................................................................................ 1
+
+Requesting Infrastructure Software................................................................................................. 1
+
+Installation Terminology.................................................................................................................... 1
+
+Check Supported Database Server Requirements....................................................................... 2
+
+Check Supported Application Server Requirements.................................................................. 3
+
+Check Supported Web Browser and Client Requirements....................................................... 4
+
+Supported Mobile Client Device Requirements................................................................... 4
+
+Supported Radio Frequency Device Requirements..................................................................... 5
+
+Supported Oracle Retail Products.................................................................................................... 5
+
+Supported Oracle Retail Integration Technologies..................................................................... 5
+
+UNIX User Account Privileges to Install the Software............................................................... 6
+
+2 RAC and Clustering.............................................................................................. 7
+
+3 Database Installation Tasks  Full........................................................................ 9
+
+Create Staging Directory for RWMS Installer............................................................................... 9
+
+Create the RWMS Database............................................................................................................... 9
+
+Create the Database Instance Using the Oracle Generic Template.............................. 10
+
+Create the Required RWMS Tablespaces............................................................................. 11
+
+Create the Schema Owner for RWMS................................................................................... 12
+
+Run the RWMS Database Schema Installation.......................................................................... 13
+
+4 Database Installation Tasks  Patch.................................................................... 15
+
+Create Staging Directory for RWMS Installer............................................................................. 15
+
+(Optional) Analyze Changes in the Patch................................................................................... 15
+
+Run the RWMS Database Schema Installation.......................................................................... 15
+
+5 17
+
+Application Server Installation Tasks  RWMS Forms............................................. 17
+
+Prepare Application Server for RWMS......................................................................................... 17
+
+Create Staging Directory for RWMS Installer..................................................................... 18
+
+Install RWMS Oracle Forms............................................................................................................ 18
+
+6 Application Server Installation Tasks  Patch..................................................... 21
+
+Create Staging Directory for RWMS Installer............................................................................. 21
+
+(Optional) Analyze Changes in the Patch................................................................................... 21
+
+Run the RWMS Application Installation.................................................................................... 21
+
+Install RWMS Oracle Forms............................................................................................................ 21
+
+7 Enhanced Navigation and Dashboards Installation............................................. 23
+
+Steps to Create the New Domain with ADF Libraries............................................................. 23
+
+Fusion Middleware Infrastructure and Weblogic Server 12c(12.1.3) Installation... 23
+
+Install RCU Database Schemas...................................................................................................... 29
+
+Create a New ADF Domain (with managed server and EM)................................................. 36
+
+Run the RWMS Installer................................................................................................................... 48
+
+Custom Authentication Provider set up...................................................................................... 49
+
+Disable User Lock Out Settings...................................................................................................... 55
+
+Application: Logging File Settings................................................................................................ 55
+
+8 Manual Installation and Configuration Tasks...................................................... 57
+
+This section covers the installation and configuration of external components and other dependencies for RWMS 15.0. 57
+
+Prerequisites......................................................................................................................................... 57
+
+Path References Used in this Section............................................................................................ 57
+
+BI Server Component Installation Tasks...................................................................................... 58
+
+Installation Process Overview................................................................................................ 59
+
+Install Oracle BI EE 11g............................................................................................................. 59
+
+Post Install Steps......................................................................................................................... 74
+
+Installing the RWMS BI Publisher Templates.................................................................... 78
+
+Configuring the RWMS JDBC connection........................................................................... 80
+
+Configuring Forms to use BI Publisher........................................................................................ 84
+
+Check the Configuration of formsweb.cfg........................................................................... 84
+
+Configuring the Forms Installation Environment Files................................................... 86
+
+RWMS Wallet Configurations........................................................................................................ 92
+
+Application (Java) Wallet......................................................................................................... 93
+
+Oracle Wallet................................................................................................................................ 94
+
+WLS Database Credential Store.............................................................................................. 94
+
+Adding Radio Frequency Launch Configurations................................................................... 94
+
+File Placement.............................................................................................................................. 94
+
+Update the RF Launch Modules............................................................................................ 95
+
+rwms_rf_menu.html Module.................................................................................................. 95
+
+close.html Module...................................................................................................................... 95
+
+Update fmrweb.res for Keymapping..................................................................................... 98
+
+9 Web Services Installation.................................................................................... 99
+
+Create a Managed Server.......................................................................................................... 99
+
+Create a Datasource................................................................................................................... 99
+
+Deploy RWMS Service EAR File............................................................................................. 99
+
+Configure Web Service Security................................................................................................... 100
+
+10 Patching Procedures......................................................................................... 103
+
+Oracle Retail Patching Process..................................................................................................... 103
+
+Supported Products and Technologies...................................................................................... 103
+
+Patch Concepts.................................................................................................................................. 104
+
+Patching Utility Overview..................................................................................................... 105
+
+Changes with 15.0.................................................................................................................... 105
+
+Patching Considerations................................................................................................................ 105
+
+Patch Types................................................................................................................................ 105
+
+Incremental Patch Structure.................................................................................................. 106
+
+Version Tracking...................................................................................................................... 106
+
+Apply all Patches with Installer or ORPatch................................................................... 106
+
+Environment Configuration.................................................................................................. 107
+
+Retained Installation Files..................................................................................................... 107
+
+Reloading Content................................................................................................................... 107
+
+Java Hotfixes and Cumulative Patches.............................................................................. 107
+
+Backups....................................................................................................................................... 108
+
+Disk Space.................................................................................................................................. 108
+
+Patching Operations........................................................................................................................ 109
+
+Running ORPatch.................................................................................................................... 109
+
+Merging Patches....................................................................................................................... 119
+
+Compiling Application Components................................................................................. 120
+
+Deploying Application Components................................................................................. 122
+
+Maintenance Considerations........................................................................................................ 123
+
+Database Password Changes............................................................................................... 123
+
+WebLogic Password Changes.............................................................................................. 124
+
+Infrastructure Directory Changes........................................................................................ 125
+
+DBManifest Table..................................................................................................................... 125
+
+RETAIL_HOME relationship to Database and Application Server.......................... 125
+
+Jar Signing Configuration Maintenance............................................................................ 125
+
+Customization................................................................................................................................... 127
+
+Patching Considerations with Customized Files and Objects.................................... 127
+
+Registering Customized Files............................................................................................... 128
+
+Custom Compiled Java Code................................................................................................ 130
+
+Extending Oracle Retail Patch Assistant with Custom Hooks................................... 132
+
+Troubleshooting Patching............................................................................................................. 137
+
+ORPatch Log Files.................................................................................................................... 137
+
+Restarting ORPatch................................................................................................................. 137
+
+Manual DBManifest Updates............................................................................................... 137
+
+Manual Restart State File Updates...................................................................................... 139
+
+DISPLAY Settings When Compiling Forms..................................................................... 139
+
+JAVA_HOME Setting.............................................................................................................. 139
+
+Patching Prior to First Install................................................................................................ 139
+
+Providing Metadata to Oracle Support.............................................................................. 140
+
+A Appendix: Oracle Database 12cR1 Parameter File.............................................. 143
+
+B Appendix: Tablespace Creation Scripts............................................................. 145
+
+Non-Encrypted Tablespace Creation......................................................................................... 145
+
+Encrypted Tablespace Creation................................................................................................... 145
+
+Configure a Wallet:.................................................................................................................. 146
+
+Encryption at Tablespace Level........................................................................................... 147
+
+C Appendix: Sample Oracle Net Files for the Server............................................. 149
+
+listener.ora.......................................................................................................................................... 149
+
+tnsnames.ora...................................................................................................................................... 150
+
+D Appendix: RWMS Database Schema Installation Screens.................................. 151
+
+E Appendix: RWMS Application (forms) Installation Screens................................ 161
+
+F Appendix: RWMS Enhanced Navigation and Dashboards Installation Screens.. 173
+
+G Appendix: RWMS Analyze Tool......................................................................... 193
+
+Run the RWMS Analyze Tool....................................................................................................... 193
+
+H Appendix: Installer Silent Mode........................................................................ 195
+
+I Appendix: Common Installation Errors............................................................. 197
+
+Database Installer Hangs on Startup......................................................................................... 197
+
+Warning: Could not create system preferences directory..................................................... 197
+
+WLS_FORMS server failed to restart.......................................................................................... 198
+
+Warning: Couldn't find X Input Context................................................................................... 198
+
+Unresponsive Drop-Downs.......................................................................................................... 199
+
+Could not execl robot child process: Permission denied...................................................... 200
+
+ConcurrentModificationException in Installer GUI.............................................................. 200
+
+ORA-04031 (unable to allocate memory) error during database schema installation. 200
+
+X Error of failed request: BadWindow (invalid Window parameter).............................. 201
+
+RIB Errors............................................................................................................................................ 201
+
+Error Connecting to Database URL............................................................................................. 202
+
+Cannot Run Reports in RWMS Application on HP Host.................................................... 202
+
+Frequent Session Timeouts in RWMS Application on HP Host........................................ 202
+
+Screen Navigation Delay Using Java 7U85+ Between ADF and Forms Screens.......... 203
+
+J Appendix: URL Reference.................................................................................. 205
+
+JDBC URL for a Database............................................................................................................... 205
+
+JNDI Provider URL for an Application...................................................................................... 205
+
+K Appendix: Single Sign-On for WebLogic........................................................... 207
+
+What Do I Need for Single Sign-On?.......................................................................................... 207
+
+Can Oracle Access Manager Work with Other SSO Implementations?........................... 207
+
+Oracle Single Sign-on Terms and Definitions.......................................................................... 208
+
+What Single Sign-On is not........................................................................................................... 209
+
+How Oracle Single Sign-On Works............................................................................................. 209
+
+Installation Overview...................................................................................................................... 211
+
+User Management............................................................................................................................ 211
+
+L Appendix: Setting Up an Oracle Wallet.............................................................. 213
+
+Steps to Set up a pl/sql Wallet..................................................................................................... 213
+
+Additional Wallet Commands..................................................................................................... 215
+
+Setting up Application (Java) Wallet for RWMS .env File.................................................... 215
+
+Setting Up WLS Database Credential Store.............................................................................. 217
+
+M Appendix: Setting Up Password Stores with wallets/credential stores............... 223
+
+About Database Password Stores and Oracle Wallet............................................................ 223
+
+Setting Up Password Stores for Database User Accounts.................................................... 224
+
+Setting up Wallets for Database User Accounts...................................................................... 225
+
+For RMS, RWMS, RPM Batch using sqlplus or sqlldr, RETL, RMS, RWMS, and ARI 225
+
+Setting up RETL Wallets................................................................................................................ 227
+
+For Java Applications (SIM, ReIM, RPM, RIB, AIP, Alloc, ReSA, RETL).................. 228
+
+How does the Wallet Relate to the Application?.................................................................... 231
+
+How does the Wallet Relate to Java Batch Program use?..................................................... 231
+
+Database Credential Store Administration............................................................................... 231
+
+Managing Credentials with WSLT/OPSS Scripts.................................................................. 233
+
+listCred........................................................................................................................................ 234
+
+updateCred................................................................................................................................. 235
+
+createCred................................................................................................................................... 236
+
+deleteCred................................................................................................................................... 236
+
+modifyBootStrapCredential................................................................................................... 236
+
+addBootStrapCredential......................................................................................................... 238
+
+Quick Guide for Retail Password Stores (db wallet, java wallet, DB credential stores) 239
+
+N Appendix: Manual Forms Compilation.............................................................. 249
+
+O Appendix: Installation Order............................................................................. 251
+
+Enterprise Installation Order........................................................................................................ 251
+
+Oracle Retail Warehouse Management System, Installation Guide, Release 15.0
+
+Oracle welcomes customers' comments and suggestions on the quality and usefulness of this document.
+
+Your feedback is important, and helps us to best meet your needs as a user of our products. For example:
+
+§ Are the implementation steps correct and complete?
+
+§ Did you understand the context of the procedures?
+
+§ Did you find any errors in the information?
+
+§ Does the structure of the information help you with your tasks?
+
+§ Do you need different information or graphics? If so, where, and in what format?
+
+§ Are the examples correct? Do you need more examples?
+
+If you find any errors or have any other suggestions for improvement, then please tell us your name, the name of the company who has licensed our products, the title and part number of the documentation and the chapter, section, and page number (if available).
+
+Note: Before sending us your comments, you might like to check that you have the latest version of the document and if any concerns are already addressed. To do this, access the Online Documentation available on the Oracle Technology Network Web site. It contains the most current Documentation Library plus all documents revised or released recently.
+
+Send your comments to us using the electronic mail address: retail-doc_us@oracle.com
+
+Please give your name, address, electronic mail address, and telephone number (optional).
+
+If you need assistance with Oracle software, then please contact your support representative or Oracle Support Services.
+
+If you require training or instruction in using Oracle software, then please contact your Oracle local office and inquire about our Oracle University offerings. A list of Oracle offices is available on our Web site at www.oracle.com.
+
+Oracle Retail Installation Guides contain the requirements and procedures that are necessary for the retailer to install Oracle Retail products.
+
+Audience
+
+This Installation Guide is written for the following audiences:
+
+§ Database administrators (DBA)
+
+§ System analysts and designers
+
+§ Integrators and implementation staff
+
+Related Documents
+
+For more information, see the following documents in the Oracle Retail Warehouse Management System Release 15.0 documentation set:
+
+§Oracle Retail Warehouse Management System Operations Guide
+
+§Oracle Retail Warehouse Management System Implementation Guide
+
+§Oracle Retail Warehouse Management System User Interface User Guide
+
+§Oracle Retail Warehouse Management System Radio Frequency User Guide
+
+§Oracle Retail Warehouse Management System Online Help
+
+§Oracle Retail Warehouse Management System Release Notes
+
+§Oracle Retail Warehouse Management System Security Guide
+
+§Oracle Retail Warehouse Management System Data Model
+
+Customer Support
+
+§ To contact Oracle Customer Support, access My Oracle Support at the following URL:
+
+§https://support.oracle.com
+
+§ When contacting Customer Support, please provide the following:
+
+§ Product version and program/module name
+
+§ Functional and technical description of the problem (include business impact)
+
+§ Detailed step-by-step instructions to re-create
+
+§ Exact error message received
+
+§ Screen shots of each step you take
+
+Review Patch Documentation
+
+When you install the application for the first time, you install either a base release (for example, 15.0) or a later patch release (for example, 15.0.1). If you are installing the base release or additional patch releases, read the documentation for all releases that have occurred since the base release before you begin installation. Documentation for patch releases can contain critical information related to the base release, as well as information about code changes since the base release.
+
+Improved Process for Oracle Retail Documentation Corrections
+
+To more quickly address critical corrections to Oracle Retail documentation content, Oracle Retail documentation may be republished whenever a critical correction is needed. For critical corrections, the republication of an Oracle Retail document may at times not be attached to a numbered software release; instead, the Oracle Retail document will simply be replaced on the Oracle Technology Network Web site, or, in the case of Data Models, to the applicable My Oracle Support Documentation container where they reside.
+
+This process will prevent delays in making critical corrections available to customers. For the customer, it means that before you begin installation, you must verify that you have the most recent version of the Oracle Retail documentation set. Oracle Retail documentation is available on the Oracle Technology Network at the following URL:
+
+http://www.oracle.com/technetwork/documentation/oracle-retail-100266.html
+
+An updated version of the applicable Oracle Retail document is indicated by Oracle part number, as well as print date (month and year). An updated version uses the same part number, with a higher-numbered suffix. For example, part number E123456-02 is an updated version of a document with part number E123456-01.
+
+If a more recent version of a document is available, that version supersedes all previous versions.
+
+Oracle Retail Documentation on the Oracle Technology Network
+
+Documentation is packaged with each Oracle Retail product release. Oracle Retail product documentation is also available on the following Web site:
+
+http://www.oracle.com/technetwork/documentation/oracle-retail-100266.html
+
+(Data Model documents are not available through Oracle Technology Network. These documents are packaged with released code, or you can obtain them through My Oracle Support.)
+
+Conventions
+
+Navigate: This is a navigate statement. It tells you how to get to the start of the procedure and ends with a screen shot of the starting point and the statement the Window Name window opens.
+
+This is a code sample
+
+It is used to display examples of code
+
+1
+
+Preinstallation Tasks
+
+This chapter includes steps to complete before installation.
+
+Note: Oracle Retail assumes that the retailer has applied all required fixes for supported compatible technologies.
+
+Requesting Infrastructure Software
+
+If you are unable to find the necessary version of the required Oracle infrastructure software (database server, application server, WebLogic, etc.) on the Oracle Software Delivery Cloud, you should file a non-technical Contact Us Service Request (SR) and request access to the media. For instructions on filing a non-technical SR, see My Oracle Support Note 1071023.1  Requesting Physical Shipment or Download URL for Software Media.
+
+Installation Terminology
+
+STAGING_DIR  It is the directory where the rwms15installer.zip is copied and extracted locally.
+
+RETAIL_HOME  It is the directory where Database Files are stored, and Forms are installed. This will contain the ORPatch directory as well.
+
+§ Database RETAIL_HOME - The location where RWMS Database Files are stored. This location will be used during the subsequent patching of the RWMS.
+
+§ Forms RETAIL_HOME - This is the Forms installation directory, the location where RWMS Forms are installed.
+
+Note: A separate RETAIL_HOME is required for DB and Forms installations.
+
+Check Supported Database Server Requirements
+
+General Requirements for a database server running RWMS include the following.
+
+Note: By default, JDK is at 1.6. After installing the 12.1.0.2 binary, apply patch 19623450. Follow the instructions on Oracle Database Java Developers Guide 12c Release 1 to upgrade JDK to 1.7. The Guide is available at: http://docs.oracle.com/database/121/JJDEV/chone.htm#JJDEV01000.
+
+Follow-through to complete the post-patch operation.
+
+Check Supported Application Server Requirements
+
+General requirements for an application server capable of running RWMS include the following.
+
+Check Supported Web Browser and Client Requirements
+
+General requirements for PC clients running RWMS include the following.
+
+Supported Mobile Client Device Requirements
+
+The RWMS 15.0 Mobile user interface (Activity Monitoring, Labor Management, and Appointment Calendar) is supported on iPads running iOS 8. Please refer to the Oracle ADF 12.1.3.0.0 supported browser matrix available on Oracle Technology Network for more details on mobile browser support.
+
+Note: The Oracle ADF 12.1.3.0.0 Browser Certification Matrix is available at: http://www.oracle.com/technetwork/developer-tools/jdev/documentation/121300-cert-2164864.html
+
+Supported Radio Frequency Device Requirements
+
+Minimum requirements for radio frequency devices in order to run the RWMS application are:
+
+§ Minimum RF Screen Sizes
+
+§ Hand held: 240w x 320h pixels
+
+§ Wrist mount: 320w x 240h pixels
+
+§ Truck mount - half screen: 800w x 320h pixels
+
+Software Required on Handhelds
+
+§ Remote Desktop Client (aka Microsoft Terminal Services Client)
+
+§ DataWedge (software provided by and maintained by Motorola for use with the barcode scanners)
+
+Note: The requirements above are based on the testing that was done using the following:
+
+§ RF devices running on Windows CE 5.0
+
+o Motorola VC5090  (Truck Mount)
+
+o Motorola WT4090  (Wrist mount)
+
+o Symbol MC9090  (Hand Held)
+
+o Motorola WT4070  (Wrist mount)
+
+§ RF devices running on Windows CE 6.0:
+
+o Honeywell Thor VM1D  (Truck Mount)
+
+o Honeywell MX7T  (Hand Held)
+
+Supported Oracle Retail Products
+
+Requirement
+
+Version
+
+Oracle Retail Merchandising System (RMS)
+
+15.0
+
+Oracle Retail Store Inventory Management (SIM)
+
+15.0
+
+Supported Oracle Retail Integration Technologies
+
+Integration Technology
+
+Version
+
+Oracle Retail Integration Bus (RIB)
+
+15.0
+
+Oracle Retail Service Backbone (RSB)
+
+15.0
+
+UNIX User Account Privileges to Install the Software
+
+A UNIX user account is needed to install the software. The UNIX user that is used to install the software should have write access to the WebLogic server installation files.
+
+For example, oretail.
+
+Note: Installation steps will fail when trying to modify files under the WebLogic installation, unless the user has write access.
+
+2
+
+The Oracle Retail Warehouse Management System has been validated to run in two configurations on Linux:
+
+§ Standalone WLS and Database installations
+
+§ Real Application Cluster Database and WebLogic Server Clustering
+
+The Oracle Retail products have been validated against a 12.1.0.1 RAC database. When using a RAC database, all JDBC connections should be configured to use THIN connections rather than OCI connections. Forms connections will continue to use OCI connections.
+
+Clustering for WebLogic Server 10.3.6 is managed as an Active-Active cluster accessed through a Load Balancer. Validation has been completed utilizing a RAC 12.1.0.1 Oracle Internet Directory database with the WebLogic 10.3.6 cluster. It is suggested that a Web Tier 11.1.1.7 installation be configured to reflect all application server installations if SSO will be utilized.
+
+References for Configuration:
+
+§Oracle® Fusion Middleware High Availability Guide 11g Release 1 (11.1.1) Part Number E10106-09
+
+§ Oracle Real Application Clusters Administration and Deployment Guide
+
+12c Release 1 (12.1) E48838-10
+
+3
+
+Database Installation Tasks  Full
+
+This chapter describes the tasks required for a full database installation.
+
+Note: If RWMS 14.1.1 software is already installed, please see Database Installation Tasks  Patch for information on Patching to RWMS 15.0.
+
+If a database has been created for Oracle Retail Merchandising System (RMS) 15.0 and you would like the Retail Warehouse Management System (RWMS) to be in the same database, you can skip this step and advance to the Create the Schema Owner for RWMS section of this guide. However, if you want RWMS to reside in a dedicated database, follow the steps below to create a new one.
+
+Create Staging Directory for RWMS Installer
+
+To create the staging directory for RWMS installer, complete the following steps.
+
+Note: The same installer can be used to install multiple RWMS components. If you are installing any of the RWMS components (Database, Application, Enhanced Dashboards and Navigation) on the same server, they can use the same installer and this step does not need to be repeated.
+
+1. Log into the database server as a user that can connect to the RWMS database.
+
+2.Create a staging directory for the RWMS installation software.
+
+3.Copy the rwms15installer.zip file from the RWMS 15.0 release to the staging directory. This is referred to as STAGING_DIR when installing database software.
+
+4.Change directories to STAGING_DIR and extract the rwms15installer.zip file. This creates an rwms/installer/ subdirectory under STAGING_DIR.
+
+Create the RWMS Database
+
+It is assumed that Oracle Enterprise Edition 12c Release 1, with all appropriate patches, has already been installed. If not, see Check Supported Database Server Requirements in Chapter 1 before proceeding. Additionally, STAGING_DIR in this section refers to the directory created in the steps for Create Staging Directory for RWMS Installer in Chapter 1.
+
+If a database has already been created, it is necessary to review the contents of this section to determine if all database components have been installed and configured properly. See also Appendix: Oracle Database 12cR1 Parameter File.
+
+If a database instance has not been created, create one using database creation templates via DBCA in silent mode.
+
+Create the Database Instance Using the Oracle Generic Template
+
+Prerequisites
+
+§ The 12.1.0.2 binary must have already been installed. Refer to the Database Server Preinstallation section for all the required oneoff patches.
+
+Background
+
+As of 14.1, Oracle Retail no longer delivers custom database template files. Instead, databases can be created using the generic, Oracle-delivered templates located in the $ORACLE_HOME/assistants/dbca/templates directory.
+
+$ /<ORACLE_HOME>/assistants/dbca/templates>
+
+--> ls -l General_Purpose.dbc
+
+-rw-r--r-- 1 oracle rgbudba 4908 May 24 2013 General_Purpose.dbc
+
+Instance Creation Using the Generic Template via DBCA
+
+1.Ensure ORACLE_HOME and ORACLE_BASE is in the path:
+
+$export ORACLE_HOME=<Oracle Home Location
+
+$export ORACLE_BASE=<ORACLE BASE LOCATION>
+
+$export PATH=$ORACLE_HOME/bin:$PATH
+
+$ cd into $ORACLE_HOME/assistants/dbca/templates
+
+2.Execute the following command to create an instance:
+
+$ORACLE_HOME/bin/dbca -silent -createDatabase -templateName General_Purpose.dbc -gdbName DB_NAME -sid DB_SID -createAsContainerDatabase true -SysPassword oracle1 -SystemPassword oracle1 -emConfiguration NONE -datafileDestination /u02/oradata -characterSet AL32UTF8 -nationalCharacterSet AL16UTF16 -redoLogFileSize 100 -initParams nls_date_format=DD-MON-RR,nls_language=AMERICAN,nls_calendar=GREGORIAN,fast_start_mttr_target=900
+
+The above will create a container database using all the default parameters set by dbca. Please replace the pfile by taking a copy from Appendix A but customize the values according to the need of your environment.
+
+If you wish to create a non-container database, replace [-createAsContainerDatabase true] to [-createAsContainerDatabase false].
+
+3.Execute the following commands to create a pluggable database if this is a container environment.
+
+CREATE PLUGGABLE DATABASE PDB_NAME ADMIN USER PDBADMIN
+
+IDENTIFIED BY pdbadmin_pwd ROLES=(CONNECT) file_name_convert=('/u02/oradata/cdb_name/pdbseed','/u02/oradata/pdb_name');
+
+alter pluggable database pdb_name open;
+
+alter system register;
+
+4.Post Database Creation Setup
+
+The above commands create a database with all files in one directory, ie, /u02. Please multiplex the redo logs and the controlfiles following the OFA architecture.
+
+5.Configure the listener and the tnsnames entry.
+
+6.Log into the pluggable database to create the required tablespaces accordingly. For non-container databases, log into the database as normal to create the tablespaces.
+
+Create the Required RWMS Tablespaces
+
+Release 15.0 uses table spaces RETAIL_DATA, RETAIL_INDEX, ENCRYPTED_RETAIL_DATA and ENCRYPTED_RETAIL_INDEX.
+
+Note: If you have created tablespaces during the implementation or upgrade of the Retail Merchandising System 15.0, you are no longer required to create another set of tablespaces for the Warehouse Management System as they use the same ones.
+
+The ENCRYPTED_RETAIL_DATA and ENCRYPTED_RETAIL_INDEX tablespaces hold data which may include Personally Identifiable Information data (PII Data). If you hold an Advanced Security Option license, you can choose to create these two tablespaces with TDE tablespace encryption to protect the PII data at rest. If you do not hold an Advanced Security Option license, you can create the tablespaces as normal tablespaces. The tablespace names must always be ENCRYPTED_RETAIL_DATA and ENCRYPTED_RETAIL_INDEX regardless of whether TDE encryption is used, because the table and index creation scripts look for these specific names.
+
+1.Modify STAGING_DIR/rwms/installer/create_db/create_wms_tablespaces.sql. The table below shows the default initial sizes.
+
+2.Once this script has been modified, execute it in SQL*Plus as sys.
+
+3.Review create_wms_tablespaces.log for errors and correct as needed.
+
+4.If you do not wish to use TDE tablespace encryption:
+
+a.Modify STAGING_DIR/rwms/installer/create_db/create_encrypted_tablespaces_no_TDE.sql.
+
+b.Run the script using SQL*Plus as sys.
+
+c.Review Create_encrypted_retail_tablespaces_no_TDE.log for errors and correct as needed.
+
+5.If you hold an Advanced Security Option license and wish to use TDE tablespace encryption:
+
+a.Modify STAGING_DIR/rwms/installer/create_db/create_encrypted_tablespaces_TDE.sql.
+
+b.Run the script using SQL*Plus as sys.
+
+c.Review Create_encrypted_retail_tablespaces_TDE.log for errors and correct as needed.
+
+d.Refer to Appendix: Tablespace Creation Scripts for details about how to create tablespaces in an encrypted format.
+
+The standard tablespace scripts contain the DDL for creating the required tablespaces which can extend up to the following sizes:
+
+TABLESPACE_NAME
+
+SIZE
+
+ENCRYPTED_RETAIL_INDEX
+
+12G
+
+ENCRYPTED_RETAIL_DATA
+
+10G
+
+RETAIL_INDEX
+
+10G
+
+RETAIL_DATA
+
+8G
+
+LOB_DATA
+
+2G
+
+USERS
+
+2G
+
+These sizes are sufficient for the initial installation of RWMS database objects. Although using the initial values is not recommended for a production environment, it is possible to use them for the purpose of creating a small test environment. For additional assistance with production database sizing, contact Oracle Retail Services.
+
+Create the Schema Owner for RWMS
+
+Create an Oracle schema that will own the RWMS application. Also, create RWMS ADF and RUNTIME users. Refer to the section below.
+
+Note: The RWMS schema owner must be created prior to running the RWMS database schema installation. The installer will validate this user before proceeding with installation.
+
+1. Change directories to STAGING_DIR/rwms/installer/create_db.
+
+2.The create_user script relies on an empty role, developer, being created. Log into sqlplus as sysdba, connect to the respective PDB and run the following command to create that role:
+
+SQL> create role developer;
+
+3.Enter the following command to create the schema owner:
+
+SQL> @create_user.sql
+
+The following prompts will appear:
+
+§ Schema Owner  the Oracle user that will own all RWMS objects. Referred to in this document as RWMS15DEV.
+
+§ Password  the password associate with RWMS15DEV.
+
+§ Temp Tablespace  the temporary tablespace for RWMS15DEV.
+
+4.Check the log file create_<Schema_Owner>.lst for any errors. This log file should be removed to prevent the password from being compromised.
+
+5.Create rwms_adf_user. Use the below script to create rwms_adf_user
+
+SQL> @create_rwms_adf_user.sql
+
+§ Password  enter the password for the user rwms_adf_user
+
+§ Temp Tablespace  the temporary tablespace for the user
+
+6.Create runtime user and role. Use the below script to create runtime user and the role.
+
+SQL >@create_runtime_user_role.sql
+
+§ runtime_user  enter the database user name for running RWMS application
+
+§ runtime_password  enter the password for the user
+
+§ Temp Tablespace  the temporary tablespace for the user
+
+Run the RWMS Database Schema Installation
+
+To run the RWMS database schema installation, complete the following steps.
+
+Note: See Appendix: RWMS Database Schema Installation Screens for details on the RWMS Database Schema installation screens and fields in the installer.
+
+1. Change directories to STAGING_DIR/rwms/installer.
+
+2.Source the oraenv script to set up the Oracle environment variables (ORACLE_HOME, ORACLE_SID, PATH, etc)
+
+Example: prompt$ . oraenv
+
+ORACLE_SID = [] ? mydb
+
+prompt$
+
+Verify the ORACLE_HOME and ORACLE_SID variables after running this script.
+
+Example: prompt$ echo $ORACLE_HOME
+
+/u00/oracle/product/mydbversion
+
+prompt$ echo $ORACLE_SID
+
+mydb
+
+3.Set and export the following environment variables. These variables are needed in addition to the environment variables set by the oraenv script above.
+
+4.If you are going to run the installer in GUI mode using an X server, you need to have the XTEST extension enabled. This setting is not always enabled by default in your X server. See Appendix: Common Installation Errors for more details.
+
+5.If the installer has already been run in this location you may wish to back up the ant.install.properties file.
+
+6.Run the install.sh script to start the installer.
+
+Note: Below are the usage details for install.sh. The typical usage for GUI mode is no arguments.
+
+./install.sh [text | silent]
+
+7.Verify that the installer reports SUCCESS for the Database Preinstall Check. If it reports FAILED, verify that your environment variables are set properly.
+
+8.Check the Install Database Objects checkbox and continue with installer.
+
+9.After the installer is complete, you can check its log file: STAGING_DIR/rwms/installer/logs/rwms-install.<timestamp>.log.
+
+Note: The installer leaves behind the ant.install.properties file for future reference and repeat installations. This file contains inputs you provided. As a security precaution, make sure that the file has restrictive permissions.
+
+chmod 600 ant.install.properties
+
+10.After the database installation is completed, run the base_dms_user.sql script to create the super user required to log in to the RWMS application.
+
+§ Change directories to STAGING_DIR/rwms/installer/rwms15/Install_Data/Source
+
+§ Log in to the database as the RWMS schema owner
+
+§ SQL> @base_dms_user.sql
+
+Example:
+
+*************************************************************************************
+
+If User already exists in the Facility, New Password entered below will be updated
+
+*************************************************************************************
+
+Please enter the Superuser name for RWMS: par3214
+
+Please enter the Superuser User Id for RWMS: par3214
+
+Please enter the Superuser password: <retail>
+
+4
+
+Database Installation Tasks  Patch
+
+The RWMS 15.0 installer may be used to apply the RWMS patch. Before you apply the RWMS 15.0 patch:
+
+§ Make a backup of all your objects and database schema.
+
+§ Review the RWMS 15.0 Release Notes.
+
+§ Review each of the enclosed defect documents.
+
+Create Staging Directory for RWMS Installer
+
+To create the staging directory for RWMS installer, complete the following steps.
+
+Note: The same installer can be used to patch multiple RWMS components. If you are installing any of the RWMS components (Database, Application, and Enhanced Navigation and Dashboards) on the same server as the same user, they can use the same installer and this step does not need to be repeated.
+
+1. Log into the database server as a user that can connect to the RWMS database.
+
+2.Create a staging directory for the RWMS installation software.
+
+3.Copy the rwms15installer.zip file from the RWMS 15.0 release to the staging directory. This is referred to as STAGING_DIR when installing database software.
+
+4.Change directories to STAGING_DIR and extract the rwms15installer.zip file. This creates an rwms/installer/ subdirectory under STAGING_DIR.
+
+(Optional) Analyze Changes in the Patch
+
+Note: See Appendix: RWMS Analyze Tool for details and instructions to run the RWMS Analyze Tool. This appendix also contains screens and fields in the tool.
+
+Run the RWMS Database Schema Installation
+
+To run the RWMS database schema installation, complete the following steps.
+
+Note: See Appendix: RWMS Database Schema Installation Screens for details on the RWMS Database Schema installation screens and fields in the installer.
+
+1. Change directories to STAGING_DIR/rwms/installer.
+
+2.Source the oraenv script to set up the Oracle environment variables (ORACLE_HOME, ORACLE_SID, PATH, etc).
+
+Example: prompt$ . oraenv
+
+ORACLE_SID = [] ? mydb
+
+prompt$
+
+Verify the ORACLE_HOME and ORACLE_SID variables after running this script.
+
+Example: prompt$ echo $ORACLE_HOME
+
+/u00/oracle/product/mydbversion
+
+prompt$ echo $ORACLE_SID
+
+mydb
+
+3.Set and export the following environment variables. These variables are needed in addition to the environment variables set by the oraenv script above.
+
+4.If you are going to run the installer in GUI mode using an X server, you need to have the XTEST extension enabled. This setting is not always enabled by default in your X server. See Appendix: Common Installation Errors for more details.
+
+5.If the installer has already been run in this location you may wish to back up the ant.install.properties file.
+
+6.Run the install.sh script to start the installer.
+
+Note: Below are the usage details for install.sh. The typical usage for GUI mode is no arguments.
+
+./install.sh [text | silent]
+
+7.Verify that the installer reports SUCCESS for the Database Preinstall Check. If it reports FAILED, verify that your environment variables are set properly.
+
+8.Check the Install Database Objects checkbox and continue with installer.
+
+9.On the RETAIL_HOME screen, select the RETAIL_HOME of your previous installation.
+
+10.On the Wallet password screen, enter the wallet password you used in the previous installation.
+
+11.After the installer is complete, you can check its log file: STAGING_DIR/rwms/installer/logs/rwms-install.<timestamp>.log.
+
+Note: The installer leaves behind the ant.install.properties file for future reference and repeat installations. This file contains inputs you provided. As a security precaution, make sure that the file has restrictive permissions.
+
+chmod 600 ant.install.properties
+
+5
+
+It is assumed that WebLogic 11g version 10.3.6 (WLS) with Forms 11.1.2.2 has already been installed. If not, refer to Check Application Server Requirements in Chapter 1, Preinstallation Tasks before proceeding.
+
+The application installer will install and compile the various Forms dependencies and validate them against the RWMS Database Schema installation performed in the previous chapter. Installation of BI Publisher server components are covered in Chapter 6.
+
+Note: The guide does not make recommendations about the clustering or high availability configurations for WebLogic as these will largely be dependent on your fault-tolerance and scalability requirements.
+
+Note: $ORACLE_HOME/network/admin/tnsnames.ora file must be configured in this WebLogic installation. Forms and reports use this information for connectivity.
+
+A copy tnsnames.ora file must be created for the $ORACLE_INSTANCE/config location. If the file is not copied to this location, forms will not compile correctly. See Appendix: Tablespace Creation Script for an example setup of the tnsnames.ora file.
+
+Note: It is necessary to create Domain directory under WEBLOGIC_HOME/user_projects/domains/. If this is not where it is located, the installer will not be able to copy the files from the post directory over to the WebLogic Domain and this should be done manually.
+
+Prepare Application Server for RWMS
+
+To prepare the application server for RWMS, complete the following steps.
+
+Note: ORACLE_HOME is the location where Oracle Forms 11gR2 has been installed.
+
+ORACLE_INSTANCE is the instance that is created during installation of Oracle Forms 11gR2 and contains the executables to compile forms.
+
+1.The T2kMotif.rgb file that is sent out with WebLogic (10.3.6) must be modified. It located at the following location:
+
+<ORACLE_INSTANCE>/config/FRComponent/frcommon/guicommon/tk/admin
+
+2.Make a copy of the file Tk2Motif.rgb, and name it Tk2Motif.rgb_ORIG (for example).
+
+3.Modify the file Tk2Motif.rgb file so that it contains the following line:
+
+Tk2Motif*fontMapCs: iso8859-2=AL32UTF8
+
+4.Copy <ORACLE_INSTANCE>/config/FRComponent/frcommon/guicommon/tk/admin/Tk2Motif.rgb to <ORACLE_HOME>/guicommon/tk/admin/Tk2Motif.rgb.
+
+Create Staging Directory for RWMS Installer
+
+To create the staging directory for the RWMS Installer, complete the following steps.
+
+Note: The same installer can be used to install multiple RWMS components. If you are installing any of the RWMS components (Database, Application, Enhanced Dashboards and Navigation) on the same server, they can use the same installer and this step does not need to be repeated.
+
+1. Log into the application server as a user with read and write access to the WebLogic files.
+
+2.Create a staging directory for the RWMS installation software.
+
+3.Copy the file rwms15installer.zip from the RWMS 15.0 release to the staging directory. This will be referred to as STAGING_DIR when installing application software and reports.
+
+4.Change directories to STAGING_DIR and extract the file rwms15installer.zip. This will create an rwms/installer subdirectory under STAGING_DIR.
+
+Install RWMS Oracle Forms
+
+To install RWMS Oracle forms, complete the following steps:
+
+Note: See Appendix: RWMS Application (forms) Installation Screens for details about the RWMS Forms application screens and fields in the installer.
+
+1. Log on to your application server as the user that has write access to WebLogic.
+
+2.Change directories to STAGING_DIR/rwms/installer. Set and export the following environment variables.
+
+3.Run the install.sh script to start the installer.
+
+Note: Below are the usage details for install.sh. The typical usage for GUI mode is no arguments.
+
+./install.sh
+
+Depending on system resources, a typical installation takes anywhere from 45 minutes to two hours.
+
+The installer asks for an installation directory. This is the destination directory for the RWMS files. This directory will be referred to as RETAIL_HOME for the remainder of this chapter. Do not provide a RETAIL_HOME that is located at or underneath STAGING_DIR.
+
+4.After the installation is complete, you can check its log file: STAGING_DIR/rwms/installer/logs/rwms-install.<timestamp>.log. The directory RETAIL_HOME/orpatch/logs/detail_logs/oraforms_rwms/ will contain log files for specific forms, with information about possible failed compilations.
+
+5.The installer leaves behind the ant.install.properties file for future reference and repeat installations. This file contains inputs you provided. As a security precaution, make sure that the file has restrictive permissions.
+
+Example:
+
+chmod 600 ant.install.properties
+
+6.If during the screens you chose not to have the installer automatically configure WebLogic, after the installation is complete the files that would have been updated by the installer will be located in a directory and will have to manually be moved to correct directories as specified by the installer output like the example below.
+
+Example:
+
+#######################################################################
+
+Weblogic Configuration Tasks
+
+#######################################################################
+
+Contact your Weblogic administrator and have them make backups of the following files:
+
+/u00/webadmin/config/domains/wls_forms/ClassicDomain /config/fmwconfig/servers/WLS_FORMS/applications/formsapp_11.1.2/config/forms/registry/oracle/forms/registry/Registry.dat
+
+/u00/webadmin/config/domains/wls_forms/ClassicDomain /config/fmwconfig/servers/WLS_FORMS/applications/formsapp_11.1.2/config/formsweb.cfg
+
+Have the Weblogic administrator stop WLS_FORMS,
+
+copy everything in /u00/oretail/rwms15.0/tst/post/MW_HOME
+
+to /u00/webadmin/products/wls_forms
+
+and copy everything in /u00/oretail/rwms15.0/tst/post/DOMAIN_HOME
+
+to /u00/webadmin/config/domains/wls_forms/ClassicDomain
+
+to update the files
+
+and then start WLS_FORMS
+
+for the changes to take effect.
+
+example: cp -R * /u00/webadmin/products/wls_forms
+
+cd /u00/oretail/rwms15.0/tst/post/MW_HOME
+
+cp -R * /u00/webadmin/products/wls_forms
+
+cd /u00/oretail/rwms15.0/tst/post/DOMAIN_HOME
+
+cp -R * /u00/webadmin/config/domains/wls_forms/
+
+6
+
+The RWMS 15.0 installer may be used to apply the RWMS patch. Before you apply the RWMS 15.0 application patch:
+
+§ Review the RWMS 15.0 Release Notes.
+
+Create Staging Directory for RWMS Installer
+
+To create the staging directory for the RWMS Installer, complete the following steps.
+
+Note: The same installer can be used to install multiple RWMS components. If you are installing any of the RWMS components (Database, Application, Enhanced Dashboards and Navigation) on the same server, they can use the same installer and this step does not need to be repeated.
+
+1. Log into the application server as a user with read and write access to the WebLogic files.
+
+2.Create a staging directory for the RWMS installation software.
+
+3.Copy the file rwms15installer.zip from the RWMS 15.0 release to the staging directory. This will be referred to as STAGING_DIR when installing application software and reports.
+
+4.Change directories to STAGING_DIR and extract the file rwms15installer.zip. This will create an rwms/installer subdirectory under STAGING_DIR.
+
+(Optional) Analyze Changes in the Patch
+
+Note: See Appendix: RWMS Analyze Tool for details and instructions to run the RWMS Analyze Tool. This appendix also contains screens and fields in the tool.
+
+Run the RWMS Application Installation
+
+Note: See Appendix: RWMS Application Installer Screens for details about the RWMS application screens and fields in the installer.
+
+Install RWMS Oracle Forms
+
+To install RWMS Oracle forms, complete the following steps:
+
+Note: See Appendix: RWMS Application (forms) Installation Screens for details about the RWMS Forms application screens and fields in the installer.
+
+1. Log on to your application server as the user that has write access to WebLogic.
+
+2.Change directories to STAGING_DIR/rwms/installer.
+
+3.Set and export the following environment variables.
+
+4.Run the install.sh script to start the installer.
+
+Note: Below are the usage details for install.sh. The typical usage for GUI mode is no arguments.
+
+./install.sh [text | silent]
+
+5.Verify that the installer reports SUCCESS for the Application preinstall check. If it reports FAILED, verify that your environment variables are set properly.
+
+6.Check the Install Application checkbox and proceed with the installation.
+
+7.On the RETAIL_HOME screen, select the RETAIL_HOME of your previous installation.
+
+8.On the Wallet password screen, enter the wallet password you used in the previous installation.
+
+9.After the installation is complete, you can check its log file: STAGING_DIR/rwms/installer/logs/rwms-install.<timestamp>.log. The directory RETAIL_HOME/orpatch/logs/detail_logs/oraforms_rwms/ will contain log files for specific forms, with information about possible failed compilations.
+
+10.The installer leaves behind the ant.install.properties file for future reference and repeat installations. This file contains inputs you provided. As a security precaution, make sure that the file has restrictive permissions.
+
+Example:
+
+chmod 600 ant.install.properties
+
+7
+
+The Enhanced Navigation and Dashboard of RWMS provides a more modern web application GUI to the product that runs the RWMS Oracle forms. Along with a rich web design, the Enhanced Navigation and Dashboard brings with it new navigation features, search mechanisms, easy-to-use favorites.
+
+Before proceeding, you must install Oracle WebLogic Server (12.1.3). The Enhanced Navigation and Dashboards application is deployed to a WebLogic Managed server within the WebLogic installation. It is assumed Oracle Database has already been configured and loaded with the appropriate Oracle Retail Warehouse Management System schemas for your installation. ADF 12.1.3 should also be installed on the WebLogic installation. Additionally, STAGING_DIR in this section refers to the directory created in Create Staging Directory for RWMS Application Files in Chapter 1.
+
+Installing a separate domain is recommended. It can be called RWMSDomain (or something similar) and will be used to install the managed server. The ADF libraries should be extended to this domain and the Enterprise Manager should be deployed.
+
+You can create a new WebLogic server and install ADF libraries on it or create a WebLogic domain on the WebLogic server that has the ClassicDomain deployed
+
+Steps to Create the New Domain with ADF Libraries
+
+Fusion Middleware Infrastructure and Weblogic Server 12c(12.1.3) Installation
+
+1.Download the installer for FMW infrastructure (application development runtime).
+
+./fmw_12.1.3.0.0_infrastructure.jar
+
+2.Create a directory to install the WebLogic (this will be the MW_HOME):
+
+Example: mkdir -p /u00/webadmin/products/wls_retail
+
+3.Set the MW_HOME, JAVA_HOME, and DOMAIN_HOME environment variables.
+
+§ ORACLE_HOME should point to your WebLogic installation.
+
+§ JAVA_HOME should point to the Java JDK 1.7+. This is typically the same JDK which is being used by the WebLogic domain where application is getting installed.
+
+§ DOMAIN_HOME should point to the full path of the domain into which Application will be installed.
+
+Example:
+
+$ export MW_HOME=/u00/webadmin/products/wls_retail
+
+$ export DOMAIN_HOME=/u00/webadmin/config/domains/wls_retail/APPNAMEDomain
+
+$ export JAVA_HOME=/u00/webadmin/products/jdk_java (This should point to the Java which is installed on your server)
+
+$ export PATH=$JAVA_HOME/bin:$PATH
+
+Going forward we will use the above references for further installations.
+
+4.Set the system environment variable MW_HOME to the new directory then cd to location where the jar is downloaded and run the installer using the following command:
+
+java -jar ./fmw_12.1.3.0.0_infrastructure.jar
+
+5.Welcome screen appears. Click Next.
+
+6.Enter the following and Click Next.
+
+Oracle home =<Path to the middleware home> Example: /u00/webadmin/products/wls_retail
+
+7.Select install type Fusion Middleware Infrastructure and click Next.
+
+This screen will verify that the system meets the minimum necessary requirements.
+
+8.Click Next.
+
+9.If you already have an Oracle Support account, use this screen to indicate how you would like to receive security updates.
+
+10.If you do not have one or if you want to skip this step, clear the check box and verify your selection in the follow-up dialog box.
+
+11.Click Next.
+
+12.Click Next.
+
+13.Click Finish.
+
+14.Continue with RCU installation.
+
+Install RCU Database Schemas
+
+The RCU database schemas are required to install retail application and configuration of a domain.
+
+Note: You need SYS user privileges to install RCU database schemas.
+
+The following steps are provided for the creation of the database schemas:
+
+1.Navigate to the directory into which RCU is installed. For example:
+
+<MW_HOME>/oracle_common/bin/
+
+Run ./rcu
+
+2.Select Create Repository and System Load and Product Load. Click Next.
+
+3.Enter database connection details:
+
+§ Database Type: Oracle Database
+
+§ Host Name: dbhostname.us.oracle.com
+
+§ Port: 1521
+
+§ Service Name: dbservicename
+
+§ Username: sys
+
+§ Password: <syspassword>
+
+§ Role: SYSDBA
+
+4.Click Next. The Installer checks prerequisites.
+
+5.When the prerequisite checks are complete, click OK. Click Next.
+
+6.Click theCreate a new prefix option, the prefix name for your schemas should be unique to your application environment.
+
+Example: ReIM, ALLOC, ReSA, etc
+
+7.Select the components to create:
+
+§ Meta Data ServicesOracle Platform Security Services
+
+Note: Once OPSS schema is selected, the following dependent schemas will get selected automatically.
+
+Audit Services
+
+Audit Services Append
+
+Audit Services Viewer
+
+Note: STB schema will be already selected as part of the Common Infrastructure component.
+
+8.Select Use same passwords for all schemas.
+
+9.Enter your password.
+
+Note: This password is needed at the time of ADF domain creation.
+
+10.For this installation, click Next. A Repository Creation notification will appear. Click OK.
+
+11.Tablespaces are created, and the progress will be displayed in a pop-up notification. When the operation is completed, click OK.
+
+12.Click Create. The schema is created.
+
+Upon successful creation of database schemas, a screen will appear with all the schemas created.
+
+13.Click Close.
+
+Create a New ADF Domain (with managed server and EM)
+
+To create a new domain and managed server with ADF libraries and EM, follow the below steps:
+
+1.Set the environment variables:
+
+export JAVA_HOME=<JDK_HOME>(Example:/u00/webadmin/products/jdk_java) [JDK_HOME is the location where jdk has been installed)
+
+export PATH=$JAVA_HOME/bin:$PATH
+
+export ORACLE_HOME=<MW_HOME>/oracle_common (Example:/u00/webadmin/products/wls_retail/oracle_common)
+
+cd $MW_HOME/wlserver/common/bin (MW_HOME is the location where Weblogic has been installed.)
+
+2.Run the following command:
+
+./config.sh
+
+3.Select Create a new domain.
+
+Domain location: Specify the path to the <DOMAIN_HOME> Example:/u00/webadmin/config/domains/wls_retail/APPNAMEDomain
+
+4.Click Next.
+
+5.Select Create Domain Using Product Templates.
+
+6.Check the following components:
+
+§ Oracle Enterprise Manager and Oracle JRF
+
+Check the following components:
+
+Oracle Enterprise Manager
+
+Note: When Oracle Enterprise Manager component is selected, the following dependent components are selected automatically:
+
+Oracle JRF
+
+Weblogic Coherence Cluster Extension
+
+7.Click Next.
+
+Application location: Application directory location. Example: /u00/webadmin/config/applications/wls_retail/APPNAMEDomain
+
+8.Click Next.
+
+9.Provide the WebLogic administrator credentials and click Next:
+
+§ Username: weblogic
+
+§ Password: <Password>
+
+10.Select Domain Mode as Production and the JDK to use (as applicable).
+
+11.Select RCU Data.
+
+§ Vendor: Oracle
+
+§ DBMS/Service: dbservicename
+
+§ Host Name: dbhostname.us.oracle.com
+
+§ Port: 1521
+
+§ Schema Owner: APPNAME_STB (Example: ALLOC_STB, ReSA_STB, etc)
+
+§ Password: <Password>. This password which was used for RCU schema creation.
+
+12.Click the Get RCU Configuration button.
+
+13.Click Next.
+
+14.Select advanced configuration for:
+
+§ Administration Server
+
+§ Node manager
+
+§ Managed Servers, Clusters and Coherence
+
+15.Configure the Administration Server:
+
+§ Server Name: <APP name>_AdminServer
+
+§ Listen address: Appserver Hostname or IPAddress of the Appserver Host.
+
+§ Listen port: <Port for Admin Server> Note: The port used here must be a free port.
+
+§ Server Groups: Unspecified
+
+16.Configure Node Manager:
+
+§ Node manager type: Per domain default location
+
+§ Username: weblogic
+
+§ Password: <Password for weblogic>
+
+17.Configure Managed Servers with the ADF template.
+
+18.Click the Add button.
+
+§ Server Name: <appname-server>
+
+§ Listen address: Appserver Hostname or IPAddress of the Appserver Host
+
+§ Listen port: <Port for Managed Server> Note: The port used here must be a free port.
+
+§ Server Groups: JRF-MAN-SVR
+
+19.Skip Configure Clusters and click Next.
+
+20.Skip Coherence Clusters and Click Next.
+
+21.Configure Machines:apphost
+
+22.Click the Add button.
+
+§ Name: apphostname_MACHINE
+
+§ Listen address: apphostname or IPAddress
+
+§ Listen port: <Port for node manager> Note: The port used here must be a free port.
+
+23.Assign Servers to Machines:
+
+24.Assign the configured Admin server and managed servers to the new machine.
+
+25. Click Create.
+
+26.Click Next.
+
+27.When the process completes, click Finish.
+
+28.Start the nodemanager from <DOMAIN_HOME>/bin using the following:
+
+./startNodeManager.sh
+
+29.Start the WebLogic Domain (Admin Server) from <DOMAIN_HOME>/bin using the following:
+
+./startWebLogic.sh
+
+30.You may configure boot.properties for starting the Weblogic domain without prompting to username and password:
+
+Create the security folder at:
+
+<DOMAIN_HOME>/servers/<AdminServer>/
+
+Create the boot.properties file under:
+
+<DOMAIN_HOME>/servers/<AdminServer>/security
+
+The file boot.properties should have the following:
+
+----------------------------------
+
+username=weblogic
+
+password=<password>
+
+------------------------------------
+
+In the above, the password value is the password of WebLogic domain which is given at the time of domain creation.
+
+31.Save the boot.properties file and restart the WebLogic server.
+
+32.Start the Managed server from the Admin Console.
+
+Run the RWMS Installer
+
+1.This installer configures and deploys the RWMS Enhanced Navigation and Dashboards application. If you are using an X server such as Exceed, set the DISPLAY environment variable so that you can run the installer in GUI mode (recommended). If you are not using an X server, or the GUI is too slow over your network, unset DISPLAY for text mode.
+
+2.Verify that the managed server to which RWMS Enhanced Navigation and Dashboards will be installed is currently running.
+
+3.Change directories to STAGING_DIR/rwms/installer.
+
+4.Set and export the following environment variables.
+
+5.Run the install.sh script. This launches the installer. After installation is completed, a detailed installation log file is created: <STAGING_DIR>/rwms/installer/logs/rwms-install.<timestamp>.log.
+
+Note: See Appendix: RWMS Enhanced Navigation & Dashboards Installation Screens for details on the Enhanced Navigation & Dashboards screens and fields in the installer.
+
+Custom Authentication Provider set up
+
+1.In the WebLogic domain - Shut down the admin and managed servers.
+
+2.Copy the oracle.retail.rwms.security.weblogic.jar present in < STAGING_DIR >/ rwms/installer/rwms15/Enhanced_Navigation_and_Dashboards/Clientlib to the WEBLOGIC_DOMAIN_HOME/lib.
+
+3.Start the admin server for the WebLogic domain.
+
+4.Log into the WebLogic admin console.
+
+5.In the Domain Structure on left hand side of screen click the Security Realms link.
+
+6.Click on myrealm (default realm).
+
+7. Click on the Providers tab.
+
+8.Click the Lock & Edit button.
+
+9.Click New.
+
+10.Set the provider name (example: CustomAuthenticator).
+
+11.Select the provider type from the list: CustomAuthenticator.
+
+12.Click Ok.
+
+13.Click on the newly configured provider (CustomAuthenticator) and set the Control Flag to REQUIRED.
+
+14.Click Save.
+
+15.Click Providers link. (Top of screen  under Welcome, <Admin_USER>)
+
+16.Click the DefaultAuthenticator link.
+
+17.Set the default authenticator to SUFFICIENT.
+
+18.Click Save.
+
+19.Click Providers link. (Top of screen  under Welcome, <Admin_USER>).
+
+20.Click Reorder button and then reorder the Authentication Providers as follows:
+
+§ Trust Service Identity Asserter
+
+§ Default Authenticator
+
+§ Default Identity Asserter
+
+§ Custom Authenticator. Re-order them accordingly.
+
+21.Click OK.
+
+22.Click the Activate Changes button and restart the entire domain.
+
+Disable User Lock Out Settings
+
+1.Login into the Domain.
+
+2.Go to Security Realms and then to myrealm. Under the Configuration tab go to User Lockout.
+
+3.Take Lock & Edit and disable the Lockout Enabled check box.
+
+4.Click Save.
+
+5.Activate the changes and Restart the domain.
+
+Application: Logging File Settings
+
+For getting clear logs of the application, the managed servers logging.xml file should be modified by adding the tags outlined below. The location of the file is as follows:
+
+<WEBLOGIC_DOMAIN_HOME>/config/fmwconfig/servers/<RWMS Managed Server>
+
+Under <log_handlers> tag (Replace <RWMS Managed Server> with your managed server name):
+
+<log_handler name='rwmsapp-handler' class='oracle.core.ojdl.logging.ODLHandlerFactory' filter='oracle.dfw.incident.IncidentDetectionLogFilter'>
+
+<property name='path' value='${domain.home}/servers/<RWMS Managed Server>/logs/rwmsapp-diagnostic.log'/>
+
+<property name='maxFileSize' value='10485760'/>
+
+<property name='maxLogSize' value='104857600'/>
+
+<property name='encoding' value='UTF-8'/>
+
+<property name='useThreadName' value='true'/>
+
+<property name='supplementalAttributes' value='J2EE_APP.name,J2EE_MODULE.name,WEBSERVICE.name,WEBSERVICE_PORT.name,composite_instance_id,component_instance_id,composite_name,component_name'/>
+
+</log_handler>
+
+Under <loggers> tag:
+
+Note: you may want to adjust the logging level of FINEST to reduce the amount of log messages):
+
+<logger name="oracle.retail.rwms" level="FINEST">
+
+<handler name="rwmsapp-handler"/>
+
+</logger>
+
+8
+
+This section covers the installation and configuration of external components and other dependencies for RWMS 15.0.
+
+Prerequisites
+
+The following prerequisites have been assumed to have been completed successfully:
+
+§ The RWMS Database Schema installation into a running Oracle 12cR1 database platform must be completed.
+
+§ The RWMS application components must be installed into a working WebLogic 10.3.6 domain.
+
+§ The RWMS Enhanced Navigation and Dashboard must be installed into a working WebLogic 12.1.3 domain
+
+Path References Used in this Section
+
+The directory structures outlined in this section will vary according to your specific configuration of the target WebLogic domain. We will therefore use the labels outlined in the following table as references to directories used for the configuration of external dependencies for RWMS 15.0 throughout the rest of this section.
+
+Note the directory names for each of the labels outlined below for your installation environment.
+
+Note: In the following sections, the Oracle BI EE 11g installation steps are sample. Refer to the Oracle Business Intelligence 11g Installation Guide for more information.
+
+BI Server Component Installation Tasks
+
+Oracle BI Publisher is used as the main RMS, RWMS, REIM, and SIM reporting engine and can be used in conjunction with external printing solutions like label printing. This section describes the installation of Oracle BI Publisher as a server application within WebLogic 10.3.6. One deployment of BI Publisher can be used for any and all of the RMS, RWMS, REIM, and SIM reports.
+
+When installing BI Publisher 11g, refer to the appropriate Fusion Middleware guides for the installation of the product in a WebLogic server environment.
+
+Installation Process Overview
+
+Installing the BI Publisher server as a standalone web application in a WebLogic server involves the following tasks:
+
+1.Run RCU to create BIPublisher related database schemas and other db objects.
+
+2.Install Oracle BI EE under an existing Weblogic Server (WLS) 10.3.6 and choose Enterprise Install.
+
+3.Configure Oracle BI EE, create default bifoundation_domain and configure component Business Intelligence Publisher only.
+
+4.Select the BIPlatform schema for update of the ORACLE 12c DB
+
+5.Configure ports and document and test the URLs that are created.
+
+The following post-installation tasks are involved once BI Publisher has been installed:
+
+6.Set up and copy the RWMS BI Publisher Report Templates produced for RWMS.
+
+7.Configure the BI Publisher repository. Set security model, add users, assign roles, add reports, add printers, set repository path, set data source, etc.
+
+8.Set up for the RWMS application specific configuration files to integrate BI Publisher with the RWMS online app.
+
+Install Oracle BI EE 11g
+
+1.Run the Repository Creation Utility (11.1.1.9.0) to create the BiPublisher-related database schemas and other database objects. Create the BIPlatform schema into an existing ORACLE 12c database.
+
+Note: Download Repository Creation Utility software from http://www.oracle.com/technetwork/middleware/bi-enterprise-edition/downloads/bi-downloads-2537285.html. Install it on your desktop
+
+2.Export your DISPLAY.
+
+Example: export DISPLAY=10.141.10.110:0.0
+
+3.Launch Oracle BI EE RCU Repository Creation Utility to create the Oracle BI EE schemas need for the Oracle BIPublisher installation.
+
+§ Go to $RCU_HOME/bin.
+
+Example: /linux/x86_64/ofm_11g/RCU_11.1.1.9/rcuHome/bin>
+
+Start RCU: ./rcu
+
+4.Click Next.
+
+5.On this screen select Create Repository and Click Next
+
+6.On the Database Connection Details screen, enter your Oracle Database information.
+
+7.Click OK.
+
+8.On the Select Components screen, select Oracle Business Intelligence check box and click Next.
+
+9.Click OK.
+
+10.Select Use same passwords for all schemas, enter in the password and click Next.
+
+11.In the Map Tablespaces screen  accept the defaults by selecting Next.
+
+12.Click OK.
+
+13.Click OK.
+
+14.The Summary of the Components created by the RCU tool is displayed. Click Create.
+
+15.Click Close.
+
+16.Install Oracle BI EE and select Enterprise Install. To initiate the Oracle BI EE installer  via command line navigate to: <OBIEE_INSTALL>/obiee11.1.1.9/bishiphome/Disk1 and enter:
+
+./runInstaller
+
+17.Click Next:
+
+18.Select Skip Software Updates and click Next.
+
+19.Select Enterpise Install and click Next.
+
+20.Click Next.
+
+21.Enter in credentials for Weblogic Admin and Domain Name:
+
+22.Enter in the Oracle Middleware Home where you want to install Oracle BI EE and click Next.
+
+§ Example: /u00/webadmin/product/wls_obiee
+
+Note: The remainder of the text entries will auto fill.
+
+23.Select Business Intelligence Publisher only and click Next.
+
+24.Enter the data base credentials of the BIPLATFORM schema.
+
+25.Enter the Data base credentials for the MDS Schema.
+
+26.Configure your BI ports. This screen allows you to assign Oracle BI EE ports from the staticports.ini file. Edit this file to make sure you will have the ports you want for your BiPublisher components. Otherwise the installer will assign default port numbers.
+
+§ This file is located in the Oracle BI EE software at: <OBIEE_INSTALL>/obiee11.1.1.9/bishiphome/Disk1/stage/Response/staticports.ini.
+
+§ Only need to update the top section  See below for example for non-ssl setup:
+
+[WEBLOGIC]
+
+#The Domain port no. This is the listen port of Weblogic Adminserver for the domain.
+
+Domain Port No = 27001
+
+#The "content" port for the BIEE apps. This is the Weblogic Managed Server port on which BIEE applications are deployed.
+
+Oracle WLS BIEE Managed Server Port No = 29704
+
+#The SSL port for the Weblogic Managed Server
+
+#Oracle WLS BIEE Managed Server SSL Port No = 9804
+
+#The Weblogic node manager port
+
+Node Manager Port No = 9556
+
+27.Uncheck software updates and Click Next.
+
+28.Click Yes.
+
+29.Click Install.
+
+30.The following screen will appear automatically and continue to the next screen.
+
+31.The following screen will appear automatically. Click Next when the button becomes enabled.
+
+32.The final Completion screen gives important details regarding file locations and Important URLS for managing the Weblogic server as well as URLS for xmlp server. Make sure to copy these details by using the Save button. Click Finish.
+
+33.To test your BIPublisher installation - launch the BI Publisher with the xmlpserver URL. Login with the credentials you entered in your Oracle BI EE configuration (weblogic / password).
+
+Post Install Steps
+
+1.After sign on, select Administration.
+
+2.On the System Maintenance Section, click Server Configuration.
+
+3.On this screen - In the Server Configuration Folder section, enter the path to your repository. On the Catalog section enter Catalog Type: Oracle BI Publisher  File System from the drop down menu.
+
+§ This is the path you entered in the Configuration Section and Catalog Section:
+
+§ Example: /u00/webadmin/product/wls_obiee/user_projects/domains/bifoundation_domain/config/bipublisher/repository
+
+4.Click Apply.
+
+5.Click Administration link at top of screen.
+
+6.Click on the Security Configuration link under the Security Center to setup a super user and apply the BI Publisher security model.
+
+7.Enable a superuser by checking the Enable Local SuperUser box and by entering name and password on the corresponding fields on this screen.
+
+8.Mark Allow Guest Access check box. Enter Guest as Guest Folder Name.
+
+9.Click Apply.
+
+10.Scroll down the screen and locate the Authorization section:
+
+11.Select BI Publisher Security from the Security Model list.
+
+12.The default user name for the BI Publisher Security Model is Administrator.
+
+13.On the password text field, enter a value that you can remember. It is going to be the password for Login to xmlpserver.
+
+14.Click Apply.
+
+§ Leave BI Publisher up while completing the next section.
+
+Installing the RWMS BI Publisher Templates
+
+In this section we have outlined how the RWMS report templates are installed into the appropriate BI server repositories. RWMS requires two sub directories to be created within the path indicated by <BI_REPOSITORY>.
+
+Report files are placed by the installer in the directory, RETAIL_HOME/reports, and must be copied into the newly created BI server repository directory.
+
+1.Change directory to the <RETAIL_HOME>/reports used for the application install. This directory contains a RWMS directory with RWMS REPOSITORY and RWMS SYSTEM REPOSITORY subdirectories. These two directories contain reports directories whose names reflect the names of report templates provided with RWMS.
+
+2.Copy the RWMS directory and all of its subdirectories to <BI_REPOSITORY>/Reports/Guest. This will copy over the RWMS REPOSITORY and RWMS SYSTEM REPOSITORY directories according to the following table paths.
+
+Example:
+
+cp -R RWMS " /u00/webadmin/product/fmw/wls_obiee/user_projects/domains/bifoundation_domain/config/bipublisher/repository/Reports/Guest/ "
+
+Placement of Report Templates
+
+Directory
+
+RWMS Repository
+
+RWMS System Repository
+
+asn_recv_package_audit_sys
+
+P
+
+P
+
+asn_receiving_receipt_sys
+
+P
+
+P
+
+best_before_date
+
+P
+
+bill_of_lading_sys
+
+P
+
+P
+
+container_manifest_sys
+
+P
+
+P
+
+gift_card_report_sys
+
+P
+
+inventory_by_item
+
+P
+
+inventory_by_location
+
+P
+
+labor_performance_day_summary
+
+P
+
+labor_performance_detail
+
+P
+
+labor_performance_week_summary
+
+P
+
+pack_slip_labels_sys
+
+P
+
+pick_package_audit_sys
+
+P
+
+P
+
+pts_containers_to_close_sys
+
+P
+
+quality_audit_sys
+
+P
+
+P
+
+receiving_receipt_sys
+
+P
+
+P
+
+receiving_register
+
+P
+
+recv_package_audit_list_sys
+
+P
+
+P
+
+return_to_vendor
+
+P
+
+rtv_advice_sys
+
+P
+
+P
+
+unit_pick_group_sys
+
+P
+
+unresolved_appointment
+
+P
+
+error_log
+
+P
+
+cycle_count_log
+
+P
+
+confirm_fwd_case_picks_sys
+
+P
+
+qualified_container_sys
+
+P
+
+P
+
+pick_labels_lbl
+
+P
+
+receiving_labels_lbl
+
+P
+
+ship_labels_lbl
+
+P
+
+ticketing_lbl
+
+P
+
+generic_lbl
+
+P
+
+prd_classification_code_sys
+
+P
+
+system_control_parameter_sys
+
+P
+
+P
+
+user_summary_sys
+
+P
+
+user_task_history_sys
+
+P
+
+P
+
+Configuring the RWMS JDBC connection
+
+Follow the below steps to configure a JDBC connection for the RWMS Data Source, which is required for RWMS reports.
+
+1.If not still logged into BIPublisher 
+
+§ Login with the credentials you entered in your Oracle BI EE configuration. (weblogic / password)
+
+2.If the server was restarted 
+
+§ Login as the super user that was created in prior security setup steps.
+
+Note: You will not be able to login to xmlpserver as weblogic any more because we have already changed the Security Model.
+
+3.Click the Administration link at top of screen
+
+4.Select the JDBC Connection hyperlink in the Data Sources lists.
+
+5.Click the Add Data Source button.
+
+6.Enter the appropriate details for the RWMS data source. Click Test Connection to test the connection on the screen once the data is entered.
+
+§ Data Source Name: RWMS
+
+ Must be RWMS due to code dependencies.
+
+§ Driver type is ORACLE 11g
+
+§ Database driver class should be oracle.jdbc.OracleDriver.
+
+§ Connection string is similar to this example:
+
+Pluggable: jdbc:oracle:thin:@dbhostname:1521/servicename
+
+ Non- Pluggable dbc:oracle:thin:@dbhostname:1521:SID
+
+§ Enter the username and password for the RWMS application users data source. Click Test Connection to test the connection on the screen once the data is entered.
+
+7.Scroll to the bottom of the screen and check the Allow Guest Access check box. Click Apply.
+
+8.Click Catalog link at the top of the screen  and then click the Guest folder on the left so that it is highlighted.
+
+9.Click the Permissions link on the lower left of the screen.
+
+10. Click OK.
+
+11.Restart WebLogic Server.
+
+Configuring Forms to use BI Publisher
+
+This section provides information about how to configure forms for BI.
+
+Check the Configuration of formsweb.cfg
+
+The formsweb.cfg file is modified by the application installer to add the appropriate entries for the RWMS Forms configurations. Please validate the file to ensure that the following items have been updated accordingly by the installer. In italics and higlighted are post installation configuration changes.
+
+The file is typically found within the WebLogic domain configuration folder in the subdirectory <DOMAIN_HOME>/config/fmwconfig/servers/<WLS_INSTANCE>/applications/formsapp_11.1.2 /config directory and is named from the <INSTALLATION_NAME> value.
+
+For example:
+
+/u00/webadmin/product/wls_forms/user_projects/domains/ClassicDomain/config/fmwconfig/servers/WLS_FORMS/applications/formsapp_11.1.2/config/
+
+The following is a sample of URL definitions that were created by the installer from the formsweb.cfg file.
+
+[rwms15inst]
+
+envfile=./rwms15inst/rwms15inst.env
+
+width=950
+
+height=685
+
+separateFrame=true
+
+lookAndFeel=Oracle
+
+colorScheme=swan
+
+archive=frmall.jar,rwms-icons.jar
+
+form=logon_scr.fmx
+
+userid=/@rwms15inst
+
+#ssoMode=true
+
+#ssoDynamicresourceCreate=true
+
+[rwms15inst_hh]
+
+envfile=./rwms4inst/rwms15inst.env
+
+width=100%
+
+height=100%
+
+separateFrame=false
+
+form=hh_intro_s.fmx
+
+lookAndFeel=Oracle
+
+Logo=false
+
+colorScheme=swan
+
+background=false
+
+ShowMenuBar=false
+
+ShowStatusBar=false
+
+baseHTMLjinitiator=basejini.htm
+
+baseHTML=base.htm
+
+otherparams=term=/u00/webadmin/product/10.3.X/WLS_Forms/user_projects/domains/ClassicDomain/config/fmwconfig/servers/WLS_FORMS/applications/formsapp_11.1.2 /config/rwms15inst/fmrweb.res usesdi=YES
+
+splashScreen=false
+
+HTMLbodyAttrs=scroll="no" topmargin="0" leftmargin="0 marginheight="0" marginwidth="0" onload="window.moveTo(0,0);"
+
+userid=/@rwms15inst
+
+#ssoMode=true
+
+#ssoDynamicresourceCreate=true
+
+[rwms15inst_tm]
+
+envfile=./rwms4inst/rwms15inst.env
+
+width=100%
+
+height=100%
+
+separateFrame=false
+
+form=tm_intro_s.fmx
+
+Logo=false
+
+lookAndFeel=Oracle
+
+background=false
+
+colorScheme=swan
+
+ShowMenuBar=false
+
+ShowStatusBar=false
+
+baseHTMLjinitiator=basejini.htm
+
+baseHTML=base.htm
+
+otherparams=term=/u00/webadmin/product/10.3.X/WLS_Forms/user_projects/domains/ClassicDomain/config/fmwconfig/servers/WLS_FORMS/applications/ formsapp_11.1.2 /config/rwms15inst/fmrweb.res usesdi=YES
+
+splashScreen=false
+
+HTMLbodyAttrs=scroll="no" topmargin="0" leftmargin="0 marginheight="0" marginwidth="0" onload="window.moveTo(0,0);"
+
+userid=/@rwms15inst
+
+#ssoMode=true
+
+#ssoDynamicresourceCreate=true
+
+[rwms15inst_wr]
+
+envfile=./rwms15inst/rwms15inst.env
+
+width=100%
+
+height=100%
+
+separateFrame=false
+
+form=wr_intro_s.fmx
+
+Logo=false
+
+background=false
+
+lookAndFeel=Oracle
+
+colorScheme=swan
+
+ShowMenuBar=false
+
+ShowStatusBar=false
+
+baseHTMLjinitiator=basejini.htm
+
+baseHTML=base.htm
+
+otherparams=term=/u00/webadmin/product/10.3.X/WLS_Forms/user_projects/domains/ClassicDomain/config/fmwconfig/servers/WLS_FORMS/applications/ formsapp_11.1.2 /c
+
+onfig/rwms15inst/fmrweb.res usesdi=YES
+
+splashScreen=false
+
+HTMLbodyAttrs=scroll="no" topmargin="0" leftmargin="0 marginheight="0" marginwidth="0" onload="window.moveTo(0,0);"
+
+userid=/@rwms15inst
+
+#ssoMode=true
+
+#ssoDynamicresourceCreate=true
+
+Note: The installer inserts a splashScreen= line at three locations in the formsweb.cfg file. Having these lines in the formsweb.cfg file may sometimes cause issues and should be commented out (#splashScreen=false).
+
+Configuring the Forms Installation Environment Files
+
+This section outlines the entries that need to be updated in the <INSTALLATION_NAME>.env file. Please validate the file to ensure that the following items have been updated accordingly. Update variables that have not already been updated by the installer. The file is typically found within the WebLogic domain configuration folder in the subdirectory <DOMAIN_HOME>/config/fmwconfig/servers/WLS_FORMS/applications/formsapp_11.1.2 /config directory and is named from the <INSTALLATION_NAME> value. For example:
+
+/u00/webadmin/product/wls_forms/user_projects/domains/ClassicDomain/config/fmwconfig/servers/WLS_FORMS/applications/formsapp_11.1.2/config/
+
+The following are an explanation of some variables that will be added to the <rwms_instalation_name>.env (Example: rwms15inst.env) file by the rwms installer.
+
+The following is an example of the entries used for a working <INSTALLATION_NAME>.env file:
+
+CLASSPATH=/scratch/u00/webadmin/product/wls_retail/as_1/forms/j2ee/frmsrv.jar:/scratch/u00/webadmin/product/wls_retail/as_1/jlib/ldapjclnt11.jar:/scratch/u00/webadmin/product/wls_retail/as_1/jlib/debugger.jar:/scratch/u00/webadmin/product/wls_retail/as_1/jlib/ewt3.jar:/scratch/u00/webadmin/product/wls_retail/as_1/jlib/share.jar:/scratch/u00/webadmin/product/wls_retail/as_1/jlib/utj.jar:/scratch/u00/webadmin/product/wls_retail/as_1/jlib/zrclient.jar:/scratch/u00/webadmin/product/wls_retail/as_1/reports/jlib/rwrun.jar:/scratch/u00/webadmin/product/wls_retail/as_1/forms/java/frmwebutil.jar:/scratch/u00/webadmin/product/wls_retail/as_1/jlib/start_dejvm.jar:/scratch/u00/webadmin/product/wls_retail/as_1/opmn/lib/optic.jar:/vol.rtk/pkg_mocks/rwms151/retail_home_app/extras/httputil.jar:/vol.rtk/pkg_mocks/rwms150/retail_home_app/extras/bihelper.jar:/vol.rtk/pkg_mocks/rwms150/retail_home_app/extras/wmsSecurity.jar:/vol.rtk/pkg_mocks/rwms141/retail_home_app/extras/retail-public-security-api.jar:/u00/webadmin/product/wls_retail/oracle_common/modules/oracle.jrf_11.1.1/jrf.jar:/u00/webadmin/product/wls_retail/oracle_common/modules/javax.persistence.jar:/u00/webadmin/product/wls_retail/oracle_common/modules/oracle.xdk_11.1.0/xmlparserv2.jar:/u00/webadmin/product/wls_retail/oracle_common/modules/oracle.xdk_11.1.0/xml.jar:/u00/webadmin/product/wls_retail/oracle_common/modules/oracle.nlsrtl_11.1.0/orai18n-mapping.jar:/u00/webadmin/product/wls_retail/modules/com.oracle.toplink_1.1.0.0_11-1-1-6-0.jar:/u00/webadmin/product/wls_retail/modules/org.eclipse.persistence_1.2.0.0_2-3.jar:/u00/webadmin/product/wls_retail/modules/com.bea.core.antlr.runtime_2.7.7.jar:/u00/webadmin/product/wls_retail/wlserver_10.3/server/lib/weblogic.jar
+
+#RWMS Application Server added lines
+
+NLS_DATE_FORMAT=DD-MON-RR
+
+NLS_LANG=AMERICAN_AMERICA.AL32UTF8
+
+FORMS_USERNAME_CASESENSITIVE=1
+
+FORMS_REJECT_GO_DISABLED_ITEM=FALSE
+
+RWMS_SYS_REPORTS_DIR=/Guest/RWMS/RWMS SYSTEM REPOSITORY/
+
+RWMS_REPORTS_URL=http://bihostname:29704/xmlpserver/servlet/report?f=/Guest/RWMS/RWMS+REPOSITORY
+
+RWMS_REPORTS_TEMP=/u00/webadmin/product/10.3.X/WLS/user_projects/domains/ClassicDomain/servers/WLS_FORMS/tmp/_WL_user/formsapp_11.1.2/spn4wj/war/rwms/reptemp
+
+ORACLE_RWMS_EXTRAS=/u00/projects/rwms15.0/devlinf/extras
+
+RWMS_FORMS_SERVER=http://formshostname:9001
+
+RWMS_REPTEMP_ALIAS=/forms/rwms/reptemp/
+
+RF_LAUNCH_VALUE_ALIAS=/forms/rwms/rf_launch/
+
+RWMS_WALLET_PATH= /projects/rwms15/extras/javawallet
+
+RWMS_WALLET_PARTITION=rwms15inst
+
+RWMS_WALLET_LOGON=TRUE
+
+RWMS_BI_PWD=BI_ALIAS
+
+RWMS_DB_CONNECT=wms01_mydb
+
+RWMS_REPORT_END_POINT_URL=http://bihostname:29704/xmlpserver/services/v2/ReportService?wsdl
+
+RWMS_SCHEDULE_END_POINT_URL=http://bihostname:29704/xmlpserver/services/v2/ScheduleService?wsdl
+
+If not using a wallet to configure the variables used to integrate BIPublisher and RWMS the following is an example of how the impacted entries are used for a working <INSTALLATION_NAME>.env file:
+
+#RWMS_WALLET_PATH=/projects/rwms15/extras/javawallet #RWMS_WALLET_PARTITION=rwms15inst
+
+RWMS_WALLET_LOGON=FALSE
+
+RWMS_BI_USER=retail.user
+
+RWMS_BI_PWD=welcome1
+
+RWMS_DB_CONNECT=wms01/retail@mydb
+
+RWMS Wallet Configurations
+
+The RWMS application is comprised of several entities that require logon credentials to be passed back and forth. These credentials are kept secure by the use of several different types of wallets. The reason that multiple wallets are required is that the some of the RWMS entities are from different tech stacks. The RWMS application needs to allow ADF, Oracle Forms, BIPublisher, and batch script interfaces to be able to communicate. Below is a summary of each type of wallet that is utilized and how it works in the application.
+
+Application (Java) Wallet
+
+Note: This wallet must be created manually. The installer does not create it.
+
+§ Its purpose is to provide credentials for the RWMS application to be able to print reports via web service connections to in BI Publisher.
+
+§ This wallet is not setup by RWMS installer.
+
+§ See Setting up Application (Java) Wallet for RWMS .env File for instructions on how to set this up.
+
+§ Used to store values for the variables setup in the RWMS forms .env file.
+
+ RWMS_WALLET_PATH:
+
+ By default the RWMS installer creates this entry in the .env file, but does not actually create the wallet.
+
+ The path here should be set to the location where the wallet will reside once it is created. The location is a suggested location, but can actually reside anywhere on the file system that the RWMS application has access to.
+
+ RWMS_WALLET_PARTITION:
+
+ By default the RWMS installer creates this entry in the .env file, but does not actually create the wallet entry.
+
+ This value is the partition of the wallet that is used to look up the credentials.
+
+ RWMS_WALLET_LOGON:
+
+ By default the RWMS installer creates this entry in the .env file as TRUE.
+
+ This value tells the RWMS application whether or not to consider the variables
+
+ Setting this to FALSE, commenting it out, or deleting the entry will be accepted as a FALSE value by the application and will result in RWMS application considering credential variables as clear text.
+
+ RWMS_BI_USER:
+
+ No alias for this variable is stored in the wallet. The application uses the RWMS_BI_PWD for this purpose.
+
+ Used to store a BI Publisher username credential for RWMS application to access BI Publisher reports via web services.
+
+ Only used in when RWMS_WALLET _LOGON is set to FALSE and will be in clear text.
+
+ RWMS_BI_PWD:
+
+ By default the RWMS installer creates this entry in the .env file, but does not actually create the wallet entry.
+
+ The variable value is an alias that access the credentials used to log into BI Publisher in order to print reports from the application.
+
+ When RWMS_WALLET _LOGON is set to FALSE  this value should be clear text in the .env file.
+
+ RWMS_DB_CONNECT:
+
+ By default the RWMS installer creates this entry in the .env file, but does not actually create the wallet entry.
+
+ The v

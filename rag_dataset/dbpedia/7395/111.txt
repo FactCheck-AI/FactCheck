@@ -1,0 +1,211 @@
+Xfiles file tree synchronization and cross-validation
+
+What is
+
+Xfiles is an interactive utility for comparing and merging one file tree with another over a network. It supports freeform work on several machines (no need to keep track of what files are changed on which machine). Xfiles can also be used as a cross-validating disk<->disk backup strategy (portions of a disk may go bad at any time, with no simple indication of which files were affected. Cross-validate against a second disk before backup to make sure you aren't backing up bad data).
+
+A client/server program (GUI on the client) traverses a file tree and reports any files that are missing on the server machine, missing on the client machine, or different. For each such file, the file size/sizes and modification date(s) are shown, and a comparison (using Unix diff) can be obtained. For files that are missing from one tree, `similarly named' files in that tree are reported. Inconsistent files can then be copied in either direction or deleted on either machine. The file trees do not need to be accessible via nfs. Files checksums are computed in parallel, so largely similar trees can be compared over a slow network link. The client and server processes can also be run on the same machine.
+
+Screenshot
+
+Download
+
+Read the LICENSE.txt file first. Xfiles is released under the GPL, but it optionally uses jpython which has its own open source license; the latter is preprinted in LICENSE.txt.
+
+Download the latest xfilesBinary or xfilesSource archive.
+
+Download jpython.jar if you want to do scripting (see scripting section below). jpython.jar is also needed to recompile the source, though small changes to the source will let it recompile without it. jpython.jar is not needed if you do not want to script.
+
+Download the nativeFile archive only if you want native Unix link detection (see discussion at end). You probably do not need this.
+
+License
+
+Source and binary archives
+
+Requirements
+
+Java1.1 or later and JFC/Swing1.1 are needed.
+
+www.javalobby.org has links to the various java implementations. Xfiles uses RMI which is not supported by Microsoft java. Xfiles will probably run under any java derived from Sun's implementation; at the current time it probably does not run under independent implementations such as Kaffe.
+
+Xfiles uses Swing 1.1 beta3 or later, which has the newer "javax" naming convention. If you know about this, you'll know how to modify the source to run with an older version of Swing. Java 2.0 includes the Swing GUI classes. For Java 1.1, Swing can be obtained from http://java.sun.com/products/jfc/download.html
+
+The diff button calls the Unix diff program. This functionality is not yet available on non-Unix operating systems.
+
+Xfiles has run successfully with client and server running respectively on an Intel/Linux systems running Blackdown java 1.1.7a and between one of these and a SGI system running SGI's 1.1.6. Xfiles will probably run under Java1.2/2.0 but this has not been tested.
+
+Running on an OS other than Unix/Linux will require creating a standard java wrapper such as a .bat script for Windows.
+
+Preface to installation and running
+
+Java tends to be poorly integrated with the underlying operating system. If you're new to java take care to read the directions below -- there are not yet conventions for where and how java programs (nor Java itself) should be installed, so the installation outlined below is not as streamlined as a Linux rpm or similar. The individual steps are easy however.
+
+If you don't already have Java and/or Swing you'll need to select some location such as /usr/local; any direcory will work. Similarly, the Xfiles program can live anywhere. If you follow the installation below you will need to launch the program from the directory where it resides (this does not restrict its function). Changes to the shell files to make it run from any directory are evident.
+
+The program and this documentation refer to client and server machines and directories. These are interchangable -- the server merely refers to the machine that the server is running on (see below).
+
+Binary Installation
+
+For both client and server machines, do the following steps:
+
+Put the Java bin directory on your path.
+
+Edit the JFCJAR variable in the xfilesClient and xfilesServer shell files to point to the location of the swing jar file on your system. This is the file swingall.jar in the top level swing directory.
+
+If using scripting put the jpython.jar file in the same directory as xfiles.jar and the xfilesClient, xfilesServer scripts.
+
+Installation from Source
+
+(The following instructions are for Unix/Linux)
+
+Put the Java bin directory on your path. The programs javac, java, and rmic will be needed.
+
+To compile the source you must download jpython.jar and place it in the source directory.
+
+Edit the JFCJAR variable in the Makefile to point to the location of the swing jar file on your system. This is the file swingall.jar in the top level swing directory.
+
+make
+
+Edit the JFCJAR variable in the xfilesClient and xfilesServer shell files to point to the location of the swing jar file on your system. This is the file swingall.jar in the top level swing directory.
+
+To run
+
+The following files comprise the program, verify that these exist in the current directory:
+
+xfiles.jar java archive containing the program xfilesClient shell program to launch the client gui xfilesServer shell program to launch the server jpython.jar optional, needed for scripting
+
+Networking must be configured and turned on even if both client and server are running on the same machine. I believe that Java RMI needs the system service that converts a hostname into an IP address, and uses this even if both the client and server are running on the same machine. There is discussion of this point on some of the java mailing lists.
+
+On my Redhat 5 system, all I do is run netcfg and turn on one of the configured interfaces. Doing /sbin/ifconfig <interface> on would probably work too.
+
+You may need to enable the hosts in the Unix .rhosts file.
+
+If you know networking please send me more authoritative(spell?) instructions for what's needed here.
+
+Launch the Xfiles server. On the server machine, run:
+
+xfilesServer
+
+This should print out the server hostname, then "XfilesServer is running".
+
+If you get an error that says "java.lang.ClassNotFoundException: <name of class>", one of the paths in the xfilesServer file is not set correctly.
+
+Launch the Xfiles client on the client machine, giving the server hostname (spelled as printed by xfilesServer) and the roots of the client and server file trees:
+
+xfilesClient duckpond /usr/jfk/devl /home/jfk/Devl
+
+The command above will compare the file tree starting at /usr/jfk/devl on the client machine with the file tree /home/jfk/Devl on the machine 'duckpond'.
+
+Usage
+
+When the GUI comes up, select a directory and press the start button.
+
+The client partially scans the client file tree at startup to allow you to select a sub-tree of the specified root if desired.
+
+To save you time Xfiles first scans the whole tree before reporting any differences (this may take a while); all differences are then reported consecutively.
+
+After synchronizing one directory, you can select another in the GUI and press start again. Currently the GUI file tree does not update to reflect deletions in earlier runs, however (see the TODO section).
+
+Xfiles writes a file XFILES.LOG listing the selected actions.
+
+Scripting
+
+File selection and interaction with a revision control system such as RCS can be handled by scripting using jpython. To enable scripting, download the file jpython.jar and place it in the client and server launch directories. Then create a file xfiles.py, which also must be copied into both the client and server launch directories.
+
+xfiles.py can define the following functions:
+
+pathFilter(path)
+
+This function should return 1 if Xfiles should process path, 0 if Xfiles should ignore it.
+
+preCopy(path)
+
+this function is called before Xfiles writes this file. It can be used (for example) to check out the file from RCS.
+
+postCopy(path)
+
+this function is called after Xfiles writes the file. it can be used to check the file into RCS.
+
+It is not necessary to define all of these functions, however, if a function is defined it should be correct -- if the function call generates an error Xfiles will quit. A sample xfiles.py file is contained with the distribution and listed at the end of this document.
+
+Author
+
+Primary author: J.P.Lewis www.idiom.com/~zilla
+
+Contributors: Peter Gadjokov, Wolfgang Lugmayr, Dan Schmitt
+
+Please e-mail problems, successes, fixes, and fears to: zilla@computer.org
+
+Send email with subject line XFILES to be notified of updates.
+
+To do
+
+It should be possible to rename files.
+
+The client side gui should update to reflect the changed file tree
+
+Portable replacement for diff.
+
+If both client, server files are ascii it would be better to transmit a diff and do a patch on the other end.
+
+Version log
+
+1.3 28mar99 Added JPython scripting to control what files are visited and to script interaction with a revision control system such as RCS.
+
+1.2 22mar99 External rmiregistry no longer needed (simplified usage and troubleshooting, also helps if running over a firewall), paths are transmitted from client to server as java.io.Files rather than Strings so that path separator translation is done at unserialization time -- should help if client and server are running on different O/Ss.
+
+1.1 7jan99 Rewritten to not require native (non-java) link detection; program is more portable to non-Unix environments; installation is simplified; other improvements.
+
+1.0.2 improved definition of 'similarly named' files, warn if deleting on the wrong side, copy direction is color coded.
+
+1.0.1 5jan99 fixes: stop did not work always, bad window sizing, prohibit copying in the wrong direction by accident - e.g. client to server if the server file exists and the client does not.
+
+1.0 3jan99 initial version
+
+Sample xfiles.py script
+
+The following example script implements these functions: pathFilter(path) - Ignores all object files, libraries, .so files, RCS files, java class files
+
+preCopy(path) - Checks out a file from RCS if needed before you copy over it.
+
+postCopy(path) - Checks a newly copied file back into RCS with a message saying that Xfiles created the revision. Although jpython is quite compatible with regular python, this file is written using a mixture of python and java calls (for example, java string functions are used rather than the python string.split routine). This is done to limit the dependence on jpython to the one file jpython.jar.
+
+import java from java.io import File import java.lang.Runtime runtime = java.lang.Runtime.getRuntime() # ignore files that end with these strings skipextensions = ['RCS', ',v', '.o', '.so', '.a', '.class', '.jar'] # return 1 if xfiles should visit this path, else 0 # def pathFilter(path): print 'pathFilter(%s)' % path if path[len(path)-1] == '~': # emacs backup file return 0 if path == 'so_locations': return 0 spath = java.lang.String(path) for ext in skipextensions: if spath.endsWith(ext): return 0 return 1 # called before copying over a file # (check out from RCS if appropriate) # def preCopy(path): name = filename(path) spath = filedir(path) spath = spath + '/RCS/' print 'name = %s' % name if exists(spath): # RCS/ exists spath = spath + name + ',v' print 'spath = %s' % spath if exists(spath): # RCS/file,v exists docmd('co -l -f %s' % path) # called after copying over a file # (check in to RCS if appropriate) # def postCopy(path): name = filename(path) spath = filedir(path) spath = spath + '/RCS/' print 'name = %s' % name if exists(spath): # RCS/ exists spath = spath + name + ',v' print 'spath = %s' % spath if exists(spath): # RCS/file,v exists docmd('ci -u -f -mXfiles_copy_checkin %s' % path) # helper commands def docmd(cmd): if 1: print cmd pid = runtime.exec_(cmd) pid.waitFor() def filedir(path): result = File(path).getParent() if not result: if isabs(path): result = path # Must be root else: result = "" return result def filename(path): return File(path).getName() def exists(path): return File(path).exists() def isabs(path): return File(path).isAbsolute()
+
+Link/Alias detection
+
+This section is obsolete because Java link detection appears to work adequately.
+
+Because Xfiles traverses a directory tree, it needs to be able to distinguish between "real" files and links (aliases) so as to avoid an infinite loop in the case where a link points to a directory above itself. There are two approaches to this, and you need to select which one you will use:
+
+A built in method
+
+An approach that relies on a native (non-java) library nativeFile.
+
+Xfiles will call the native function if it exists in the launch directory. Installation with the native function is a bit more work, and it does not exist for non-Unix operating systems yet.
+
+For most purposes it will probably be fine to use the built-in code. Read the appendix Links/Aliases/Shortcuts in Java for more details on this issue.
+
+Installation from Source, using native link detection
+
+Put the Java bin directory on your path. The programs java, javac, and rmic will be needed.
+
+To compile the source you must download jpython.jar and place it in the source directory.
+
+Download and extract the nativeFile archive.
+
+Build the nativeFile library - in the Nativefile subdirectory edit the Makefile CFLAGS to point to the location of your java installation's include files and the JNI include files. The latter are in a subdirectory of the java include, probably called either "genunix" or the name of your OS.
+
+Build the nativeFile library - build the java binding to the nativeFile: make nativeFile.class
+
+Build the nativeFile library - compile the .so: make nativeFile.so
+
+Copy nativeFile.class and libnativeFile.so into the directory containing Xfiles, go to that directory.
+
+Edit the JFCJAR variable in the Makefile to point to the location of the swing jar file on your system. This is the file swingall.jar in the top level swing directory.
+
+Edit the JFCJAR variable in the xfilesClient and xfilesServer shell files to point to the location of the swing jar file on your system. This is the file swingall.jar in the top level swing directory.
+
+Examine the LD_LIBRARY_PATH variable in xfilesClient and xfilesServer and modify if needed.
+
+make

@@ -1,0 +1,63 @@
+place = neighbourhood Description A neighbourhood is a smaller named, geographically localised place within a suburb of a larger city or within a town or village Group: places Used on these elements Useful combination
+
+name=*
+
+Status: approved
+
+A neighbourhood is a named, geographically localised place. It may be an area within a place=suburb or place=quarter of a larger settlement (such as a large place=city) or an area within a smaller settlement (such as a place=town or a place=village).
+
+Don't use neighbourhood for places in the unbuilt environment or isolated settlements (depending on the size, see place=locality, place=isolated_dwelling or place=hamlet).
+
+The tag can be used for any kind of landuse or mix of landuse (such as residential, commercial, industrial, etc.). Usage of this term depends greatly on local history, culture, politics, economy and organization of settlements. More specific rules are intentionally avoided. It is likely appropriate to render this feature only at higher zoom levels compared to other place=* values (e.g. 15 or above).
+
+Note: the British English spelling is used rather than the American English spelling of neighborhood. Also, in OpenStreetMap a place=suburb can include any major sub-division of a city, including areas in the city centre.
+
+How to map
+
+As a node: Place a node at the centre of the neighbourhood and add place=neighbourhood and name=*
+
+As an area: Not all neighbourhoods can be verifiably mapped as areas, see the discussion in #Node or area?.
+
+It is more common to create a boundary relation with type=boundary, and if appropriate add boundary=administrative + admin_level=*.
+
+Hierarchy of places
+
+The tag place=neighbourhood should be applied to a part of a larger settlement.
+
+A neighbourhood is smaller than a place=quarter, while a quarter itself is a part of a place=suburb.
+
+A large city is divided into several place=suburb, each of which consists of several place=quarter, and each quarter will have several place=neighbourhood within.
+
+Not all levels of the hierarchy are used in all settlements. For example, a place=village might have several place=neighbourhood but usually will not have quarters or suburbs.
+
+Node or area?
+
+The definition of a "neighbourhood" varies from place to place. Some neighbourhoods have unclear boundaries, others have well defined boundaries. Some are administrative entities, others are not. Mapping suggestions for these cases are:
+
+Where the borders are fluid or there is no broad agreement on where the boundaries are located, then it is best to use a node positioned in the centre of the area. Nodes are also easy to use in routing applications.
+
+Where a neighbourhood does have a well-defined legal and administrative border, such as one defined by a local government or homeowners' association then many mappers use an area to define the boundary. This may be accomplished through the use of a type=boundary relation with boundary=administrative. Many mappers choose to also place a node tagged place=neighbourhood in the centre of the area for routing and to mark the centre of the place.
+
+name=* for neighbourhood name.
+
+wikipedia=* to link to the related Wikipedia article
+
+website=* to link to the neighbourhood organization's website, if any
+
+start_date=* for the year or date when the neighbourhood came into being
+
+population=* if it has a defined boundary and known population (and source:population=* for details of where this figure was sourced from and therefore how current it is)
+
+architect=* for name of the master planner/architectural firm for the area, if applicable.
+
+Issues
+
+Nominatim: When tagged as node, all the surrounding addresses refer to this node and the corresponding address is often wrong, especially near borders. Fix: using area/relation to define the boundary
+
+Original proposals
+
+Proposed features/place=neighbourhood - the original proposal
+
+Possible tagging mistakes
+
+See also

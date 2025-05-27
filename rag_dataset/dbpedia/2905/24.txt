@@ -1,0 +1,55 @@
+I've published an article on the blog and tried to share it on Quora.
+
+I've set up proper og:image tags, and twitter card tags I've verified that using Facebook Open Graph debugger.
+
+Unfortunately, sharing this article on Quora doesn't work as expected.
+
+Quora, for a thumbnail, sets the first image in the content of the html (a logo), instead of grabbing the one specified in the og:image tag (article cover photo)
+
+Below is the affected URL:
+
+https://driggl.com/blog/a/why-we-are-not-dry
+
+Notes
+
+Facebook debugger do not return any errors nor warnings.
+
+Sharing on slack/Fb/twitter works well
+
+The image Proportions are the ones that FB suggests (1.9x1)
+
+with JS disabled everything still loads the same.
+
+Does anybody have an idea why is it happening?
+
+Screenshots:
+
+Expected behaviour
+
+Current behavior:
+
+Technology used:
+
+This micro project is written in Nuxt.js and metadata are server-rendered
+
+is open-sourced: https://github.com/driggl/blog
+
+Update
+
+After a lot of debugging, I've found, that:
+
+After writing the quick basic project in Next (React), I got the same issue.
+
+Quora seems to ignore image meta tags on this page.
+
+When I place the image that is loaded in the same domain, Quora can grab the thumbnail without issues.
+
+When image is loaded from AWS S3 directly, Quora doesn't load it.
+
+I came with a monkey patch:
+
+Configure PROXY to load images from within the same domain the project is hosted on
+
+Add 1x1 px image at the top of the html body so quora can grab it.
+
+But this question remains Unanswered, as I don't see this hacky stuff as a proper answer.

@@ -1,0 +1,755 @@
+Reliable message distribution in an ad hoc mesh network Download PDF
+
+Info
+
+Publication number
+
+US20060013169A2
+
+US20060013169A2 US11/054,080 US5408005A US2006013169A2 US 20060013169 A2 US20060013169 A2 US 20060013169A2 US 5408005 A US5408005 A US 5408005A US 2006013169 A2 US2006013169 A2 US 2006013169A2
+
+Authority
+
+US
+
+United States
+
+Prior art keywords
+
+data
+
+message
+
+node
+
+revision
+
+data items
+
+Prior art date
+
+2004-02-09
+
+Legal status (The legal status is an assumption and is not a legal conclusion. Google has not performed a legal analysis and makes no representation as to the accuracy of the status listed.)
+
+Abandoned
+
+Application number
+
+US11/054,080
+
+Other versions
+
+US20050174972A1 (en
+
+Inventor
+
+Lee Boynton
+
+Current Assignee (The listed assignees may be inaccurate. Google has not performed a legal analysis and makes no representation or warranty as to the accuracy of the list.)
+
+SRI International Inc
+
+Original Assignee
+
+Packethop Inc
+
+Priority date (The priority date is an assumption and is not a legal conclusion. Google has not performed a legal analysis and makes no representation as to the accuracy of the date listed.)
+
+2004-02-09
+
+Filing date
+
+2005-02-08
+
+Publication date
+
+2006-01-19
+
+2005-02-08 Application filed by Packethop Inc filed Critical Packethop Inc
+
+2005-02-08 Priority to US11/054,080 priority Critical patent/US20060013169A2/en
+
+2005-08-11 Publication of US20050174972A1 publication Critical patent/US20050174972A1/en
+
+2005-09-01 Assigned to PACKETHOP, INC. reassignment PACKETHOP, INC. ASSIGNMENT OF ASSIGNORS INTEREST (SEE DOCUMENT FOR DETAILS). Assignors: BOYNTON, LEE
+
+2006-01-19 Publication of US20060013169A2 publication Critical patent/US20060013169A2/en
+
+2008-10-29 Assigned to SRI INTERNATIONAL, A CALIFORNIA NONPROFIT, PUBLIC BENEFIT CORPORATION reassignment SRI INTERNATIONAL, A CALIFORNIA NONPROFIT, PUBLIC BENEFIT CORPORATION ASSIGNMENT OF ASSIGNORS INTEREST (SEE DOCUMENT FOR DETAILS). Assignors: PACKETHOP, INC.
+
+Status Abandoned legal-status Critical Current
+
+Links
+
+USPTO
+
+USPTO PatentCenter
+
+USPTO Assignment
+
+Espacenet
+
+Global Dossier
+
+Discuss
+
+Images
+
+Classifications
+
+H—ELECTRICITY
+
+H04—ELECTRIC COMMUNICATION TECHNIQUE
+
+H04L—TRANSMISSION OF DIGITAL INFORMATION, e.g. TELEGRAPHIC COMMUNICATION
+
+H04L47/00—Traffic control in data switching networks
+
+H04L47/10—Flow control; Congestion control
+
+H04L47/19—Flow control; Congestion control at layers above the network layer
+
+H04L47/193—Flow control; Congestion control at layers above the network layer at the transport layer, e.g. TCP related
+
+H—ELECTRICITY
+
+H04—ELECTRIC COMMUNICATION TECHNIQUE
+
+H04L—TRANSMISSION OF DIGITAL INFORMATION, e.g. TELEGRAPHIC COMMUNICATION
+
+H04L47/00—Traffic control in data switching networks
+
+H04L47/10—Flow control; Congestion control
+
+H—ELECTRICITY
+
+H04—ELECTRIC COMMUNICATION TECHNIQUE
+
+H04L—TRANSMISSION OF DIGITAL INFORMATION, e.g. TELEGRAPHIC COMMUNICATION
+
+H04L47/00—Traffic control in data switching networks
+
+H04L47/10—Flow control; Congestion control
+
+H04L47/32—Flow control; Congestion control by discarding or delaying data units, e.g. packets or frames
+
+H04L47/323—Discarding or blocking control packets, e.g. ACK packets
+
+H—ELECTRICITY
+
+H04—ELECTRIC COMMUNICATION TECHNIQUE
+
+H04W—WIRELESS COMMUNICATION NETWORKS
+
+H04W28/00—Network traffic management; Network resource management
+
+H04W28/02—Traffic management, e.g. flow control or congestion control
+
+H04W28/10—Flow control between communication endpoints
+
+H—ELECTRICITY
+
+H04—ELECTRIC COMMUNICATION TECHNIQUE
+
+H04W—WIRELESS COMMUNICATION NETWORKS
+
+H04W8/00—Network data management
+
+H04W8/02—Processing of mobility data, e.g. registration information at HLR [Home Location Register] or VLR [Visitor Location Register]; Transfer of mobility data, e.g. between HLR, VLR or external networks
+
+H04W8/04—Registration at HLR or HSS [Home Subscriber Server]
+
+Definitions
+
+FIG. 1 shows a typical mesh network 12 with a node A communicating with a node B through multiple hops, links, nodes 14, etc.
+
+the links 14 can be any combination of wired or wireless mobile communication devices such as a portable computers that may include wireless modems, network routers, switches, Personal Digital Assistants (PDAs), cell phones, or any other type of mobile processing device that can communicate within mesh network 12.
+
+PDAs Personal Digital Assistants
+
+the network nodes 14 in mesh network 12 all communicate by sending messages to each other using the Internet Protocol (IP). Each message consists of one or more multicast User Datagram Protocol (UDP) packets. Each node 14 includes one or more network interfaces which are all members which may be part of a same multicast group. Each node has an associated nodeid used for identifying both the source and the intended set of recipients of a message. Because the messages are multicast, routing details are transparent to the application.
+
+IP Internet Protocol
+
+UDP User Datagram Protocol
+
+Transmission Control Protocol is commonly used to provide reliability for point to point communication, using a direct Acknowledgement (ACK) based design, but in a multicast scenario with multiple peers, the more efficient approach is a Negative Acknowledgement (NACK) based design. That is, when data is successfully transmitted, no additional communication is needed to affirm that fact; there are no acknowledgements. When packet loss is detected, the NACK is sent back to the source to request retransmission. Sequence numbers are used to detect missing or out of sequence packets. The present invention is such a NACK-based design.
+
+the present invention addresses this and other problems associated with the prior art.
+
+a Data Distribution Service transfers information between nodes in an ad hoc mobile mesh network.
+
+the DDS includes many different novel features including techniques for coalescing retransmit requests to minimize traffic, providing a reasonable level of reliability for event oriented communications, multicasting retransmissions for use by many nodes, and providing other optimizations for multicast traffic.
+
+the DDS uses UDP datagrams for communications. Communications operate in a truly peer-to-peer fashion without requiring central authority or storage, and can be purely ad hoc and not depend on any central server. The need for traditional acknowledgement packets can also be eliminated under normal operation. Such a NACK-based protocol proves to be more efficient than the traditional approach like TCP.
+
+the DDS is amenable to very long recovery intervals, matching well with nodes on wireless networks that lose coverage for significant periods of time and also works well with constantly changing network topologies. Reliability can also be handled over a span of time that might correspond to losing wireless coverage.
+
+FIG. 1 is a diagram of a mesh network.
+
+FIG. 2 is a block diagram of a Data Distribution Service (DDS) provided in a mesh network.
+
+DDS Data Distribution Service
+
+FIG. 3 is a diagram of a source data packet.
+
+FIG. 4 is a block diagram of a source node shown in FIG. 2.
+
+FIG. 5 is a block diagram of a receiver node shown in FIG. 2.
+
+FIG. 6 is a diagram showing different DDS messages.
+
+FIGS. 7-11 show different communications scenarios that are provided by the DDS.
+
+FIG. 2 shows several nodes 22 that may operate in a mesh network 20 similar to the mesh network 12 previously shown in FIG. 1 .
+
+the nodes 22 can be any type of mobile device that conducts wireless or wired peer to peer mesh communications. For example, personal computers with wireless modems, Personal Digital Assistants (PDAs), cell phones, etc.
+
+Other nodes 22 can be wireless routers that communicate to other nodes through wired or wireless IP networks.
+
+the mobile devices 22 can move ad-hoc into and out of the network 20 and dynamically reestablish peer-to-peer communications with the other nodes. It may be necessary that each individual node 22A, 22B and 22C have some or all of the same versions for different data items 26.
+
+the data items 26 in one example, may be certain configuration data used by the nodes 22 for communicating with other nodes.
+
+the configuration data 26 may include node profile information, video settings, etc.
+
+the data 26 can include multicast information, such as multicast routing tables, that identify nodes that are members of the same multicast groups.
+
+a Data Distribution Service (DDS) 24 is used to more efficiently maintain consistency between the data 26 in the different nodes 22.
+
+a source node 22A is defined as one of the nodes that may have internally updated their local data 26A and then sent out data message 28 notifying the other nodes 22B and 22C of the data change.
+
+Receiver nodes 22B and 22C are defined as nodes that need to be updated with the changes made internally by source node 22A.
+
+the DDS 24 sends and receives source data packets 38 as shown in FIG. 3 that are used in a variety of different ways.
+
+the source data packet 38 can be used by the source node 22A to multicast a status or data message 28 that notifies other nodes 22B and 22C of a change in or current status for data 26A.
+
+the receiver nodes 22B or 22C may multicast a Negative Acknowledgement (NACK) message 32.
+
+NACK Negative Acknowledgement
+
+the receiver node 22C may multicast NACK message 32 when data 26C is missing updates for some of the data items in data 26A. This could happen for example, when the mobile device 22C has temporarily been out of contact with mesh network 20 such that it did not receive a data message 28.
+
+the source node 22A may multicast a repair message 30.
+
+the repair message 30 may provide information necessary to update data 26C in receiver node 22C and possibly data 26B in receiver node 22B with the latest changes made to data 26A.
+
+the repair message 30 in one example, may be an EXPIRED message indicating the requested data item is no longer available or a CHANGE message identifying the data items in data 26A that have been changed.
+
+the Data Distribution Service (DDS) 24 in one implementation uses symbolic keys (data names) across all nodes in the mesh network 20 to maintain consistency between data items 26.
+
+the DDS 24 can be built within a reliable transport scheme or can be implemented as described below.
+
+the DDS 24 prevents data from being buffered persistently twice and retransmitting previous revisions of a particular data record, when only the most recent data item is required. This is a more complete design and solves the particular problems associated with replicating a "small" database across a mesh network.
+
+DDS 24 works as an distributed hash table, binding keys (data names) to values (data).
+
+the nodes 22 talk to each other via the DDS protocol described below and use a single unified view of key-to-value (data name-to-data) mapping to maintain consistency of data 26 across the entire mesh network 20. Data consistency is provided by proactively replicating the database 26 in each node 22.
+
+the database 26 can include any object stored internally in the nodes 22.
+
+Changes in data 26 is tracked by the DSS 24 across multiple network nodes 22 by detecting a global revision value for neighboring nodes, noting what revision of the data the local node already possesses, asking for change lists describing the delta between two such revisions, and potentially requesting retransmission of the missing data.
+
+the DSS 24 thus maintains a set of data items 26 distributed across many nodes 22.
+
+the DDS 24 does not need to separately buffer transmissions like a reliable transport because the data 26 is already stored persistently before the communication commences.
+
+FIG. 3 shows one example of a source data packet 38 as previously described in FIG. 2 .
+
+the source data packet 38 includes a header 52 that is used for conducting DDS operations. Some or all of the fields in header 52 may be used for sending messages 28, 30 or 32 described in FIG. 2 .
+
+the source data packet 38 includes a nodeid field 40 that is unique to the originating node sending the message.
+
+Every source data packet 38 includes a packetid field 42 that is global among all transmissions from the originating node sending the packet.
+
+the value in packetid field 42 is a monotonically increasing number.
+
+Receiver nodes record packetids as the packets are received.
+
+the header 52 also includes a Global Revision Value (GRV) in global revision field 44 that identifies a latest revision to the data 26 in the node 22 sending the source data packet 38.
+
+the GRV defines a latest revision that has been made to the data 26 in a particular source node 22, regardless of the data item and what type of revision was made.
+
+the GRV for source node 22A corresponds with the number of changes that have been made locally to data 26A (FIG. 2). So a first revision to a data item A would increment the GRV by 1 and a different revision to a different data item would cause the GRV to increment again by 1.
+
+a history field 46 indicates how many packetids are remembered for possible retransmission.
+
+the GRV value and the history count in the history field 46 are each tracked by the nodes receiving the source data packets 38.
+
+the history field 46 in combination with the GRV 44, defines a window of packetids from the node 22 identified by nodeid field 40 that are available for retransmission. Communication of this history-based window allows peers to avoid sending a NACK for data that is known to be expired. It the responsibility of every receiver node 22 to then request retransmission of packets that it determines have not been successfully received.
+
+An action field 48 identifies a type of message that is associated with the source data packet 38.
+
+the source data packet 38 may be used for sending a STATUS, DATA, NACK, EXPIRED, CHANGE, OR RETRANSMIT message as will be described in further detail below in FIG. 6.
+
+the payload 50 is included in the source data packet 38.
+
+the payload 50 includes a data-name (key) and associated data-revision number.
+
+the data-name as described above is essentially a key identifying a particular data item.
+
+the data-revision number identifies a revision for the particular data item identified by the data-name.
+
+a fourth revision to a âprofileâ data item may have the entry âprofile:4â in the payload 50.
+
+a fifth revision to a âvideo settingsâ data item would be identified in payload 50 as âvideo settings:5â.
+
+the payload 50 will also contain the actual revised data (data-value) as changed by the source node.
+
+the synchronization granularity is at the object level â the value of a key. All properties of an object (if relevant) are part of the object and do not need to be synchronized separately.
+
+the data 26 ( FIG. 2 ) that is stored for each data-name has its own revision number (data-revision), so that a CHANGE message can coalesce multiple changes for a given datum down to the minimum when replicating over the mesh.
+
+GBV Global Revision Value
+
+a receiver node For example receiver node 22B or 22C in FIG. 2 finds âholesâ in the transmission window defined by [GRV-history, data-revision], it sends a NACK message 32 back to the source node 22A to request a repair (FIG. 2).
+
+the actual NACK request may include multiple sequence numbers or GRV values so that NACK messages 32 are coalesced.
+
+the NACK message 32 may not be sent immediately, but may be sent after a random back-off interval.
+
+the back-off interval may be exponentially distributed. Because the repair packets are multicast, any node that requests a particular data item, could cause other nodes 22 to receive the same data item.
+
+the random back-off transmission period for NACK messages allow other nodes to suppress similar NACK requests, thus reducing the number of NACKs that need to be sent.
+
+FIG. 4 shows a source node 22A that includes a Central Processing Unit (CPU) 58 that operates software that provides the Data Distribution Service (DDS) 24.
+
+the CPU 58 wirelessly sends and receives DDS messages 63, via a transceiver 60 that is coupled to an antenna 61.
+
+FIG. 5 shows a CPU 78 in one of the receiver nodes 22B or 22C that includes software for operating the DDS 24.
+
+the CPU 78 wirelessly sends and receive DDS messages via a transceiver 82 connected to an antenna 84.
+
+the source node 22A in this example contains three different data items.
+
+Data item 52 contains profile data
+
+data item 54 contains video settings
+
+data item 56 contains multicast tables or other types of configuration data.
+
+Each data item includes an associated data-revision number.
+
+the CPU 58 in the source node 22A also keeps track of the Global Revision Value (GRV) 62 that is associated with changes made to any of the data items 52, 54, and 56.
+
+GRV Global Revision Value
+
+the CPU 58 has currently made twelve GRV changes to the data items 52, 54 and 56.
+
+the GRV 11 was made to data item 54 and the GRVs 10 and 12 were made to data item 52.
+
+Changes in the GRV 62 can also be attributed to multiple changes in the same data item. For example, GRV 10 is attributed to revision 4 for profile 52 and GRV 12 is attributed to revision 5 for profile 52.
+
+Receiver node 22C contains a âprofileâ data item 72, âvideo settingsâ data item 74 and a âmulticast tableâ data item 76.
+
+GRV Global Revision Value
+
+FIG. 6 shows the different DDS messages that can be sent by the DDS 24 in the different mesh nodes.
+
+a STATUS message 90 is periodically sent by the source node 22A when no other packets are being sent. In one embodiment, the STATUS message 90 is sent out periodically to indicate nothing has changed. In the example shown in FIG. 6 , the STATUS message 90 includes the nodeid 40 for the source node 22A and the Global Revision Value (GRV) 44 for the source node 22A.
+
+the action field 48 indicates the packet as a STATUS message. If the receiver node 22B or 22C has the same GRV 44 for the same nodeid 40, then no further action is required.
+
+a DATA message 92 is sent whenever the source node 22A changes, modifies, adds, removes, etc. a data item.
+
+the DATA message 92 carries the actual data that needs to be updated or added to all of the receiver nodes 22B and 22C.
+
+the DATA message 92 is multicast out to the other nodes in the mesh network 20 and contains the data-name and its data-revision number.
+
+Negative Acknowledgements Every receiver node keeps track of received packets, adding the packetID and its received timestamp to its list of received packets, which is maintained on a per-source basis. For example, the source data packets 38 ( FIG. 3 ) are indexed by the source nodeid. The receiving nodes also store the global revision value and history values for the other nodes and updates them for every received packet, if the GRV has changed.
+
+the nodeids outside the window are removed from the list, and the resulting list is scanned for missing packetids.
+
+a NACK message 94 is sent by the receiver node when missing data is detected.
+
+An exponentially distributed random time interval can be calculated and used before sending out the NACK message 94. This prevents NACK implosion, where multiple receiver nodes try to send NACK messages 94 for the same requested packet at the same time.
+
+the receiver node 22C schedules itself to wake up after the random time interval to check the GRV again and to possibly send a NACK 94 corresponding to the missing source data packet 38.
+
+CHANGE messages 98 or EXPIRED messages 96 are received from source node 22A responsive to the NACKS 94, all pending NACKs are updated and received packets removed from the list.
+
+the NACK messages 94 received from other nodes that request the same information are also removed from the list.
+
+the packetids that fall outside the transmission window also get removed.
+
+a NACK list becomes empty while waiting, it gets completely removed.
+
+a NACK message 94 gets sent, it is added to a repair-requested list with the timestamp of when it was sent. Similarly, subsequent NACKs sent by peers are also added to this list.
+
+the receiver node 22C In the absence of any activity, the receiver node 22C still wakes up every so often to scan the lists of all nodes, and restart the NACK process for peers that are missing packets but have not had any other activity. This is retried until the lifetime of the packets has expired. The period of retrying could be adapted if no traffic at all is detected for a node. This could also better handle the case of a node completely disappearing from the mesh network 20.
+
+GRV global revision value
+
+the source node 22A does not send the actual data in response to the NACK message 94.
+
+the source node 22A sends a changelist, enumerating the keys (data-names) and their specific data-revision numbers for the GRVs identified in the NACK message 94.
+
+the resulting CHANGE message 98 (FIG. 6), enumerates all the global revision values that are being addressed, and a list of key/values/revisions 99 that are associated with those global revision values. For example, in FIG.
+
+the data itself for both the video settings and the profile may not be sent in the CHANGE message 98.
+
+the single most current data can be sent out to satisfy older repair requests. This is accomplished with a CHANGE message 98, which identifies what older global revisions should be updated with a single new version of the data. In one implementation, older values are not kept and only the most current version of the data item and the corresponding revision number are maintained.
+
+the receiver node 22C notes all the old global revisions that are being handled, and looks at the key/values/revisions to determine which keys it needs to request for retransmission, and sends a RETRANSMIT message 100 ( FIG. 6 ) back to the source node 22A.
+
+the source node 22A may send an EXPIRED message 96. This handles race conditions when the data expires while this exchange is happening.
+
+the EXPIRED indication can alternatively be part of the CHANGE message 98. If any of the intervening messages are lost, the whole process starts over.
+
+the source node 22A When the source node 22A receives the NACK message 94 (FIG. 6), it first checks that the faulty packetid is within the transmission window. If not, it sends the EXPIRED message 96 indicating that peers should stop asking for it. If within the transmission window, the original data item is fetched and resent. The source data items remain in a sent packet list until its original lifetime has expired, independent of the number of retransmissions. The entry is updated to indicate the time of the most recent transmission.
+
+a NACK message 94 is received within a small time after a data packet is sent out by the source node 22A, it may be ignored with the assumption that the just sent data packet will satisfy the NACK 94. In the case of a race condition that fails in favor of dropping the NACK 94, the receiver node 22C will request the data item again.
+
+any node in the mesh network 20 ( FIG. 2 ) that has the required repair data and mappings of global revisions to particular data revisions can respond to the NACK message 94.
+
+the source node 22A can be any node that has the requested data.
+
+a random back-off delay is utilized to prevent every node from simultaneously doing so. This optional choice implies that the node providing the repairs store global revision to data revision mappings for all other nodes.
+
+the protocol has another advantage in that the DDS message exchange prevents data from being sent multiple times, particularly for the case that a single key is getting repeatedly updated. In this case only the most current value will get transmitted, whereas with the reliable multicast transport, every change is sent, just to overwrite the previous value.
+
+FIGS. 7-11 explain some of the different DDS delivery scenarios that can occur during data consistency operations.
+
+FIG. 7 shows one of the simplest cases, where the source data packets 38 ( FIG. 3 ) are sent from source node 22A and successfully received sequentially in their original sending order by the receiver node 22B.
+
+Each packet N has a global version number that indicates that the packet being received is the most current, so no additional action need be taken.
+
+the source data packets are sent by the source node 22A and successfully received by the receiver node 22B, but their original order is not maintained.
+
+FIG. 8 shows the case where the packet N+1 is received by the receiver node 22B before the expiration of random delay time T. In this case the NACK message 94 is suppressed.
+
+FIG. 9 shows the case when a packet sequence number skips by one and the missing source data packet N+1 has still not been received by the time the NACK message 94 is scheduled to go out.
+
+a NACK message 94 is pending and packet N+1 has not been received within time T.
+
+the receiver node 22B sends NACK message 94 to the source node 22A that identifies the source data packet N+1 as described above.
+
+the source node 22A through the DDS protocol (the CHANGE and RETRANSMIT messages are not shown) then resends the source data packet N+1.
+
+FIG. 10 shows the situation when more than one source data packet is detected as missing.
+
+the set of packet numbers, data items, or GRVs can be encapsulated into a single NACK message 94.
+
+the NACK message 94 is ready to be sent (i.e. the soonest random backoff interval) all pending NACKs for packets N+1 and N+2 are included in NACK message 94.
+
+the protocol between the NACK and the retransmission of the data is not shown.
+
+FIG. 11 shows the situation where multiple receiver nodes 22B and 22C detect missing packets.
+
+Each receiver node 22B and 22C could potentially send a NACK message 94.
+
+each receiver node 22B and 22C may use a random delay before sending their NACK message 94. This will likely cause one of the receiver nodes 22B or 22C to send a NACK message before the other receiver node.
+
+receiver node 22C is scheduled to send the NACK message 94 at random time interval T and receiver node 22B is scheduled to send the same NACK message 94 at random time interval T+1 after receiver node 22C. Because the NACK messages 94 are multicast, other nodes will see the first NACK message 94 sent by receiver node 22C. This causes receiver node 22B to suppress sending the same NACK message as long as the NACK message 94 received from receiver node 22C contains the packet ids missing in receive node 22B. The DDS protocol between the NACKs and the retransmission of the DATA is again not shown.
+
+the system described above can use dedicated processor systems, micro controllers, programmable logic devices, or microprocessors that perform some or all of the operations. Some of the operations described above may be implemented in software and other operations may be implemented in hardware.
+
+Landscapes
+
+Engineering & Computer Science (AREA)
+
+Computer Networks & Wireless Communication (AREA)
+
+Signal Processing (AREA)
+
+Databases & Information Systems (AREA)
+
+Mobile Radio Communication Systems (AREA)
+
+Detection And Prevention Of Errors In Transmission (AREA)
+
+Abstract
+
+Abstract of the Disclosure
+
+A Data Distribution Service (DDS) transfers information between nodes in an ad hoc mobile mesh network. The DDS includes many different novel features including techniques for coalescing retransmit requests to minimize traffic, providing a reasonable level of reliability for event oriented communications, multicasting retransmissions for use by many nodes, and providing other optimizations for multicast traffic. The DDS uses UDP datagrams for communications. Communications operate in a truly peer-to-peer fashion without requiring central authority or storage, and can be purely ad hoc and not depend on any central server. The protocol is NACK-based, which is more suited to a mesh network than a traditional approach like TCP, which uses positive acknowledgements of all data. The DDS is amenable to very long recovery intervals, matching well with nodes on wireless networks that lose coverage for significant periods of time and also works well with constantly changing network topologies. Reliability can also be handled over a span of time that might correspond to losing wireless coverage.
+
+Description
+
+Detailed Description of the Invention
+
+This application claims priority from U.S. Provisional Application Serial No. 60/543,352, filed February 9, 2004.
+
+BACKGROUND
+
+FIG. 1 shows a typical mesh network 12 with a node A communicating with a node B through multiple hops, links, nodes 14, etc. The links 14 can be any combination of wired or wireless mobile communication devices such as a portable computers that may include wireless modems, network routers, switches, Personal Digital Assistants (PDAs), cell phones, or any other type of mobile processing device that can communicate within mesh network 12.
+
+The network nodes 14 in mesh network 12 all communicate by sending messages to each other using the Internet Protocol (IP). Each message consists of one or more multicast User Datagram Protocol (UDP) packets. Each node 14 includes one or more network interfaces which are all members which may be part of a same multicast group. Each node has an associated nodeid used for identifying both the source and the intended set of recipients of a message. Because the messages are multicast, routing details are transparent to the application.
+
+Transmission Control Protocol (TCP) is commonly used to provide reliability for point to point communication, using a direct Acknowledgement (ACK) based design, but in a multicast scenario with multiple peers, the more efficient approach is a Negative Acknowledgement (NACK) based design. That is, when data is successfully transmitted, no additional communication is needed to affirm that fact; there are no acknowledgements. When packet loss is detected, the NACK is sent back to the source to request retransmission. Sequence numbers are used to detect missing or out of sequence packets. The present invention is such a NACK-based design.
+
+In mesh networks, it is necessary to maintain certain data consistency between the different nodes 14. For example, all the nodes 14 may need to know which devices are part of the same multicast groups. This requires all of the nodes 14 to have the same versions of different multicast tables. This is typically done by exchanging data between nodes 14 and then responding with NACK responses if the data is not successfully received. A substantial amount of bandwidth and processing resources are required to maintain data consistency between the different nodes 14. Current techniques for maintaining data consistency between different mobile nodes is also inefficient.
+
+The present invention addresses this and other problems associated with the prior art.
+
+SUMMARY OF THE INVENTION
+
+A Data Distribution Service (DDS) transfers information between nodes in an ad hoc mobile mesh network. The DDS includes many different novel features including techniques for coalescing retransmit requests to minimize traffic, providing a reasonable level of reliability for event oriented communications, multicasting retransmissions for use by many nodes, and providing other optimizations for multicast traffic.
+
+The DDS uses UDP datagrams for communications. Communications operate in a truly peer-to-peer fashion without requiring central authority or storage, and can be purely ad hoc and not depend on any central server. The need for traditional acknowledgement packets can also be eliminated under normal operation. Such a NACK-based protocol proves to be more efficient than the traditional approach like TCP.
+
+The DDS is amenable to very long recovery intervals, matching well with nodes on wireless networks that lose coverage for significant periods of time and also works well with constantly changing network topologies. Reliability can also be handled over a span of time that might correspond to losing wireless coverage.
+
+The foregoing and other objects, features and advantages of the invention will become more readily apparent from the following detailed description of a preferred embodiment of the invention which proceeds with reference to the accompanying drawings.
+
+BRIEF DESCRIPTION OF THE DRAWINGS
+
+FIG. 1 is a diagram of a mesh network.
+
+FIG. 2 is a block diagram of a Data Distribution Service (DDS) provided in a mesh network.
+
+FIG. 3 is a diagram of a source data packet.
+
+FIG. 4 is a block diagram of a source node shown in FIG. 2.
+
+FIG. 5 is a block diagram of a receiver node shown in FIG. 2.
+
+FIG. 6 is a diagram showing different DDS messages.
+
+FIGS. 7-11 show different communications scenarios that are provided by the DDS.
+
+DETAILED DESCRIPTION
+
+FIG. 2 shows several nodes 22 that may operate in a mesh network 20 similar to the mesh network 12 previously shown in FIG. 1. The nodes 22 can be any type of mobile device that conducts wireless or wired peer to peer mesh communications. For example, personal computers with wireless modems, Personal Digital Assistants (PDAs), cell phones, etc. Other nodes 22 can be wireless routers that communicate to other nodes through wired or wireless IP networks.
+
+The mobile devices 22 can move ad-hoc into and out of the network 20 and dynamically reestablish peer-to-peer communications with the other nodes. It may be necessary that each individual node 22A, 22B and 22C have some or all of the same versions for different data items 26. The data items 26 in one example, may be certain configuration data used by the nodes 22 for communicating with other nodes. For example, the configuration data 26 may include node profile information, video settings, etc. In another example, the data 26 can include multicast information, such as multicast routing tables, that identify nodes that are members of the same multicast groups.
+
+Data Distribution Service A Data Distribution Service (DDS) 24 is used to more efficiently maintain consistency between the data 26 in the different nodes 22. A source node 22A is defined as one of the nodes that may have internally updated their local data 26A and then sent out data message 28 notifying the other nodes 22B and 22C of the data change. Receiver nodes 22B and 22C are defined as nodes that need to be updated with the changes made internally by source node 22A.
+
+The DDS 24 sends and receives source data packets 38 as shown in FIG. 3 that are used in a variety of different ways. For example, the source data packet 38 can be used by the source node 22A to multicast a status or data message 28 that notifies other nodes 22B and 22C of a change in or current status for data 26A. In response to the multicast status or data message 28, the receiver nodes 22B or 22C may multicast a Negative Acknowledgement (NACK) message 32.
+
+For example, the receiver node 22C may multicast NACK message 32 when data 26C is missing updates for some of the data items in data 26A. This could happen for example, when the mobile device 22C has temporarily been out of contact with mesh network 20 such that it did not receive a data message 28. In response to the NACK message 32, the source node 22A may multicast a repair message 30. The repair message 30 may provide information necessary to update data 26C in receiver node 22C and possibly data 26B in receiver node 22B with the latest changes made to data 26A. The repair message 30 in one example, may be an EXPIRED message indicating the requested data item is no longer available or a CHANGE message identifying the data items in data 26A that have been changed.
+
+The Data Distribution Service (DDS) 24 in one implementation uses symbolic keys (data names) across all nodes in the mesh network 20 to maintain consistency between data items 26. The DDS 24 can be built within a reliable transport scheme or can be implemented as described below. The DDS 24 prevents data from being buffered persistently twice and retransmitting previous revisions of a particular data record, when only the most recent data item is required. This is a more complete design and solves the particular problems associated with replicating a "small" database across a mesh network.
+
+Conceptually, DDS 24 works as an distributed hash table, binding keys (data names) to values (data). The nodes 22 talk to each other via the DDS protocol described below and use a single unified view of key-to-value (data name-to-data) mapping to maintain consistency of data 26 across the entire mesh network 20. Data consistency is provided by proactively replicating the database 26 in each node 22. The database 26 can include any object stored internally in the nodes 22.
+
+Changes in data 26 is tracked by the DSS 24 across multiple network nodes 22 by detecting a global revision value for neighboring nodes, noting what revision of the data the local node already possesses, asking for change lists describing the delta between two such revisions, and potentially requesting retransmission of the missing data.
+
+The DSS 24 thus maintains a set of data items 26 distributed across many nodes 22. The DDS 24 does not need to separately buffer transmissions like a reliable transport because the data 26 is already stored persistently before the communication commences.
+
+Source Data Packets FIG. 3 shows one example of a source data packet 38 as previously described in FIG. 2. The source data packet 38 includes a header 52 that is used for conducting DDS operations. Some or all of the fields in header 52 may be used for sending messages 28, 30 or 32 described in FIG. 2. The source data packet 38 includes a nodeid field 40 that is unique to the originating node sending the message.
+
+Every source data packet 38 includes a packetid field 42 that is global among all transmissions from the originating node sending the packet. The value in packetid field 42 is a monotonically increasing number. Receiver nodes, record packetids as the packets are received. The header 52 also includes a Global Revision Value (GRV) in global revision field 44 that identifies a latest revision to the data 26 in the node 22 sending the source data packet 38. The GRV defines a latest revision that has been made to the data 26 in a particular source node 22, regardless of the data item and what type of revision was made. For example, the GRV for source node 22A corresponds with the number of changes that have been made locally to data 26A (FIG. 2). So a first revision to a data item A would increment the GRV by 1 and a different revision to a different data item would cause the GRV to increment again by 1.
+
+A history field 46 indicates how many packetids are remembered for possible retransmission. The GRV value and the history count in the history field 46 are each tracked by the nodes receiving the source data packets 38. The history field 46, in combination with the GRV 44, defines a window of packetids from the node 22 identified by nodeid field 40 that are available for retransmission. Communication of this history-based window allows peers to avoid sending a NACK for data that is known to be expired. It the responsibility of every receiver node 22 to then request retransmission of packets that it determines have not been successfully received.
+
+An action field 48 identifies a type of message that is associated with the source data packet 38. For example, the source data packet 38 may be used for sending a STATUS, DATA, NACK, EXPIRED, CHANGE, OR RETRANSMIT message as will be described in further detail below in FIG. 6.
+
+Data Model A payload 50 is included in the source data packet 38. The payload 50 includes a data-name (key) and associated data-revision number. The data-name as described above is essentially a key identifying a particular data item. The data-revision number identifies a revision for the particular data item identified by the data-name.
+
+For example, a fourth revision to a âprofileâ data item may have the entry âprofile:4â in the payload 50. A fifth revision to a âvideo settingsâ data item would be identified in payload 50 as âvideo settings:5â. The payload 50 will also contain the actual revised data (data-value) as changed by the source node. By including some or all of the information in header 52 in the source data packet 38, no additional control traffic is required for maintaining consistency between the data 26 in the different nodes 22 (FIG. 2).
+
+Note that the synchronization granularity is at the object level â the value of a key. All properties of an object (if relevant) are part of the object and do not need to be synchronized separately. The data 26 (FIG. 2) that is stored for each data-name has its own revision number (data-revision), so that a CHANGE message can coalesce multiple changes for a given datum down to the minimum when replicating over the mesh.
+
+Data Protocol Every node 22 in the mesh network 20 (FIG. 2) emits its Global Revision Value (GRV) as part of every packet. As described above, changes to specific objects, or other data items in the node, can be tracked at a finer resolution with the second data-revision number that is associated with each individual data item.
+
+When a receiver node, for example receiver node 22B or 22C in FIG. 2 finds âholesâ in the transmission window defined by [GRV-history, data-revision], it sends a NACK message 32 back to the source node 22A to request a repair (FIG. 2). The actual NACK request may include multiple sequence numbers or GRV values so that NACK messages 32 are coalesced. The NACK message 32 may not be sent immediately, but may be sent after a random back-off interval. The back-off interval may be exponentially distributed. Because the repair packets are multicast, any node that requests a particular data item, could cause other nodes 22 to receive the same data item. The random back-off transmission period for NACK messages, allow other nodes to suppress similar NACK requests, thus reducing the number of NACKs that need to be sent.
+
+To explain further, FIG. 4 shows a source node 22A that includes a Central Processing Unit (CPU) 58 that operates software that provides the Data Distribution Service (DDS) 24. The CPU 58 wirelessly sends and receives DDS messages 63, via a transceiver 60 that is coupled to an antenna 61. Similarly, FIG. 5 shows a CPU 78 in one of the receiver nodes 22B or 22C that includes software for operating the DDS 24. The CPU 78 wirelessly sends and receive DDS messages via a transceiver 82 connected to an antenna 84.
+
+The source node 22A in this example contains three different data items. Data item 52 contains profile data, data item 54 contains video settings, and data item 56 contains multicast tables or other types of configuration data. Each data item includes an associated data-revision number. For example, the profile data item 52 currently has a data-revision = 5 and the video settings 54 currently has a data-revision = 4.
+
+The CPU 58 in the source node 22A also keeps track of the Global Revision Value (GRV) 62 that is associated with changes made to any of the data items 52, 54, and 56. In the example shown in FIG. 4, the CPU 58 has currently made twelve GRV changes to the data items 52, 54 and 56. The GRV 11 was made to data item 54 and the GRVs 10 and 12 were made to data item 52. Changes in the GRV 62 can also be attributed to multiple changes in the same data item. For example, GRV 10 is attributed to revision 4 for profile 52 and GRV 12 is attributed to revision 5 for profile 52.
+
+For explanation purposes, the current state of receiver node 22C will be shown in FIG. 5. Receiver node 22C contains a âprofileâ data item 72, âvideo settingsâ data item 74 and a âmulticast tableâ data item 76. The profile data item 72 currently has an associated data-revision number = 3 and the video settings data item 74 currently have a data-revision number = 4. The receiver node 22C keeps track a current Global Revision Value (GRV) 79 associated with source node 22A as GRV=9. For example, the last data update received from source node 22A had an associated GRV=9.
+
+FIG. 6 shows the different DDS messages that can be sent by the DDS 24 in the different mesh nodes.
+
+Status Message A STATUS message 90 is periodically sent by the source node 22A when no other packets are being sent. In one embodiment, the STATUS message 90 is sent out periodically to indicate nothing has changed. In the example shown in FIG. 6, the STATUS message 90 includes the nodeid 40 for the source node 22A and the Global Revision Value (GRV) 44 for the source node 22A. The action field 48 indicates the packet as a STATUS message. If the receiver node 22B or 22C has the same GRV 44 for the same nodeid 40, then no further action is required.
+
+In the example shown in FIGS. 4 and 5, a status message 90 sent by source node 22A includes a GRV = 12 and the corresponding GRV in the receiver node 22C is GRV = 9. This prompts the receiver node 22C to send a NACK message 94.
+
+Data Message A DATA message 92 is sent whenever the source node 22A changes, modifies, adds, removes, etc. a data item. The DATA message 92 carries the actual data that needs to be updated or added to all of the receiver nodes 22B and 22C. When data 26A (FIG. 2) is changed, the DATA message 92 is multicast out to the other nodes in the mesh network 20 and contains the data-name and its data-revision number. In this example, the DATA message 92 identifies data-name= profile and data-revision=5 and includes the actual updated version 5 profile data. The DATA message 92 also includes the latest global revision value GRV=12 for the source node 22A.
+
+After receiving the DATA message 92, or the STATUS message 48, the receiver node 22C compares the GRV=12 in the DATA or STATUS message 92 with the most recently received GRV for that nodeid. Normally the GRV received from the source node 22A should be incremented by 1, corresponding to this packet's data change, in which case the local most recent revision from the source node is updated, with the data in data message 92.
+
+Negative Acknowledgements (NACK) Every receiver node keeps track of received packets, adding the packetID and its received timestamp to its list of received packets, which is maintained on a per-source basis. For example, the source data packets 38 (FIG. 3) are indexed by the source nodeid. The receiving nodes also store the global revision value and history values for the other nodes and updates them for every received packet, if the GRV has changed.
+
+The nodeids outside the window are removed from the list, and the resulting list is scanned for missing packetids. A NACK message 94 is sent by the receiver node when missing data is detected. An exponentially distributed random time interval can be calculated and used before sending out the NACK message 94. This prevents NACK implosion, where multiple receiver nodes try to send NACK messages 94 for the same requested packet at the same time. The receiver node 22C schedules itself to wake up after the random time interval to check the GRV again and to possibly send a NACK 94 corresponding to the missing source data packet 38.
+
+As CHANGE messages 98 or EXPIRED messages 96 are received from source node 22A responsive to the NACKS 94, all pending NACKs are updated and received packets removed from the list. The NACK messages 94 received from other nodes that request the same information are also removed from the list. The packetids that fall outside the transmission window also get removed.
+
+If a NACK list becomes empty while waiting, it gets completely removed. When a NACK message 94 gets sent, it is added to a repair-requested list with the timestamp of when it was sent. Similarly, subsequent NACKs sent by peers are also added to this list.
+
+In the absence of any activity, the receiver node 22C still wakes up every so often to scan the lists of all nodes, and restart the NACK process for peers that are missing packets but have not had any other activity. This is retried until the lifetime of the packets has expired. The period of retrying could be adapted if no traffic at all is detected for a node. This could also better handle the case of a node completely disappearing from the mesh network 20.
+
+If the receiving node 22C misses the DATA message 92, it won't be noticed until the next DATA, STATUS, EXPIRED, or CHANGE message is received from the source node 22A. All of these messages also include the global revision value (GRV) for the source node 22A. At that point, the receiving node 22C notes that the GRV 62 for the sender node 22A is greater than what it last saw (GRV=9), and multicasts the NACK message 94 identifying the GRV number, or numbers, it is missing.
+
+For example, in FIG. 4, the CPU 58 may send out a status message 63 with a GRV = 12 and an associated source nodeid for source node 22A. The receiver node 22C has a current GRV for that source nodeid of GRV=9. Accordingly, the receiver node 22C multicasts a NACK message 94 as shown in FIG. 6 that identifies missing GRVs 10-12.
+
+CHANGE, RETRANSMIT and EXPIRED Messages The source node 22A does not send the actual data in response to the NACK message 94. Alternatively, the source node 22A sends a changelist, enumerating the keys (data-names) and their specific data-revision numbers for the GRVs identified in the NACK message 94. The resulting CHANGE message 98 (FIG. 6), enumerates all the global revision values that are being addressed, and a list of key/values/revisions 99 that are associated with those global revision values. For example, in FIG. 4, the source node 22A may send back a CHANGE message 98 that includes data-name=video settings:4 for GRV = 11 and dataname=profile:5 for GRV = 12. The data itself for both the video settings and the profile may not be sent in the CHANGE message 98.
+
+In another example, if a data item changes multiple times before another node notices, the single most current data can be sent out to satisfy older repair requests. This is accomplished with a CHANGE message 98, which identifies what older global revisions should be updated with a single new version of the data. In one implementation, older values are not kept and only the most current version of the data item and the corresponding revision number are maintained.
+
+For example, in FIG. 4, the source node 22A might not send back the data-revision associated with GRV=10, since GRV=10 is associated with a previous older version of the profile 52 (data-name=profile, data-revision=4) that is no longer valid.
+
+The receiver node 22C notes all the old global revisions that are being handled, and looks at the key/values/revisions to determine which keys it needs to request for retransmission, and sends a RETRANSMIT message 100 (FIG. 6) back to the source node 22A. For example, the âvideo settingâ data item in the receiver node 22C in FIG. 5 has a data-revision value=4 for the nodeid associated with source node 22A. This is the same data-revision value indicated in CHANGE message 98 in FIG. 6. Therefore, the receiver node 22C does not send a retransmit request for the video settings.
+
+The profile data item 72 in the receiver node 22C in FIG. 5 has a data-revision value = 3. However, the profile in the change message 98 in FIG. 6 has a data-revision value = 5. Thus, the receiver node 22C determines that current profile data item 72 is out of date. Accordingly, the CPU 78 in FIG. 5 sends a RETRANSMIT message 100 as shown in FIG. 6 that requests the source node 22A to send the profile data associated with GRV 12. The source node 22A responds to the RETRANSMIT message 100 by producing another DATA message 92 as shown in FIG. 6 that contains the profile data item 52 in FIG. 4.
+
+Alternatively, if the profile data item 52 in FIG. 4 is no longer available, the source node 22A may send an EXPIRED message 96. This handles race conditions when the data expires while this exchange is happening. The EXPIRED indication can alternatively be part of the CHANGE message 98. If any of the intervening messages are lost, the whole process starts over.
+
+When the source node 22A receives the NACK message 94 (FIG. 6), it first checks that the faulty packetid is within the transmission window. If not, it sends the EXPIRED message 96 indicating that peers should stop asking for it. If within the transmission window, the original data item is fetched and resent. The source data items remain in a sent packet list until its original lifetime has expired, independent of the number of retransmissions. The entry is updated to indicate the time of the most recent transmission.
+
+If a NACK message 94 is received within a small time after a data packet is sent out by the source node 22A, it may be ignored with the assumption that the just sent data packet will satisfy the NACK 94. In the case of a race condition that fails in favor of dropping the NACK 94, the receiver node 22C will request the data item again.
+
+Note that any node in the mesh network 20 (FIG. 2) that has the required repair data and mappings of global revisions to particular data revisions can respond to the NACK message 94. Thus, in the above discussion, the source node 22A can be any node that has the requested data. A random back-off delay is utilized to prevent every node from simultaneously doing so. This optional choice implies that the node providing the repairs store global revision to data revision mappings for all other nodes.
+
+The protocol has another advantage in that the DDS message exchange prevents data from being sent multiple times, particularly for the case that a single key is getting repeatedly updated. In this case only the most current value will get transmitted, whereas with the reliable multicast transport, every change is sent, just to overwrite the previous value.
+
+Scenarios FIGS. 7-11 explain some of the different DDS delivery scenarios that can occur during data consistency operations.
+
+No errors, sequential delivery FIG. 7 shows one of the simplest cases, where the source data packets 38 (FIG. 3) are sent from source node 22A and successfully received sequentially in their original sending order by the receiver node 22B. Each packet N has a global version number that indicates that the packet being received is the most current, so no additional action need be taken.
+
+No errors, out of order delivery In the next case shown in FIG. 8, the source data packets are sent by the source node 22A and successfully received by the receiver node 22B, but their original order is not maintained. This causes a NACK message 94 (FIG. 6) to be sent after a random delay T, unless the "skipped" packet N+1 is received before that delay time T expires. FIG. 8 shows the case where the packet N+1 is received by the receiver node 22B before the expiration of random delay time T. In this case the NACK message 94 is suppressed.
+
+Simple Repair FIG. 9 shows the case when a packet sequence number skips by one and the missing source data packet N+1 has still not been received by the time the NACK message 94 is scheduled to go out. In this case, a NACK message 94 is pending and packet N+1 has not been received within time T. Accordingly, the receiver node 22B sends NACK message 94 to the source node 22A that identifies the source data packet N+1 as described above. The source node 22A through the DDS protocol (the CHANGE and RETRANSMIT messages are not shown) then resends the source data packet N+1.
+
+Coalesced Repair FIG. 10 shows the situation when more than one source data packet is detected as missing. The set of packet numbers, data items, or GRVs can be encapsulated into a single NACK message 94. At the time the NACK message 94 is ready to be sent (i.e. the soonest random backoff interval) all pending NACKs for packets N+1 and N+2 are included in NACK message 94. Again, the protocol between the NACK and the retransmission of the data is not shown.
+
+NACK suppression FIG. 11 shows the situation where multiple receiver nodes 22B and 22C detect missing packets. Each receiver node 22B and 22C could potentially send a NACK message 94. However, each receiver node 22B and 22C may use a random delay before sending their NACK message 94. This will likely cause one of the receiver nodes 22B or 22C to send a NACK message before the other receiver node.
+
+For example, receiver node 22C is scheduled to send the NACK message 94 at random time interval T and receiver node 22B is scheduled to send the same NACK message 94 at random time interval T+1 after receiver node 22C. Because the NACK messages 94 are multicast, other nodes will see the first NACK message 94 sent by receiver node 22C. This causes receiver node 22B to suppress sending the same NACK message as long as the NACK message 94 received from receiver node 22C contains the packet ids missing in receive node 22B. The DDS protocol between the NACKs and the retransmission of the DATA is again not shown.
+
+Additional Information The system described above can use dedicated processor systems, micro controllers, programmable logic devices, or microprocessors that perform some or all of the operations. Some of the operations described above may be implemented in software and other operations may be implemented in hardware.
+
+For the sake of convenience, the operations are described as various interconnected functional blocks or distinct software modules. This is not necessary, however, and there may be cases where these functional blocks or modules are equivalently aggregated into a single logic device, program or operation with unclear boundaries. In any event, the functional blocks and software modules or features of the flexible interface can be implemented by themselves, or in combination with other operations in either hardware or software.
+
+Having described and illustrated the principles of the invention in a preferred embodiment thereof, it should be apparent that the invention may be modified in arrangement and detail without departing from such principles. I claim all modifications and variation coming within the spirit and scope of the following claims.
+
+Claims (24)
+
+1. A network processing node, comprising:
+
+a processor sending Data Distribution Service (DDS) messages associated with data items contained in the network processing node, the DDS messages identifying a global revision value associated with a revision status for multiple different data items in the network processing node and data-revision numbers that identify revision status for the individual data items.
+
+2. The network processing node according to claim 1 wherein the DDS messages include different node identifiers that are associated with different global revision values.
+
+3. The network processing node according to claim 1 wherein the processor sends a STATUS message that identifies the network processing node sending the STATUS message and the global revision value associated with the last revision to the data items in the identified network processing node.
+
+4. The network processing node according to claim 1 wherein the processor sends a DATA message that identifies:
+
+the node sending the DATA message,
+
+a global revision value for the node sending the DATA message,
+
+a data-name identifying a data item contained in the DATA message,
+
+a data-revision value for the data item, and
+
+the actual data item identified by the data-name.
+
+5. The network processing device according to claim 1 wherein the processor receives a Negative Acknowledge (NACK) message that identifies global revision values for data that was not successfully received.
+
+6. The network processing device according to claim 5 wherein the NACK message identifies the network processing node associated with the identified global revision values.
+
+7. The network processing device according to claim 5 wherein the NACK message contains a group of multiple global revision values each associated with the same or different data items that have not been successfully received.
+
+8. The network processing device according to claim 5 wherein the processor sends a CHANGE message identifying for the global revision values identified in the NACK message a data-name identifying a data item and a data-revision number for the identified data item.
+
+9. The network processing device according to claim 8 wherein the processor receives a RETRANSMIT message that identifies the data-names in the CHANGE message that are requested to be retransmitted, the processor in response to the RETRANSMIT message sending a DATA message that contains the data items for the identified data-names.
+
+10. The network processing device according to claim 8 wherein the processor only sends global revision values and associated data-names in the CHANGE message only for the latest versions of the data items associated with the global revision values in the NACK message.
+
+11. The network processing device according to claim 8 wherein the processor maintains time stamps for the data items and sends out EXPIRED messages for requested updates to data items with expired time stamps.
+
+12. An ad-hoc mesh network, comprising:
+
+multiple mobile nodes that operate in wireless peer-to-peer manner within the mesh network whereby the nodes can dynamically move out of the mesh network and are automatically reconfigured to resume communications after moving back into the mesh network,
+
+at least some of the nodes operating a Data Distribution Service (DDS) that sends and receives DDS messages that use Global Revision Values (GRVs) for tracking changes to groups of different data items located on different nodes and for maintaining consistent versions of the data items on the different nodes.
+
+13. The mesh network according to claim 12 wherein the DDS messages identify data-revision values for individual data items associated with the GRVs.
+
+14. The mesh network according to claim 12 wherein a STATUS or DATA message is multicast by a source node to other receiver nodes in the mesh network that identifies a latest GRV for the source node.
+
+15. The mesh network according to claim 12 wherein the receiver nodes compare the GRV for the source node to a local GRV value tracked for the same source node and send a Negative Acknowledge (NACK) message to the source node identifying any missing GRV values.
+
+16. The mesh network according to claim 15 wherein each receiver node waits a random time delay period before sending the NACK messages and suppresses their NACK messages when another NACK message identifying the same GRV values is received from another receiver node prior to expiration of the random time delay period.
+
+17. The mesh network according to claim 15 wherein the source node sends a CHANGE message to the receiver nodes that identifies only the data-names and data-revision numbers for the latest versions of data items associated with the GRV values identified in the NACK message.
+
+18. The mesh network according to claim 15 wherein the source node identifies invalid locally stored data items and sends out an EXPIRED message for any of the GRV values in the NACK message that are associated with invalid data items.
+
+19. The mesh network according to claim 18 wherein the source node generates time stamps for locally stored data items and invalidates data items that have expired time stamps.
+
+20. A method for sending messages in a mesh network, comprising:
+
+receiving a wireless message that identifies a global revision number for a remote set of multiple different data items located in a remote wireless device, the global revision number associated with a latest change made to any one of the data items;
+
+comparing the received global revision number with a locally stored global revision number corresponding with a remote device sending the wireless message; and
+
+sending a notice message when the received global revision number is different than the locally stored global revision number, the notice message identifying the global revision numbers associated with data items that have not yet been received from the remote device.
+
+21. The method according to claim 20 including randomly varying a delay time for sending the notice message and suppressing the notice message when another notice message is received from another node identifying the same global revision numbers for the same remote device.
+
+22. The method according to claim 20 including receiving a change message back from the remote device that identifies data names and associated data version numbers associated with the global revision numbers in the notice message.
+
+23. The method according to claim 22 including using the data names and associated data version numbers to identify only a latest version of data items that have not yet been received from the remote device and sending a retransmit message to the remote device that contains the data names for the identified data items.
+
+24. The method according to claim 23 including receiving a data message back from the remote device containing the data items for the data names identified in the retransmit message.
+
+US11/054,080 2004-02-09 2005-02-08 Reliable message distribution in an ad hoc mesh network Abandoned US20060013169A2 (en)
+
+Priority Applications (1)
+
+Application Number Priority Date Filing Date Title US11/054,080 US20060013169A2 (en) 2004-02-09 2005-02-08 Reliable message distribution in an ad hoc mesh network
+
+Applications Claiming Priority (2)
+
+Application Number Priority Date Filing Date Title US54335204P 2004-02-09 2004-02-09 US11/054,080 US20060013169A2 (en) 2004-02-09 2005-02-08 Reliable message distribution in an ad hoc mesh network
+
+Publications (2)
+
+Publication Number Publication Date US20050174972A1 US20050174972A1 (en) 2005-08-11 US20060013169A2 true US20060013169A2 (en) 2006-01-19
+
+Family
+
+ID=34829930
+
+Family Applications (1)
+
+Application Number Title Priority Date Filing Date US11/054,080 Abandoned US20060013169A2 (en) 2004-02-09 2005-02-08 Reliable message distribution in an ad hoc mesh network
+
+Country Status (1)
+
+Country Link US (1) US20060013169A2 (en)
+
+Cited By (9)
+
+* Cited by examiner, â Cited by third party Publication number Priority date Publication date Assignee Title US20050174972A1 (en) * 2004-02-09 2005-08-11 Lee Boynton Reliable message distribution in an ad hoc mesh network US20050175009A1 (en) * 2004-02-09 2005-08-11 Fred Bauer Enhanced multicast forwarding cache (eMFC) US20050174962A1 (en) * 2004-02-05 2005-08-11 David Gurevich Generic client for communication devices US20070189249A1 (en) * 2005-05-03 2007-08-16 Packethop, Inc. Discovery and authentication scheme for wireless mesh networks US20080232367A1 (en) * 2007-03-23 2008-09-25 Motorola, Inc. Method for managing a communication group of communication devices US20090323571A1 (en) * 2006-05-12 2009-12-31 The University Court Of The University Of Edinburg Low Power Media Access Control Protocol US20100177713A1 (en) * 2006-08-08 2010-07-15 Panasonic Corporation Radio communication mobile station device and resource allocation method US20170353366A1 (en) * 2016-06-06 2017-12-07 General Electric Company Methods and systems for network monitoring US10298501B2 (en) 2014-02-27 2019-05-21 Trane International, Inc. System, device, and method for communicating data over a mesh network
+
+Families Citing this family (10)
+
+* Cited by examiner, â Cited by third party Publication number Priority date Publication date Assignee Title US20060271638A1 (en) * 2005-05-27 2006-11-30 Beigi Mandis S Method and apparatus for improving data transfers in peer-to-peer networks US7760641B2 (en) * 2006-07-10 2010-07-20 International Business Machines Corporation Distributed traffic shaping across a cluster US7813276B2 (en) * 2006-07-10 2010-10-12 International Business Machines Corporation Method for distributed hierarchical admission control across a cluster MX2009005573A (en) * 2006-11-27 2009-12-15 Telcordia Tech Inc Demand-driven prioritized data structure. US9461835B2 (en) * 2011-04-08 2016-10-04 International Business Machines Corporation Multicast bulk transfer system US9871668B2 (en) * 2012-09-17 2018-01-16 Lg Electronics Inc. Method and apparatus for performing HARQ operation in wireless communication system US9992021B1 (en) * 2013-03-14 2018-06-05 GoTenna, Inc. System and method for private and point-to-point communication between computing devices WO2017053977A1 (en) 2015-09-25 2017-03-30 Fsa Technologies, Inc. Multi-trunk data flow regulation system and method US9876612B1 (en) * 2017-02-06 2018-01-23 Naveen Maveli Data bandwidth overhead reduction in a protocol based communication over a wide area network (WAN) CN109814871B (en) * 2018-12-29 2022-05-13 ä¸­å½ç§å­¦é¢ç©ºé´åºç¨å·¥ç¨ä¸ææ¯ä¸­å¿ Node management method and system based on DDS bus
+
+Citations (26)
+
+* Cited by examiner, â Cited by third party Publication number Priority date Publication date Assignee Title US5666293A (en) * 1994-05-27 1997-09-09 Bell Atlantic Network Services, Inc. Downloading operating system software through a broadcast channel US6005853A (en) * 1995-10-13 1999-12-21 Gwcom, Inc. Wireless network access scheme US6373952B2 (en) * 1996-03-15 2002-04-16 Sony Corporation Data transmitting apparatus, data transmitting method, data receiving apparatus, data receiving method, data transmission apparatus, and data transmission method US6404739B1 (en) * 1997-04-30 2002-06-11 Sony Corporation Transmitter and transmitting method, receiver and receiving method, and transceiver and transmitting/receiving method US6477590B1 (en) * 1998-04-01 2002-11-05 Microsoft Corporation Method and system for message transfer session management US20030064752A1 (en) * 2001-09-28 2003-04-03 Tomoko Adachi Base station apparatus and terminal apparatus US20030069031A1 (en) * 2000-04-11 2003-04-10 Smith Richard A. Short message distribution center US20030202486A1 (en) * 2002-04-29 2003-10-30 Hereuare Communications, Inc. Method and system for simulating multiple independent client devices in a wired or wireless network US20030204613A1 (en) * 2002-04-26 2003-10-30 Hudson Michael D. System and methods of streaming media files from a dispersed peer network to maintain quality of service US20030206549A1 (en) * 2002-05-03 2003-11-06 Mody Sachin Satish Method and apparatus for multicast delivery of information US20030212821A1 (en) * 2002-05-13 2003-11-13 Kiyon, Inc. System and method for routing packets in a wired or wireless network US20030227934A1 (en) * 2002-06-11 2003-12-11 White Eric D. System and method for multicast media access using broadcast transmissions with multiple acknowledgements in an Ad-Hoc communications network US20040025018A1 (en) * 2002-01-23 2004-02-05 Haas Zygmunt J. Secure end-to-end communication in mobile ad hoc networks US20040225740A1 (en) * 2003-04-28 2004-11-11 Landmark Networks, Inc. Dynamic adaptive inter-layer control of wireless data communication networks US6845091B2 (en) * 2000-03-16 2005-01-18 Sri International Mobile ad hoc extensions for the internet US6874021B1 (en) * 2000-12-21 2005-03-29 Cisco Technology, Inc. Techniques for configuring network devices with consistent forms for getting and setting device properties US20050174972A1 (en) * 2004-02-09 2005-08-11 Lee Boynton Reliable message distribution in an ad hoc mesh network US20050174962A1 (en) * 2004-02-05 2005-08-11 David Gurevich Generic client for communication devices US20050175009A1 (en) * 2004-02-09 2005-08-11 Fred Bauer Enhanced multicast forwarding cache (eMFC) US20050180356A1 (en) * 2002-10-01 2005-08-18 Graviton, Inc. Multi-channel wireless broadcast protocol for a self-organizing network US20060075025A1 (en) * 2002-01-18 2006-04-06 David Cheng System and method for data tracking and management US7031288B2 (en) * 2000-09-12 2006-04-18 Sri International Reduced-overhead protocol for discovering new neighbor nodes and detecting the loss of existing neighbor nodes in a network US7069573B1 (en) * 1999-12-09 2006-06-27 Vidiator Enterprises Inc. Personal broadcasting and viewing method of audio and video data using a wide area network US7319670B2 (en) * 2003-02-08 2008-01-15 Hewlett-Packard Development Company, L.P. Apparatus and method for transmitting data to a network based on retransmission requests US7327683B2 (en) * 2000-03-16 2008-02-05 Sri International Method and apparatus for disseminating topology information and for discovering new neighboring nodes US7366113B1 (en) * 2002-12-27 2008-04-29 At & T Corp. Adaptive topology discovery in communication networks
+
+2005
+
+2005-02-08 US US11/054,080 patent/US20060013169A2/en not_active Abandoned
+
+Patent Citations (28)
+
+* Cited by examiner, â Cited by third party Publication number Priority date Publication date Assignee Title US5666293A (en) * 1994-05-27 1997-09-09 Bell Atlantic Network Services, Inc. Downloading operating system software through a broadcast channel US6005853A (en) * 1995-10-13 1999-12-21 Gwcom, Inc. Wireless network access scheme US6373952B2 (en) * 1996-03-15 2002-04-16 Sony Corporation Data transmitting apparatus, data transmitting method, data receiving apparatus, data receiving method, data transmission apparatus, and data transmission method US6404739B1 (en) * 1997-04-30 2002-06-11 Sony Corporation Transmitter and transmitting method, receiver and receiving method, and transceiver and transmitting/receiving method US6477590B1 (en) * 1998-04-01 2002-11-05 Microsoft Corporation Method and system for message transfer session management US7069573B1 (en) * 1999-12-09 2006-06-27 Vidiator Enterprises Inc. Personal broadcasting and viewing method of audio and video data using a wide area network US7327683B2 (en) * 2000-03-16 2008-02-05 Sri International Method and apparatus for disseminating topology information and for discovering new neighboring nodes US6845091B2 (en) * 2000-03-16 2005-01-18 Sri International Mobile ad hoc extensions for the internet US20030069031A1 (en) * 2000-04-11 2003-04-10 Smith Richard A. Short message distribution center US7031288B2 (en) * 2000-09-12 2006-04-18 Sri International Reduced-overhead protocol for discovering new neighbor nodes and detecting the loss of existing neighbor nodes in a network US6874021B1 (en) * 2000-12-21 2005-03-29 Cisco Technology, Inc. Techniques for configuring network devices with consistent forms for getting and setting device properties US20030064752A1 (en) * 2001-09-28 2003-04-03 Tomoko Adachi Base station apparatus and terminal apparatus US20060075025A1 (en) * 2002-01-18 2006-04-06 David Cheng System and method for data tracking and management US20040025018A1 (en) * 2002-01-23 2004-02-05 Haas Zygmunt J. Secure end-to-end communication in mobile ad hoc networks US20030204613A1 (en) * 2002-04-26 2003-10-30 Hudson Michael D. System and methods of streaming media files from a dispersed peer network to maintain quality of service US20030202486A1 (en) * 2002-04-29 2003-10-30 Hereuare Communications, Inc. Method and system for simulating multiple independent client devices in a wired or wireless network US20030206549A1 (en) * 2002-05-03 2003-11-06 Mody Sachin Satish Method and apparatus for multicast delivery of information US20030212821A1 (en) * 2002-05-13 2003-11-13 Kiyon, Inc. System and method for routing packets in a wired or wireless network US20030227934A1 (en) * 2002-06-11 2003-12-11 White Eric D. System and method for multicast media access using broadcast transmissions with multiple acknowledgements in an Ad-Hoc communications network US20050180356A1 (en) * 2002-10-01 2005-08-18 Graviton, Inc. Multi-channel wireless broadcast protocol for a self-organizing network US7366113B1 (en) * 2002-12-27 2008-04-29 At & T Corp. Adaptive topology discovery in communication networks US7319670B2 (en) * 2003-02-08 2008-01-15 Hewlett-Packard Development Company, L.P. Apparatus and method for transmitting data to a network based on retransmission requests US20040225740A1 (en) * 2003-04-28 2004-11-11 Landmark Networks, Inc. Dynamic adaptive inter-layer control of wireless data communication networks US20050174962A1 (en) * 2004-02-05 2005-08-11 David Gurevich Generic client for communication devices US20060013159A2 (en) * 2004-02-05 2006-01-19 Packethop, Inc. Generic client for communication devices US20050174972A1 (en) * 2004-02-09 2005-08-11 Lee Boynton Reliable message distribution in an ad hoc mesh network US20050175009A1 (en) * 2004-02-09 2005-08-11 Fred Bauer Enhanced multicast forwarding cache (eMFC) US20060029074A2 (en) * 2004-02-09 2006-02-09 Packethop, Inc. ENHANCED MULTICASE FORWARDING CACHE (eMFC)
+
+Cited By (18)
+
+* Cited by examiner, â Cited by third party Publication number Priority date Publication date Assignee Title US20050174962A1 (en) * 2004-02-05 2005-08-11 David Gurevich Generic client for communication devices US20060013159A2 (en) * 2004-02-05 2006-01-19 Packethop, Inc. Generic client for communication devices US10104717B2 (en) 2004-02-05 2018-10-16 Sri International Generic client for communication devices US8744516B2 (en) 2004-02-05 2014-06-03 Sri International Generic client for communication devices US20050175009A1 (en) * 2004-02-09 2005-08-11 Fred Bauer Enhanced multicast forwarding cache (eMFC) US20060029074A2 (en) * 2004-02-09 2006-02-09 Packethop, Inc. ENHANCED MULTICASE FORWARDING CACHE (eMFC) US20050174972A1 (en) * 2004-02-09 2005-08-11 Lee Boynton Reliable message distribution in an ad hoc mesh network US7814322B2 (en) 2005-05-03 2010-10-12 Sri International Discovery and authentication scheme for wireless mesh networks US20070189249A1 (en) * 2005-05-03 2007-08-16 Packethop, Inc. Discovery and authentication scheme for wireless mesh networks US20090323571A1 (en) * 2006-05-12 2009-12-31 The University Court Of The University Of Edinburg Low Power Media Access Control Protocol US20100177713A1 (en) * 2006-08-08 2010-07-15 Panasonic Corporation Radio communication mobile station device and resource allocation method US8374179B2 (en) * 2007-03-23 2013-02-12 Motorola Solutions, Inc. Method for managing a communication group of communication devices US20080232367A1 (en) * 2007-03-23 2008-09-25 Motorola, Inc. Method for managing a communication group of communication devices US10298501B2 (en) 2014-02-27 2019-05-21 Trane International, Inc. System, device, and method for communicating data over a mesh network US10630594B2 (en) 2014-02-27 2020-04-21 Trane International Inc. System, device, and method for communicating data over a mesh network US20170353366A1 (en) * 2016-06-06 2017-12-07 General Electric Company Methods and systems for network monitoring US9935852B2 (en) * 2016-06-06 2018-04-03 General Electric Company Methods and systems for network monitoring
+
+Also Published As
+
+Publication number Publication date US20050174972A1 (en) 2005-08-11
+
+Similar Documents
+
+Publication Publication Date Title US20060013169A2 (en) 2006-01-19 Reliable message distribution in an ad hoc mesh network Crowcroft et al. 1988 A multicast transport protocol Holbrook et al. 1995 Log-based receiver-reliable multicast for distributed interactive simulation US5432798A (en) 1995-07-11 Data communication method and system JP3908490B2 (en) 2007-04-25 Retransmission control method and system in multicast distribution service, retransmission control apparatus, radio base station, and radio terminal US7536436B2 (en) 2009-05-19 Reliable messaging using clocks with synchronized rates EP1714446A1 (en) 2006-10-25 Reliable message distribution with enhanced emfc for ad hoc mesh networks US20060095582A1 (en) 2006-05-04 Device and method for transferring apportioned data in a mobile ad hoc network US6335937B1 (en) 2002-01-01 Node failure recovery in a hub and spoke data replication mechanism US20030023738A1 (en) 2003-01-30 Enhanced multicast-based web server WO2015180339A1 (en) 2015-12-03 Message push processing method and device, push server, and application server KR20080058506A (en) 2008-06-25 An apparatus, system, method and computer readable medium for reliable multicast transport of data packets Jones et al. 1991 Protocol design for large group multicasting: the message distribution protocol Baek et al. 2005 A tree-based reliable multicast scheme exploiting the temporal locality of transmission errors Alipio et al. 2017 Cache-based transport protocols in wireless sensor networks: A survey and future directions US20240048645A1 (en) 2024-02-08 Point-to-point database synchronization over a transport protocol JP5029685B2 (en) 2012-09-19 Backup device US8570967B1 (en) 2013-10-29 Forming multi-user packet based groups using response behavior WO2020259277A1 (en) 2020-12-30 Parameter optimization method and apparatus, base station, server and storage medium KR20150033871A (en) 2015-04-02 Method and apparatus for distributed mobility management Ozkasap et al. 2009 Stepwise fair-share buffering for gossip-based peer-to-peer data dissemination Alipio et al. 2017 of Network and Computer Applications Weinschrott 0 und Informationstechnik Mayes et al. 2009 Reliable Group Communication for Dynamic and Resource-Constrained Environments
+
+Legal Events
+
+Date Code Title Description

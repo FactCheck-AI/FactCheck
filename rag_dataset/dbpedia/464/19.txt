@@ -1,0 +1,347 @@
+To inaugurate our security research blog, we present the first in a series of technical posts that delves into important memory safety upgrades in XNU, the kernel at the core of iPhone, iPad, and Mac. Because nearly all popular user devices today rely on code written in programming languages like C and C++ that are considered âmemory-unsafe,â meaning that they donât provide strong guarantees which prevent certain classes of software bugs, improving memory safety is an important objective for engineering teams across the industry. On Apple platforms, improving memory safety is a broad effort that includes finding and fixing vulnerabilities, developing with safe languages, and deploying mitigations at scale. This series of posts focuses on one specific effort to improve XNU memory safety: hardening the memory allocator. We first shipped this new hardened allocator, called kalloc_type, in iOS 15, and this year weâve expanded its use across our systems.
+
+Our fundamental strategy is to design an allocator that makes exploiting most memory corruption vulnerabilities inherently unreliable. This limits the impact of many memory safety bugs even before we learn about them, which improves security for all users. We also expect this work makes exploit techniques more bespoke and less reusable, which significantly increases the effort attackers have to invest when we fix a vulnerability they were using. As a result, we believe that certain classes of software vulnerabilities on iPhone, iPad, and Mac devices are now much more difficult for attackers to exploit.
+
+This first post in the series focuses on issues having to do with temporal safety â one common class of memory bugs â and is structured as follows:
+
+An introduction to the problem space, including our goals, design rationale, and challenges we had to overcome
+
+A technical description of the kalloc_type secure allocator, focusing on the practical implementation
+
+A security analysis and evaluation of our work, including strengths and weaknesses
+
+The challenge
+
+Let us first outline the problem space of memory safety, XNUâs allocator, and our goals regarding temporal safety.
+
+Memory safety
+
+Memory safety is a relatively well-understood problem space. The rest of this post assumes a familiarity with the taxonomy of memory safety:
+
+Temporal safety means that all memory accesses to an object occur during the lifetime of that objectâs allocation, between when the objectâs memory is allocated and when it is freed. An access to the object outside of this window is unsafe and called a Use-After-Free (UAF); double-free violations are a particular variant of UAF.
+
+Spatial safety notes that a memory allocation has a particular size, and itâs incorrect to access any memory outside of the intended bounds of the allocation. Violations of this property are called Out-of-Bounds (OOB) accesses.
+
+Type safety means that when a memory allocation represents a particular object with specific rules about how the object can be used, those rules canât unexpectedly change â in other words, that the allocation is typed. Violations of this property are called type confusions.
+
+Definite initialization denotes that a program is responsible for properly initializing newly allocated memory before using it, as the allocation might otherwise contain unexpected data. Violations of this property often lead to issues called information disclosures, but can sometimes lead to more serious memory safety issues, such as type confusions or UAFs.
+
+Thread safety is concerned with how modern software concurrently accesses memory. If concurrent accesses to an allocation arenât properly synchronized, then the objects contained in the allocation might reach an incorrect state and break their invariants. Violations of this property are typically called data races.
+
+Most modern programming languages, like Swift, Go, and Rust, tend to provide the first four memory safety properties above and achieve varying success in guaranteeing thread safety. However, the core of every widely used modern operating system is implemented in languages like C or C++ that are considered âmemory unsafeâ â they donât prevent memory safety violations, and they give the programmer very little support to avoid inadvertently and unknowingly violating memory safety rules in their code.
+
+It is widely documented that memory safety violations are the most widely exploited class of software vulnerabilities. And while memory safe languages can prevent memory corruption in new code, it is infeasible to rewrite large amounts of existing code overnight, so we need to design new solutions to help bridge the gap.
+
+Mitigations and exploit chains
+
+Most kernel memory corruption exploits go through a similar progression:
+
+vulnerability â constrained memory corruption â strong memory corruption â memory read/write â control flow integrity bypass â arbitrary code execution
+
+The idea is that the attacker starts from the initial vulnerability and builds up stronger and stronger primitives before finally achieving their goal: the ability to read and write kernel memory, or execute arbitrary code in the kernel. Itâs best to mitigate these attacks as early in the chain as possible, for two reasons.
+
+First, earlier parts of the exploit chain are more specific to the idiosyncrasies of the vulnerability being exploited than later parts, and everything after the memory read/write step is fully generic. Constraints that are imposed by mitigations early in the chain compound with the constraints of the specific bug being exploited. The attacker has to thread the needle between both sets of constraints simultaneously, and may therefore not be able to treat the mitigation bypass as a fully independent, plug-and-play component that works with any vulnerability. On the other hand, bypasses for mitigations that impose constraints later in the chain, especially after the attacker has achieved read/write, are usually plug-and-play with the rest of the exploit chain.
+
+Second, constraining the attacker earlier in the chain is more effective because they have less control and thus fewer tools at their disposal to bypass mitigations. By contrast, late-chain exploit mitigations usually place weaker constraints on a more powerful attacker and are more likely to be bypassed. Mitigations that isolate privileged and non-privileged memory, or prevent memory corruption in the first place, have a huge advantage.
+
+For these reasons, we were determined to mitigate as early in the chain as possible, where we have the best opportunity to create fast and maintainable mitigations that bring high security impact. Even deceptively simple methods can be difficult to overcome if they constrain the attacker before an exploit can get strong capabilities.
+
+Type isolation
+
+Without any specialized hardware assistance like Arm Memory Tagging Extension (MTE), practical state-of-the-art mitigations for temporal safety issues revolve around type isolation or sequestering. The core principle of type isolation is that after any particular address has been used for a given âtypeâ of object, only objects of that type can ever exist at that address for the lifetime of the program. This has been an active area of research, and has also found its way into production software such as IsoHeap and GigaCage in WebKit, iBootâs memory allocator, Chromeâs PartitionAlloc, and others. To our knowledge, no mainstream kernel was using any of these techniques when we embarked on this journey, although AUTOSLAB from grsecurity was developed independently in the same timeframe.
+
+To understand why type isolation is effective, letâs look at the endgame of a memory safety violation exploit. A UAF or OOB issue on its own is rarely directly exploitable as a stable arbitrary read/write primitive. Some work is required to transform it into a more powerful and reliable primitive first. Almost all attacks hinge at some point on establishing a type confusion: coercing the system so that the same piece of memory can be interpreted in two different and conflicting ways.
+
+Consider this simple example using two standard POSIX types: struct iovec and struct timespec. If an attacker can trick the system to interpret the same piece of memory as being both an iovec and a timespec on different codepaths, then this can potentially give the attacker the ability to interpret the first pointer-sized region of this memory location as both a pointer (iovec.iov_base) and a data field (timespec.tv_sec) in different contexts.
+
+The system likely gives the attacker legitimate APIs to interact with each of these types individually. Armed with interfaces that mutate timespec values, the attacker can use that API on the type-confused memory to read and redirect the iov_base field when that same memory is viewed as an iovec. And by using interfaces that interact with an iovec structure, the attacker can then read from or write to the buffer pointed to by iov_base. By alternating between using that memory as a timespec and an iovec, the attacker gains the capability to access any memory location in the kernel address space.
+
+This example is contrived, but it gives us an understanding of why type isolation can be beneficial. If the allocator guarantees that once a given memory address has been used as an iovec, it can only ever be an iovec, then building a type confusion out of an iovec UAF, like the one above, becomes impossible. At this memory location, one can find only a valid iovec, a freed iovec, or unmapped memory. The locations corresponding to possible iovec.iov_base fields will always be interpreted as pointers, which removes the ability for attackers to influence the value of those memory locations with the required precision to construct an arbitrary read/write primitive. Accessing a freed iovec could still let the attacker dereference dangling pointers, but this can be mitigated with zero-on-free policies in the allocator. Unfortunately, type isolation alone wonât mitigate OOB bugs. Consider a type with an embedded buffer such as struct sockaddr. If sa_data is accessed out of bounds, then it could be used to corrupt anything thatâs located right after it, regardless of type isolation. We mostly ignore spatial safety violations for the rest of this article, as theyâre addressed with a different set of techniques.
+
+A story of pointers and data
+
+Memory can broadly be categorized either as âcontrolâ or as âdata.â Control is what lets a program structure and organize data. It includes things such as pointers, reference counts, lengths, and typing information like union tags. Almost everything else is data.
+
+Computers manipulate data, and rely on control structures as necessary complexity to make sense of the task. This tends to shape system interfaces, and in turn, how those interfaces manipulate memory.
+
+Generally, system interfaces allow data to be directly manipulated in place, both for reading and writing. Conversely, system interfaces often allow only indirect manipulation of control: adding nodes to linked lists, incrementing reference counts, and so on. The precise numeric values of control fields are typically meaningful only in a particular address space and at a particular point in time. Theyâre an implementation detail, usually seen as âinternalsâ that should not be exposed through well-designed interfaces. For example, system calls should never let userspace directly read or write kernel pointers, alter kernel data structure refcounts, or mutate kernel data structure typing information.
+
+Going back to the contrived example in the previous section, overlapping iovec.iov_base and timespec.tv_sec was such a powerful exploit technique because it aliased control and data fields. And indeed, this is the kind of fundamental confusion that attackers try to form in most modern exploits.
+
+Because computation relies so heavily on manipulating data, we have two observations from real-world experience:
+
+Data allocations tend to dominate in size and represent a large portion of all allocations.
+
+Data manipulation tends to have more stringent performance constraints.
+
+When we put these observations together, we see that pure data types are special: theyâre easy to manipulate via legitimate system interfaces, but are intrinsically uninteresting for an attacker. Exploitation of a system is about taking over how data is organized â that is to say, taking over control.
+
+This results in a natural desire to completely isolate pure data types from control, both for security and for performance. The security benefit comes from the fact that a confusion between pure data and control is almost always exploitable. The performance benefit arises because itâs easier to relax costly security rules around data-only allocations when they live in a separate world.
+
+A refresher on XNU allocators
+
+XNU has several memory allocator APIs, but they all funnel into one of two subsystems:
+
+The zone allocator, which serves smaller sized allocations (mostly sub-page)
+
+Straight VM allocations into a vm_map like the kernel_map, which serves allocations at page granularity or with special needs for sharing, remapping, and so on
+
+In this post, weâll focus on the zone allocator. Itâs a relatively generic slab allocator, managing a collection of memory âchunksâ â contiguous pages â that are divided evenly into elements of the same size. The system can create specific zones for a given use case, like the âipc portsâ zone, or use a pre-made collection of zones served by the kalloc kernel API, one per size class (kalloc.16, kalloc.32, ...). The command zprint(1) on macOS can be used to get a summary of the zones usage on a live system.
+
+The zone subsystem monitors its chunks for usage, and if a chunk is made only of free elements, then the memory, both physical and virtual, may be reclaimed when the system is under memory pressure. This act of rebalancing is called a zone garbage collection (GC) event.
+
+Technical challenges
+
+The key technical challenges to adding type isolation to an allocator are memory usage and exhaustive adoption.
+
+Memory usage is particularly challenging for XNU because the kernel must scale from a small, power-efficient system like Apple Watch to a performance-focused Mac Studio with 128 GB of RAM. Most smaller systems canât tolerate any significant increase in memory usage without risking a user-experience regression. This is problematic because type isolation often increases memory fragmentation due to constraints on how memory is reused.
+
+Another challenge is exhaustiveness. Attackers want their exploits to be reliable â ideally deterministic. If type isolation is only partially adopted, then the enrolled types get safer, but at the cost of more determinism in the remaining allocations. Therefore itâs crucial that type isolation is fully adopted, or else attackers will focus on the allocations that havenât been enrolled â and likely end up with more stable exploits.
+
+What makes exhaustive adoption even more challenging is that âthe kernelâ on Apple platforms is really a conglomeration of the core XNU kernel and a large number of kernel extensions for critical features like device drivers, file systems, power controllers, and more. These kernel extensions (or kexts) have a wide range of coding styles that use heterogenous dialects of C and C++. Our solution would need to minimize disruption to these codebases. Some kexts also have ad-hoc relationships and idiosyncratic allocation lifetimes that make isolation and typing complicated, such as allocating a concrete type in one kext and then freeing the object in another kext without knowing the allocationâs original type or size.
+
+The zone allocator is also heavily involved in performance-sensitive workloads and cannot tolerate any regression in CPU usage. In previous type isolation research, some implementations use the allocation backtrace as an approximation of âtype,â but this would come at a measurable and unacceptable performance impact for smaller allocation sizes.
+
+All in all, we started this journey with a performance budget of 0% CPU and 0% memory impact.
+
+Type isolation in XNU
+
+Zone sequestering and kalloc heaps
+
+Prior to iOS 14, the virtual memory used for zones was a carveout made during early boot and sized as a fraction of the total device memory, with a cap for extra large configurations. This range was wrapped into a submap of the kernel_map called the zone_map, and memory for zones would be allocated from this map via XNUâs virtual memory subsystem.
+
+As we mentioned earlier, zones manage contiguously-allocatable regions of memory in âchunks,â which typically consist of a couple of system pages. A zone keeps track of its chunks on three separate lists: chunks with all elements free, chunks with some elements free, and chunks with no elements free. To reduce fragmentation, zones prefer to allocate from partially used chunks. When the system is running low on available memory, it can trigger a zone GC event to return chunks with no allocated elements back to the system.
+
+Before iOS 14, exploits for kernel Use-After-Free (UAF) vulnerabilities typically followed the same general flow:
+
+Allocate a large number of objects for which the UAF vulnerability exists.
+
+Trigger the UAF vulnerability to free one of those objects while thereâs still a dangling reference to it.
+
+Cause the remaining objects to be freed, which leaves the chunk containing the dangling object fully empty and available to be reclaimed.
+
+Create memory pressure, so that the zone GC returns the virtual page containing the dangling object to the system.
+
+Allocate a large number of objects of some other type to reclaim the address of the dangling object with a different type of object (often a pure-data object), thus creating a type confusion through the dangling pointer from Step 2.
+
+Because this flow was so reliable, the first two things we focused on for iOS 14 were preventing virtual address reuse across zones and separating pure-data allocations from the rest. The former prevents the zone GC in Step 4 from creating an overlap in Step 5, while the latter reduces the number of useful replacement objects in Step 5.
+
+We prevented Virtual Address (VA) reuse across zones by introducing zone sequestering. In addition to the three chunk lists presented above, we added a fourth one to hold chunks of pure VA ranges without any physical backing store:
+
+When zones are sequestered, the zone GC behaves slightly differently. Instead of returning both the physical memory and the VA range to the zone_map, it returns only the physical memory and remembers the VA in the new fourth list. Keeping the virtual address range allocated to the zone even as the range is depopulated of physical pages ensures that the VA cannot be reused by any other zone. Allocations in single-type zones (e.g. the âprocâ and âthreadâ zones) are no longer susceptible to direct type confusion via UAF, as their VA canât be reused for another type. And in the traditional kalloc zones, objects can now only be confused with other objects of the same size class. GC attacks across zones with different size classes are no longer possible.
+
+We separated pure-data allocations from the rest by introducing two notions: kalloc heaps (kheaps) and zone submaps. A kheap is a size-based collection of zones serving a certain ânamespaceâ of allocations; the original âkallocâ became the core kernelâs âdefaultâ heap (KHEAP_DEFAULT). We also added a new heap, called the âdataâ heap (KHEAP_DATA_BUFFERS), to hold allocations made of pure data. The fundamental allocation primitives of XNU were adjusted so that kalloc(...) came to mean kheap_alloc(KHEAP_DEFAULT, ...), and a new kalloc_data(...) family of calls translates to kheap_alloc(KHEAP_DATA_BUFFERS, ...). Our first manual attempt at splitting the world across this boundary took place in iOS 14.
+
+Note: iOS 14 had two additional kheaps: the âkextâ and âtempâ heaps. The former separated allocations made by kexts from the âdefaultâ (core kernel) heap, and the latter checked that allocations would not persist beyond the lifetime of the syscall that created them. The kext heap was a stop-gap for the superior iOS 15 solution, while the temp heap proved to be of insufficient security value. Both heaps have been removed in iOS 15.
+
+Since data allocations are often involved in critical performance paths, we decided not to sequester pure data zones. This limited the impact of sequestering on OS stability and memory fragmentation. Of course, thereâs a security tradeoff from not sequestering the data zones, but we expected that UAF bugs in the pure data world would generally be uninteresting to attackers.
+
+As a result, the zone map became a static virtual memory carveout, which is then subdivided into submaps. iOS 14 contained three of them: the âVM,â âgeneral,â and âdataâ submaps.
+
+Note: In iOS 15.2, the general submap was split into four separate submaps. We will cover this change in a future post.
+
+Zones are assigned a submap ID which specifies the range from which VA chunks are allocated. This design allows for extremely fast checks to validate whether memory is from the expected world (see the kalloc_{,non_}data_require() KPIs). Zones in the data heap are assigned to the data submap. The VM uses zalloc for its internal data structures (VM maps, VM map entries, VM pages, etc.) and packs some object pointers into 32 bits, which limits the range where pointed objects can live. However, zones also need to use the VM subsystem. To resolve this circular dependency, the zones supporting the VM subsystem receive special treatment and are assigned to the VM submap. Almost all other zones on the system will allocate their memory from the general submap. Today, zones in the VM and general submaps are all sequestered by policy, although before iOS 15.2 there were some exceptions. Zones in the data submap are not sequestered.
+
+We also decided to externalize metadata used by the allocator. Prior to iOS 14.5, the zone implementation tracked freed elements on a freelist with pointers stored inside the freed allocations themselves. This freelist hasnât been a common exploitation target for some time because it was protected with random secrets and backup pointers. However, a powerful enough UAF could still be used to manipulate allocator metadata, so we replaced this freelist with an external bitmap that stores the allocation state of each element.
+
+Zone submaps and kheaps are the necessary infrastructure to build more powerful isolation. However, UAFs could still create type confusions between any types within a size class.
+
+Kalloc_type
+
+In iOS 15, we introduced kalloc_type to provide type-based segregation for general purpose allocations within each size class. Kalloc_type builds on top of zone-based sequestering by giving each size class a number of kalloc.type* zones to use, rather than lumping all allocations within a size class together in a single zone. The basic idea is to use the compiler to statically generate a âsignatureâ of each type that gets allocated, and then assign the different signatures into the various kalloc.type* zones during early boot. The end result is that a given type can be reallocated only by other types that were assigned to the same zone, drastically reducing the number of UAF reallocation candidates for any given type.
+
+As we discussed, attackers typically exploit UAFs by establishing a type confusion between a pointer and attacker-controlled data. So we designed the kalloc_type signature scheme to allow the segregation algorithm to reduce the number of pointer-data overlaps by encoding the following properties for each 8 byte granule of a type:
+
+Source code can access a string representation of the signature for a given type using __builtin_xnu_type_signature(). For example, struct iovec from the beginning of this post would have a signature of "12," meaning the first 8 bytes hold a pointer and the second 8 bytes hold a data value.
+
+Each callsite that allocates or frees a type (kalloc_type() and kfree_type()) needs to know which specific kalloc.type* zone within the corresponding size class to allocate from, or free to. Computing the zone based on the signature string during each call would be prohibitively expensive. Instead, we use kalloc_type_view structures to pre-compute this assignment at boot and then cache the result for each allocation site:
+
+To generate a kalloc_type_view structure for each allocation site, we define kalloc_type() as a macro that creates the appropriate kalloc_type_view within the __DATA_CONST.__kalloc_type section of the kernel:
+
+Placing the kalloc_type_views in a dedicated section allows us to process them during early boot to assign each allocation and free site to a specific kalloc.type* zone. The segregation algorithm, which runs during the initialization of the zone allocator, sorts the list of kalloc_type_views by signature within each size class. This ensures that type views with the same signature in a particular size class are always assigned to the same zone. We then collapse adjacent signatures where the first is a prefix of the second as being part of the same âunique signature group.â For example, if no type view has the signature â122111,â then â12211â and â122112â are treated as the same signature group since the first is a prefix of the second.
+
+Ideally, each type would have its own zone to achieve perfect isolation, but since fragmentation starts to increase dramatically beyond a certain point, this didnât fit within our memory budget. Instead, we decided on a budget of 200 zones total, which we divide among the size classes based on the number of unique signature groups for each. Then during early boot, we evenly and randomly distribute the unique signature groups among the kalloc.type* zones for each size class. Finally, we update each type viewâs kt_zv.zv_zone field to point to the assigned zone. This allows kalloc_type_impl() to find the correct zone for a given type at runtime using a single load.
+
+The end result is that kalloc_type implements randomized, bucketed type isolation for general-purpose, zone-sized allocations in XNU with reasonable memory overhead â paid for with different optimizations â and near-zero CPU overhead.
+
+Additional challenges
+
+Beyond the core idea, we faced some interesting additional challenges with the design and implementation of kalloc_type.
+
+We needed to group the same type together across different compilation units, even when types have been copied or even slightly tweaked or renamed in different areas. We needed distinct definitions for the same functional type to become unified, to avoid spreading that type across multiple zones or attempting to free to the wrong zone. This was partially why we decided to use this very simple, non-recursive signature scheme.
+
+Another obstacle was that while we designed the signature scheme to minimize pointer-data overlaps, itâs a common pattern for code to store pointers in integer types like uintptr_t and vm_address_t. Since the signature scheme tries to group types with the same signature together, having a pointer hidden in a data-typed field would give a deterministic pointer-data overlap and make an attractive target for exploiting a UAF.
+
+To address pointers hiding in data, we introduced the xnu_usage_semantics attribute to manually override the compiler's granule information. XNU annotates specific types or fields as pointers or data using the convenience macros __kernel_ptr_semantics and __kernel_data_semantics:
+
+We then used source inspection and automated tooling to find places where kernel pointers were being stored in data-typed fields and annotated these cases appropriately. There were also some cases of userspace pointers being stored in pointer-typed fields, which we annotated with __kernel_data_semantics since the kernel considers userspace pointers to be data.
+
+We also needed to ensure that clients had an ergonomic experience while allocating data-only types or large types beyond the maximum size supported by the zone allocator. As discussed in the introduction, itâs helpful for both performance and security to isolate data-only types from types containing control, but we want to give clients a consistent allocation API so that changing a type definition doesnât require them to change which allocator function they use. Additionally, some kexts define very large types for which we need to use the VM allocator instead of the zone allocator to service the request. These VM-sized types would have huge type signature strings that arenât actually used.
+
+To ensure we allocate from the correct space, we track whether this type is data-only or VM-sized in the kt_flags field of each kalloc_type_view. This allows kalloc_type_impl() to quickly determine which underlying allocator implementation to dispatch to.
+
+Using kt_flags solves the API consistency issue, but we also want to eliminate the unused and potentially very large signature strings from the binary for both data-only and VM-sized allocations. This requires us to make the data-only or VM-sized determination at compile time. We can easily check whether a type is VM-sized at compile time using sizeof(), but thereâs no compile-time way to check if a type is data-only, even if we have the signature string. To make a compile-time, data-only check possible, we introduced another Clang builtin function, __builtin_xnu_type_summary(), to return a bitwise-or of the granule information for every granule in the type.
+
+But perhaps the most formidable challenge was deciding what to do about variable-length allocations. Indeed, this problem was complex enough that we decided not to address it in the first release of kalloc_type.
+
+Variable size allocations
+
+While any given language-level type will be fixed-size, itâs very common for code to create a variable-length allocation that is nonetheless well typed. The most obvious case is an array of fixed-sized types, but itâs also common to have a fixed-size header directly followed by a variable number of elements of some other type. These patterns are so common that we needed to support them if we wanted to move all kernel allocations away from the âdefaultâ heap (KHEAP_DEFAULT), which is where these allocations lived when we first released kalloc_type for fixed-size types.
+
+Although all allocations of a fixed-size type will fit in a single zone, variable-size types wonât. The natural extension of our prior work would be to create a number of kheaps exclusively for these variable-size allocations and randomly distribute the variable-size types among them based on their signatures. This is basically what we did, with one exception for arrays of pointers.
+
+To limit the shape of variable-size allocations to something tractable, we only allow variable-size allocations of the following forms:
+
+An array of elements of a single type
+
+A fixed-size header followed by an array of elements of a single type
+
+We explicitly disallow allocations consisting of a non-data header followed by a repeating data-only type. If the data-only part of the allocation is arbitrarily sized and attacker-controlled, it would be a generic reallocation candidate to exploit a UAF in nearly any variable-size type that contains pointers. Since the whole point of this hardening is to force attackers into creating bespoke exploit strategies for each bug, we felt that it was worth forcing existing code to split the allocation so that the variable-length data landed in the data heap.
+
+We decided to further mitigate generic exploitation techniques with one more special case: we isolate arrays of pointers into their own kheap. Weâve repeatedly seen exploits use arrays of pointersâ such as, out-of-line Mach port arrays â as a generic reallocation object. We felt that without isolating pointer arrays, such exploitation techniques would continue to be useful to attackers.
+
+We naturally introduced a new kalloc_type_var_view type to track the additional information needed for the early boot zone initialization code to properly assign the variable-size types to kheaps. These views live in the __DATA_CONST.__kalloc_var sections of the kernel Mach-O:
+
+Unlike fixed-size types, variable-sized allocations do not belong to a specific zone. Therefore, we cache the zone ID of the start of the chosen kheap for quick access at runtime. Kalloc determines an index based on the size of the allocation which gets added to the kheap start to obtain the zone ID for the allocation.
+
+Now that we have described how kalloc_type works, letâs discuss how we got it adopted across the kernel.
+
+Adoption strategy
+
+The kalloc_type() interface requires manual adoption since the programmer needs to explicitly provide type information about what theyâre allocating. And to achieve our security goal, we needed the kernel and all kexts to completely and correctly adopt this interface. However, in complex code, programmers inevitably make mistakes. So if we need adoption to be perfect, and we know people make mistakes, why did we deliberately choose an API design that requires manual adoption?
+
+If the goal is ubiquitous type isolation, we saw only three key implementation options:
+
+The runtime could infer type without client changes, for example using allocation backtraces.
+
+A compiler pass could rewrite all allocation sites to add richer type information.
+
+We could create a manual interface that would need to be adopted everywhere.
+
+We rejected runtime type inference early on, because hashing and backtrace computation would dominate the cost for smaller allocations which are on the critical performance path. We also ruled out option 2, a compiler pass, because itâs generally difficult for the compiler to infer types from an allocation call site without mistakes, and the inference works poorly for âallocation wrappersâ as several papers have covered. We also wanted to enforce âstrict freeâ semantics, where the free site also validates type information. Doing so would require that all call sites allocating and freeing the same âtypeâ get the same information, which would be even harder to ensure under option 2. Therefore the manual interface from option 3 was the only way to get both the feature set and the performance we wanted, despite the risk of programmer error during manual adoption.
+
+To help kernel engineers perform consistently correct adoptions, we taught Appleâs internal Clang about the XNU allocation API surface, so it can flag mistakes when APIs arenât used correctly. XNU and kernel extension developers must follow a rigid set of rules when using those APIs, and those rules have also been encoded in the compiler. The compiler leverages the natural availability of types when they are used either to cast the result of an allocation call, or to compute an allocation size via a sizeof() expression.
+
+This compiler change supported a fast adoption cadence. With the release of iOS 16, about 95% of the kernel-space codebase for mobile platforms has been converted. The compiler support also gives us more confidence that regressions wonât be introduced as the code changes. Here are examples of actual diagnostics shown when violating rules or using deprecated allocation interfaces:
+
+Security analysis
+
+Now that weâve explained the motivation and design of kalloc_type, letâs examine its temporal safety properties â in particular how well it achieves its goal of type isolation, and the weaknesses we know about. Weâll start off by comparing kalloc_type to two other shipping type isolation mechanisms, IsoHeap and PartitionAlloc.
+
+Comparison with IsoHeap and PartitionAlloc
+
+IsoHeap is an allocator API used by WebKit to enable strong isolation between participating C++ types in the Safari browser. The basic idea is that C++ types opt in with the MAKE_BISO_MALLOCED_IMPL() macro, which overrides the new and delete operators to allocate from a dedicated IsoHeap. Each page that is dedicated to an IsoHeap holds metadata about the allocation state of each âcellâ (object) on the page at the beginning of the page itself. However, there is a freelist running through the free cells on the page. The type isolation guarantee is that once a given virtual address is assigned to a particular type, that virtual address will never be reused for any other type.
+
+Note: IsoHeap includes a clever optimization to reduce fragmentation: the first few allocations of a type are served from a shared allocator, though the slots remain pinned to that type forever. After enough allocations have been made, the IsoHeap switches to using dedicated pages for the type, which improves performance. This helps mitigate the memory footprint of rarely-allocated or singleton types.
+
+Google Chromeâs PartitionAlloc is another allocator that uses isolation to mitigate the impact of UAFs. PartitionAlloc calls each separate heap a âpartitionâ and each partition contains multiple âbucketsâ (size classes). Each bucket in turn consists of a number of âslot spans,â or regions of contiguous memory dedicated to holding allocations (âslotsâ) from that bucket. New virtual memory is committed to a partition as 2MiB-aligned, 2MiB-sized âsuper pagesâ containing guard pages, metadata, and space for use by buckets. While most metadata is moved to the dedicated region, like with IsoHeap, there is usually still a freelist running through the free slots themselves. The type isolation guarantee is that once a given virtual address is assigned to a particular bucket in a particular partition, that virtual address remains associated with that bucket forever.
+
+So, how do IsoHeap, PartitionAlloc, and kalloc_type compare in terms of type isolation, metadata protection, and adoption?
+
+On type isolation, we believe IsoHeap is the strongest, followed by kalloc_type and then PartitionAlloc. IsoHeap provides true type isolation where a given type is unable to be reallocated by any other type: there is simply no code path under normal operation that allows the virtual address used by an object of type A to be reused to allocate an object of type B. Meanwhile, kalloc_type provides randomized bucketed type isolation: any given type A will have some other types B that can reallocate it, but the set of all types that could work (the size class) is relatively small and the set that will work on a given boot is even smaller, consisting only of the ones that land in the same zone. PartitionAlloc could in principle be used to achieve stronger type isolation, but the Blink rendering engine used by Google Chrome currently defines just four partitions: LayoutObject, Buffer, ArrayBuffer, and FastMalloc. UAFs between partitions and between size classes are blocked, which eliminates many exploit techniques, but a dangling object can be reallocated with any other object from the same partition and size class regardless of type.
+
+On metadata protection, we believe kalloc_type is the strongest, followed by PartitionAlloc and then IsoHeap. kalloc_typeâs metadata is fully externalized: thereâs not even a freelist within freed elements. This means that a UAF cannot target allocator metadata at all. The only option is to get the slot reallocated with some new object and try and manipulate that. Meanwhile, both IsoHeap and PartitionAlloc use a freelist within the elements themselves, so some UAFs will be able to modify allocator internals. Both also use different forms of freelist protection to prevent tampering with the freelist pointers, and different UAFs will be able to manipulate each scheme. However, PartitionAlloc surrounds its main metadata block with guard pages, which prevents it from being overwritten by linear overflows.
+
+The allocators have different strengths and weaknesses when it comes to adoption. IsoHeap requires explicit manual adoption, but the adoption effort is relatively easy. On the other hand, it supports only C++, so C code canât participate at all. PartitionAlloc requires manual adoption to provide strong type isolation, but through the PartitionAlloc-Everywhere effort, Chromium was able to funnel nearly all non-adopting allocations into the Malloc partition anyway. Even so, this automated adoption doesnât provide the same level of within-size-class type isolation that IsoHeap and kalloc_type offer. Finally, kalloc_type adoption is manual but tool-assisted. Itâs a larger effort to adopt than IsoHeap since it requires changing every allocation site, and sometimes requires breaking up allocations to conform with the allocator rules. However, it does support both C and C++, and the automation has been very reliable.
+
+The benefits of randomized bucketing
+
+There are so many language-level types in the kernel that assigning each one a dedicated zone, like IsoHeap, would be prohibitive. It was clear from the start that some form of bucketing would be needed.
+
+Using signatures instead of language-level types solved a number of problems related to âtype identity,â such as the same type being given different names in different areas of the code. It also provided an easy way to bucket types that are expected to have similar exploitation properties. For example, there were 3574 non-variable kalloc_type types in the iOS 16 beta 1 kernelcache, but only 1822 unique signatures using the scheme discussed above. Clustering signatures into unique signature groups by common prefix within a size class reduces this further to 1482 signature groups.
+
+However, 1482 signature groups is still 7 times over the 200 zones we budgeted for isolating non-variable types. We considered a few different bucketing options to address this:
+
+We could use something like randstruct to coerce existing types into having the same signature.
+
+We could compute the best partition of signatures into signature groups that minimizes the number of pointer/data overlaps.
+
+We could group signatures together randomly.
+
+Ultimately, we decided that randomly grouping signatures into buckets offered the best tradeoff. The other options would increase the number of C/C++ types that are always allocated together, which makes them ideal candidates for trying to exploit a UAF. Such candidates would theoretically be harder to exploit because the number of pointer/data overlaps would be reduced. However, we expected that attackers seeking reliable exploits would start targeting interesting pointer/pointer overlaps instead, turning the UAF into an indirect type confusion through a pointer field. This should generally be harder to pull off because the constraints of the top-level type confusion (from the UAF) would compound with the constraints of the next-level type confusion (from the overlapping pointers of different types), but the search space for good overlaps would be small and a single exploit would work the same on all devices.
+
+On the other hand, randomized bucketing changes which types are grouped together from boot to boot, reducing the number of deterministically stable pairs. This hurts isolation by grouping more interesting types together, but we expect that the tradeoff is worth it. With fewer types always allocated together, there are fewer ways to build a universal exploit, and attackers will more often be forced to reallocate with types that may live in a different bucket. Such an exploit simply will not work if during a particular boot, the two types happen to be assigned to different buckets.
+
+Another benefit of randomized bucketing is that it maximizes the value of kalloc_typeâs strict free semantics. Strict free means that the kfree_type() callsite is restricted to only ever freeing addresses that belong to the correct zone, which makes it harder to transfer a UAF outside of the bucket containing the vulnerable type. By randomizing the set of types that belong to a given zone, the space of invalid frees to the wrong type that wonât be caught during normal use is much smaller.
+
+Mitigations based on randomization can sometimes be fragile. For example, ASLR is often criticized because leaking one pointer value gives the attacker the location of a great number of interesting objects, even ones unrelated to the code that contains the leak. And many hardened allocator proposals that rely on randomization can be defeated by simply spraying allocations to overwhelm the randomization and once again arrive at a stable heap pattern.
+
+The randomization here is different. Even if the attacker learns the bucket assignment of every type on the system, that reveals only which replacement types for a given UAF would work; it doesnât enable success for a specific replacement type that the attacker chose a priori, while developing the exploit. Thereâs nothing the attacker can do at runtime to make their preferred replacement type feasible if the system assigned it to a different bucket than the UAF type. And since bucketing is random for every boot, the replacement types that would work for a given UAF are not consistent even on a single device over time, let alone across a population of devices.
+
+Our hope is that attackers who wish to build a reliable exploit for a single UAF will be forced to arrive on the system with multiple exploit strategies that target multiple different replacement types, and that they will be able to decide which one to use only at runtime. That strategy selection would also introduce complexity and instability if it relies on an information leak. We expect that constructing such an exploit would involve considerably more effort than prior techniques that used just a single replacement candidate. And that attack effort would need to be repeated anew for each vulnerability, since it would depend on the exact bucket in which the vulnerable type was found.
+
+Distribution of signatures
+
+Aside from pointers hiding in the data submap, which we discuss in the next section, the biggest risk to kalloc_type is an attacker finding a useful reallocation type in the same signature group as the UAF type. Such pairs fully bypass the randomized type isolation of kalloc_type, making it possible to build reliable exploits. Thus, itâs important to understand the distribution of the kernelâs C/C++ types into signatures and signature groups.
+
+In the iOS 16 beta 1 (build 20A5283p) kernelcache for iPhone 13 Pro, there were 3574 named non-variable types, 1822 distinct signatures, and 1482 signature groups. Some of the 3574 named types were duplicates due to compiler limitations, particularly around types specified via typeof(), so the true number of distinct C/C++ types was lower. The median signature group held a single signature and the average held 2.4 signatures. The signature group containing the most signatures was â1211â with 228 types.
+
+Signature groupSize classNumber of signatures12113222812111112122212121111160149121111481021116731216571211111212221212111111111111224481211112164401212111164371111323412213234
+
+While the â1211â group was extreme, just a few kexts contributed the bulk of the types: 54 of the type names in this signature group started with IO80211, 53 started with AppleBCMWLAN, and 22 started with RTBuddy. Meanwhile, the next-most populous signature group, â12111112122212121111â, was the group of IOService, a common base class inherited by many drivers in the kernel. And the sixth most populous signature group mostly contained subclasses of IOUserClient.
+
+Of the 1482 signature groups, 1058 (71%) contained a single signature. However, what we really care about is the signature group size experienced by a random type.
+
+Signature group size123456Number of signature groups105819589391915
+
+A randomly selected type belonged to a signature group with a median of four signatures and an average of 32.5 signatures. This means that if vulnerabilities were distributed uniformly among the types, weâd expect half the vulnerabilities would be in types with at least three other types guaranteed to always be allocated from the same bucket. 29.6% of types belonged to a signature group containing just that one type, which is the best-case scenario for eliminating stable pairs.
+
+Decile10%20%30%40%50%60%70%80%90%Signature group size1122481437149
+
+The 1482 signature groups were distributed into 200 buckets. Measured across eight boots, the median bucket contained 11 types, the average bucket contained 18 types, and the most common bucket sizes were 9, 10, and 11 types. The minimum bucket size was three (in size class 32768) and the median of the maximum bucket sizes across the 8 runs was 270 (in size class 32).
+
+Weaknesses in kalloc_type
+
+Any analysis of a security mitigation would be incomplete without a thorough evaluation of the mitigationâs weaknesses. In this section, we discuss some of the known limitations of kalloc_type, the most significant of which are signature collisions and pointers in the data submap.
+
+As discussed in the prior section, we expect that one of the main weaknesses of kalloc_type comes from distinct C/C++ types that are always allocated together. A randomly chosen non-variable type has a median of three other types in its signature group, so this seems like a possible route to reliably exploit a UAF under kalloc_type.
+
+In general, types with the same signature should make it harder to write an exploit than types with different signatures. This is because pointer/data overlaps are really useful for building arbitrary read/write primitives: the attacker wants to specify the address to read from or write to as an arbitrary value, which means that the value likely enters the kernel represented as data. Even so, there will still be viable techniques for exploiting UAFs among types with the same signature. For example, we expect to see attackers leverage pointer-pointer confusions.
+
+C++ inheritance in the kernel makes signature collisions more prevalent because sibling classes share a common prefix inherited from the parent. We can expect that IOKit drivers will have more types with signature collisions than core XNU, making UAFs in IOKit more attractive. That being said, for C++ objects, virtual method calls dispatch through a PAC-signed vtable pointer, which reduces the set of exploitable type confusions.
+
+Signature collisions are also a particular problem for arrays of pointers. Even though isolating pointer arrays has significant benefits, the fact that they all have the same signature means that we canât perform further type isolation within this group. Interesting kernel objects like OSArray backing stores, out-of-line Mach port arrays, IOSurfaceClient arrays and more can all deterministically reallocate each other. Thankfully, direct UAFs on arrays are rare because they tend to have a single owner; this is much more of a problem for spatial safety and second-order exploit primitives.
+
+A separate limitation of this simple â12â signature scheme is that it treats all non-pointer values as non-control data, even though many such values are still used for program control. For example, sizes, offsets, indexes, physical addresses, and reference counts are fundamentally more similar to pointers than arbitrary data under attacker control. Because such non-pointer control fields are assigned a signature of â2â just like attacker-controlled data, a UAF in a type with colliding signatures could potentially be turned into a spatial safety issue by, for example, overlapping a size field with an attacker-controlled data field. Current exploits tend to favor creating pointer/data overlaps over non-pointer-control/data overlaps, likely because using pointer/data overlaps tends to result in an exploit with fewer steps and thus less instability. But non-pointer-control/data overlaps can also produce viable exploit strategies, and such overlaps will become relatively more common under kalloc_type.
+
+Similarly, we still have a problem with pointers hiding in data-typed fields like uint64_t. __kernel_ptr_semantics gives us the ability to reclassify such fields as pointers without changing the fieldâs type, but finding all such instances is a challenge. In the regular kalloc_type zones, having a pointer hiding as data is mostly a problem for signature collisions: instead of a pointer/pointer overlap, the attacker is once again given a classic pointer/data overlap.
+
+However, the problem of pointers masquerading as data is much more significant in the data submap, since we donât mitigate the data submap as strongly under the premise that controlling the contents of these allocations isnât useful to an attacker. But if a UAF in the data submap could be used to gain control of a pointer field, then the exploit wouldnât need to contend with kalloc_type at all. As with signature collisions, this seems like a plausible route to building a reliable UAF exploit.
+
+There is also currently no provision for protecting allocations consisting only of data and non-pointer control. These types are seen as data-only, so they get routed to the data submap just like fully attacker-controlled allocations. This makes them easier targets than kalloc_type types.
+
+Unions, by construction, are another way to create pointer/data overlaps, this time within a single type. Weâve done a lot of work to eliminate existing unions containing both pointer and data fields, and as of iOS 16 beta 1 the kernelcache had just 36 named non-variable types â corresponding to 31 truly distinct types â containing pointer/data unions. We no longer consider such unions a huge risk to kalloc_type, even though the idea that a piece of memory can hold objects of different types works against the goals of type isolation.
+
+The last weakness in kalloc_type that weâll discuss is the risk of missed adoptions. Kalloc_type isnât magical; it still needs to be correctly adopted to be effective. And any allocation sites that havenât adopted will funnel to the default heap, which does not receive the same level of type isolation. To mitigate this risk, we intend to continue the adoption of kalloc_type in the kernel and eventually eliminate the default heap entirely.
+
+Sustainability and ongoing efforts
+
+At least as important as building the initial mitigation is ensuring that any gaps remaining at ship time are fixed, and that the mitigation is maintained at a cost thatâs worth the security it buys. In this section, we outline our current and upcoming plans to both address the above weaknesses as much as is possible and ensure that kalloc_typeâs security properties donât regress over time.
+
+We built compiler tooling based on clang-tidy to help automate large adoptions of the typed allocator APIs in both XNU and kernel extensions. This tooling allowed us to scale to nearly 300 kernel extensions much more quickly than would otherwise have been possible while also dramatically reducing both incorrect and missed adoptions.
+
+But we also needed to ensure that future code changes and new projects would correctly and thoroughly adopt the new allocator. Kalloc_type is more rigid and restrictive than the legacy allocation APIs. If it were possible for new code to be written using the legacy APIs, our allocation security posture could erode over time.
+
+This is why we introduced a new compiler warning, -Wxnu-typed-allocators, to enforce correctness and continued adoption of the kalloc_type APIs throughout the kernel and all kexts. This warning detects the use of untyped allocator APIs (kalloc(), IOMalloc(), etc.). We also augmented the kalloc_type() and related macros to detect two other usage errors:
+
+The signature of the pointer type being freed doesnât match that of the type parameter passed to the free callsite.
+
+The data allocator API (e.g. kalloc_data()) is being used to create an allocation for a type that contains pointers.
+
+We also use one of the Clang builtins we introduced, __builtin_xnu_type_summary(), to enforce at compile time that kalloc_type() is not being used to create a variable-length allocation consisting of a header followed by an array of data-only types. Eventually, we also intend to disallow allocating types that contain pointer/data unions.
+
+Weâre continuing to investigate changes to the kalloc_type signature scheme, including the treatment of non-pointer control fields like sizes, offsets, reference counts, etc. We believe itâs possible to increase signature diversity without spreading functionally equivalent types across multiple buckets. This would allow us to distinguish some forms of non-pointer control from potentially attacker-controlled data, helping us to better protect the former while simultaneously reducing inadvertent collapsing of distinct types to identical signatures.
+
+Finally, we have implemented a few specific changes to make the most of the new allocator:
+
+We split ipc_kmsg, so that it no longer stores kernel pointers in the data submap for user-to-user messages. ipc_kmsg has been very useful for building various exploit primitives. This split landed in iOS 16.
+
+We aggressively PAC-protected pointers from typed allocations to data allocations to minimize opportunities for second-order type confusion. While any pointer/pointer overlap is subject to potentially exploitable type confusion, data allocations are particularly attractive for all the reasons we outlined in the introduction.
+
+We made kfree_type() and other free APIs zero the pointer itself thatâs being freed to opportunistically minimize dangling pointers. Having free APIs zero passed-in pointers doesnât fully eliminate dangling pointers, since callsites may pass a local copy of a pointer. However, this mitigation is very fast, requires almost no maintenance, and meaningfully reduces the number of dangling pointers.
+
+In closing
+
+In this post, we looked at the security upgrades to the XNU kernel allocator over the past three releases, with a focus on temporal memory safety. This work started in iOS 14 with the introduction of kheaps, the data split, and virtual memory sequestering. Those changes laid the groundwork for kalloc_type in iOS 15, which added randomized bucketed type isolation to the zone allocator, while iOS 16 and macOS Ventura increased kalloc_type adoption throughout the XNU kernel. We also discussed the temporal safety properties of kalloc_type, with a realistic assessment of its strengths and weaknesses.
+
+We hope that security researchers who are studying and developing defensive mitigations find this post to be a helpful case study of what it takes to transform a powerful idea like type isolation into a world-class implementation that is fast, memory-efficient, and practical enough to adopt at billion-device scale.

@@ -1,0 +1,141 @@
+This is a guess based on what I confirmed via ChatGPT.
+
+The reason why users cannot use the SEED value in DALLE3 seems to be to prevent unwanted images that have escaped policy checks from being reproduced by anyone using Prompt and Seed.
+
+In other words, my guess based on the answers I got from ChatGPT is that they don’t like the same image being shared across multiple users.
+
+Internally, the SEED value is used properly, which can be confirmed by the occasional reminder that the SEED value used is provided as metadata.
+
+This assumption also seems to be supported by the fact that referenced_image_ids, which was introduced as a replacement, cannot be shared between users.
+
+DALLE3 is very good, but there is currently little way to bring out its potential.
+
+SEED value is not available.
+
+Prompts are checked double or triple, and policy application is not reproducible and the same prompt is handled differently each time.
+
+Specifying referenced_image_ids is also difficult and ChatGPT easily ignores it. In the API… it’s probably not provided yet.
+
+openAI has very defensive policy enforcement in place, and we’re likely to see a huge increase in users becoming impatient with it.
+
+DALLE3 is excellent, but that’s only because it comes with the proviso that it’s for now.
+
+I’m not just talking about the DALLE-3 API, but also the WEB client.
+
+Terminology:
+
+“the old system”: Just a few days ago, I was able to set seeds via ChatGPT web client. I called it “the old system”.
+
+“the new system”: The current system where we can no longer set seeds.
+
+More details see After upgrade seeds doesn't work, "generation ID" is introduced?
+
+Use case 1: Art Sharing
+
+Imagine, in an art-sharing community (e.g. DALLE3 Gallery for 2023: Share Your Creations), if I like someone’s image (or image style), or if someone wants to share their creativity, what should they do?
+
+In the old system, you just share the seed and the exact prompt; in the new system, you must share the whole session link. However, sharing the session link has its own problems, such as exposing unrelated conversation or any images that you don’t want to share.
+
+Use case 2: Image management
+
+Usually, in order to filter out nice images, we need to continuously modify the prompt or repeatedly click the Regenerate button. That process will lead to a session with very complex branches.
+
+In the old system, once we choose a nice image, we just need to record the seed and prompt (or open a new session and recreate the image there), then delete that complex branches session.
+
+In the new system, we can’t delete sessions (this would lose everything, i.e. gen_id), but those sessions are very complex and hard to manage. Too many unnecessary images within those sessions.
+
+Use case 3: Collaborative development
+
+If someone wants me to fine-tune a certain image, how can they give me that image? ChatGPT with DALL-E 3 does not support image uploading.
+
+In the old system, they just send me the exact prompt, size and seed. P.s. I know that ChatGPT can share session link, but you know it has its own problems (see above).
+
+Use case 4: Reproducibility and replicability in science
+
+Imagine, in a community for discussing prompt technology (like Discord), person A wants to guide person B on “how to set up a camera”.
+
+In the old system, person B could replicate the same result just by using the same seed as person A. However, in the new system, because of the different seeds, they are essentially discussing two completely different result. This is clearly not a good thing.
+
+More usecases
+
+It seems that this sentence has a significant effect in you prompt.
+
+The image is infused with a sense of nostalgia, captured through a grainy film quality, warm sepia tones, and a gentle soft focus, evocative of vintage photography.
+
+However, in many situation, we cannot determine a very detailed style initially.
+
+For example, on my end, if I replace the last sentence with
+
+This image uses a Japanese anime style.
+
+, then generates it 2 times.
+
+The results:
+
+Seed: 1509919237
+
+Seed: 3168608073
+
+Obviously these two images are not the same style.
+
+Now the key question comes:
+
+I like the style of the 2nd image and I hope to iterate that image using the same style, how shoud I do? How do I extract the detail description from the 2nd image (not just “a Japanese anime style”) ?
+
+In “the old system”, I just fix the seed ,i.e. using seed 3168608073 in the next image.
+
+In “the new system”, AFAIK there is no way to do (except using gen_id and referenced_image_ids, but that’s another topic).
+
+P.S. Note that using gen_id and referenced_image_ids isn’t helpful for the use cases I’ve mentioned.
+
+This is why seed is useful.
+
+I suddenly realized that starting from today, I can’t get ChatGPT to send prompts accurately.
+
+Take the 2 images above as an example:
+
+The instruction of the 1st image:
+
+Send this JSON data to the image generator, do not modify anything. If you have to modify the JSON data, please let me know and tell me why in the reply. Then stop generating the image. Before generating an image, show me the exact JSON data you are going to put to the image generator. After generating an image, show me the JSON data that the image generator returns to you. ``` { "size": "1792x1024", "n": 1, "prompt": "An African American man and woman in their twenties are savoring a sunny summer day in Central Park, New York, in the year 1985. The man is wearing solid red athletic shorts with a smooth texture and a comfortable fit, complementing his neatly kept afro hairstyle. The woman, sporting a cheerful smile, is dressed in high-waisted denim shorts that are frayed at the hem, adding a touch of casual, lived-in charm. Her bikini top is made of a soft, velvety terracotta material with a subtle sheen, fastened with a delicate tie at the back, which pairs nicely with her full, rounded afro. The image uses a Japanese anime style." } ```
+
+ChatGPT will modify the prompt to
+
+An African American man and woman in their twenties are enjoying a sunny summer day in Central Park, New York, in the year 1985. The man is wearing solid red athletic shorts and has a neatly kept afro hairstyle. The woman has a cheerful smile, high-waisted denim shorts with a frayed hem, and a terracotta bikini top with a subtle sheen and a tie at the back, complementing her full afro. The image is in a Japanese anime style.
+
+The instruction of the 2nd image (exactly the same as the 1st, but with different session):
+
+Send this JSON data to the image generator, do not modify anything. If you have to modify the JSON data, please let me know and tell me why in the reply. Then stop generating the image. Before generating an image, show me the exact JSON data you are going to put to the image generator. After generating an image, show me the JSON data that the image generator returns to you. ``` { "size": "1792x1024", "n": 1, "prompt": "An African American man and woman in their twenties are savoring a sunny summer day in Central Park, New York, in the year 1985. The man is wearing solid red athletic shorts with a smooth texture and a comfortable fit, complementing his neatly kept afro hairstyle. The woman, sporting a cheerful smile, is dressed in high-waisted denim shorts that are frayed at the hem, adding a touch of casual, lived-in charm. Her bikini top is made of a soft, velvety terracotta material with a subtle sheen, fastened with a delicate tie at the back, which pairs nicely with her full, rounded afro. The image uses a Japanese anime style." } ```
+
+ChatGPT will modify the prompt to
+
+An African American man and woman in their twenties are savoring a sunny summer day in Central Park, New York, in the year 1985. The man is wearing solid red athletic shorts with a smooth texture and a comfortable fit, complementing his neatly kept afro hairstyle. The woman, sporting a cheerful smile, is dressed in high-waisted denim shorts that are frayed at the hem, adding a touch of casual, lived-in charm. Her bikini top is made of a soft, velvety terracotta material with a subtle sheen, fastened with a delicate tie at the back, which pairs nicely with her full, rounded afro. The image uses a Japanese anime style.
+
+It seems I can no longer precisely control the prompt. It’s a total mess .
+
+P.S. Also, ChatGPT doesn’t answer the sentence in my instruction, i.e. “If you have to modify the JSON data, please let me know and tell me why in the reply.”.
+
+Hi, seeds and gen_ids are extremely important elements for maintaining consistency of images in sets and making the variation more controllable.
+
+TLDR: extremely better control over generation process and results instead of random gachapon.
+
+Example cases:
+
+1. Control over consistency in a set of images
+
+I use the seeds to make sets of stickers or other visual assets with strong consistency, because in this case they are explicitly created from the same core. Keeping the same prompt for different seeds produces more random results, which may be similar in the nature of prompt, yet strongly different in visual representation, which ruins the idea of “set”.
+
+2. Variations of the same image, controlled directly and explicitly
+
+For example, after over 30 random generations for the same prompt, but on random seeds, I receive the perfect image I would like to see, and now I need to slightly modify it.
+
+Not just via prompt, as it inevitably ruins at least some other parts of this perfect image, but also with seed, which gets the picture output more stable.
+
+E.g.: I liked the image of a tiefling holding a frozen star in her hands, however, I would like to change some details on the background or amulets on her neck/hands. Usual prompt modification or instruction for GPT/DALLE to reference this image and make only slight changes results in rather serious image redesign with loss of some mandatory features, which made the image perfect.
+
+3. Control over references and consistent reminders for GPT/DALLE
+
+As I may want to grab the good generation of some gothic window concept from my other chat with DALLE and mix it with Japanese temple in a new chat. Seeds + exact prompts, and gen_ids also make that possible.
+
+4. Token influence estimation
+
+I want to know, which tokens for my generations are stronger/weaker and why. For example, some styles are dominating over the other, even if those weaker are described in more details. Or I might want to create a different aesthetics over the same image, such as watercolor art, chinese ink art, gravure etc.

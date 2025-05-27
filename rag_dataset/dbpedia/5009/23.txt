@@ -1,0 +1,115 @@
+Qt (Wikipedia) is a popular cross-platform application framework that is used to develop desktop applications (e.g., Windows, Mac, Linux), embedded software (e.g. automobile and machine industry), and mobile applications (e.g., Sailfish). Qt has two frameworks. The traditional framework uses the widget-based API. The new framework is called Qt Quick, and it uses declarative language, QML. Both technologies use Qt Linquist files, .ts, to store localized strings. Use Soluling localization tool or service to create localized .ts files.
+
+Process
+
+Plurals
+
+Samples
+
+Configuring localization
+
+Qt's online documentation contains several useful topics. Read them first.
+
+Internationalization with Qt
+
+Qt Quick Internationalization Guide
+
+If you want to implement a runtime language switch, read this.
+
+How to create a multi language application
+
+Process
+
+Create a new Qt Widgets application that uses QDialog as a base class. Name the project Tutorial.
+
+Complete New Project wizard. Then add two labels on the dialog. Set the first text to "Hello world" and the second text to "dummy." The first label is static, and the value is defined on design time. However, the second one is dynamic, and we will set the value on run time. This is why we set the value to "dummy." You can also set the value to empty, but having a value makes it easier to see in the designer.
+
+Because we don't want to extract the value of dummy, we need to turn the translatable property to false. Select the second label, expand text property, and uncheck translatable.
+
+This will prevent "dummy" to appear in the translation file. Now we can enable creating the .ts file. Add the following line to Tutorial.pro
+
+TRANSLATIONS = strings.ts
+
+This will tell Qt that we want to have all the strings (from .ui and .cpp) of the application stored into dialog.ts file. To scan the source code and to create the ts file, we need to call lupdate.exe from Qt's bin directory.
+
+lupdate Tutorial.pro
+
+This scans the project files and creates dialog.ts. The next step is to create a Soluling project for the project.
+
+Start Soluling
+
+Drag strings.ts or Tutorial.pro on Soluling or click New from File or Files button and select either of the files.
+
+If you selected .ts file the following dialog appears.
+
+This is because the .ts file extension can either mean Qt translation file or TypeScript source code file. Soluling correctly detects it as a Qt translation file. Click OK.
+
+Project Wizard appears showing first the Options sheet. This lets you select the context method you want to use. Click Next.
+
+Select Languages appears. Select the original languages and the target languages and clock Finnish.
+
+The new project gets created. Translate the project and finally build the project by choosing Home | Build All ribbon menu.
+
+Now we have the localized ts files. Let's use them. First add lrelease into CONFIG of Tutorial.pro file.
+
+CONFIG += c++11 lrelease
+
+Then add the following line into Tutorial.pro file
+
+EXTRA_TRANSLATONS strings_fi.ts strings_de.ts strings_ja.ts
+
+You have to add all the .ts files you have. In the above line, we added Finnish, German, and Japanese translation files. These two lines make the build process to compile .ts files to .qm files that are the binary version of .ts files. Qt runtime uses .qm files instead of .ts files.
+
+If you added a .ts file to Soluling instead of a .pro file, when Soluling creates localized .ts file, it by default also compiles them into binary .qm file that you can deploy with your application. Use the Write options sheet to configure how to create the localized .ts files and select if to compile the .qm files. Another way to compile .ts files is to use Qt's lrelease.exe command -ine tool.
+
+lrelease strings_fi.ts
+
+Next modify main.pas to use a .qm file. Your original main.cpp looks like this.
+
+#include "dialog.h" #include <QApplication> int main(int argc, char *argv[]) { QApplication a(argc, argv); Dialog w; w.show(); return a.exec(); }
+
+Change it to
+
+#include "dialog.h" #include <QApplication> #include <QLocale> #include <QTranslator> int main(int argc, char *argv[]) { QApplication a(argc, argv); QTranslator translator; bool ok = translator.load("strings_" + QLocale::system().name()); if (ok) a.installTranslator(&translator); Dialog w; w.show(); return a.exec(); }
+
+The new code creates a translator, loads a .qm file, and installs the translator. Now when you run the application and if there exists a .qm file matching your system locale, Qt will use translations of from the .qm file.
+
+Our current application uses a standalone .qm file. If you want to add the .qm file inside your application as a resource, you can do that. Add embed_translations into CONFIG.
+
+CONFIG += c++11 lrelease embed_translations
+
+Finally, you need to modify main.pas to use resources translations instead of standalone translation files.
+
+bool ok = translator.load(":/i18n/strings_" + QLocale::system().name());
+
+Context
+
+A ts file contains one or more context elements. Each context element contains one or more message elements that each contain one string. The context element has a name that Soluling uses as a context. However, the message element does not contain any specific id or name that could be used as a context. This is why Soluling has to figure out the context using other elements and attributes. Let's see what they are. The following sample shows a message element.
+
+<message> <location filename="mainwindow.ui" line="14"/> <source>Driving Time</source> <comment>This is a comment</comment> <translation type="unfinished"></translation> </message>
+
+The comment element is optional, so it exists if you have specified comments in your source code. There are three elements we could use as a context: source, location, and comment. Each method has its pros and cons.
+
+By default, Soluling uses the source element as a context. This means the original value sets a part of the context. The pro is that the value always exists. The cons are that your ts file might have the same source value more than twice. If the duplicate values are in the same context element, there is a conflict. In that case, Soluling adds a comment value (if it exists) or a running index. If you change the original string value, your context will also change, and you will lose the existing translations. It is recommended to use the original value as a context.
+
+Another method to specify the context is to use the comment value. The pro is that you, as a developer, can control the value, and it does not change even if you change the string value. The cons are that the context element is meant for a string describing the string, not giving a context. Also is two message elements have the same comment value, then they are mapped as one. The source element is used if this method is set and the message element has no comment. Use this method only if you know that comment values contain context data, and every comment in the same context element is unique.
+
+The last method is to use the location element. The pro is that it is automatically provided, and you do not have to perform any extra action to set it. The con is that the value is also very volatile. Any change in your source code will most likely cause a change in location values.
+
+Plurals
+
+Qt has a plural enabled format function: tr. The 3rd parameter of tr is the count parameter that is used to select the right grammatical number. What is missing in Qt's pluralization support is the ability to give a correct grammatical number for the original language. You can only pass one pattern for tr function. However, the localized .ts file will have the correct amount of patterns.
+
+See GitHub or <data-dir>\Samples\Qt\Widget\Plural sample.
+
+Samples
+
+See GitHub and <data-dir>\Samples\Qt contains following Qt samples:
+
+Directory Description Notes Widget\Simple Simple localized Qt application.
+
+Try this first! Widget\Hello Localized Hello World application for Qt Widget\Driving Shows how to localize a Qt application. Widget\Plural Shows how to create grammatically correct plural enabled messages. Widget\Tutorial The above tutorial sample.
+
+Configuring Qt Localization
+
+You can configure how to localize your Qt application by selecting the item in the project tree, right-clicking, and choosing the Options menu. A source dialog appears that lets you edit the options. This source uses the following option sheets.

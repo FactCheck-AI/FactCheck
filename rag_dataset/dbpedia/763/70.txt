@@ -1,0 +1,857 @@
+PLoS One. 2021; 16(3): e0248243.
+
+PMCID: PMC7959345
+
+PMID: 33720988
+
+Modelling the impact of interventions on the progress of the COVID-19 outbreak including age segregation
+
+, Data curation, Formal analysis, Funding acquisition, Investigation, Methodology, Project administration, Resources, Software, Supervision, Validation, Visualization, Writing – original draft, Writing – review & editing,1,* , Data curation, Formal analysis, Investigation, Software, Validation, Visualization, Writing – original draft, Writing – review & editing,1 , Formal analysis, Investigation, Writing – original draft, Writing – review & editing,1 and , Conceptualization, Formal analysis, Funding acquisition, Resources, Writing – review & editing2
+
+Jorge Rodríguez
+
+1 Department of Chemical Engineering, College of Engineering, Khalifa University, Abu Dhabi, United Arab Emirates
+
+Find articles by Jorge Rodríguez
+
+Mauricio Patón
+
+1 Department of Chemical Engineering, College of Engineering, Khalifa University, Abu Dhabi, United Arab Emirates
+
+Find articles by Mauricio Patón
+
+Joao M. Uratani
+
+1 Department of Chemical Engineering, College of Engineering, Khalifa University, Abu Dhabi, United Arab Emirates
+
+Find articles by Joao M. Uratani
+
+Juan M. Acuña
+
+2 Department of Epidemiology and Public Health, College of Medicine, Khalifa University, Abu Dhabi, United Arab Emirates
+
+Find articles by Juan M. Acuña
+
+Martial L. Ndeffo Mbah, Editor
+
+1 Department of Chemical Engineering, College of Engineering, Khalifa University, Abu Dhabi, United Arab Emirates
+
+2 Department of Epidemiology and Public Health, College of Medicine, Khalifa University, Abu Dhabi, United Arab Emirates
+
+Texas A&M University College Station, UNITED STATES
+
+Competing Interests: The authors have declared that no competing interests exist.
+
+Copyright © 2021 Rodríguez et al
+
+This is an open access article distributed under the terms of the Creative Commons Attribution License, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
+
+Associated Data
+
+Supplementary Materials
+
+pone.0248243.s001.pdf (2.8M)
+
+GUID: A1FC4BDF-F39C-443E-B617-4DBE670A698B
+
+GUID: B33E490C-86FC-47B3-BAA5-87EDEB16496D
+
+GUID: 7F3916A2-57EE-44FC-AA95-BD8E2FD81926
+
+GUID: CD72A59C-9B47-4378-88BF-2B0CFD5A819E
+
+Data Availability Statement
+
+The Matlab® source code and Excel file containing all parameter values used as well as a non-age segregated version of the model are available at https://github.com/EnvBioProM/COVID_Model.
+
+Abstract
+
+In this work, a SEIR-type mathematical model of the COVID-19 outbreak was developed that describes individuals in compartments by infection stage and age group. The model assumes a close well-mixed community with no migrations. Infection rates and clinical and epidemiological information govern the transitions between stages of the disease. The impact of specific interventions (including the availability of critical care) on the outbreak time course, the number of cases and the outcome of fatalities were evaluated. Data available from the COVID-19 outbreak from Spain as of mid-May 2020 was used. Key findings in our model simulation results indicate that (i) universal social isolation measures appear effective in reducing total fatalities only if they are strict and the number of daily interpersonal contacts is reduced to very low numbers; (ii) selective isolation of only the elderly (at higher fatality risk) appears almost as effective as universal isolation in reducing total fatalities but at a possible lower economic and social impact; (iii) an increase in the number of critical care capacity directly avoids fatalities; (iv) the use of personal protective equipment (PPE) appears to be effective to dramatically reduce total fatalities when adopted extensively and to a high degree; (v) extensive random testing of the population for more complete infection recognition (accompanied by subsequent self-isolation of infected aware individuals) can dramatically reduce the total fatalities only above a high percentage threshold that may not be practically feasible.
+
+Introduction
+
+COVID-19 is the worst pandemic the world has seen in a century. The devastating consequences of the pandemic, both in number of fatalities as in economic harm, have brought unprecedented attention from nearly all fields. The large number of cases in a short period of time have forced governments to implement interventions to slow the spread of the virus. Such interventions consisted of the isolation of individuals (e.g. via curfews or full lockdowns, the banning of people in public events (e.g. concerts, stadiums), the enforcement to use protective equipment masks in public places, the building of field hospitals and the implementation of mass testing and contact tracing among others.
+
+Epidemic modelling has a long history [1–9], as the prediction of the course and possible outcomes of a pandemic is crucial for society. The field has flourished during the pandemic period, with several mathematical models for the COVID-19 disease published from March 2020 to date. Some of these modelling efforts have evaluated the evolution of the disease spread in several countries such as in Italy [10, 11], France [12], Australia [13], the United Kingdom, the United States [14, 15], Ukraine [16], India [17] or Africa [18]. Other modelling efforts have focused on the earlier dynamics of transmission from initial cases, to the potential of the implementation of interventions to limit the disease spread, such as international travel restrictions [19, 20], contact tracing and isolation of infected individuals at onset [21], the use of masks [22], different scales of social distancing and isolation or the impact on the healthcare system [23].
+
+Other works have focused on the estimation and/or the understanding of fundamental characteristics (i.e. potential model parameters) of the disease, such as the incubation period [24], how the transmission might occur, as well as to assess short-term [25] and long term forecasts [26].
+
+In this work a modified SEIR-type model that evaluates intervention scenarios for the COVID-19 outbreak is presented. The model considers an approach based on the segregation by age groups and known disease stages. The model aims at retaining mechanistic meaning of all variables and parameters while capturing the relevant phenomena at play. The model aims also at contributing to the understanding by broader audiences (researchers, public health authorities, and the general public) of what to expect on the propagation of infectious diseases and how specific interventions may help. The complexity level was intentionally limited to maintain accessibility to non-experts and policy makers to comprehend the model results such that expert advice and decision making can be brought closer together to help guide interventions for immediate and longer-term needs.
+
+Materials and methods
+
+Model description
+
+The model presented is based on balances of individuals, segregated by age group, transitioning between infection stages. All individuals are placed in a common single domain or compartment (e.g. a well-mixed city or town), no geographical clustering nor separation of any type is considered, nor is any form of migration in or out of the community. Large cities with ample use of public transportation are thought to be settings best described by the model.
+
+The model also provides a direct estimation of the effective reproduction number(Rt) [27, 28] under different circumstances of individual characteristics (such as use of personal protection or awareness) as well as under population-based interventions (such as imposed social isolation). The basic reproduction number (R0) provides an estimation of the number of cases expected to be generated by one case in the population when all individuals are considered to be susceptible [28, 29]. Rt however, provides the average number of secondary infections per primary case at a given time [30] and it is used to evaluate the effectiveness of interventions [31]. The ability to estimate the Rt for different times of the outbreak (given the interventions), outbreak settings and interventions is considered to be a valuable characteristic of the model. Rt is predicted to change over time with interventions not related to increased immunity (isolation or use of personal protection equipment (PPE), as opposed to vaccination).
+
+Model constituents
+
+The model solves dynamic variables or states. Every individual belongs, in addition to their age group (which she/he never leaves), to only one of the possible stages of the infection in terms of infectiousness and severity of symptoms, namely: healthy susceptible (H); asymptomatic non-infectious (NI); asymptomatic infectious (AS); symptomatic (S); in need of hospitalisation (SH); in need of critical care (SC); deceased (D) and recovered immune (R).
+
+Definitions of the model state variables are shown in . Each variable is a state vector with the number of individuals in that stage per age group, which is defined per decade from 0–9 to 80+ year olds (9 age groups). Therefore, each state is a vector of dimensions 1x9, and the total number of states is a matrix of dimensions 8x9. Note that vector variables and parameters are represented in bold font and scalar ones in regular font.
+
+Table 1
+
+Definition “Number of individuals…”VariableTotals of all agesHealthy susceptible to infectionNhNhTNon-infectious asymptomaticNniNniTInfectious asymptomaticNasNasTInfectious symptomaticNsNsTRequiring hospitalisationNshNshTRequiring critical careNscNscTDeceasedNdNdTRecovered & immuneNrNrT
+
+shows the population progress through stages as described in the model. An additional schematic representation of the model approach with the population groups considered for the infection stages, rates of infection and transition between groups and showing possible interactions between population groups is shown in S5 Fig in S1 File.
+
+Rates of transition between infection stages
+
+The transitions between stages are governed by the rates of infection and transition shown in . Notation is defined as ri,j, where the individual moves from the compartment j to the compartment i.
+
+Table 2
+
+Definition “Rate of …”VariableUnitsInfection by interaction with infectious asymptomaticri_as# H infected/dayInfection by interaction with infectious symptomaticri_s# H infected/dayTransition from non-infectious to infectious asymptomaticras_ni# NI to AS / dayTransition from asymptomatic to symptomaticrs_as# AS to S / dayTransition from symptomatic to hospitalisedrsh_s# S to SH / dayTransition from hospitalised to criticalrsc_sh# SH to SC / dayTransition from critical to deceasedrd_sc# SC to D / dayRecovery from asymptomatic non-infectiousrr_ni# NI to R / dayRecovery from asymptomatic infectiousrr_as# AS to R / dayRecovery from symptomaticrr_s# S to R / dayRecovery from hospitalisedrr_sh# SH to R / dayRecovery from criticalrr_sc# SC to R / day
+
+The average rates of transition between states are defined such that the latest epidemiological and clinical data can be used to determine and continuously update the parameters as more knowledge of the disease emerges. These parameters include the proportion of individuals that transition to a more severe stage or recover (see ) and the average times reported at each stage before transition or recovery (see ).
+
+Table 3
+
+DefinitionParameterUnitsFraction of NI that will become ASfas_ni#AS/#NIFraction of AS that will become Sfs_as#S/#ASFraction of S that will become SHfsh_s#SH/#SFraction of SH that will become SCfsc_sh#SC/#SHFraction of cared SC that will die into Dfd_sc#D/#SCICFraction of NI that will recover into R1 (1- fas_ni)fr_ni#R/#NIFraction of AS that will recover into R1 (1- fs_as)fr_as#R/#ASFraction of S that will recover into R1 (1- fsh_s)fr_s#R/#SFraction of SH that will recover into R1 (1- fsc_sh)fr_sh#R/#SHFraction of cared SC that will recover into R1 (1- fd_sc)fr_sc#R/#SCIC
+
+Table 4
+
+DefinitionParameterUnitsTime to become infectioustas_nidaysTime to develop symptoms from infectiousts_asdaysTime to require hospitalisation from symptoms onsettsh_sdaysTime to require critical care from hospitalisationtsc_shdaysTime to death from criticaltd_scdaysTime to death from critical with no care availabletd_ncdaysTime to recover from asymptomatic non-infectioustr_nidaysTime to recover from asymptomatic infectioustr_asdaysTime to recover from (non-severe) symptomstr_sdaysTime to recover from hospitalisationtr_shdaysTime to recover from criticaltr_scdays
+
+The rates of transition between stages healthy to critical (in number of individuals per day) are described in Eqs 1.A–1.E. All rates are vectors per age group of dimensions (1x9). Note that point operators between vectors indicate an operation element-by-element.
+
+rni_h=ri_as+ri_s
+
+(1.A)
+
+ras_ni=(fas_ni./tas_ni).*Nni
+
+(1.B)
+
+rs_as=(fs_as./ts_as).*Nas
+
+(1.C)
+
+rsh_s=(fsh_s./tsh_s).*Ns
+
+(1.D)
+
+rsc_sh=(fsc_sh./tsc_sh).*Nsh
+
+(1.E)
+
+The rates of individuals recovering from the different infected stages (in number of individuals per day) are described in Eqs 2.A–2.E. (all rates in vectors per age group).
+
+rr_ni=(fr_ni./tr_ni).*Nni
+
+(2.A)
+
+rr_as=(fr_as./tr_as).*Nas
+
+(2.B)
+
+rr_s=(fr_s./tr_s).*Ns
+
+(2.C)
+
+rr_sh=(fr_sh./tr_sh).*Nsh
+
+(2.D)
+
+rr_sc=(fr_sc./tr_sc).*Nsc_ic
+
+(2.E)
+
+The rate of transition from critical to deceased is the sum of that of those critical receiving intensive care (rd_scic) plus that of those critical without available care (rd_scnc) as per Eqs 3.A–3.C. All critical individuals not receiving intensive care (Nsc_ncc) are assumed to become fatalities after a time (td_nc). The allocation of critical care is described below.
+
+rd_sc=rd_scic+rd_scnc
+
+(3.A)
+
+whererd_scic=(fd_sc./td_sc).*Nsc_ic
+
+(3.B)
+
+rd_scnc=(1./td_nc).*Nsc_ncc
+
+(3.C)
+
+provides a representation of the transition between stages, the proportions of individuals recovering, or worsening are as per .
+
+Rates of infection
+
+The infection of healthy susceptible individuals (H) is modelled as occurring only via their interaction with infectious either asymptomatic (AS) or symptomatic (S) individuals. Hospitalised (SH) and critical (SC) individuals are assumed not available for interactions neither are those deceased (D).
+
+Two rates of infection of healthy susceptible individuals (in number of infections per day) are defined, one from each one of the two possible infecting groups (AS and S). The rates of infection (in vectors per age group) result from the product of (i) the fraction of interactions occurring with AS (or S) individuals among the total interactions (fias or fis) (Eqs 8.E and 8.F) times (ii) the likelihood of contagion in an interaction with AS (or S) (pi_as or pi_s, Eqs 8.A and 8.B) (per age group), (iii) the average number of daily interpersonal contacts that H individuals have (nih) and (iv) the number of H individuals themselves (per age group) (see and Eqs 4.A and 4.B).
+
+ri_as=Nh.*nih*fias.*pi_as;
+
+(4.A)
+
+ri_s=Nh.*nih*fis.*pi_s;
+
+(4.B)
+
+Stage transition equations
+
+The dynamic variation on the number of individuals in each stage over time and per age group is governed by the population balance equations described in Eqs 5.A–5.H. (all in vectors by age group).
+
+dNh/dt=–rni_h
+
+(5.A)
+
+dNni/dt=rni_h.–ras_ni.–rr_ni
+
+(5.B)
+
+dNas/dt=ras_h.–rs_as.–rr_as
+
+(5.C)
+
+dNs/dt=rs_as.–rsh_s.–rr_s
+
+(5.D)
+
+dNsh/dt=rsh_s.–rsc_sh.–rr_sh
+
+(5.E)
+
+dNsc/dt=rsc_sh.–rd_sc.–rr_sc
+
+(5.F)
+
+dNd/dt=rd_sc
+
+(5.G)
+
+dNr/dt=rr_as.+rr_s.+rr_sh.+rr_sc
+
+(5.H)
+
+The state transitions as governed by these rates are represented in a matrix form in S5a Fig in S1 File.
+
+Calculation of the effective reproduction number (Rt)
+
+The reproduction number refers to the potential infection of susceptible individuals from infected individuals [29]. Since the model produces, for each parameter set used, a set of values for its outputs over at any given time, an instantaneous estimation of the reproduction number (Rt) is also obtained. Several parameters and variables influence the Rt including the duration of infectious stages; the likelihoods of infection per social contact as well as the percentages of individuals transitioning to more severe stages.
+
+The effective reproduction number (Rt) during the outbreak is computed over time according to Eq 6 from the current values of the model state variables. Under this approach, infectious individuals can only infect others while they are in asymptomatic (AS) and symptomatic (S) stages. Although it has been speculated that post-symptomatic recovered individuals may be infectious for some period of time, this has not been considered in the model at this time due to lack of data. Hospitalised and critical individuals are assumed to be well isolated and also not able to infect others. The provided dynamic output of the reproduction number Rt can be used to guide and interpret the impact of interventions in terms of Rt.
+
+Modelled infected individuals can take only three possible infectious paths, namely: (i) AS → R; (ii) AS → S → R and (iii) AS → S → SH. These paths are made of combinations of four possible infectious stage intervals in which infected individuals spend time and infect at their corresponding rate (see ).
+
+Table 5
+
+Infectious intervalFraction of infected passing the interval (indinterv/indinf)Interval duration (d)Total infections per stage interval per individual infected (infinterv/indinf)AS → Rfr_astr_as(ri_asT/ NasT)* tr_as.* fr_asAS → S(1 –fr_as)ts_as(ri_asT/ NasT)* ts_as.* (1 –fr_as)S → R(1 –fr_as)* fr_str_s(ri_sT / NsT) * tr_s.* (1 –fr_as).* fr_sS → SH(1 –fr_as)* (1 –fr_s)tsh_s(ri_sT / NsT) * tsh_s.* (1 –fr_as).* (1 –fr_s)
+
+The dynamic computation of Rt consists of adding the total infection contributions of every stage interval as shown in Eq 6.
+
+Rt=Σ[(ri_asT/NasT)*(tr_as.*fr_as+ts_as.*(1–fr_as))+(ri_sT/NsT)*(tr_s.*(1–fr_as).*fr_s+tsh_s.*(1–fr_as).*(1–fr_s))]
+
+(6)
+
+in which, the age group weighted average rates of infection by AS and S are given as per Eqs 7.A and 7.B.
+
+ri_asT=Σ(ri_as.*Nas)/NasT)[infPS/indPS⋅d]
+
+(7.A)
+
+ri_sT=Σ(ri_s.*Ns)/NsT)[infS/indS∙d]
+
+(7.B)
+
+Model limitations
+
+The model shares many of the fundamental characteristics of compartment SEIR-type models and is based on dynamic balances of individuals in compartments classified by their stage of infection and age groups only. No other differentiation within those groups is captured by the model. This characteristic allows for the model application only to single, densely populated clusters. The model has a low complexity and requires a small number of parameters that are also mechanistic and meaningful. Most of these parameters can be directly estimated from epidemiological and clinical data and are not recommended for calibration against data. Analogous to all SEIR-type models this model carries limitations since all variables and parameters refer to representative averages for each compartment of stage and age group. This may limit the model representation of the non-linear interactions that occur in reality. Phenomena like so-called super spread events or any location specific phenomena are not reproduced by these types of models. Any quantitative interpretation of results for prediction purposes should therefore be always accompanied by a critical discussion against these limitations.
+
+Modelling interventions
+
+The model presented above was used to evaluate different possible interventions to slow the spread of the COVID-19 outbreak. Four main interventions that have been or may be applied were evaluated namely (i) the degree of social isolation of the individuals in the population; (ii) the level of personal protection and awareness that individuals apply to protect themselves and others against contagion during interactions; (iii) the implementation of mass testing and (iv) the intensive care capacity available. These interventions can be stratified by age groups. The key parameters that define the interventions as modelled are described in .
+
+Table 6
+
+DefinitionParameterUnitsAverage daily individual contacts by Hnih#interactions / (H individual∙day)Personal protection and awareness by H1lpah∅Personal protection and awareness by PS1lpaas∅Personal protection and awareness by S1lpas∅Likelihood of infection by interaction with PS2pi_asinfections / interactions with ASLikelihood of infection by interaction with S2pi_sinfections / interactions with SPercentage of tested individuals from PS1ptas#random (NI+AS) tested/#(H+NI+AS)Percentage of tested individuals from S1pts#random S tested/#STest sensitivity on AStsns_as#AS detected / #AS testedTest sensitivity on Stsns_s#S detected / #S testedReduction of interactions by unaware S1rfis∅
+
+Social isolation
+
+The degree of social isolation is described through its impact on the parameter (nih) (vector per age group) corresponding to the representative average number of interpersonal contacts that healthy susceptible individuals have with others per day. Different nih values can be applied to different age groups to describe age selective isolation strategies such as e.g. isolation of the elderly and/or the young alone.
+
+Level of protection and awareness
+
+The level of protection and awareness describes the use of personal and protective equipment (e.g. masks). The level of protection impacts the likelihood of infection (see Eq 4) and is described through the parameters (lpah) for healthy and (lpaas and lpas) for infectious AS and S individuals (both in vectors per age group). Values of the lpa parameters can vary between 0 and 1, with 1 corresponding to the use of complete protective measures and zero to no use of any protection equipment. Analogously to the nih parameter, different values can be assigned per age group e.g. elders having a higher lpah value due to being more prone to wearing masks compared to teenagers.
+
+The likelihoods of infection per interaction are calculated as per Eqs 8.A and 8.B.
+
+pi_as=(1–lpah).*(1–lpaasav);
+
+(8.A)
+
+pi_s=(1–lpah).*(1–lpasav);
+
+(8.B)
+
+where lpah reflects a level of protection and awareness related to interventions and defined below; lpaasav and lpasav are scalars corresponding to the weighted averages over all age groups of the pool of AS and S with which H individuals can interact (Eqs 8.C and 8.D).
+
+lpaasav=Σ(Nas.*lpaas)/NasT
+
+(8.C)
+
+lpasav=Σ(Ns.*lpas)/NsT
+
+(8.D)
+
+where NasT and NsT are the total numbers of AS and S individuals of all ages respectively. The Σ symbol indicates summation across all age groups.
+
+Awareness of infection by mass testing
+
+The awareness of infection after a positive test is assumed to lead to a full quarantine and removes those individuals from regular interaction with others. This awareness of infection is described through a reduction factor of interactions (rfi). Symptomatic individuals are already assumed to have a self-imposed quarantine (rfis) even if unaware of a positive test.
+
+The fractions of individuals (without and with symptoms) aware of infection is therefore equal to the product of the fraction of total individuals randomly tested from the entire population (ptas for AS) and from the entire pool of individuals showing symptoms (pts for S) times the corresponding test sensitivity (tsns_as and tsns_s respectively). Test sensitivity might differ between each of the two groups (symptomatic and asymptomatic). In asymptomatic and mild disease individuals tested, a sensitivity of the tests of 80% was assumed.
+
+The fractions of infectious AS and S individuals that remain in interaction with others (fias and fis) are therefore calculated as per Eqs 8.E and 8.F. Hospitalised, critical and deceased are considered excluded from the pool of interacting individuals.
+
+fias=Σ[(1–ptas*tsns_as)*Nas]/Σ[Nh.+Nni.+(1–ptas*tsns_as)*Nas.+(1–pts*tsns_s)*rfis.*Ns).+Nr]
+
+(8.E)
+
+fis=Σ[(1–pts*tsns_s)*rfis.*Ns)/Σ[Nh.+Nni.+(1–ptas*tsns_as)*Nas.+(1–pts*tsns_s)*rfis.*Ns).+Nr]
+
+(8.F)
+
+where pts is the proportion of symptomatic individuals tested (randomly) and ptas is the proportion of randomly tested non-symptomatic individuals of all types. The parameters tsns_s and tsns_as refer to the sensitivity of the tests for both groups, respectively. shows the definitions and units of all the parameters used in the modelling of interventions.
+
+Critical care capacity
+
+The impact of available critical care capacity is modelled by a specific function to allocate critically ill individuals as per the available ICU. The function allocates critically ill individuals in two possible groups, namely those admitted to ICU (Nsc_ic) and those not admitted to ICU due to lack of capacity or for other medical reasons (Nsc_ncc). At each simulation time point the allocation function is computed for the total Nsc per age group.
+
+The function allocates ICU resources with priority to age groups with higher ICU survival rate (fr_sc) until the maximum number of intensive care units is reached leaving any remaining individuals without care, in this way Nsc_ic and Nsc_ncc are computed.
+
+As the COVID-19 outbreak has progressed, data indicate that not all patients in critical condition have been admitted into intensive care units (ICU). Data show that many individuals with very poor prognosis, particularly those of oldest age may have never been referred to ICU due to capacity limitations or other medical humanitarian reasons. This is based on data from Spain as of May 2020 [32] showing that for individuals over 70, only a fraction of the reported fatalities previously hospitalised was ever admitted. In order to maintain consistency with the reported data as of May 2020 [32] the parameters of fd_sc and fsc_sh have been estimated such that the product of fd_sc * fsc_sh (fatality ratios over hospitalised individuals) is consistent with reported numbers for all ages irrespective of reported ICU admissions.
+
+Results and discussion
+
+Impact of interventions on a COVID-19 outbreak case study
+
+A case study based on a scenario of propagation of the COVID-19 pandemic using data available from Spain as of May 2020 [32, 33] is presented below. The results obtained are intended to be interpreted qualitatively and to be contextualized to the specific setting characteristics. They serve also as a demonstration of the model potential if applied with higher confidence parameter values. Several selected scenarios were simulated aimed at illustrating the impact of different interventions.
+
+Default reference epidemiological and clinical parameter values were extracted from different information sources on the COVID-19 outbreak as available in May 2020 [24, 32, 34, 35]. Details of values and sources are provided in S1 and S2 Tables in S1 File respectively, with indications of the level of confidence. A population with an age distribution as that of the region of Madrid (Spain) in 2019 was used [36] for the simulations.
+
+Default reference values for interventions-related parameters (number of interactions per age group, level of protection awareness, and the isolation due to testing) were selected in order to describe a situation prior to the outbreak and without any specific intervention (see values and rationale in S3 Table in S1 File). The value for available intensive care beds per million people (capICpM) of 261 has been used by default in all case studies. The dynamic simulation results of the default outbreak scenario under no intervention is shown in S4 Fig in S1 File.
+
+All scenarios are simulated for 365 days and evaluated in terms of (i) final total number of fatalities at outbreak termination and (ii) final number of fatalities per age group. In addition, the scenarios are presented also in terms of dynamic profiles over time for (iii) number of active cases; (iv) reproduction number; (iv) number of critical cases; (v) number of fatalities.
+
+Intervention #1. Social isolation
+
+Under this scenario, the impact of the degree of social isolation (nih) was evaluated by age brackets. Four cases are shown, namely (i) universal social isolation, (ii) isolation for elders only (for individuals over 60 years old), (iii) isolation for youngsters (below 20 years old), and (iv) isolation for both elders and youngsters (only people 20 years or older and younger than 60 years old were not isolated).
+
+The comparison between the impacts of the four types of isolations is shown in . For the complete results of the four isolation intervention cases, please refer to the S1 File, Section VI.
+
+It appears that social isolation starts to be effective in terms of significantly reducing total deaths after the number of daily contacts is placed below a threshold number (approximately two to three daily contacts in this example). Above this number of contacts per day, it does not appear to significantly modify the total final fatalities. This represents a decrease in number of contacts from 70–80%, which falls in line with the observations reported in literature that social distancing required over 80% to be effective [13].
+
+Full details of the results shown in can be seen in (see S6 Fig in S1 File). The model is capable of capturing the effect of the number of interactions partly due to its description of the saturation of the healthcare capacity. S6a Fig in S1 File (middle left) illustrates the “flatten the curve” concept, now globally popular. In line with other publications [10, 11], if interactions are not decreased, the number of cases grows rapidly and explosively. S6a Fig in S1 File (middle right) shows the estimate of Rt over time. This illustrates how the level of social isolation can define the infectability and the number of cases each infected individual will infect (Rt) showing how factors such as interventions can impact Rt. The number of critical cases increases throughout time as the social interaction increases S6a Fig in S1 File (bottom left).
+
+As shown in , the selective social isolation of the elderly has a potentially very significant impact on final total fatalities at an almost comparable level than for universal isolation. This is consequence of the much higher mortality by the disease in the elder than in the younger (S1 Table in S1 File, Section I) [32]. This is a result with potentially significant consequences as it indicates that a sustained isolation selective only to the elderly and not to the other age groups could be applied for economic and social reasons at a small cost in number of increased total fatalities. The isolation of the young individuals (< 20 years old) produces no effect in the overall number of total fatalities. The detailed results of imposed social isolation selective to age groups is shown in S6b-S6d Fig in S1 File.
+
+Many of the early interventions during the COVID-19 outbreak started by isolating the elderly and the young (no schools, no colleges, or universities for students), decreasing the number of interactions of the two subpopulations substantially. The isolation of these population groups together results in similar effects to that of the isolation of the elderly alone with no significant added value in isolating the young respect only the elderly as shown in .
+
+Intervention #2. Level of protection and awareness
+
+The impact of the level of self-protection and awareness was evaluated in this scenario. The parameter that describes this intervention is the level of personal protection and awareness (lpa) of the healthy and infectious population groups (lpah, lpaas and lpas) (see S3 Table in S1 File). Increases in these parameters decrease the likelihood of infection per interaction (see Eqs 8.A and 8.B) and subsequently the rates of infection (Eqs 4.A and 4.B). presents the main impacts of this intervention on the total final fatalities and on the maximum number of critical cases. For the full descriptive results, including the predictions of the effective reproduction number Rt, please refer to S7 Fig in S1 File, Section VII.
+
+shows that high levels of protection and awareness appear as having a potentially major impact, leading to a very significant reduction on total outbreak fatalities at the highest levels of protection. This is in line of the substantial impact of the masks previously reported in other models [22, 37], however in their case they point that even low protection of masks might deem important decreases in number of cases. The height of the peak of critical cases decreases the higher the level of protection is, (right). In addition, if the peak does not exceed the critical care capacity (0.026% of the population), the total number of fatalities reaches much smaller values. Although moderate values for the levels of protection and awareness of 60% or lower decrease the speed of the outbreak they eventually yield the similar number of fatalities due to the exceeded ICU capacity.
+
+Intervention #3. Awareness of infection by testing
+
+The impact of widespread extensive random testing was evaluated in this scenario. shows the comparison of the impact of testing only symptomatic individuals, testing randomly only the non-symptomatic population (therefore the same fraction of asymptomatic) and testing everyone both with and without symptoms.
+
+Only when both symptomatic and asymptomatic groups are extensively tested to levels allowing for a detection of near 90% of total infections, a meaningful impact is predicted. The current test sensitivities (around 80%) imply that even at 100% of population tested those high levels of detections required will be unachievable and a large number of infections will remain undetected. Therefore, the intervention appears to be ineffective if only applied by itself (for the complete simulation results of the impact of this intervention, please refer to S8a-S8c Fig in S1 File, Section VIII). The number of fatalities (and also number of cases) could be decreased substantially only when mass testing is combined with other interventions (social isolation, increased level of protection and/or increase in ICU beds) [11]. In addition, shows clearly that testing only symptomatic individuals leads to barely no impact at all. The results show that extensive testing as a sole strategy (not combined with other interventions such as social isolation, higher lpa and increase in ICU beds) appears as unfeasible to decrease the number of fatalities due to the high percentage of detections, sustained over time, required.
+
+Intervention #4. Critical care capacity
+
+The impact of the availability of intensive care beds was evaluated in this scenario. The parameter that describes this intervention is the number of available intensive care beds per million population. illustrates the model predictions for this scenario, in terms of total final fatalities and numbers of critical cases over time. Note that once the ICU beds capacity is exceeded the critically ill patients become fatalities in one day.
+
+From (for more complete details, refer to S9 Fig in S1 File, Section IX), the large impact that the increase in critical care resources can have in decreasing total fatalities becomes evident. The higher the availability of critical beds, the lower number of fatalities. These appears to be in accordance with the interventions in several countries for building field hospitals [38]. The trend applies until there is no shortage of IC beds and all remaining fatalities are only the unavoidable ones. This intervention avoids those deaths that are preventable by the availability of critical care support for those that need it.
+
+Conclusions
+
+The impact of specific interventions on the outbreak time course, number of cases and outcome of fatalities were evaluated. Data available from Spain for the COVID-19 outbreak as of May 2020 was used. Our results on the impact and mechanisms of the various interventions indicate that:
+
+Universal social isolation measures may be effective in reducing total fatalities only if they are strict and the average number of daily social interactions is reduced below a low threshold number.
+
+Selective isolation of only the age groups most vulnerable to the disease (i.e. older than 60) appears almost as effective as the universal isolation in reducing total fatalities but at a possible much lower economic damage. The compared impacts of different social isolation interventions on the final total number of fatalities ( , left) shows that the isolation of only the elderly can achieve equivalent impact to that of all.
+
+An increase in the number of critical care beds could save a significant number of lives. Using our current parameters values, an estimate of 8 fatalities could be avoided per extra available critical care bed unit.
+
+The use of protective equipment (PPE) appears capable of reducing very significantly the total fatalities if implemented extensively and to a high degree.
+
+Extensive random testing of the population leading to isolation of the infected individuals, appears to be an ineffective intervention (if applied only by itself) due to the required (unreachable with existing test sensitivities) high percentage of infection detections and the logistic difficulty for its maintenance over time.
+
+Any quantitative interpretation of the above results must be accompanied with a critical discussion in terms of the model limitations and its frame of application. The sensitivity analyses provided can be used to help such analysis.
+
+Supporting information
+
+S1 File
+
+The Matlab® source code and Excel file containing all parameter values used as well as a non-age segregated version of the model are available at https://github.com/EnvBioProM/COVID_Model.
+
+(PDF)
+
+Click here for additional data file.(2.8M, pdf)
+
+Acknowledgments
+
+All authors wish to thank Khalifa University and the Government of Abu Dhabi for the support.
+
+Funding Statement
+
+This study was supported by Khalifa University in the form of a grant awarded to JR (8474000317 CRPA-2020-SEHA).
+
+Data Availability
+
+The Matlab® source code and Excel file containing all parameter values used as well as a non-age segregated version of the model are available at https://github.com/EnvBioProM/COVID_Model.
+
+References
+
+1. Chowell G, Sattenspiel L, Bansal S, Viboud C. Mathematical models to characterize early epidemic growth: A review. Physics of Life Reviews. 2016;18: 66–97. 10.1016/j.plrev.2016.07.005 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+2. Grassly NC, Fraser C. Mathematical models of infectious disease transmission. Nat Rev Microbiol. 2008;6: 477–487. 10.1038/nrmicro1845 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+3. Hethcote HW. The Mathematics of Infectious Diseases. SIAM Rev. 2000;42: 599–653. 10.1137/S0036144500371907 [CrossRef] [Google Scholar]
+
+4. Keeling MJ, Eames KTD. Networks and epidemic models. Journal of The Royal Society Interface. 2005;2: 295–307. 10.1098/rsif.2005.0051 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+5. Kermack WO, McKendrick AG. A contribution to the mathematical theory of epidemics. Proceedings of the Royal Society of London Series A, Containing Papers of a Mathematical and Physical Character. 1927;115: 700–721. 10.1098/rspa.1927.0118 [CrossRef] [Google Scholar]
+
+6. May RM, Anderson RM. Population biology of infectious diseases: Part II. Nature. 1979;280: 455–461. 10.1038/280455a0 [PubMed] [CrossRef] [Google Scholar]
+
+7. Pastor-Satorras R, Castellano C, Van Mieghem P, Vespignani A. Epidemic processes in complex networks. Rev Mod Phys. 2015;87: 925–979. 10.1103/RevModPhys.87.925 [CrossRef] [Google Scholar]
+
+8. Riley S. Large-Scale Spatial-Transmission Models of Infectious Disease. Science. 2007;316: 1298–1301. 10.1126/science.1134695 [PubMed] [CrossRef] [Google Scholar]
+
+9. Berezovskaya F, Karev G, Song B, Castillo-Chavez C. A Simple Epidemic Model with Surprising Dynamics. Mathematical Biosciences & Engineering. 2005;2: 133. 10.3934/mbe.2005.2.133 [PubMed] [CrossRef] [Google Scholar]
+
+10. Gatto M, Bertuzzo E, Mari L, Miccoli S, Carraro L, Casagrandi R, et al. Spread and dynamics of the COVID-19 epidemic in Italy: Effects of emergency containment measures. Proc Natl Acad Sci USA. 2020; 202004978. 10.1073/pnas.2004978117 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+11. Giordano G, Blanchini F, Bruno R, Colaneri P, Filippo AD, Matteo AD, et al. Modelling the COVID-19 epidemic and implementation of population-wide interventions in Italy. Nat Med. 2020; 1–6. 10.1038/s41591-019-0740-8 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+12. Salje H, Kiem CT, Lefrancq N, Courtejoie N, Bosetti P, Paireau J, et al. Estimating the burden of SARS-CoV-2 in France. Science. 2020;369: 208–211. 10.1126/science.abc3517 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+13. Chang SL, Harding N, Zachreson C, Cliff OM, Prokopenko M. Modelling transmission and control of the COVID-19 pandemic in Australia. Nature Communications. 2020;11: 5710. 10.1038/s41467-020-19393-6 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+14. Wang L, Wang G, Gao L, Li X, Yu S, Kim M, et al. Spatiotemporal Dynamics, Nowcasting and Forecasting of COVID-19 in the United States. arXiv:200414103 [stat]. 2020 [cited 25 Nov 2020]. Available: http://arxiv.org/abs/2004.14103
+
+15. Zou D, Wang L, Xu P, Chen J, Zhang W, Gu Q. Epidemic Model Guided Machine Learning for COVID-19 Forecasts in the United States. medRxiv. 2020; 2020.05.24.20111989. 10.1101/2020.05.24.20111989 [CrossRef] [Google Scholar]
+
+16. Kyrychko YN, Blyuss KB, Brovchenko I. Mathematical modelling of the dynamics and containment of COVID-19 in Ukraine. Scientific Reports. 2020;10: 19662. 10.1038/s41598-020-76710-1 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+17. Sarkar K, Khajanchi S, Nieto JJ. Modeling and forecasting the COVID-19 pandemic in India. Chaos, Solitons & Fractals. 2020;139: 110049. 10.1016/j.chaos.2020.110049 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+18. van Zandvoort K, Jarvis CI, Pearson CAB, Davies NG, Nightingale ES, Munday JD, et al. Response strategies for COVID-19 epidemics in African settings: a mathematical modelling study. BMC Medicine. 2020;18: 324. 10.1186/s12916-020-01789-2 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+19. Chinazzi M, Davis JT, Ajelli M, Gioannini C, Litvinova M, Merler S, et al. The effect of travel restrictions on the spread of the 2019 novel coronavirus (COVID-19) outbreak. Science. 2020;368: 395–400. 10.1126/science.aba9757 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+20. Tang B, Wang X, Li Q, Bragazzi NL, Tang S, Xiao Y, et al. Estimation of the Transmission Risk of the 2019-nCoV and Its Implication for Public Health Interventions. Journal of Clinical Medicine. 2020;9: 462. 10.3390/jcm9020462 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+21. Hellewell J, Abbott S, Gimma A, Bosse NI, Jarvis CI, Russell TW, et al. Feasibility of controlling COVID-19 outbreaks by isolation of cases and contacts. The Lancet Global Health. 2020;8: e488–e496. 10.1016/S2214-109X(20)30074-7 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+22. Eikenberry SE, Mancuso M, Iboi E, Phan T, Eikenberry K, Kuang Y, et al. To mask or not to mask: Modeling the potential for face mask use by the general public to curtail the COVID-19 pandemic. Infectious Disease Modelling. 2020;5: 293–308. 10.1016/j.idm.2020.04.001 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+23. Davies NG, Kucharski AJ, Eggo RM, Gimma A, Edmunds WJ, Jombart T, et al. Effects of non-pharmaceutical interventions on COVID-19 cases, deaths, and demand for hospital services in the UK: a modelling study. The Lancet Public Health. 2020;5: e375–e385. 10.1016/S2468-2667(20)30133-X [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+24. Lauer SA, Grantz KH, Bi Q, Jones FK, Zheng Q, Meredith HR, et al. The Incubation Period of Coronavirus Disease 2019 (COVID-19) From Publicly Reported Confirmed Cases: Estimation and Application. Annals of Internal Medicine. 2020. [cited 29 Apr 2020]. 10.7326/M20-0504 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+25. Roosa K, Lee Y, Luo R, Kirpich A, Rothenberg R, Hyman JM, et al. Real-time forecasts of the COVID-19 epidemic in China from February 5th to February 24th, 2020. Infectious Disease Modelling. 2020;5: 256–263. 10.1016/j.idm.2020.02.002 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+26. Kissler SM, Tedijanto C, Goldstein E, Grad YH, Lipsitch M. Projecting the transmission dynamics of SARS-CoV-2 through the postpandemic period. Science. 2020. [cited 30 Apr 2020]. 10.1126/science.abb5793 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+27. De Serres G, Gay NJ, Farrington CP. Epidemiology of Transmissible Diseases after Elimination. Am J Epidemiol. 2000;151: 1039–1048. 10.1093/oxfordjournals.aje.a010145 [PubMed] [CrossRef] [Google Scholar]
+
+28. Adam D. A guide to R—the pandemic’s misunderstood metric. Nature. 2020;583: 346–348. 10.1038/d41586-020-02009-w [PubMed] [CrossRef] [Google Scholar]
+
+29. Delamater PL, Street EJ, Leslie TF, Yang YT, Jacobsen KH. Complexity of the Basic Reproduction Number (R0). Emerging Infectious Diseases journal. 2019;25: 1–4. 10.3201/eid2501.171901 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+30. Nishiura H, Chowell G. The Effective Reproduction Number as a Prelude to Statistical Estimation of Time-Dependent Epidemic Trends. In: Chowell G, Hyman JM, Bettencourt LMA, Castillo-Chavez C, editors. Mathematical and Statistical Estimation Approaches in Epidemiology. Dordrecht: Springer Netherlands; 2009. pp. 103–121. 10.1007/978-90-481-2313-1_5 [CrossRef] [Google Scholar]
+
+31. Gostic KM, McGough L, Baskerville EB, Abbott S, Joshi K, Tedijanto C, et al. Practical considerations for measuring the effective reproductive number, Rt. PLoS Comput Biol. 2020;16: e1008409. 10.1371/journal.pcbi.1008409 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+32. ISCIII. Situación de COVID-19 o Coronavirus en España. 30 Apr 2020 [cited 10 May 2020]. Available: https://covid19.isciii.es/
+
+33. Pollán M, Pérez-Gómez B, Pastor-Barriuso R, Oteo J, Hernán MA, Pérez-Olmeda M, et al. Prevalence of SARS-CoV-2 in Spain (ENE-COVID): a nationwide, population-based seroepidemiological study. The Lancet. 2020;396: 535–544. 10.1016/S0140-6736(20)31483-5 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+34. Nishiura H, Kobayashi T, Miyama T, Suzuki A, Jung S, Hayashi K, et al. Estimation of the asymptomatic ratio of novel coronavirus infections (COVID-19). International Journal of Infectious Diseases. 2020;94: 154–155. 10.1016/j.ijid.2020.03.020 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+35. Zhou F, Yu T, Du R, Fan G, Liu Y, Liu Z, et al. Clinical course and risk factors for mortality of adult inpatients with COVID-19 in Wuhan, China: a retrospective cohort study. The Lancet. 2020;395: 1054–1062. 10.1016/S0140-6736(20)30566-3 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+36. INE. Instituto Nacional de Estadística. In: INE [Internet]. 2020 [cited 4 Nov 2020]. Available: https://www.ine.es/
+
+37. Ngonghala CN, Iboi E, Eikenberry S, Scotch M, MacIntyre CR, Bonds MH, et al. Mathematical assessment of the impact of non-pharmaceutical interventions on curtailing the 2019 novel Coronavirus. Mathematical Biosciences. 2020;325: 108364. 10.1016/j.mbs.2020.108364 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+38. Wallis N, Gust C, Porter E, Gilchrist N, Amaral A. Implementation of field hospital pharmacy services during the COVID-19 pandemic. Am J Health Syst Pharm. 2020;77: 1547–1551. 10.1093/ajhp/zxaa211 [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+16(3): e0248243.
+
+Decision Letter 0
+
+Rashid Ansumana, Academic Editor
+
+Copyright © 2021 Rashid Ansumana
+
+This is an open access article distributed under the terms of the Creative Commons Attribution License, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
+
+13 Nov 2020
+
+PONE-D-20-26796
+
+Modelling the impact of interventions on the progress of the COVID-19 outbreak including age segregation
+
+PLOS ONE
+
+Dear Dr. Rodríguez R.,
+
+Thank you for submitting your manuscript to PLOS ONE. After careful consideration, we feel that it has merit but does not fully meet PLOS ONE’s publication criteria as it currently stands. Therefore, we invite you to submit a revised version of the manuscript that addresses the points raised during the review process.
+
+Please submit your revised manuscript by Dec 26 2020 11:59PM. If you will need more time than this to complete your revisions, please reply to this message or contact the journal office at gro.solp@enosolp. When you're ready to submit your revision, log on to https://www.editorialmanager.com/pone/ and select the 'Submissions Needing Revision' folder to locate your manuscript file.
+
+Please include the following items when submitting your revised manuscript:
+
+A rebuttal letter that responds to each point raised by the academic editor and reviewer(s). You should upload this letter as a separate file labeled 'Response to Reviewers'.
+
+A marked-up copy of your manuscript that highlights changes made to the original version. You should upload this as a separate file labeled 'Revised Manuscript with Track Changes'.
+
+An unmarked version of your revised paper without tracked changes. You should upload this as a separate file labeled 'Manuscript'.
+
+If you would like to make changes to your financial disclosure, please include your updated statement in your cover letter. Guidelines for resubmitting your figure files are available below the reviewer comments at the end of this letter.
+
+If applicable, we recommend that you deposit your laboratory protocols in protocols.io to enhance the reproducibility of your results. Protocols.io assigns your protocol its own identifier (DOI) so that it can be cited independently in the future. For instructions see: http://journals.plos.org/plosone/s/submission-guidelines#loc-laboratory-protocols
+
+We look forward to receiving your revised manuscript.
+
+Kind regards,
+
+Rashid Ansumana
+
+Academic Editor
+
+PLOS ONE
+
+Journal Requirements:
+
+When submitting your revision, we need you to address these additional requirements.
+
+1. Please ensure that your manuscript meets PLOS ONE's style requirements, including those for file naming. The PLOS ONE style templates can be found at
+
+https://journals.plos.org/plosone/s/file?id=wjVg/PLOSOne_formatting_sample_main_body.pdf and
+
+https://journals.plos.org/plosone/s/file?id=ba62/PLOSOne_formatting_sample_title_authors_affiliations.pdf
+
+2. Please ensure that you refer to Figure 3 in your text as, if accepted, production will need this reference to link the reader to the figure.
+
+3. Please upload a copy of Figure 11, to which you refer in your text on page 25. If the figure is no longer to be included as part of the submission please remove all reference to it within the text.
+
+4. Please upload a copy of Supporting Information Figure A2 which you refer to in your text on page 17.
+
+5. Please include a copy of Table 5 which you refer to in your text on page 13.
+
+6. Please include captions for your Supporting Information files at the end of your manuscript, and update any in-text citations to match accordingly. Please see our Supporting Information guidelines for more information: http://journals.plos.org/plosone/s/supporting-information.
+
+[Note: HTML markup is below. Please do not edit.]
+
+Reviewers' comments:
+
+Reviewer's Responses to Questions
+
+Comments to the Author
+
+1. Is the manuscript technically sound, and do the data support the conclusions?
+
+The manuscript must describe a technically sound piece of scientific research with data that supports the conclusions. Experiments must have been conducted rigorously, with appropriate controls, replication, and sample sizes. The conclusions must be drawn appropriately based on the data presented.
+
+Reviewer #1: No
+
+Reviewer #2: Partly
+
+**********
+
+2. Has the statistical analysis been performed appropriately and rigorously?
+
+Reviewer #1: No
+
+Reviewer #2: N/A
+
+**********
+
+3. Have the authors made all data underlying the findings in their manuscript fully available?
+
+The PLOS Data policy requires authors to make all data underlying the findings described in their manuscript fully available without restriction, with rare exception (please refer to the Data Availability Statement in the manuscript PDF file). The data should be provided as part of the manuscript or its supporting information, or deposited to a public repository. For example, in addition to summary statistics, the data points behind means, medians and variance measures should be available. If there are restrictions on publicly sharing data—e.g. participant privacy or use of data from a third party—those must be specified.
+
+Reviewer #1: No
+
+Reviewer #2: Yes
+
+**********
+
+4. Is the manuscript presented in an intelligible fashion and written in standard English?
+
+PLOS ONE does not copyedit accepted manuscripts, so the language in submitted articles must be clear, correct, and unambiguous. Any typographical or grammatical errors should be corrected at revision, so please note any specific errors here.
+
+Reviewer #1: Yes
+
+Reviewer #2: Yes
+
+**********
+
+5. Review Comments to the Author
+
+Please use the space provided to explain your answers to the questions above. You may also include additional comments for the author, including concerns about dual publication, research ethics, or publication ethics. (Please upload your review as an attachment if it exceeds 20,000 characters)
+
+Reviewer #1: The authors addressed an interesting subject of global health importance. COVID-19 interventions were evaluated through a mechanistic model. The authors compartmentalized age groups to assess impact of COVID-19 interventions on the dynamics of spread of the disease, and the final size of the epidemic.
+
+I commend the authors for their efforts. However, I have some major concerns:
+
+1. The Abstract is too long and unfocused; same goes for the Introduction section. Most of the information in the introduction are too generic with no direct relevance to COVID-19.
+
+The study is assesses the impact of different interventions on COVID-19 spread, so, one would expect the introduction section to include a brief discussion of the literature on modelling studies that have done similar investigation.
+
+3. The model development is confusing and the notations are not intuitive - too many subscripts in some of the state variables and parameters. For instance, notations such as rsh_s will be difficult to follow.
+
+4. Some of the model assumptions do not make practical/biological sense. For example, the model assumes that all critical cases without access to ICU will result in fatality. This is not justifiable, and it will obviously overestimate the fatality rate. Additionally, presymptomatic cases, by definition, will present with symptoms at some point in the future. The model assumes that presymptomatic individuals can recover without intervention.
+
+5. The model and result discussion are highly speculative. Very few references were made to previous works on COVID-19 modelling in the Discussion. Moreover, the results do not support most of the claims in the discussion section.
+
+6. The flaws in the model development and assumptions became more apparent in the results: in figure 4 for example, it is strange that the % of fatality is higher than % of critical cases. This is clearly wrong, since fatality is a subset of critical cases. Moreover, it is also suspicious that you have 0 critical cases if the number of contact per day is about 0.9. Additionally, 50% increase in PPE has no effect on the final total fatality? 90% of case detection will lead to 0 fatality? These can’t be right.
+
+Reviewer #2: The authors have modeled the spread of a Covid-like infection across a population, the population being divided into 9 age groups from infancy to old age and the disease stage depicted from asymptomatic and pre-symptomatic to deceased. Equations are set up for transitions across disease stage in time. Real data was used to evaluate the parameters in the model. It is not clear that interventions such as isolation etc. were modeled as stated. It is claimed that the model is deterministic, but it is possible that there could be chaotic outcomes especially with multiple interacting equations.
+
+To be reconsidered for publication
+
+(1) the content can be made more crisp and clear.
+
+(2) the length reduced reduced by about half
+
+(3) bring out the conclusions and interpretation more clearly
+
+(4) summarize the conclusions making reference to the claims set forward in the abstract
+
+**********
+
+6. PLOS authors have the option to publish the peer review history of their article (what does this mean?). If published, this will include your full peer review and any attached files.
+
+If you choose “no”, your identity will remain anonymous but your review may still be made public.
+
+Do you want your identity to be public for this peer review? For information about this choice, including consent withdrawal, please see our Privacy Policy.
+
+Reviewer #1: No
+
+Reviewer #2: No
+
+[NOTE: If reviewer comments were submitted as an attachment file, they will be attached to this email and accessible via the submission site. Please log into your account, locate the manuscript record, and check for the action link "View Attachments". If this link does not appear, there are no attachment files.]
+
+While revising your submission, please upload your figure files to the Preflight Analysis and Conversion Engine (PACE) digital diagnostic tool, https://pacev2.apexcovantage.com/. PACE helps ensure that figures meet PLOS requirements. To use PACE, you must first register as a user. Registration is free. Then, login and navigate to the UPLOAD tab, where you will find detailed instructions on how to use the tool. If you encounter any issues or have any questions when using PACE, please email PLOS at gro.solp@serugif. Please note that Supporting Information files do not need this step.
+
+8 Dec 2020
+
+See attached file with all the detailed responses.
+
+Attachment
+
+Submitted filename: Response-to-reviewersR1.docx
+
+16(3): e0248243.
+
+Decision Letter 1
+
+Martial L Ndeffo Mbah, Academic Editor
+
+Copyright © 2021 Martial L Ndeffo Mbah
+
+This is an open access article distributed under the terms of the Creative Commons Attribution License, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
+
+17 Feb 2021
+
+PONE-D-20-26796R1
+
+Modelling the impact of interventions on the progress of the COVID-19 outbreak including age segregation
+
+PLOS ONE
+
+Dear Dr. Rodríguez R.,
+
+Thank you for submitting your manuscript to PLOS ONE. After careful consideration, we feel that it has merit but does not fully meet PLOS ONE’s publication criteria as it currently stands. Therefore, we invite you to submit a revised version of the manuscript that addresses the points raised during the review process.
+
+Please submit your revised manuscript by Apr 03 2021 11:59PM. If you will need more time than this to complete your revisions, please reply to this message or contact the journal office at gro.solp@enosolp. When you're ready to submit your revision, log on to https://www.editorialmanager.com/pone/ and select the 'Submissions Needing Revision' folder to locate your manuscript file.
+
+Please include the following items when submitting your revised manuscript:
+
+A rebuttal letter that responds to each point raised by the academic editor and reviewer(s). You should upload this letter as a separate file labeled 'Response to Reviewers'.
+
+A marked-up copy of your manuscript that highlights changes made to the original version. You should upload this as a separate file labeled 'Revised Manuscript with Track Changes'.
+
+An unmarked version of your revised paper without tracked changes. You should upload this as a separate file labeled 'Manuscript'.
+
+If you would like to make changes to your financial disclosure, please include your updated statement in your cover letter. Guidelines for resubmitting your figure files are available below the reviewer comments at the end of this letter.
+
+If applicable, we recommend that you deposit your laboratory protocols in protocols.io to enhance the reproducibility of your results. Protocols.io assigns your protocol its own identifier (DOI) so that it can be cited independently in the future. For instructions see: http://journals.plos.org/plosone/s/submission-guidelines#loc-laboratory-protocols
+
+We look forward to receiving your revised manuscript.
+
+Kind regards,
+
+Martial L Ndeffo Mbah, Ph.D
+
+Academic Editor
+
+PLOS ONE
+
+Additional Editor Comments (if provided):
+
+Responses to the initial reviewers comments are satisfactory. Please, address the minor concerns raised by the reviewer before the manuscript can be deem suitable for publication.
+
+[Note: HTML markup is below. Please do not edit.]
+
+Reviewers' comments:
+
+Reviewer's Responses to Questions
+
+Comments to the Author
+
+1. If the authors have adequately addressed your comments raised in a previous round of review and you feel that this manuscript is now acceptable for publication, you may indicate that here to bypass the “Comments to the Author” section, enter your conflict of interest statement in the “Confidential to Editor” section, and submit your "Accept" recommendation.
+
+Reviewer #3: (No Response)
+
+**********
+
+2. Is the manuscript technically sound, and do the data support the conclusions?
+
+The manuscript must describe a technically sound piece of scientific research with data that supports the conclusions. Experiments must have been conducted rigorously, with appropriate controls, replication, and sample sizes. The conclusions must be drawn appropriately based on the data presented.
+
+Reviewer #3: Yes
+
+**********
+
+3. Has the statistical analysis been performed appropriately and rigorously?
+
+Reviewer #3: N/A
+
+**********
+
+4. Have the authors made all data underlying the findings in their manuscript fully available?
+
+The PLOS Data policy requires authors to make all data underlying the findings described in their manuscript fully available without restriction, with rare exception (please refer to the Data Availability Statement in the manuscript PDF file). The data should be provided as part of the manuscript or its supporting information, or deposited to a public repository. For example, in addition to summary statistics, the data points behind means, medians and variance measures should be available. If there are restrictions on publicly sharing data—e.g. participant privacy or use of data from a third party—those must be specified.
+
+Reviewer #3: Yes
+
+**********
+
+5. Is the manuscript presented in an intelligible fashion and written in standard English?
+
+PLOS ONE does not copyedit accepted manuscripts, so the language in submitted articles must be clear, correct, and unambiguous. Any typographical or grammatical errors should be corrected at revision, so please note any specific errors here.
+
+Reviewer #3: Yes
+
+**********
+
+6. Review Comments to the Author
+
+Please use the space provided to explain your answers to the questions above. You may also include additional comments for the author, including concerns about dual publication, research ethics, or publication ethics. (Please upload your review as an attachment if it exceeds 20,000 characters)
+
+Reviewer #3: (No Response)
+
+**********
+
+7. PLOS authors have the option to publish the peer review history of their article (what does this mean?). If published, this will include your full peer review and any attached files.
+
+If you choose “no”, your identity will remain anonymous but your review may still be made public.
+
+Do you want your identity to be public for this peer review? For information about this choice, including consent withdrawal, please see our Privacy Policy.
+
+Reviewer #3: No
+
+[NOTE: If reviewer comments were submitted as an attachment file, they will be attached to this email and accessible via the submission site. Please log into your account, locate the manuscript record, and check for the action link "View Attachments". If this link does not appear, there are no attachment files.]
+
+While revising your submission, please upload your figure files to the Preflight Analysis and Conversion Engine (PACE) digital diagnostic tool, https://pacev2.apexcovantage.com/. PACE helps ensure that figures meet PLOS requirements. To use PACE, you must first register as a user. Registration is free. Then, login and navigate to the UPLOAD tab, where you will find detailed instructions on how to use the tool. If you encounter any issues or have any questions when using PACE, please email PLOS at gro.solp@serugif. Please note that Supporting Information files do not need this step.
+
+Attachment
+
+Submitted filename: Review of Modelling the Impact of Interventions on the Progress of the COVID.pdf
+
+21 Feb 2021
+
+See attached file with detailed responses
+
+Attachment
+
+Submitted filename: Response-to-reviewersR2.pdf
+
+16(3): e0248243.
+
+Decision Letter 2
+
+Martial L Ndeffo Mbah, Academic Editor
+
+Copyright © 2021 Martial L Ndeffo Mbah
+
+This is an open access article distributed under the terms of the Creative Commons Attribution License, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
+
+23 Feb 2021
+
+Modelling the impact of interventions on the progress of the COVID-19 outbreak including age segregation
+
+PONE-D-20-26796R2
+
+Dear Dr. Rodríguez R.,
+
+We’re pleased to inform you that your manuscript has been judged scientifically suitable for publication and will be formally accepted for publication once it meets all outstanding technical requirements.
+
+Within one week, you’ll receive an e-mail detailing the required amendments. When these have been addressed, you’ll receive a formal acceptance letter and your manuscript will be scheduled for publication.
+
+An invoice for payment will follow shortly after the formal acceptance. To ensure an efficient process, please log into Editorial Manager at http://www.editorialmanager.com/pone/, click the 'Update My Information' link at the top of the page, and double check that your user information is up-to-date. If you have any billing related questions, please contact our Author Billing department directly at gro.solp@gnillibrohtua.
+
+If your institution or institutions have a press office, please notify them about your upcoming paper to help maximize its impact. If they’ll be preparing press materials, please inform our press team as soon as possible -- no later than 48 hours after receiving the formal acceptance. Your manuscript will remain under strict press embargo until 2 pm Eastern Time on the date of publication. For more information, please contact gro.solp@sserpeno.
+
+Kind regards,
+
+Martial L Ndeffo Mbah, Ph.D
+
+Academic Editor
+
+PLOS ONE
+
+Additional Editor Comments (optional):
+
+Reviewers' comments:
+
+16(3): e0248243.
+
+Acceptance letter
+
+Martial L Ndeffo Mbah, Academic Editor
+
+Copyright © 2021 Martial L Ndeffo Mbah
+
+This is an open access article distributed under the terms of the Creative Commons Attribution License, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
+
+5 Mar 2021
+
+PONE-D-20-26796R2
+
+Modelling the impact of interventions on the progress of the COVID-19 outbreak including age segregation
+
+Dear Dr. Rodríguez:
+
+I'm pleased to inform you that your manuscript has been deemed suitable for publication in PLOS ONE. Congratulations! Your manuscript is now with our production department.
+
+If your institution or institutions have a press office, please let them know about your upcoming paper now to help maximize its impact. If they'll be preparing press materials, please inform our press team within the next 48 hours. Your manuscript will remain under strict press embargo until 2 pm Eastern Time on the date of publication. For more information please contact gro.solp@sserpeno.
+
+If we can help with anything else, please email us at gro.solp@enosolp.
+
+Thank you for submitting your work to PLOS ONE and supporting open access.
+
+Kind regards,
+
+PLOS ONE Editorial Office Staff
+
+on behalf of
+
+Dr. Martial L Ndeffo Mbah
+
+Academic Editor
+
+PLOS ONE
+
+Articles from PLOS ONE are provided here courtesy of PLOS

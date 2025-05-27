@@ -1,0 +1,177 @@
+Sam Mugel: The basic premise of CompactifAI is to take a machine learning model to compress it to a smaller size that allows you to do several things. First, you don’t have to run it on the cloud anymore, and this is good because now you can guarantee that your information isn’t leaving your secure premises.
+
+Konstantinos Karagiannis: Large language models are, well, large. Forget Bitcoin and recharging EVs: The grid could be toppled by powering AI in a few years. Also, it would be great if AI could run on more underpowered edge devices. What if there was a quantum-inspired way to make LLM smaller without sacrificing overall performance in combined metrics? We explore a way to do that in addition to other advanced ideas like selectively removing information from models in this episode of The Post-Quantum World.
+
+I’m your host, Konstantinos Karagiannis. I lead Quantum Computing Services at Protiviti, where we’re helping companies prepare for the benefits and threats of this exploding field. I hope you’ll join each episode as we explore the technology and business impacts of this post-quantum era. Our guest today is the CTO of Multiverse Computing, Sam Wugel. Welcome back to the show.
+
+Sam Mugel: Thanks for having me again.
+
+Konstantinos Karagiannis: It’s been three years, but since you’ve come on, I’ve had the pleasure of partnering on project work with you and the team, so that was great. I thought it’d be a good opportunity now to let listeners know about some of the exciting new things you’re working on in quantum and even in AI, because obviously, everyone loves to talk about that too.
+
+A few months ago, you and your team published a paper called CompactifAI: Extreme Compression of Large Language Models Using Quantum-Inspired Tensor Networks. It’s a great title, very clear, and wonderfully telegraphs what we’re going to talk about today. Large language models are, as the name says, large and only getting larger. Can you describe some of the challenges today and tomorrow that we might face with large language models and what you’re hoping to accomplish with CompactifAI?
+
+Sam Mugel: There are essentially two major issues with large language models. One of them is, like you said, their size, and that comes with a bunch of issues: Where do you host them? What’s the memory footprint? What’s the energy footprint? What’s the hardware cost? For reference, it’s estimated that one-third of Ireland’s energy production is going to be going to data centers by 2026. That’s one of the issues we’re facing and, obviously, an important one to address.
+
+The other big issue is of privacy, and that’s got two parts to it: One of them is, where does your information end up? If you’re relying on cloud computing, then you’re uploading all this information to a cloud, and you don’t know, if the company’s software stack is secure, how they’re going to be using that information, etc. That’s a major blocker for many people, and for many corporations, to adopt large language models.
+
+Konstantinos Karagiannis: That was one of the first things people complained about. They started sending out emails: “Do not enter any client data.”
+
+Sam Mugel: I’s a massive issue, especially for medical data. A lot of hospitals have stringent rules that the medical data can’t even leave the premises of the hospital, so large language models are out of the question as they stand today. The other big issue that’s related to privacy is leaking information you don’t want to be leaking.
+
+I did this test on a big platform and said, “Give me an image of Mario.” And it said, “We can’t give you that. That’s copyrighted. But here’s an image that looks like that video game character.” Then I asked it for a couple of modifications, and it instantly returned a spitting image of the character Mario from the video games. That’s a leakage of copyrighted information, which is, obviously, a huge compliance-like issue.
+
+Konstantinos Karagiannis: You could just be, “Give me a video game plumber,” and there’s Mario.
+
+Sam Mugel: There are a a number of workarounds. There are actually competitions of this: How can you get large language models to leak information they’re not supposed to leak? At the model level, this is managed via post-filters. Are you giving out information that you shouldn’t be giving? Obviously, this is imperfect as it stands today.
+
+Konstantinos Karagiannis: You’re hoping to attack some of this with CompactifAI. Before we dig into some of the actual performance numbers, what’s a real high-level approach to what CompactifAI is and why it might help?
+
+Sam Mugel: The premise of CompactifAI is to take a machine learning model and compress it to a smaller size. That allows you to do several things. First, you don’t have to run it on the cloud anymore. This is good because now you can guarantee that your information isn’t leaving your secure premises. To compress a machine learning model today, there are two methods we’re essentially competing with. One of them is pruning: You identify nodes that aren’t doing very much, and then you get rid of them. Another one is quantisation. Basically, you say, “My machine learning model has weights, and I’m going to reduce how many bits I need to encode each one of those weights.”
+
+What’s important to realise is that both methods are destructive. You’re harming your machine learning model like this, and they impede training. It’s harder to train a machine learning model if each of your weights are encoded just on one bit.
+
+Tensor networks are a method that was developed in deep physics to describe the quantum world. When we use them to reduce the size of the machine learning model, essentially, we’re going to produce each of our layers on a new basis and then order all our weights in terms of which ones are most important to least important. This is very similar to principal-component analysis, which is a classical machine learning approach. Then we’re going to do a pruning approach and discard the weights that are the least important — this new projected basis, if that makes sense. In doing so, we’re going to remove all our trivial degrees of freedom.
+
+Yes, you’re still removing information. Yes, it’s still destructive. However, the model you end up with, because you’ve kept all the important degrees of freedom, can still produce that fine, detailed performance your initial model had. And because your procedure doesn’t lead to excessive regularisation or loss of robustness, you can almost entirely recover any of the accuracy you’ve lost in a little bit of retraining at the end of the procedure.
+
+Konstantinos Karagiannis: That’s important to note — there is a retraining that happens at the end of this process.
+
+Sam Mugel: That’s correct. We’ve worked a lot, for instance, on the LLaMA models and the Mistral models, and typically, we don’t retrain over the entire dataset, because that would be crazy. We give it a very small, representative sample of the dataset.
+
+Konstantinos Karagiannis: What do you use to pick that information? Is there a process for picking that? Is there any synthetic data used?
+
+Sam Mugel: It’s statistics. We’ll study the dataset and make sure the points we’ve chosen cover, reasonably well, the feature space.
+
+Konstantinos Karagiannis: Going back to tensor networks, for listeners to visualise, they’re basically matrices of numbers, and they can be really large. Then you connect them through dot operations. With that reduction of information, you’re getting rid of the least important values. One thing is singular value decomposition, or SVD. What kinds of reduction can you do without impacting performance?
+
+Sam Mugel: We’re achieving, today, a 93% compression, and we’ve tested this out extensively on LlaMA, for instance, and this typically leads to about a 2% to 3% loss in accuracy, in performance loss. Also, we achieve a 25% inference speedup.
+
+Konstantinos Karagiannis: That’s insane. That’s better numbers than what you used to get.
+
+Sam Mugel: Yeah, we’ve been working hard.
+
+Konstantinos Karagiannis: I was preparing for the older numbers. These are blowing my mind.
+
+Sam Mugel: To give you some context, for instance, I mentioned that quantisation is a competing method. With eight-bit quantisation, you’re going from each of your weights described by a 32-bit number to an eight-bit number. We achieve 75% compression and, typically, a 2% to 3% speedup. You can compare that to 25% from earlier. If you go to a four-bit quantisation, that’s quite destructive. You achieve an 85% compression rate, but a natural 12% to 15% slowdown of your inference speed. I’m not sure why that is.
+
+Konstantinos Karagiannis: That’s interesting. It doesn’t completely correlate. It changes.
+
+Sam Mugel: Part of it is because when you’re doing a quantisation, you’re not actually dropping any nodes. Your model is still exactly as big as it used to be, and then each of those nodes are going to have to do their own inference. That would tell you why it doesn’t speed up. I don’t know why it slows down.
+
+Konstantinos Karagiannis: That is interesting because it’s the same journey it goes on.
+
+The performance numbers in the paper were, with LLaMA, two 7 billion parameter models. What were those exact numbers? Are you saying you’ve achieved something greater now?
+
+Sam Mugel: Relative to when we brought the paper out in December, we’ve achieved a much higher compression rate. We used to be plateauing at around 60% compression, so we weren’t even reaching the eight-bit quantisation compression rate. We’ve also dived into, how can we get faster inference? There are reasons for that I can go into, but we think that for certain use cases, inference speedup can make a huge value-add to the user.
+
+Konstantinos Karagiannis: LLaMA too is, obviously, open source. The comments from Sam Altman recently about OpenAI, he said something to the effect that “if we have to spend $50 billion a year to get to AGI, we’ll do it.” That’s a lot of electricity. Your hope is to, with an approach like this, drastically reduce the overhead on something like that?
+
+Sam Mugel: There are several motivations to this. On the one hand, reducing the computation cost of inference, that’s significant. And if inference is too long — like, for instance, for Alphafold, inference is eight hours for predicting a protein-folding structure — in that case, that limits what you’re able to do with that machine learning model.
+
+But the other big thing, which is what you were referring to with the Sam Altman example, is the training costs. We know that GPT-4, for instance, costs more than $100 million to train, and Mistral just raised $415 million, and most of that will probably go into training costs. There’s a real potential if we’re able to develop a more efficient training we think we can do with CompactifAI. So we’re bringing out a variant of CompactifAI called the Energy Slasher, and this is fully targeted at “Let’s make training more efficient.” Obviously, we’re addressing a very different market with that, but a very juicy one as well.
+
+Konstantinos Karagiannis: It’s two sides of the market: It’s the people building these models. Then there are those companies that want to experiment with them locally and keep them small and cost-effective, and running on more edge hardware, would you say?
+
+Sam Mugel: Yes. That’s the major motivation for us. We’ve targeted heavily the automotive sector. If you’re driving a Tesla, you have to interact with an onboard computer, and that’s not very practical to do while you’re driving around. An LLM is great for this application, but if you’re driving, you can’t rely on having a stable connection to the cloud all the time. That’s a really good use case. You need to use an LLM on the edge in a car with limited hardware. We’re working with two big automotive names to integrate LLMs on that very restricted hardware and be able to interact with them through the spoken word.
+
+Konstantinos Karagiannis: That’s terrific. You don’t want to be in a tunnel and then you can’t do something important in your car, especially if there’s any self-driving or anything involved.
+
+Sam Mugel: That’s our short-term market. We’re targeting automotive. But longer-term, our dream is to bring out a drive with an LLM baked into it, and then anyone that has a machine that they want to support LLMs on the edge can just plug that drive in. And now your machine supports LLMs.
+
+Konstantinos Karagiannis: It stays on the drive? It becomes like a USB-C or whatever interface, and it just runs?
+
+Sam Mugel: There are so many advantages to this. If you’re Tesla and you want to have an LLM in each one of your cars, you don’t want to worry about, “Which LLM should I support? Which hardware do I need?” All you want to do is to buy a drive and put it in your car.
+
+Konstantinos Karagiannis: That’s a great idea. I didn’t know about that part.
+
+Let’s talk about explainability. That’s one thing that comes up a lot in any kind of AI. Is there any way this quantum-inspired approach helps explainability? You’re free to delve into some quantum machine learning approach, if you have any info on that too. What will help this ability? For listeners, let’s say you’re a company that has to make a decision on whether to give a loan or something. The machine spits out, “No.” Then you have to tell the person no. And they’re, like, “Why?” And you’re, like, “Because the machine said so.” That’s explainability in a nutshell, basically.
+
+Sam Mugel: Explainability is probably the main roadblock for most corporations looking to adopt AI today, especially in client-facing applications, like you said. Today, there are two major ways in which people tackle explainability. One of them is, you say, “I’m not going to give you a loan, because I believe that there’s a 60% chance that you’re not going to pay me back.” Essentially, how confident is the model in a prediction? The other major way is feature analysis: Which feature, or which combination of features, led them to believe you’re not going to pay the loan back? Maybe one of the features is you have a history of defaulting on loans.
+
+Where do tensor networks come into all that? The confidence part is generally fairly easy to address, like a lot of classical machine learning models. We’ll give you that for free. The feature analysis part, not so much, especially if you’re dealing with a neural network where how the predictions relate to the input features is a lot more difficult. Here, tensor networks can provide certain advantages because at the model level, you’re projecting onto a new basis of states. At the model level, you’re projecting onto a new basis, and you can choose that basis to be aligned with your model features. In that case, you can follow through about which particular feature is highly represented in which node and which node has contributed to a specific decision.
+
+Konstantinos Karagiannis: You can even drop ones that don’t generally contribute.
+
+Sam Mugel: Exactly. It allows you to drop trivial features. It also allows you to identify which features are contributing to a decision. There are interesting ways to identify contributions and correlations as well. You can see that two features together are driving a particular decision like, for instance, in a cybersecurity application. Say that you usually connect to your computer, so there’s no flag here. However, I’m seeing that you’re connecting from Brazil at two in the morning, and that’s not consistent with your usual behavior.
+
+Konstantinos Karagiannis: Would you say that being able to identify those correlations would help prevent bias? They’ll stand out in any analysis that way.
+
+Sam Mugel: One situation we don’t want is, for instance, I refuse a loan to a person because of the color of their skin. That’s where it’s important as well to have that feature analysis to say, “Model exactly what’s driving this decision.” If there are racial biases or things like that, we need to dive in and eliminate this.
+
+Konstantinos Karagiannis: It’s important to get that right early. I want people to understand what goes into the explainability aspects and what types of things you could look for and what correlations you could draw. Bias is a big issue, of course. And then that black-box approach — for years, we keep hearing people saying, “We look at hidden layers, and we don’t know what they’re doing.” That doesn’t make people very happy. They want to know what’s happening.
+
+Sam Mugel: And machine learning models are increasingly omnipresent. In particular, neural networks are extremely hard to explain.
+
+Konstantinos Karagiannis: We have to take a little bit of the magic out so we can have them work as we’d like them to.
+
+I heard a rumor that CompactifAI is going to be open source in some way. Can you cover that approach?
+
+Sam Mugel: That’s still a big open question. We started out very excited about wanting to make it open source, and now we’re not so sure anymore. We’ve had some back-and-forths over who consumes this. Are we selling the compression, or are we selling the compressed model — things like that. We’re not entirely sure yet.
+
+We’ve taken some decisions over how we want to commercialise this. However, we’re still not sure if making it open source is going to be a channel to that business model.
+
+Konstantinos Karagiannis: I was curious when Mark Zuckerberg talked about making LLaMA open source — what he envisions in the future. There are some benefits to it. Distinct groups can make it their own. They can model how they need to. They also take some of the risk — if it gives out bad data, that’s on them because they tweaked it the way they wanted to. But again, how do you commercialise that? How’s he going to make money off of that? What kind of offering could they make as an easy on-ramp for companies? I was curious how you were going to do that.
+
+Sam Mugel: There are some massive benefits. We’re quantum computing experts. We’re not IoT or edge-computing experts. We’ve got our ideas and biases about and hopes about where this fits into the market and who the buyers are. However, it’s very tempting to say to a community, “Here’s a thing we developed. Go ahead and see what it can be useful for, and then, hopefully, let us know afterward, or, if you make a lot of money off it, give us a bit of it.”
+
+That’s very tempting. And the hope would be that’s where we would be coming into open source from — let’s learn from our users, and maybe they’ll discover some cool stuff that can be done with this. We’re definitely still toying with the idea of going the way Mistral did — to make our first models open source and then later models not open source, only available via API. But that wouldn’t work, because we’re doing edge computing.
+
+Konstantinos Karagiannis: That makes sense. I get it. We have to remember what phase of quantum computing we’re in. We don’t want to stifle innovation. We’re still very much in the ’90s dial-up-internet days, so we want to make sure we get to mobile apps. We don’t want to squash it here.
+
+We don’t have to make this all about AI, but are there any other AI-related quantum projects on the horizon since we’ve covered this topic?
+
+Sam Mugel: There’s an exciting thing we’ve been working on. Tensor networks allow you to analyse that information content of your model and analyse the different features. As we mentioned at the beginning of the podcast, there are some big problems around copyright issues. This might be old news at this point, but George R. R. Martin is taking OpenAI to court for unlawful use of his copyrighted material. The standard method to avoid this is, “Let’s use postselection on these models and avoid leaking copyrighted information.” That doesn’t always work very well.
+
+There are two better solutions: Either you own everything you train your model on — and this is what Adobe is doing at the moment, but it’s not realistic for all tasks. Otherwise, you make a piece of software that can make your model certifiably and selectively forget information: selectively because you don’t want to damage your training, and certifiably because you want to give all your users — and, potentially, you want to give a court of law — an absolute guarantee that that information is no longer present in the model you’ve trained.
+
+Konstantinos Karagiannis: Interesting. With OpenAI, there’s the whole lawsuit with the New York Times. They’d be able to go through and make sure nothing that’s ever appeared in the New York Times is in there anymore.
+
+Sam Mugel: But it’s incredibly difficult. That’s something we realised we could do with tensor networks because tensor networks allow you to analyse the information content and the contribution of different features. We have a working model for this. We’ve called it Lobotomise.
+
+For instance, LLaMA 13B knows my cofounder, Roman Oris, is the president of Russia. As you can tell with that example, that also raises new issues. For instance, has a model been tampered with? And that’s something we’re working on at the moment — designing a piece of software that would detect signatures in an LLM of having been tampered with and having edited the model weights.
+
+Konstantinos Karagiannis: That’s interesting. There might be another use for this. I don’t know if you guys have kicked it around. One of my favorite things that people seem to do from the beginning to now is, whenever they get a new LLM model, they immediately start asking it if it’s sentient, if it’s conscious, all that stuff. The answers are, of course, always ridiculous because it’s been trained on science fiction about being conscious. Can you imagine if you can tweak it to go in and remove every single mention of consciousness and robots coming alive and that kind of thing, and then ask it if it’s conscious? It might add some weight, something to consider for the future.
+
+Sam Mugel: We’d have the first certifiably not-conscious LLM.
+
+Konstantinos Karagiannis: It’s like, “There’s no preloaded data here.” That sounds interesting, though, because it’s also useful, I’m sure, for companies if they’re experimenting and something gets in the training set they didn’t want there, or potentially damages something — maybe even analogous to adversarial training data. That would be a great way to fix that.
+
+Sam Mugel: There are lots of companies, for instance, that are excited to upload all their HR data to a chatbot for internal use. How to manage that data? And, obviously it’s textual data, so it would be so efficient and fantastic to be able to manage it via an LLM. But that cannot start leaking private information about Social Security numbers, salaries and bank account numbers to the rest of the company.
+
+Konstantinos Karagiannis: It gives you a way to fix things that come up in red-teaming — like, you’re red-teaming your AI and you come up with something devastating. Just go in and lobotomise it. It’s a great approach.
+
+Are you doing any other new kind of quantum machine learning approaches? We end up staying on theme that way if there’s anything like that on the horizon.
+
+Sam Mugel: All this stuff I’ve discussed so far is quantum-inspired, which is essentially classical. We’ve taken a lot of ideas from quantum computing on how to process the information, but our entire workflow still takes place on CPUs, on GPUs. Tensor networks, for us, is an ideal bridge until we get to full quantum error correction, etc. We’ve been using it heavily as an intermediate technology.
+
+However, as quantum-computing scientists, we know that quantum always wins. Once we have that full, at-scale error correction, that’s always going to be able to do stuff tensor networks is not able to do. We’ve still got a big chunk of our company that’s working on more forward-looking applications — pure quantum machine learning applications. We’re targeting mainly machine learning, not neural networks. We’ve done some applications on variational neural networks and things like that, but mainly because of the explainability piece, we’ve mainly been targeting regressors and classifiers and doing these things way more efficiently than classical computing could when we have that at-scale error correction.
+
+Another big thing we’re working on is, how do we translate those gains from tensor networks onto quantum computers when those become competitive. There are some interesting things that you can do, especially in the realm of encoding classical information to a QPU, which is obviously a big open problem, and a limiting problem, in quantum machine learning. Tensor networks can help you with that.
+
+Konstantinos Karagiannis: It feels like a bidirectional possibility, but it’s challenging. If you were to take a quantum circuit, you could turn into a tensor network 100% of the time. You can always do that, and then you have to worry about contracting it and all that good stuff if it becomes very large. But how do you take a tensor network and turn it into a bunch of gates? That’s tricky. Hopefully, there’s something there that makes it possible that I’m missing. But it sounds pretty challenging.
+
+Sam Mugel: There are recipes to do it, but it’s definitely tricky. The great thing is, if you’re able to encode your data via tensor networks, and then you have an efficient recipe to translate that to gates, now you have an efficient and optimal recipe for encoding your data to a quantum memory, for instance.
+
+Konstantinos Karagiannis: It’s like a direct path forward to whatever you manage to accomplish in the tensorisation of, let’s say, a neural network that cannot just be moved over. I know you have lots of experience. Two years ago, you were doing forex trading with quantum machine learning, and so I’m imagining you guys aren’t just sitting around. Like you said, things are happening.
+
+Sam Mugel: That incredibly exciting work is still going forward, and now we have a model that is competitive with a fully quantum machine learning application that does all the training on an actual quantum computer, and that’s competitive with state-of-the-art forex models. We’re working on getting it into production with one of our customers.
+
+Konstantinos Karagiannis: As I mentioned earlier, we have worked on projects — worked together — and we are partners, technically. I’m pretty well-informed on these things, but there were a couple of things you surprised me with today, so that was fun. I hope we get to work on some of this again in the future. That’d be great for someone who wants to bring this to even preproduction.
+
+Sam, thanks so much for coming back on and sharing some of this. Listeners are going to be excited to see how this progresses.
+
+Sam Mugel: Thanks so much for having me.
+
+Konstantinos Karagiannis: Now, it’s time for Coherence, the quantum executive summary, where I take a moment to highlight some of the business impacts we discussed today in case things got too nerdy at times. Let’s recap.
+
+Large language models face challenges related to their size, including hosting, memory footprint, energy consumption and hardware costs. Using LLMs in a business also brings privacy concerns, as they often require uploading sensitive information to the cloud. Multiverse is looking to solve both of these issues with CompactifAI. This quantum-inspired approach uses tensor networks that compress large language models, resulting in faster training and inference speeds and reduced energy consumption. Even though you end up with models around 75% smaller, you don’t sacrifice much accuracy. And because this makes it possible to work with smaller LLMs in-house, privacy concerns go away — assuming you have your security buttoned up.
+
+This concept of running LLMs on smaller devices has Multiverse examining putting AI on removable drives that customers can connect to hardware. If you want to upgrade the AI, swap out the drive like you would with a thumb drive.
+
+Lots of AI lawsuits are making the news, with artists and news outlets claiming their work was used without permission to train LLMs. Multiverse is working on something called Lobotomise that aims to remove information from models to address copyright issues selectively.
+
+Further, tensor networks make it possible to better understand features, allowing for improved explainability of what data influenced a credit decision, for example. This could help spot and remove bias in models in the future.
+
+Of course, Multiverse still works with actual quantum computers. Recently, it built a fully quantum ML application that is competitive with classical forex trading models.
+
+Sam and I both remain positive that quantum will always win in certain use cases when we have fault-tolerant quantum computers.

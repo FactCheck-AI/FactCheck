@@ -1,0 +1,23 @@
+Clonezilla allows creation of automated procedures of cloning and restoring by adding a simple script to its live cd or dvd .iso image.
+
+In a nutshell, you can:
+
+Add a shell script with appropriate clone or restore commands into the .iso image of the Clonezilla live cd or dvd
+
+Edit the isolinux.cfg file adding an appropriate boot menu entry that passes the /path/to/script as a parameter to Clonezilla
+
+Burn the modified .iso image and boot it on the machine you want to clone or restore
+
+The script should contain a CloneZilla command line looking like
+
+/opt/drbl/sbin/ocs-sr -q -c -z1 -p true saveparts "<imagefile_name>" "<partition_to_save>"
+
+Your operators now have just to boot the PC with the live cd and choose the operation to perform from the initial menu.
+
+Of course, when you want to clone a partition or disk your script must include instructions to mount an external storage to save the image onto.
+
+When, on the other hand, you'll be going to restore the data, then you might choose to include the image file(s) in the live cd or dvd itself.
+
+Keep in mind that Clonezilla supports the use of remote (SMB, CIFS) image files storage devices as well, for both cloning and restoring operations.
+
+Take a look to the Clonezilla documentation for further details.

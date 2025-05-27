@@ -1,0 +1,279 @@
+Genes (Basel). 2021 Oct; 12(10): 1610.
+
+PMCID: PMC8535336
+
+PMID: 34681004
+
+Comparative RNA-Seq Analyses of Solenopsis japonica (Hymenoptera: Formicidae) Reveal Gene in Response to Cold Stress
+
+Antonio Figueras, Academic Editor and Rodney N. Nagoshi, Academic Editor
+
+Plant Quarantine Technology Center, Animal and Plant Quarantine Agency, Gimcheon 39660, Korea; rk.aerok@tsarapnatavm
+
+Copyright © 2021 by the authors.
+
+Licensee MDPI, Basel, Switzerland. This article is an open access article distributed under the terms and conditions of the Creative Commons Attribution (CC BY) license (https://creativecommons.org/licenses/by/4.0/).
+
+Associated Data
+
+Supplementary Materials
+
+genes-12-01610-s001.zip (270K)
+
+GUID: FDC99582-08F2-42DB-B574-D708169B3AEA
+
+Data Availability Statement
+
+NGS data of Solenopsis japonica used in this study has been deposited in the Gene Expression Omnibus (GEO) database (https://www.ncbi.nlm.nih.gov/geo/, accession No, {"type":"entrez-geo","attrs":{"text":"GSE155469","term_id":"155469"}}GSE155469) and the Sequence Read Archive (SRA) (https://www.ncbi.nlm.nih.gov/sra, accession No. SRP274474).
+
+Abstract
+
+Solenopsis japonica, as a fire ant species, shows some predatory behavior towards earthworms and woodlice, and preys on the larvae of other ant species by tunneling into a neighboring colony’s brood chamber. This study focused on the molecular response process and gene expression profiles of S. japonica to low (9 °C)-temperature stress in comparison with normal temperature (25 °C) conditions. A total of 89,657 unigenes (the clustered non-redundant transcripts that are filtered from the longest assembled contigs) were obtained, of which 32,782 were annotated in the NR (nonredundant protein) database with gene ontology (GO) terms, gene descriptions, and metabolic pathways. The results were 81 GO subgroups and 18 EggNOG (evolutionary genealogy of genes: Non-supervised Orthologous Groups) keywords. Differentially expressed genes (DEGs) with log2fold change (FC) > 1 and log2FC < −1 with p-value ≤ 0.05 were screened for cold stress temperature. We found 215 unigenes up-regulated and 115 unigenes down-regulated. Comparing transcriptome profiles for differential gene expression resulted in various DE proteins and genes, including fatty acid synthases and lipid metabolism, which have previously been reported to be involved in cold resistance. We verified the RNA-seq data by qPCR on 20 up- and down-regulated DEGs. These findings facilitate the basis for the future understanding of the adaptation mechanisms of S. japonica and the molecular mechanisms underlying the response to low temperatures.
+
+Keywords: Solenopsis japonica, transcriptome, KEGG pathway, differentially expressed gene, GO analysis, temperature, stress
+
+1. Introduction
+
+Fire ants is the common name for the ant genus Solenopsis Westwood (Hymenoptera: Formicidae: Myrmicinae) that is represented in South America by 16 native species [1]. While, in general, these ants cause occasional local problems in their homeland, some species, such as Solenopsis japonica, are not reported pests. With designing a new bait trap, it was clarified that S. japonica showed some predatory behavior against earthworms and woodlice [2] that have not previously been considered as predators of soil invertebrates. It is supposed that it preys on the larvae of other ant species by tunneling into a neighboring colony’s brood chamber [2]. Another article mentions that S. japonica lives near to the colonies of Pheidole fervida, Rhizomyrma sauteri, Lasius flavus and Lasius niger and builds subterranean tunnels leading into the nests of its neighbors [3]. S. japonica can move through gaps in the soil or make tunnel systems to detect and attack prey [2]. Unfortunately, there is not a massive amount of literature available on the biology of this ant species. Actually, species interactions underground cannot be observed directly, although they are suspected to occur as frequently as those above ground.
+
+S. japonica is probably one of the influential underground predators that we have little evidence of their roles and effects on underground invertebrate communities [2,4].
+
+The life history of insects, population dynamics, geographical distribution, species interactions, and community structure and function are affected by different temperatures, one of the vital abiotic factors, by interfering with their metabolic processes such as alimentation, digestion, detoxification, mating, growth, and life cycle, as well as the distribution of host plants [5,6,7,8,9,10,11,12,13]. Metabolic rates are directly tied to ambient temperatures in insects as ectotherms [14]. In the prey–predator relationship, attack rates by predators can be increased by increasing metabolic rates [15] which can increase predator interactions with prey, leading eventually to changes in the density of prey and a series of effects on wide community structure [16,17]. Many studies have repeatedly revealed that increased predation rates by invertebrate predators resulted from increased temperatures [15,18,19,20]. Ant Formica lasioides predation has been observed in laboratory conditions to be affected by temperature and that its prey, caterpillars of the tiger moth, Arctia virginalis, maintain activity and escape from ant predation at lower temperatures (8–14 °C) [19].
+
+S. japonica as a soil dwelling invertebrate predator with a small body size (less than 2 mm) that would aid movement through the soil, can be considered as a beneficial predator. Previous studies have not indicated their capability, probably because their capabilities to move and attack prey in the soil have been overlooked.
+
+In this study, we are looking for any changes under low and high temperature stresses using RNA-Seq and de novo transcriptome as an ‘omic’ technology to figure out which pathways are responsible for stress conditions and whether our model insect, S. japonica, can cope with that. There are some similar studies [21,22,23] to predict the regulation of transcription associated with different treatment temperatures.
+
+Upregulation of cuticle genes [24] changes the expression levels of more than hundreds of genes associated with transcription, metabolism, and cuticular organization, especially enzyme-related genes as well as high-temperature stress, which upregulates encoding of cytochrome P450s (CYPs), antioxidative enzymes, and aldehyde dehydrogenase [21,25,26], and the expression of heat shock proteins (HSPs), reported to be responsible for heat and cold tolerance and other stressor as well (e.g., heat, low oxygen levels, UV radiation, bacterial and viral infection, heavy metals) that can affect the folding and functional conformation of proteins [27,28], is related to different ambient environmental temperature. In the current study, worker ants of S. japonica were incubated at a low temperature (9 °C). Detailed differential expression analysis revealed a number of candidate genes are potentially related to cold tolerance compared with 25 °C incubated ants of S. japonica. We confirmed our transcriptome data by performing qRT-PCR. We aimed to provide a basis for the adaptive mechanism and a rich resource for the discovery and identification of novel genes involved in the cold stress response in S. japonica, a rare underground-dwelling invertebrate predator.
+
+2. Materials and Methods
+
+2.1. Insect Rearing, Exposure Temperatures and Sample Preparation
+
+An S. japonica colony was collected on Mt. Manin, Deajeon, Korea. The ant colony consists of dealate mated queens, alate queens, males, brood (eggs, larvae, and pupae), and workers. We used the field colony (colony of origin) to create standardized experimental colonies. Only the field colonies found to contain multiple queens were included in this experiment. All ants were placed in a plastic tray (25 (H) × 30 × 35 cm3) and maintained at 25 ± 1 °C in the Quarantine Pest Research Facility (Animal and Plant Quarantine Agency, Gimcheon, South Korea) with 65 ± 2% relative humidity. Ants were fed a 20% sucrose solution and mealworms (Tenebrio molitor larvae) as a protein source. Water was provided ad libitum. We generated the lab colony with single reproductive queens isolated from field-collected nests to obtain known offspring of individual queens from polygyne nests; the lab colony, comprising of a few thousand workers and brood, were maintained individually in plastic trays. We waited for six weeks before sampling pupae because some brood were the offspring of queens from the polygyne source nest other than the isolated queen, so that all such brood had eclosed as adults. In order to acquire known progeny, we also observed foraging behavior in standardized colonies in the lab, controlling for variation due to colony size and brood-to-worker ratio. To perform transcriptomic analysis, 15 S. japonica workers (body weight; 0.64 ± 0.22 mg) were incubated at 9 and 25 °C for 24 h as the temperature treatment groups. Incubated ants at 25 °C were considered as the control group. Each treatment was replicated with three independent biological sample preparations. After the temperature treatment, worker ants from each group were immediately frozen in liquid nitrogen and stored at −80 °C for subsequent experiments.
+
+2.2. RNA Extraction and RT-qPCR
+
+RNA samples were extracted from the whole bodies of S. japonica workers cast using Trizol reagent (Invitrogen, Carlsbad, CA, USA) according to the manufacturer’s instructions. After RNA extraction, it was resuspended in nuclease-free water and quantified using a spectrophotometer (NanoDrop, Thermo Scientific, Wilmington, DE, USA). cDNA was then synthesized from RNA (1 μg) using RT PreMix (Intron Biotechnology, Seoul, Korea) containing an oligo dT primer according to the manufacturer’s instructions. All quantitative PCRs (qPCRs) in this study were determined using a real-time PCR machine (CFX Connect real-time PCR Detection System, Bio-Rad, Hercules, CA, USA) and iQ SYBR Green Supermix (Bio-Rad, Hercules, CA, USA) according to the guidelines of the manufacturer. The reaction mixture (20 μL) contains 10 μL of iQ SYBR Green Supermix, 1 μL of cDNA template (100 ng), and 1 μL each of forward and reverse primers (Table S1) and 7 μL nuclease-free water. RT-qPCR cycling began with a 95 °C heat treatment for 10 min, followed by 40 cycles of denaturation at 94 °C for 30 s, annealing at 52 °C for 30 s, and extension at 72 °C for 20 s. The expression level of rpl32 as a reference gene was used to normalize target gene expression levels [29] under different treatments. PCR products were assessed by melting curve analysis. Quantitative analysis was performed using the comparative CT (2−ΔΔCT) method [30].
+
+2.3. Illumina Sequencing
+
+To obtain short-read RNA sequences, Illumina sequencing was performed at Macrogen (Seoul, South Korea). Each library was constructed from 1 μg total RNA from the whole body of 5 individuals of S. japonica adults per treatment using the TruSeq Stranded mRNA LT Sample Prep Kit (Illumina, San Diego, CA, USA) and sequenced using the HiSeq 4000 System (Illumina, San Diego, CA, USA) with 101 bp pair end read (Table S2).
+
+2.4. De Novo Assembly
+
+Illumina short reads were quality-filtered and adapter-trimmed using Trimmomatic v0.38 (http://www.usadellab.org/cms/?page=trimmomatic, accessed on 2 July 2020). FastQC v0.11.7 (http://www.bioinformatics.babraham.ac.uk/projects/fastqc/, accessed on 2 July 2020) was used to check data quality before and after trimming. After the removal of low-quality reads, an Illumina-based de novo transcriptome assembly was performed using Trinity version trinity rnaseq r20140717, bowtie 1.1.2 [31]. Trimmed reads for every sample were merged into one file to construct a combined reference. The de novo assembly of merged data was carried out using Trinity with default parameters, and it was assembled into transcript contigs [32]. The total number of genes, transcripts, GC content, max/min/median/average contig length, and total assembled bases were summarized. Trinity groups transcripts into clusters based on shared sequence content. For assembled genes, the longest contigs of the assembled contigs are filtered and clustered into non-redundant transcripts using CD-HIT version 4.6 (http://weizhongli-lab.org/cd-hit, accessed on 2 July 2020) [33]. These transcripts were defined as ‘unigenes’, which are used for predicting Open Reading Frames (ORFs), annotating against several known sequence databases, and analyzing differentially expressed genes (DEGs). The ORF prediction for unigenes was performed using TransDecoder version 3.0.1 (https://github.com/TransDecoder/TransDecoder/wiki, accessed on 2 July 2020) [34] to identify candidate coding regions within the transcript sequence. After extracting ORFs that were at least 100 amino acids long, the TransDecoder predicted the likely coding regions. Trimmed reads for each sample were aligned to the assembled reference using the Bowtie program. For the differentially expressed gene analysis, the abundances of unigenes across samples were estimated into read count as an expression measure by the RSEM algorithm (RSEM version v1.2.29, bowtie 1.1.2, http://deweylab.github.io/RSEM/ (accessed on 2 July 2020) [35]).
+
+2.5. Gene Functional Annotation
+
+For functional annotation, unigenes were searched against the Kyoto Encyclopedia of Genes and Genomes (KEGG) v20190104 (http://www.genome.jp/kegg/ko.html, accessed on 2 July 2020), [36], NCBI Nucleotide (NT) v20180116 (https://www.ncbi.nlm.nih.gov/nucleotide/, accessed on 2 July 2020) [22], Pfam v20160316 (https://pfam.xfam.org/, accessed on 2 July 2020), [37], GO v20180319 (http://www.geneontology.org/, accessed on 2 July 2020), [38], NCBI NR v20180503 (https://www.ncbi.nlm.nih.gov/protein/, accessed on 2 July 2020), [39], UniProt v20180116 (http://www.uniprot.org/, accessed on 2 July 2020), [40] and EggNOG (http://eggnogdb.embl.de/, accessed on 2 July 2020) [41] using BLASTN of NCBI BLAST and BLASTX of DIAMOND version 0.9.21 (https://github.com/bbuchfink/diamond, accessed on 2 July 2020) with an E-value default cutoff of E-value 10−5.
+
+2.6. Differential Gene Expression Analysis
+
+A quality check was performed for all samples, so that if more than one read count value was 0, it was not included in the analysis. Gene expression levels were measured in by RNA-Seq analysis as the fragments per kilo base of transcript per million mapped reads (FPKM) [42]. Multiple testing was corrected for in all statistical tests using the Benjamini–Hochberg false discovery rate with the following parameter values: false discovery rate < 0.01 [43]. In order to reduce systematic bias, we estimate the size factors from the count data and apply Relative Log Expression normalization with the DESeq2 R library. Using each sample’s normalized value, the high expression similarities were grouped together by Hierarchical Clustering Analysis and graphically shown in a 2D plot to show the variability of the total data using Multidimensional Scaling Analysis. Significant unigene results were analyzed as up- and down-regulated count by log2FC ≥ 1 and ≤−1. The distribution of expression levels between the two groups was plotted as a Volcano plot and simple bar plots [44].
+
+2.7. Quantitative RT-PCR Validation
+
+A further twenty genes in response to cold treatment (T9) were chosen for validation using RT-qPCR. To choose the genes, the DEGs were sorted by fold change, and 10 DEGs were picked at random from the entire library for up-regulated DEGs and 10 DEGs for down-regulated DEGs. The DEGs that are annotated in all databases were chosen. S. japonica adults were incubated at 9 and 25 °C in two separated groups, including 10 ants, for 24 h. RNA was extracted from all ants together (a pool of 10 ants) and cDNA was synthesized according to the ‘RNA extraction and RT-qPCR’ section. Specific primers were designed using the Primer Quest tool (www.idtdna.com, accessed on 30 July 2020) (Table S1). To normalize target gene expression levels under various treatments, the expression level of rpl32 was used as a reference gene [29]. Single PCR products were confirmed by 1% agarose gel and were assessed by melting curve analysis. Each treatment was replicated with three independent biological sample preparations. The comparative CT (2−ΔΔCT) method was used to perform quantitative analysis in three technical replicates [30]. Finally, the data were compared according to the ratio of FPKM and the ratio of mRNA expression level for all selected genes.
+
+2.8. Data Analysis
+
+The results were plotted using GraphPad Prism 8.0. Means were compared by least squared difference (LSD) test of one-way analysis of variance (ANOVA) using PROC GLM of SAS program and discriminated at Type I error = 0.05.
+
+3. Results
+
+3.1. Sequencing, RNA-Seq Assembly, and Functional Annotation
+
+Illumina raw data was qualified by filtering to reveal the transcriptome responses to cold stress in S. japonica (Supplementary Tables S3 and S4). In total, 25.1 Gb of clean data passed the Illumina quality filter after transcriptome sequencing of four cDNA samples with Q30 > 95% (Supplementary Table S4). To perform the de novo transcriptome assembly, all high-quality reads (Supplementary Table S4) were pooled. Using paired-end joining and clustering according to the similarity of contigs, these contigs were further assembled into 118,655 transcripts with a mean length of 876.07 bp and an N50 of 1853 bp, and 89,763 unigenes with a mean length of 676.49 bp and an N50 of 1194 bp (Supplementary Tables S5 and S6). The length distribution of unigenes closely followed the length distribution of transcripts. This indicates a high-quality assembly, providing a sequence basis for future studies.
+
+3.2. Annotation of Predicted Proteins
+
+The assembled unigenes were blasted against ten public databases (NR, NT, UniProt, Pfam, GO, EggNOG, KEGG, KO_EUK_Annotation, KO_PRO_Annotation, KO_BAC_Annotation and KO_BAC.NUC_Annotation) using BLASTX with a cut off E-value of 10–5 for validation and annotation. After annotation, genes with a significant blast hit to arthropods were identified. At most, 32,782 (35.56%) unigenes were found in the NR public database, followed by the NT database (29,598 annotated unigenes, 33.01%), and the KO_EUK_Annotation database (29,144, 32.51%) ( ). Overall, most of the unigenes either could not be annotated or their descriptions were uninformative (e.g., putative, unknown, hypothetical, or unnamed proteins). Overall, the unigene sequences were most similar to gene sequences from Solenopsis invicta (33.97%) and totally more than 58% similarity with ant genus (Solenopsis sp., Trachymyrmex sp., Acromyrmex sp., Atta sp., Camponotus sp., Cyphomyrmex sp., Monomorium sp., Vollenhovia sp., Wasmannia sp., Harpegnathos sp., and Lasius sp.) and, interestingly, 12.26% similarity with Rhagoletis zephyria (Diptera: Tephritidae) and 11.3% similarity with two genus of mites including Sacroptes sp. and Euroglyphus sp. were observed via BLASTX matches in the NR database.
+
+Table 1
+
+DatabaseUnigene300 ≤ Length < 1000Length ≥ 1000NT_Annotation29,598 (33.01%)11,80611,029NR_Annotation32,782 (36.56%)12,64810,156Pfam_Annotation20,267 (22.61%)68908242EggNOG_Annotation26,823 (29.92%)95209796KO_EUK_Annotation29,144 (32.51%)10,9249738KO_PRO_Annotation6889 (7.68%)21263564KO_BAC_Annotation6376 (7.11%)18773469KO_BAC.NUC_Annotation242 (0.27%)79115GO_Annotation20,645 (23.03%)67758254UniProt_Annotation19,121 (21.33%)61827782
+
+ORF prediction for unigenes was performed using the TransDecoder program. ORFs with at least 100 amino acids long were extracted. In total, 21.62% (19,384) of the total predicted unigenes (89,657) were included in at least one ORF ( ). From 22,442 predicted ORF, 9904 (44.13%) showed as a full open reading frame ( ).
+
+Table 2
+
+AssemblyTotal UnigeneORF Predicted UnigeneSingle ORF Predicted UnigeneMultiple ORF Predicted UnigeneMerge89,65719,384 (21.62%)16,956 (87.47%)2428 (12.53%) Assembly No. of ORF Complete Internal 5′ partial 3′ partial Merge22,4429904 (44.13%)6116 (27,25%)4790 (21.34%)1632 (7.27%)
+
+3.3. GO and EggNOG Analysis for Global Functional Classification
+
+For functional annotation of the unigenes, the GO database and EggNOG database were applied to classify the annotated unigenes using BLASTX. As one unigene can have different functional annotations, a total of 20,645 genes have been annotated with GO terms inferred from BLAST results. Eighty-one GO functional sub-groups could be obtained according to the three main GO groups ‘biological process (45)’, ‘cell component (19)’ and ‘molecular function (17)’ in the GO database. A total of 8004 unigenes belonged to the biological process group, 6266 unigenes fell into the cellular component group, and 6375 unigenes were categorized in the molecular function group ( ). The most common DEGs coregulated under cold stress according to GO categorization were ‘cellular process’, ‘biological regulation’, ‘metabolic process’, ‘developmental process’, ‘cellular component organization or biogenesis’ and ‘localization’ in the biological process category. In the molecular function category, the coregulated DEGs were mostly assigned to ‘catalytic activity’, ‘binding’, and ‘transporter activity’. For the cellular components category, only ‘membrane’, ‘protein-containing complex’, ‘organelle’, ‘organelle part’, ‘cell part’, and ‘membrane part’ were significantly enriched ( ).
+
+Table 3
+
+GO TermUnigenesDEGs (FC ≥ 2, FC ≤ −2)Corrected p-Value Biological Process Cellular process13,159 (24.32%)109 (22.52%)0.003627Metabolic process9319 (17.22%)110 (22.73%)4.8 × 10−5Biological regulation8026 (14.83%)52 (10.74%)0.004567Developmental process3838 (7.09%)23 (4.75%)0.002454Cellular component 3971 (7.45%)65 (1.63%)2.85 × 10−5Localization3515 (6.5%)36 (7.44%)0.000132 Cellular Component Cell part14,694 (31.76%)132 (30.91%)0.000105Organelle7513 (16.24%)45 (10.54%)0.00182Membrane part4536 (9.8%)65 (15.22%)0.036674Protein-containing complex5210 (11.26%)26 (6.09%)0.000455Membrane3978 (8.6%)55 (12.88%)0.004567Organelle part6190 (13.38%)45 (10.54%)1.02 × 10−9 Molecular Function Binding10,355 (41.73%)97 (33.22%)3.29 × 10−14Catalytic activity8531 (34.38%)124 (42.47%)0.00136Transporter activity1565 (6.31%)36 (12.33%)5.71 × 10−6
+
+To reveal functional and biological classification, the EggNOG database was used. In total, 26,823 unigenes were assigned to 18 EggNOG terms ( ) that belonged to three functional classes including ‘information storage and processing’, ‘cellular processes and signaling’ and ‘metabolism’. The largest number of unigenes were classified at ‘translation, ribosomal structure and biogenesis (1124 unigenes)’, ‘transcription (1169)’, ‘replication, recombination and repair (1318)’, ‘intracellular trafficking, secretion, and vesicular transport (1530)’ and ‘post-translational modification, protein turnover, chaperones (1977)’ ( ).
+
+3.4. Differentially Gene Expression under Different Temperature
+
+DEGs under cold-stress temperature treatment (T9) compared with the control (T25), were identified. An amount of 330 unigenes were DEGs for T9, with a criterion of adjusted p-value < 0.05 and |log2FC| ≥ 1 that 215 unigenes were up-regulated and 115 DEGs down-regulated ( , Supplementary Tables S7 and S8).
+
+To clear functional classification, KEGG and GO analysis were performed on screened unigenes ( , Supplementary Table S9 and , Supplementary Table S10, respectively). KEGG pathway enrichment analysis revealed the primary DEG pathways ( , Supplementary Table S9). A large number of coregulated DEGs under cold temperature stress were significantly enriched in the ‘Metabolic pathways’ which are dominated by ‘α-glucosidase-like’, ‘Uridine 5′-monophosphate synthase-like’, ‘Cysteine sulfinic acid decarboxylase’, ‘Inositol-triphosphate 3-kinase A’, ‘4-coumarate-CoA ligase 1-like’, ‘Pancreatic triacylglycerol lipase-like’, ‘Lipase member H-B like’ and ‘NADH dehydrogenase subunits’ unigenes. Another identified enriched-pathway for the T9 group included ‘Fatty acid metabolism’, which includes ‘Elongation of very long chain fatty acids protein 7-like’, ‘Fatty acid synthase-like’ and ‘Acyl-CoA Delta (11) desaturase’ unigenes. ‘Biosynthesis of unsaturated fatty acids’, ‘Fatty acid elongation’ and ‘Fatty acid biosynthesis’ are other pathways enriched under the effects of low temperature. The protein present in the ‘Peroxisome’-enriched pathway was ‘Fatty acid CoA-reductase’. ‘Trypsin-1-like’, ‘Chymotrypsin-1 and 2-like’, ‘Transmembrane protease serine 9-like’, ‘γ-aminobutyric acid receptor α-like’, ‘Chymotrypsin-like protease CTRL-1′ and ‘Anionic trypsin-2-like’ were the changed participants of the ‘Neuroactive ligand–receptor interaction’ under cold stress conditions. A series of unigenes related to the immune system of ‘Peptidoglycan-recognition proteins’ were responsible for enriching the ‘Toll and Imd signaling pathway’. ‘Glycerolipid metabolism’, Lysosome’, ‘Glycerophospholipid metabolism’, ‘Starch and sucrose metabolism’, and ‘Galactase metabolism’ are other pathways that are enriched at lower temperatures in comparison with 25 °C ( , Supplementary Table S9).
+
+GO annotation was used to clarify the functions of DEGs that were significantly different (FC ≥ 2 or ≤ −2) with incubation of S. japonica at 9 °C in comparison with 25 °C ( , Supplementary Table S10). The most significant GO items were ‘Biological process: metabolic process, multicellular organismal process, response to stimulus and localization’, ‘Cellular component: membrane, membrane part and extracellular region part’ and ‘Molecular function: catalytic activity and transporter activity ( , Supplementary Table S10).
+
+3.5. Validation of Gene Expression Profiles by qPCR
+
+qPCR and gel electrophoresis of twenty common DEGs identified in the RNA sequence data were performed to confirm the accuracy and reproducibility of the Illumina RNA-Seq. The ten up-regulated DEGs included chymotrypsin-2-like (CHY; c17281_g1_i1), elongation of very long-chain fatty acids, protein 7-like (FAP; c113360_g1_i1), lipase 3-like (LIP; c89947_g1_i2), caspase-1-like (CAS; c90816_g2_i2), mucin 17-like (MUC; c61818_g1_i1), transmembrane protease serine 9-like (TPS; c88786_g3_i1), α-glucosidase-like (AGL; c80199_g1_i1), luciferin 4-monooxygenase-like (LML; c86095_g2_i2), ornithine decarboxylase 2-like (ODC; c77768_g1_i1) and peptidoglycan-recognition protein 1-like (PRP; c78499_g1_i2). Another 10 DEGs that showed down-regulation at T9 compared to T25 were validated by qPCR, including: odorant receptor coreceptor (ORC; c89345_g3_i1), chitinase-3-like protein 1 (CLP; c82068_g1_i1), homeobox protein prophet of Pit-1 (HPP; c78623_g1_i1), sensory neuron membrane protein 1-like (SNM; c90181_g1_i1), phospholipase A1-like (PAL; c79106_g1), elastin-like (ELL; c83852_g1_i2), peritrophin 48-like (PET; c85316_g3_i2), keratinocyte proline-rich protein-like (KPR; c26648_g1_i1), UDP-glucuronosyltransferase 2B18-like (UDP; c69128_g2_i2) and paired box protein Pax 6-like (PBP; c86999_g1_i1). The results of the qPCR and Illumina FPKM ratio were plotted in . It can be revealed that expression changes were in the same direction as the qPCR. The Illumina sequencing data were consistent with qPCR data, verifying the reliability and accuracy of the transcriptome analysis. This ensures the RNA-Seq results was considerably reliable for the identification of DEGs under stressed conditions in this study and also the feasibility and sustainability of our further research on these or other DEGs from the transcriptome data.
+
+4. Discussion
+
+Insects show different responses to temperature changes as well as distribution and development among animals, which is a very vital factor for predators (Ran et al., 2020). S. japonica is a soil dwelling invertebrate predator. Unfortunately, there is a poor understanding of its biology. Comprehensive investigation of gene expression regulation under cold stress is very important to understand the biochemical and physiological adaptation process [22]. The present study tries to show how S. japonica can adapt to the low temperature environment for its survival and breeding. Transcriptome sequencing data indicated 330 transcripts of S. japonica that were significantly differentially expressed under low temperature stress. This data explains that S. japonica has adaptability to low temperatures and can survive under cold stress conditions. Many physiological and biochemical strategies help insects deal with stress conditions involving low temperatures [45]. KEGG analysis revealed that most of the cold-regulated DEGs were enriched in the ‘Metabolism’ pathways, including ‘metabolic pathway’, ‘fatty acid metabolism’, ‘biosynthesis of unsaturated fatty acids’, ‘fatty acid elongation’, ‘fatty acid biosynthesis’, ‘galactase metabolism’ and ‘starch and sucrose metabolism’. There are some similar results in the investigation into transcriptome responses to cold stress in the chrysomelid, Galeruca daurica [22], the ladybird, Cryptolaemus montrouzieri [21,22], and also the desert beetle, Microdera punctipennis [46].
+
+In this study, we identified 15 serine protease protein genes from 215 up-regulated DEGs after cold stress (Supplementary Table S7), and also two chymotrypsin genes down-regulated (Supplementary Table S8). The accumulation of serine protease, predominantly chymotrypsin mRNA, indicates that adults are preparing for diet feeding and subsequent diapausing because, along with serine proteases, 12 fatty acid synthase and fatty acyl-CoA reductase continue to be expressed. This pattern is evident that regulation of fatty acid synthase and serine proteases is a part of the diapause program and not a result of other factors such as temperature, host availability, or feeding activities [47]. However, there are some reports of fatty acid accumulation in insects that were incubated under high-temperature stress [45,48]. One opinion is that fatty acids are hydrophobic, allowing insects to keep body water in hostile environments.
+
+The KEGG results revealed that carbohydrate metabolic processes, including ‘galactase metabolism’ and ‘starch and sucrose metabolism’ are the other main pathways and three α-glucosidae, as an important group of enzymes that are specialized in sugar digestion [49], are up-regulated when S. japonica is exposed to low temperatures, indicating S. japonica mainly metabolized sugar during low-temperature stress. In addition, several amino acids were detected and identified in cold stress conditions, including taurine, arginine, proline, alanine, aspartate, and glutamate ( ), which have been previously reported [50,51,52,53]. Under the cold-stress condition, ants showed enriched pathways of both proline and arginine than room temperature-exposed ants, and contained an enriched pathway of glutamate, a precursor to arginine and proline ( , Supplementary Table S9). Together, these findings suggest that these polar and charged amino acids, and modulation of proline metabolism in particular, may be essential to the achievement of cold tolerance in S. japonica, as the same condition was observed for Drosophila melanogaster [50]. Glutamate is not only a metabolic precursor of arginine and proline, but also of glutathione [50], and ‘Glutathione metabolism’ was one of the recorded KEGG-enriched pathways in the ants that was exposed at low temperature in our findings ( , Supplementary Table S9). Cold acclimation also involved significant up-regulation of genes involved in immunity. Protein spaetzle, peptidoglycan-recognition protein, Toll-like receptor and transferrin-like peptide are associated with cold tolerance in S. japonica. A relationship between cold exposure and immunity has also been suggested by numerous transcriptomic studies [54,55,56], although the nature of this relationship remains unclear [50]. Peritrophin genes related to the peritrophic membrane, which have been previously suggested, appear to be of great importance to insect cold tolerance [57] and are up-regulated in our insect model S. japonica when incubated at a low temperature (Supplementary Table S7).
+
+In this research, we also discovered 12 DEGs related to odorant receptor proteins (ORPs) were down-regulated (Supplementary Table S8). This shows that the chemosensory system of S. japonica probably cannot respond properly to chemical cues in the environment at low temperatures. Microarray transcriptomic studies of the third antennal segment of high-temperature-acclimated Drosophila revealed that four ORPs were up-regulated and five of them down-regulated. Indeed, low temperature and some stress conditions such as starvation have been connected to alteration of some ORPs [58]. Under cold treatment, several enzymes, including NADH dehydrogenase subunit and ATP synthase subunit that are involved in ‘oxidation phosphorylation’ pathway, were significantly down-regulated. This was consistent with findings of cold tolerance of a lepidopteran insect, Eogystia hippophaecolus [43]. The CYP family is also a superfamily associated with oxidative metabolism. It has been previously reported that CYP is related to temperature regulation [44,59]. In the present study, several genes encoding CYP (10 mRNAs) were also found to be significantly up-regulated under cold stress. However, two genes related to CYP were down-regulated at low temperatures.
+
+HSP, as a highly conserved molecular chaperone, plays an important role in organism responses to stressor conditions, such as cold hardiness, that can have an effect on the folding and functional conformation of proteins [28,60]. Compared with previous studies that proved HSP genes can be induced to express by cold and heat stress [44,60], we could not find many HSPs. We found just two HSPs (Table S8) that were down-regulated by cold stress at 9 °C for 24 h. There is a report that many HSP genes are differentially expressed under the cold (9 °C for 24 h) in ladybirds [21]. Tusong et al. 2016, also discovered seven HSPs (HSP90 and HSP70) up-regulated by cold stress in a coleopteran insect, Metapogon punctipennis [46]. This difference might be due to the differences in HSPs, insect species, and intensity of temperature treatment. As reported, sex intensity of treatment and insect strain can be affected by HSP induction [22,35].
+
+5. Conclusions
+
+The recent analysis discovered many DEGs, but their roles at low temperatures are unknown. However, determining the molecular pathways underlying a complicated process purely on the basis of the involvement of these DEGs is difficult, but it will be fascinating if the significance of these DEGs is elucidated in the future. In conclusion, we present a global survey of the transcriptome profile in S. japonica under cold stress condition using RNA-Seq technology. Comparative transcriptome study showed numerous genes and pathways that are ubiquitous under cold stress, leading to speculation on the molecular basis of this fire ant. This is the first study of cold stress induction in S. japonica and we first identified genes in this study, including some functionally unknown genes. These newly found genes may be important specifically in the cold environment. Our data will facilitate further molecular investigations into the cold tolerance of S. japonica and provide new insights into insect adaption to the harsh environment.
+
+Supplementary Materials
+
+The following are available online at https://www.mdpi.com/article/10.3390/genes12101610/s1, Table S1: Primer sequences used in this study. Table S2: Project information of transcriptome analysis. Table S3: Summary of data production (Raw data statistics results). Table S4: Summary of data production (Trimming data statistics results). Table S5: De novo transcriptome assembly statistics. Table S6: Clustering transcripts into unigenes. Table S7: Specific and core T9 associated DEGs in compare with T25 that up-regulated (p-value < 0.05, log2FC ≥ 1). Table S8: Specific and core T9 associated DEGs in compare with T25 that down-regulated (p-value < 0.05, log2FC ≤ −1). Tabls S9: Associated genes related to pathways enrichment base on KEGG classification (p-value < 0.05, log2FC ≥ 1, ≤ −1). Table S10: Significantly enriched GO terms in the DEGs coregulated by cold stresses, 9℃, (T9) in compare with T25, (p-value<0.05, log2FC ≥ 1, ≤ −1).
+
+Author Contributions
+
+Y.P. and M.V. conceived the idea, designed the experiments; M.V. and Y.P. performed the experiments; M.V. and Y.P. analyzed the data; M.V. and Y.P. co-wrote the manuscript. Y.P. and M.V. discussed the results and commented on the manuscript. Both authors have read and agreed to the published version of the manuscript.
+
+Institutional Review Board Statement
+
+Not applicable.
+
+Footnotes
+
+Publisher’s Note: MDPI stays neutral with regard to jurisdictional claims in published maps and institutional affiliations.
+
+References
+
+1. Briano J., Calcaterra L., Varone L. Fire ants (Solenopsis spp.) and their natural enemies in southern South America. Psyche. 2012;2012:1980–1984. [Google Scholar]
+
+2. Yamaguchi T., Hasegawa M. An experiment on ant predation in soil using a new bait trap method. Ecol. Res. 1996;11:11–16. doi: 10.1007/BF02347815. [CrossRef] [Google Scholar]
+
+3. Teranishi C. Japanese ants, their behavior and distribution (1) Zool. Mag. 1929;41:239–251. [Google Scholar]
+
+4. Brown V.K., Gange A.C. Advances in Ecological Research. Volume 20. Elsevier; Amsterdam, The Netherlands: 1990. Insect herbivory insect below ground; pp. 1–58. [Google Scholar]
+
+5. Cramer W., Bondeau A., Woodward F.I., Prentice I.C., Betts R.A., Brovkin V., Cox P.M., Fisher V., Foley J.A., Friend A.D. Global response of terrestrial ecosystem structure and function to CO2 and climate change: Results from six dynamic global vegetation models. Glob. Chang. Biol. 2001;7:357–373. doi: 10.1046/j.1365-2486.2001.00383.x. [CrossRef] [Google Scholar]
+
+6. Tylianakis J.M., Didham R.K., Bascompte J., Wardle D.A. Global change and species interactions in terrestrial ecosystems. Ecol. Lett. 2008;11:1351–1363. doi: 10.1111/j.1461-0248.2008.01250.x. [PubMed] [CrossRef] [Google Scholar]
+
+7. Li H., Zhao X., Qiao H., He X., Tan J., Hao D. Comparative transcriptome analysis of the heat stress response in Monochamus alternatus Hope (Coleoptera: Cerambycidae) Front. Physiol. 2020;10:1568. doi: 10.3389/fphys.2019.01568. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+8. Garrad R., Booth D.T., Furlong M.J. The effect of rearing temperature on development, body size, energetics and fecundity of the diamondback moth. Bull. Entomol. Res. 2016;106:175. doi: 10.1017/S000748531500098X. [PubMed] [CrossRef] [Google Scholar]
+
+9. Bale J.S. Insects and low temperatures: From molecular biology to distributions and abundance. Philos. Trans. R. Soc. Lond. Ser. B. Biol. Sci. 2002;357:849–862. doi: 10.1098/rstb.2002.1074. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+10. Lee R.E. Insects at Low Temperature. Springer; Berlin/Heidelberg, Germany: 1991. Principles of insect low temperature tolerance; pp. 17–46. [Google Scholar]
+
+11. Turnock W.J., Lamb R.J., Bodnaryk R.P. Effects of cold stress during pupal diapause on the survival and development of Mamestra configurata (Lepidoptera: Noctuidae) Oecologia. 1983;56:185–192. doi: 10.1007/BF00379690. [PubMed] [CrossRef] [Google Scholar]
+
+12. Hutchinson L.A., Bale J.S. Effects of sublethal cold stress on the aphid Rhopalosiphum padi. J. Appl. Ecol. 1994;31:102–108. doi: 10.2307/2404603. [CrossRef] [Google Scholar]
+
+13. Bale J.S. Classes of insect cold hardiness. Funct. Ecol. 1993;7:751–753. [Google Scholar]
+
+14. Gillooly J.F., Brown J.H., West G.B., Savage V.M., Charnov E.L. Effects of size and temperature on metabolic rate. Science. 2001;293:2248–2251. doi: 10.1126/science.1061967. [PubMed] [CrossRef] [Google Scholar]
+
+15. Rall B.C., Vucic-Pestic O., Ehnes R.B., Emmerson M., Brose U. Temperature, predator–prey interaction strength and population stability. Glob. Chang. Biol. 2010;16:2145–2157. doi: 10.1111/j.1365-2486.2009.02124.x. [CrossRef] [Google Scholar]
+
+16. Berlow E.L., Dunne J.A., Martinez N.D., Stark P.B., Williams R.J., Brose U. Simple prediction of interaction strengths in complex food webs. Proc. Natl. Acad. Sci. USA. 2009;106:187–191. doi: 10.1073/pnas.0806823106. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+17. Petchey O.L., Brose U., Rall B.C. Predicting the effects of temperature on food web connectance. Philos. Trans. R. Soc. B Biol. Sci. 2010;365:2081–2091. doi: 10.1098/rstb.2010.0011. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+18. Culler L.E., Ayres M.P., Virginia R.A. In a warmer Arctic, mosquitoes avoid increased mortality from predators by growing faster. Proc. R. Soc. B Biol. Sci. 2015;282:20151549. doi: 10.1098/rspb.2015.1549. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+19. Karban R., Grof-Tisza P., Mcmunn M., Kharouba H., Huntzinger M. Caterpillars escape predation in habitat and thermal refuges. Ecol. Entomol. 2015;40:725–731. doi: 10.1111/een.12243. [CrossRef] [Google Scholar]
+
+20. Vucic-Pestic O., Ehnes R.B., Rall B.C., Brose U. Warming up the system: Higher predator feeding rates but lower energetic efficiencies. Glob. Chang. Biol. 2011;17:1301–1310. doi: 10.1111/j.1365-2486.2010.02329.x. [CrossRef] [Google Scholar]
+
+21. Zhang Y., Wu H., Xie J., Jiang R., Deng C., Pang H. Transcriptome responses to heat-and cold-stress in ladybirds (Cryptolaemus montrouzieri Mulasnt) analyzed by deep-sequencing. Biol. Res. 2015;48:66. doi: 10.1186/s40659-015-0054-3. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+22. Zhou X.R., Shan Y.M., Tan Y., Zhang Z.R., Pang B.P. Comparative analysis of transcriptome responses to cold stress in Galeruca daurica (Coleoptera: Chrysomelidae) J. Insect Sci. 2019;19:8. doi: 10.1093/jisesa/iez109. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+23. Hayward S.A.L. Application of functional ‘Omics’ in environmental stress physiology: Insights, limitations, and future challenges. Curr. Opin. Insect Sci. 2014;4:35–41. doi: 10.1016/j.cois.2014.08.005. [PubMed] [CrossRef] [Google Scholar]
+
+24. Dunning L.T., Dennis A.B., Sinclair B.J., Newcomb R.D., Buckley T.R. Divergent transcriptional responses to low temperature among populations of alpine and lowland species of New Zealand stick insects (Micrarchus) Mol. Ecol. 2014;23:2712–2726. doi: 10.1111/mec.12767. [PubMed] [CrossRef] [Google Scholar]
+
+25. Wei D., Jia F.-X., Tian C.-B., Tian Y., Smagghe G., Dou W., Wang J.-J. Comparative proteomic analysis of Bactrocera dorsalis (Hendel) in response to thermal stress. J. Insect Physiol. 2015;74:16–24. doi: 10.1016/j.jinsphys.2015.01.012. [PubMed] [CrossRef] [Google Scholar]
+
+26. Liu Y., Su H., Li R., Li X., Xu Y., Dai X., Zhou Y., Wang H. Comparative transcriptome analysis of Glyphodes pyloalis Walker (Lepidoptera: Pyralidae) reveals novel insights into heat stress tolerance in insects. BMC Genomics. 2017;18:974. doi: 10.1186/s12864-017-4355-5. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+27. Storey K.B., Storey J.M. Insect cold hardiness: Metabolic, gene, and protein adaptation. This review is part of a virtual symposium on recent advances in understanding a variety of complex regulatory processes in insect physiology and endocrinology, including development, metaboli. Can. J. Zool. 2012;90:456–475. doi: 10.1139/z2012-011. [CrossRef] [Google Scholar]
+
+28. Clark M.S., Worland M.R. How insects survive the cold: Molecular mechanisms—A review. J. Comp. Physiol. B. 2008;178:917–933. doi: 10.1007/s00360-008-0286-4. [PubMed] [CrossRef] [Google Scholar]
+
+29. Cheng D., Zhang Z., He X., Liang G. Validation of reference genes in Solenopsis invicta in different developmental stages, castes and tissues. PLoS ONE. 2013;8:e57718. doi: 10.1371/journal.pone.0057718. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+30. Livak K.J., Schmittgen T.D. Analysis of relative gene expression data using real-time quantitative pcr and the 2−ΔΔCT Method. Methods. 2001;25:402–408. doi: 10.1006/meth.2001.1262. [PubMed] [CrossRef] [Google Scholar]
+
+31. Langmead B., Trapnell C., Pop M., Salzberg S.L. Ultrafast and memory-efficient alignment of short DNA sequences to the human genome. Genome Biol. 2009;10:R25. doi: 10.1186/gb-2009-10-3-r25. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+32. Grabherr M.G., Haas B.J., Yassour M., Levin J.Z., Thompson D.A., Amit I., Adiconis X., Fan L., Raychowdhury R., Zeng Q., et al. Full-length transcriptome assembly from RNA-Seq data without a reference genome. Nat. Biotechnol. 2011;29:644–652. doi: 10.1038/nbt.1883. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+33. Pertea G., Huang X., Liang F., Antonescu V., Sultana R., Karamycheva S., Lee Y., White J., Cheung F., Parvizi B. TIGR Gene Indices clustering tools (TGICL): A software system for fast clustering of large EST datasets. Bioinformatics. 2003;19:651–652. doi: 10.1093/bioinformatics/btg034. [PubMed] [CrossRef] [Google Scholar]
+
+34. Haas B.J., Papanicolaou A., Yassour M., Grabherr M., Blood P.D., Bowden J., Couger M.B., Eccles D., Li B., Lieber M. De novo transcript sequence reconstruction from RNA-seq using the Trinity platform for reference generation and analysis. Nat. Protoc. 2013;8:1494–1512. doi: 10.1038/nprot.2013.084. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+35. Li B., Dewey C.N. RSEM: Accurate transcript quantification from RNA-Seq data with or without a reference genome. BMC Bioinform. 2011;12:323. doi: 10.1186/1471-2105-12-323. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+36. Kanehisa M., Goto S., Kawashima S., Okuno Y., Hattori M. The KEGG resource for deciphering the genome. Nucleic Acids Res. 2004;32:D277–D280. doi: 10.1093/nar/gkh063. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+37. Finn R.D., Clements J., Eddy S.R. HMMER web server: Interactive sequence similarity searching. Nucleic Acids Res. 2011;39:W29–W37. doi: 10.1093/nar/gkr367. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+38. Ashburner M., Ball C.A., Blake J.A., Botstein D., Butler H., Cherry J.M., Davis A.P., Dolinski K., Dwight S.S., Eppig J.T. Gene ontology: Tool for the unification of biology. Nat. Genet. 2000;25:25–29. doi: 10.1038/75556. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+39. Deng Y.Y., Li J.Q., Wu S.F., Zhu Y.P., Chen Y.W., He F.C. Integrated nr database in protein annotation system and its localization. Comput. Eng. 2006;32:71–74. [Google Scholar]
+
+40. Apweiler R., Bairoch A., Wu C.H., Barker W.C., Boeckmann B., Ferro S., Gasteiger E., Huang H., Lopez R., Magrane M. UniProt: The universal protein knowledgebase. Nucleic Acids Res. 2004;32:115–119. doi: 10.1093/nar/gkh131. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+41. Powell S., Forslund K., Szklarczyk D., Trachana K., Roth A., Huerta-Cepas J., Gabaldón T., Rattei T., Creevey C., Kuhn M., et al. eggNOG v4.0: Nested orthology inference across 3686 organisms. Nucleic Acids Res. 2013;42:231–239. doi: 10.1093/nar/gkt1253. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+42. Mortazavi A., Williams B.A., McCue K., Schaeffer L., Wold B. Mapping and quantifying mammalian transcriptomes by RNA-Seq. Nat. Methods. 2008;5:621–628. doi: 10.1038/nmeth.1226. [PubMed] [CrossRef] [Google Scholar]
+
+43. Cui M., Hu P., Wang T., Tao J., Zong S. Differential transcriptome analysis reveals genes related to cold tolerance in seabuckthorn carpenter moth, Eogystia hippophaecolus. PLoS ONE. 2017;12:e0187105. doi: 10.1371/journal.pone.0187105. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+44. Vatanparast M., Park Y. Comparison of gene expression in the red imported fire ant (Solenopsis invicta) under different temperature conditions. Sci. Rep. 2021;11:16476. doi: 10.1038/s41598-021-95779-w. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+45. Ran L., Jiang C., Yang Q., Wang H., Bai ma T., Chen L., Kuang J., Huang T., Li Q. Comparative transcriptome analysis of Locusta migratoria tibetensis Chen (Orthoptera: Oedipodidae) under high-and low-temperature stress. J. Appl. Entomol. 2020;144:181–190. doi: 10.1111/jen.12728. [CrossRef] [Google Scholar]
+
+46. Tusong K., Lu X., Liu X., Ma J. Transcriptomic analysis of the desert beetle Microdera punctipennis (Coleoptera: Tenebrionidae) in response to short-term cold stress. Acta Entomol. Sin. 2016;59:581–591. [Google Scholar]
+
+47. Robich R.M., Denlinger D.L. Diapause in the mosquito Culex pipiens evokes a metabolic switch from blood feeding to sugar gluttony. Proc. Natl. Acad. Sci. USA. 2005;102:15912–15917. doi: 10.1073/pnas.0507958102. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+48. Stanley-Samuelson D.W., Jurenka R.A., Cripps C., Blomquist G.J., de Renobales M. Fatty acids in insects: Composition, metabolism, and biological significance. Arch. Insect Biochem. Physiol. 1988;9:1–33. doi: 10.1002/arch.940090102. [CrossRef] [Google Scholar]
+
+49. Da Costa S.G., Bates P., Dillon R., Genta F.A. Characterization of α-glucosidases from Lutzomyia longipalpis reveals independent hydrolysis systems for plant or blood sugars. Front. Physiol. 2019;10:248. doi: 10.3389/fphys.2019.00248. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+50. MacMillan H.A., Knee J.M., Dennis A.B., Udaka H., Marshall K.E., Merritt T.J.S., Sinclair B.J. Cold acclimation wholly reorganizes the Drosophila melanogaster transcriptome and metabolome. Sci. Rep. 2016;6:28999. doi: 10.1038/srep28999. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+51. Overgaard J., Malmendal A., Sørensen J.G., Bundy J.G., Loeschcke V., Nielsen N.C., Holmstrup M. Metabolomic profiling of rapid cold hardening and cold shock in Drosophila melanogaster. J. Insect Physiol. 2007;53:1218–1232. doi: 10.1016/j.jinsphys.2007.06.012. [PubMed] [CrossRef] [Google Scholar]
+
+52. Koštál V., Korbelová J., Rozsypal J., Zahradníčková H., Cimlová J., Tomčala A., Šimek P. Long-term cold acclimation extends survival time at 0 °C and modifies the metabolomic profiles of the larvae of the fruit fly Drosophila melanogaster. PLoS ONE. 2011;6:e25025. doi: 10.1371/journal.pone.0025025. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+53. Colinet H., Larvor V., Laparie M., Renault D. Exploring the plastic response to cold acclimation through metabolomics. Funct. Ecol. 2012;26:711–722. doi: 10.1111/j.1365-2435.2012.01985.x. [CrossRef] [Google Scholar]
+
+54. Zhang J., Marshall K.E., Westwood J.T., Clark M.S., Sinclair B.J. Divergent transcriptomic responses to repeated and single cold exposures in Drosophila melanogaster. J. Exp. Biol. 2011;214:4021–4029. doi: 10.1242/jeb.059535. [PubMed] [CrossRef] [Google Scholar]
+
+55. Vermeulen C.J., Sørensen P., Kirilova Gagalova K., Loeschcke V. Transcriptomic analysis of inbreeding depression in cold-sensitive Drosophila melanogaster shows upregulation of the immune response. J. Evol. Biol. 2013;26:1890–1902. doi: 10.1111/jeb.12183. [PubMed] [CrossRef] [Google Scholar]
+
+56. Xu J., James R.R. Temperature stress affects the expression of immune response genes in the alfalfa leafcutting bee, Megachile rotundata. Insect Mol. Biol. 2012;21:269–280. doi: 10.1111/j.1365-2583.2012.01133.x. [PubMed] [CrossRef] [Google Scholar]
+
+57. MacMillan H.A., Sinclair B.J. The role of the gut in insect chilling injury: Cold-induced disruption of osmoregulation in the fall field cricket, Gryllus pennsylvanicus. J. Exp. Biol. 2011;214:726–734. doi: 10.1242/jeb.051540. [PubMed] [CrossRef] [Google Scholar]
+
+58. Jafari S., Alenius M. Cis-regulatory mechanisms for robust olfactory sensory neuron class-restricted odorant receptor gene expression in Drosophila. PLoS Genet. 2015;11:e1005051. doi: 10.1371/journal.pgen.1005051. [PMC free article] [PubMed] [CrossRef] [Google Scholar]
+
+59. Nakashima T., Harada Y., Miyata S., Kiyohara T. Inhibitors of cytochrome P-450 augment fever induced by interleukin-1 β Am. J. Physiol. Integr. Comp. Physiol. 1996;271:1274–1279. doi: 10.1152/ajpregu.1996.271.5.R1274. [PubMed] [CrossRef] [Google Scholar]
+
+60. King A.M., MacRae T.H. Insect heat shock proteins during stress and diapause. Annu. Rev. Entomol. 2014;60:59–75. doi: 10.1146/annurev-ento-011613-162107. [PubMed] [CrossRef] [Google Scholar]
+
+Articles from Genes are provided here courtesy of Multidisciplinary Digital Publishing Institute (MDPI)

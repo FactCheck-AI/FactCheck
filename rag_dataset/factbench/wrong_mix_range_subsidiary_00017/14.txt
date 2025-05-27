@@ -1,0 +1,41 @@
+We have 3 Exchange boxes in our DAG (Each with 2 live and 4 passive mailbox DBs) and want to look at shifting to 2 Exchange boxes running 3 live and 3 DB copies and the 3rd box running ONLY passive mailbox copies for backup purposes. I need to figure out how much load each box is currently under - all 3 run all Exchange services - so I can tell if pulling out 1 of the DAG members from processing user requests will cause serious performance issues. We have them on PRTG, but I wanted to hear your ideas on how best to evaluate them. Are there specific PRTG sensors you’d use or MS perfmon gauges?
+
+Thanks in advance!
+
+You haven’t provided any details of the usage.
+
+How many mailboxes, cached or non cached profiles, mailbox sizes or database sizes, do you archive or not?
+
+We have 2 MBX servers, ~6000 mailboxes/rooms/resources and about 3000 users, no issues.
+
+It also depends on your server spec, disk RAID level and spindle count, any mobile devices or OWA, is OWA proxied or directly NATted.
+
+A larger ram allocation and cached mailboxes being used will reduce the load massively.
+
+Oh and fYI, 85% of our users are VDI and used non-cached mode.
+
+As Rod-IT said, you should provide more details about your environment for us. For example, what is your exchange version?
+
+A tool called Exchange Load Generator 2013, which allows you to test how a server running Exchange 2013 responds to e-mail loads. Download link: Exchange Load Generator 2013
+
+Another tool called Microsoft Exchange Server Jetstress 2013 Tool, which allows you to verify the performance and stability of the disk subsystem. Download link: Microsoft Exchange Server Jetstress 2013 Tool
+
+For more details: Tools for Performance and Scalability Evaluation
+
+In addition, If you need pull out 1 of the DAG members from processing user requests, you can follow the steps mentioned in the article .
+
+I would say 2 boxes would be fine.
+
+If I read correctly you are only using 2 drives mirrored, which would mean low IO anyway, so you would reduce IO, however do note both 2008 and 2010 Exchange need to be upgraded.
+
+If this is your plan, build two new servers, migrate people over and if you need a third, it’s no trouble to make one.
+
+Exchange is IO and ram intensive, but your workload doesn’t sound much different from ours.
+
+To know for sure though you would have to get stats from the box
+
+IO usage, network, CPU and ram usage - but if you are saying your exchange servers run on only 2 disks mirrored and you dont see any major negative impacts, then moving from 4 hosts to two, on new hardware (obviously upgrading the OS and Ex versions), then a minimum of RAID10 with at least 4 disks should be comparable, however, throw 4 x SSDs in RAID and you should be better specced…
+
+Again, if you are using caching, this reduce the load massively.
+
+Thanks Rod, we’ll soon virtualize the lot inside a new VxRail system, but for the next few months we’re trying to (greatly) simplify our Exchange backups and were contemplating shifting all of the current traffic and load to just 2 of our 3 servers so that the 3rd member of the DAG could hold only passive copies of the mailbox DBs for a MUCH quicker backup and easier offsite replications. To date we have Veeam backing up all 3 DAG members entire machines, OS and Database hard drives and all.

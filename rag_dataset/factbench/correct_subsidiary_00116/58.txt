@@ -1,0 +1,347 @@
+Hi there,
+
+I am having an issue with Authenticating with Cisco ISE, on the logs of ISE it shows all good and I connect fine when I log onto HP switch but then it kicks me out after a couple of seconds. I thought it may have been a timer issue but the I checked and is syncronised see output;
+
+[HP-Test-JNR-SW1]display ntp-service status
+
+Clock status: synchronized
+
+Clock stratum: 2
+
+System peer: 10.60.82.6
+
+Local mode: client
+
+Reference clock ID: 10.60.82.6
+
+Leap indicator: 00
+
+Clock jitter: 0.003036 s
+
+Stability: 0.000 pps
+
+Clock precision: 2^-20
+
+Root delay: 0.83923 ms
+
+Root dispersion: 14.05334 ms
+
+Reference time: e2837377.78c424de Wed, Jun 3 2020 23:36:51.471
+
+However; when I check the service sessions, you can see its says GPSs in reference section;
+
+[HP-Test-JNR-SW1]display ntp-service sessions
+
+source reference stra reach poll now offset
+
+delay disper
+
+********************************************************************
+
+************
+
+[12345]10.60.82.6 GPSs 1 255 64 34 -5.105
+
+0.8392 5.6152
+
+[245]10.60.82.7 GPSs 1 255 64 23 -2.748
+
+0.7171 4.3335
+
+Notes: 1 source(master), 2 source(peer), 3 selected, 4 candidate, 5
+
+configured.
+
+Total sessions: 2
+
+Any and all help greatly appreciated
+
+Ok, so then 'GPSs' means that 10.60.82.6 server syncs its clock with a server who uses clock signal originated by GPS. Normally GPS clocks has stratum 0, 10.60.82.6 has stratum 2, so it means there is another intermediary server with stratum 1 between original GPS receiver and 10.60.82.6. So far NTP clock looks perfectly fine and at this time nothing points to it as a root cause for those disconnections.
+
+Several clarification questions:
+
+Regarding those disconnections and 5510 working with ISE - did it work before with the same ISE using the same configuration on 5510? Or the disconnection issue is something that was there since the very beginning of deployment phase?
+
+If it was working fine before, did you change anything in the ISE or 5510?
+
+When you say it kicks you out a couple of seconds after loggin into the switch, what type of connection is it? SSH, Telnet? Do you see any error message in the terminal program on disconnection? Could you provide a copy of terminal output from such unsuccessful session in order to see at what step 5510 disconnects you?
+
+Could you post a sanitized "current-configuration" from the switch? You can remove any sensitive information as global IP addresses, usernames, passwords, SNMP community strings etc. If we troubleshoot management login like SSH or Telnet, you can delete physical ports details from the "current-configuration" to make it shorter as I am not sure how long messages HPE Community supports. Here is what I would like to check in your config - domain, radius or tacacs scheme, VTY configuration.
+
+Since ISE must be using either RADIUS or TACACS+ for AAA, what attributes does it send on successful authentication in its Access-Accept messages, for example (if it uses RADIUS)? Incorrect authorization attributes pushed to Comware device may lead to issues similar to what you are experiencing - login accepted by the RADIUS server, it sends Access-Accept to the switch with incorrect attributes, but since the switch does not know how to interpret authorization level using incorrect attributes, it just disconnects the user no matter that access was actually granted by the server. Please, check that attributes and let me know what are they.
+
+Thank you!
+
+Hi there, I am still having issues; it connects to ISE but kicks out straight away. I have attached config and log below, please help!
+
+Please find output below:
+
+PE]%Jun 5 12:58:05:530 2020 HPE SSHS/6/SSHS_LOG: Accepted password for pbyrne06 from 25.14.2.195 port 58136 ssh2.
+
+%Jun 5 12:58:05:555 2020 HPE SSHS/6/SSHS_CONNECT: SSH user pbyrne06 (IP: 25.14.2.195) connected to the server successfully.
+
+%Jun 5 12:58:06:781 2020 HPE SSHS/6/SSHS_LOG: User pbyrne06 logged out from 25.14.2.195 port 58136.
+
+%Jun 5 12:58:06:781 2020 HPE SSHS/6/SSHS_DISCONNECT: SSH user pbyrne06 (IP: 25.14.2.195) disconnected from the server.
+
+%Jun 5 12:58:34:910 2020 HPE SSHS/6/SSHS_LOG: Authentication failed for pbyrne06 from 25.14.2.195 port 58145 because of invalid username or wrong password ssh2.
+
+%Jun 5 12:58:52:527 2020 HPE SSHS/6/SSHS_DISCONNECT: SSH user pbyrne06 (IP: ****) disconnected from the server.
+
+%Jun 5 12:59:17:839 2020 HPE SSHS/6/SSHS_LOG: Accepted password for pbyrne06 from **** port 58151 ssh2.
+
+%Jun 5 12:59:17:867 2020 HPE SSHS/6/SSHS_CONNECT: SSH user pbyrne06 (IP: ****) connected to the server successfully.
+
+%Jun 5 12:59:19:024 2020 HPE SSHS/6/SSHS_LOG: User pbyrne06 logged out from **** port 58151.
+
+%Jun 5 12:59:19:024 2020 HPE SSHS/6/SSHS_DISCONNECT: SSH user pbyrne06 (IP: ****) disconnected from the server.
+
+irf mac-address persistent timer
+
+irf auto-update enable
+
+undo irf link-delay
+
+irf member 1 priority 1
+
+#
+
+password-recovery enable
+
+#
+
+vlan 1
+
+#
+
+vlan 82
+
+#
+
+interface NULL0
+
+#
+
+interface Vlan-interface1
+
+#
+
+interface Vlan-interface82
+
+ip address 172.19.82.165 255.255.255.0
+
+#
+
+interface GigabitEthernet1/0/1
+
+port link-mode bridge
+
+port link-type trunk
+
+port trunk permit vlan 1 to 2 14 82 682
+
+#
+
+----------------------------------------------------
+
+line class aux
+
+user-role network-admin
+
+#
+
+line class vty
+
+user-role network-operator
+
+#
+
+line aux 0
+
+authentication-mode scheme
+
+user-role network-admin
+
+idle-timeout 120 0
+
+#
+
+line vty 0 4
+
+authentication-mode scheme
+
+user-role level-3
+
+user-role network-admin
+
+user-role network-operator
+
+set authentication password hash $h$6$qObIGj8/oB8hKqRy$0AinxLJuEMc1jMS8ajdPOo6Sd29ZJcA2FttReQikCRDEL0JBjF8/WUOjgTQx7i+xoVolnN6OxljwtwZYItZldA==
+
+idle-timeout 120 0
+
+#
+
+line vty 5 63
+
+user-role network-operator
+
+#
+
+ip route-static 0.0.0.0 0 172.19.82.250
+
+#
+
+ssh server enable
+
+#
+
+telnet client source interface Vlan-interface82
+
+#
+
+ssh client source ip 172.19.82.101
+
+ssh2 algorithm public-key rsa
+
+#
+
+ntp-service enable
+
+ntp-service authentication enable
+
+ntp-service unicast-server 10.62.82.7
+
+ntp-service unicast-server 10.60.82.7
+
+#
+
+hwtacacs scheme tacacs-auth
+
+primary authentication 10.60.82.211 key cipher $c$3$zkNcskv+RWaPZ70WmTpNAJKPogsZf3BHEODyBFQE3Og=
+
+primary authorization 10.60.82.211 key cipher $c$3$kVieBReY2X4nYJXJq7U/3HYb2flBG4lL/pornD2tey0=
+
+primary accounting 10.60.82.211 key cipher $c$3$b86GcThuye81jVVkk1aqCDJqNbCntcN0jbGRcOUZbt4=
+
+user-name-format without-domain
+
+#
+
+-------------------------------------------
+
+domain tacacs
+
+authentication default hwtacacs-scheme tacacs-auth
+
+authorization default hwtacacs-scheme tacacs-auth
+
+accounting default hwtacacs-scheme tacacs-auth
+
+#
+
+domain default enable tacacs
+
+local-user admin class manage
+
+password hash $h$6$hhtuZGk+ch6QDhli$fFQ19ehsqCZZz7GANXspOgLhHCpLBW/GiZjdLODCZFtRP6iP5IvbfD/bZisPnh9fat6fzs+mI8jpo61G2+V9MQ==
+
+service-type ssh telnet terminal http https
+
+authorization-attribute user-role network-operator
+
+#
+
+ip http enable
+
+ip https enable
+
+#
+
+return
+
+[HPE]dis nt
+
+[HPE]dis ntp-service st
+
+[HPE]dis ntp-service status
+
+Clock status: synchronized
+
+Clock stratum: 2
+
+System peer: 10.60.82.7
+
+Local mode: client
+
+Reference clock ID: 10.60.82.7
+
+Leap indicator: 00
+
+Clock jitter: 0.002441 s
+
+Stability: 0.000 pps
+
+Clock precision: 2^-20
+
+Root delay: 0.64087 ms
+
+Root dispersion: 1705.87158 ms
+
+Reference time: e284b2ff.015c70df Fri, Jun 5 2020 13:03:11.005
+
+The configuration seems fine except these lines:
+
+#
+
+line vty 0 4
+
+authentication-mode scheme
+
+user-role level-3
+
+user-role network-admin
+
+user-role network-operator
+
+set authentication password hash $h$6$qObIGj8/oB8hKqRy$0AinxLJuEMc1jMS8ajdPOo6Sd29ZJcA2FttReQikCRDEL0JBjF8/WUOjgTQx7i+xoVolnN6OxljwtwZYItZldA==
+
+idle-timeout 120 0
+
+#
+
+You don't need those lines in red if you will use TACACS. Please, delete them.
+
+Another point from my previous message that is still not clarified - what attributes ISE sends to the 5510 on successful user authentication?
+
+It needs to send the following one:
+
+roles="network-admin"
+
+Please, check that.
+
+Another point - when you try to log in, do you see the switch's prompt at least for a second before disconnection?
+
+Unfortunately, I do not know if ISE is blocking this version of the switch. In your first message you mentioned that ISE logs show no problem and access was allowed. I guess if ISE decides to block something, it will mention it in its logs...
+
+If ISE shows no errors, I am still thinking that the issue might be in the authorization. Let's try one command before proceeding further:
+
+system-view
+
+role default-role enable
+
+Try to set that command and log in to the switch again.
+
+You say that the you send the net-admin role, but could you double-check the attributes ISE sends, they should be 1:1 , no creativity here is allowed : - )
+
+priv-lvl=15
+
+roles="network-admin"
+
+If you know the TACACS encryption key that server and switch share to encrypt messages, you can capture the traffic between ISE and switch, then using Wireshark and set that key for the TACACS protocol in order decrypt those messages. Thus you will see what actually ISE is sending to the switch, all attributes and their format.
+
+That key is the one you have entered in this line:
+
+primary authentication 10.60.82.211 key cipher $c$3$zkNcskv+RWaPZ70WmTpNAJKPogsZf3BHEODyBFQE3Og=
+
+Let me repeat my question on the way switch disconnects you after the login - do you see switch' prompt at least for a while after entering the password or it breaks the connection right after the password and there is no any output after it?

@@ -1,0 +1,71 @@
+History
+
+ASE originates in the mid 1980's from Bob Epstein's home in Berkeley, California. It was originally marketed as Sybase SQL Server for Unix platforms, and it was the first DBMS to use a client-server architecture, which contrasted from other DBMSs in the market that were monolithic. It was Sybase's innovative client-server architecture and support for OLTP workloads that made their SQL server product popular on Wall Street in the early 1990's.
+
+Sybase's initial release was in 1987. In 1988, a SQL server version for OS/2 was co-developed by Sybase, Microsoft, and Ashton-Tate. The co-development licensing agreement terminated in 1993, so Microsoft bought a license for the source code, and Sybase and Microsoft continued developing their respective products. In 1996, Sybase changed the name of its product to Adaptive Server Enterprise (ASE) as a means to differentiate its SQL Server product from Microsoft SQL Server. In the late 1990's, Sybase started to lose its battle against Oracle and Microsoft SQL server due to its buggy release, overly aggressive sales strategies, pessimistic partners, merger complications, and management turnover. The latest ASE version is SAP ASE 16.0.
+
+https://doc.ispirer.com/sqlways/Output/SQLWays-1-178.html
+
+https://en.wikipedia.org/wiki/Adaptive_Server_Enterprise
+
+https://blogs.sap.com/2011/04/15/a-deeper-look-at-sybase-history-of-ase/
+
+https://www.wsj.com/articles/SB888370429737868500
+
+Concurrency Control
+
+Multi-version Concurrency Control (MVCC) Two-Phase Locking (Deadlock Prevention) Two-Phase Locking (Deadlock Detection)
+
+Sybase ASE provides multi-version concurrency control (using in-memory row versioning or on-disk MVCC), which enables concurrent read-writes where rows can be locked for writing in one session while read access is granted to unchanged rows in a different session. ASE supports locking at table, page, and row level by providing allpages locking, datapages locking, and datarows locking.
+
+Locking Schemes:
+
+Allpages locking locks data and index pages
+
+Datapages locking locks only data pages
+
+Datarows locking locks only data rows
+
+For each scheme, ASE can acquire a table lock for the entire table or can acquire page and row locks to lock only certain pages or rows. The types of page and row locks include shared locks for read operations, exclusive locks for inserts, deletes, and updates, and update locks during the initial phases of an update, delete, or fetch.
+
+https://help.sap.com/viewer/791c41982ee345a19c4ec4b774222c4f/16.0.3.1/en-US/5c1526855b9d40b283c93a5b50c89974.html
+
+http://infocenter.sybase.com/help/topic/com.sybase.infocenter.dc00938.1502/pdf/locking.pdf
+
+Indexes
+
+B+Tree
+
+ASE uses B tree indexing, and indexes provided are clustered or non-clustered. Only one clustered index can be created on a table, but up to 249 non-clustered indexes can be created per table. Index entries are stored as rows on index pages and contain key and value pointers to lower levels of the index, data pages, or individual data rows. An index on a 15-byte field has around 100 rows per index page. If a table is partitioned, local and global indexes can be created.
+
+Index Types:
+
+Clustered indexes - Table data is stored in index key order. For allpages-locked tables, rows are stored in key order on pages that are linked in key order. For data-only-locked tables, indexes are used to handle data storage on rows and pages, but key ordering is not preserved.
+
+Non-Clustered indexes - Data storage order is unrelated to index keys.
+
+Local indexes - Local indexes are index subtrees that index only one data partition.
+
+Global indexes - Global indexes span all data partitions in a table.
+
+http://infocenter.sybase.com/help/index.jsp?topic=/com.sybase.dc20020_1251/html/databases/X59082.htm
+
+http://infocenter.sybase.com/help/index.jsp?topic=/com.sybase.infocenter.dc32300.1600/doc/html/san1390612312003.html
+
+Logging
+
+Logical Logging Physical Logging
+
+Transactions are used to track database changes. A transaction consists of one or many Transact-SQL statements that all succeed or fail. Each database has a transaction log, which is a write-ahead log, so changes are logged before the change is made to a disk page. If any statement in a transaction fails, all changes made by the transaction are rolled back.
+
+https://books.google.com/books?id=njAFNxHO9MIC&pg=SA8-PA1&lpg=SA8-PA1&dq=sybase+ase+physical+logical+logging&source=bl&ots=VcdNYoRyBx&sig=ACfU3U0eNS2mzdIaAwOvCiJmm0oZvdFPWQ&hl=en&sa=X&ved=2ahUKEwimxaSKyZPmAhXqYN8KHZFJB44Q6AEwCHoECAsQAg#v=onepage&q=sybase%20ase%20physical%20logical%20logging&f=false
+
+http://infocenter.sybase.com/help/index.jsp?topic=/com.sybase.infocenter.dc31644.1600/doc/html/san1371158682369.html
+
+Storage Architecture
+
+Disk-oriented In-Memory
+
+Traditional ASE databases are disk-oriented. ASE 15.5 supports in-memory databases such that the database runs entirely in the Adaptive Server memory space (cache), so neither log nor data is ever written to disk, and I/O is not required. Its performance can be better than a disk-oriented database, at the cost of durability. In the event of memory failure, the database cannot be recovered.
+
+http://infocenter.sybase.com/help/index.jsp?topic=/com.sybase.infocenter.dc01186.1550/html/IMDB/CJABBAIH.htm
