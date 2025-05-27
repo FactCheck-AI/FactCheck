@@ -368,15 +368,15 @@ def _prepare_kg(kg: List[Tuple[str, Any]], dataset_name: str) -> List[Tuple[str,
     prepared_kg = []
     for knowledge_graph in kg:
         if dataset_name == 'FactBench':
-            prepared_kg.append((
-                knowledge_graph[0],
-                {'s': knowledge_graph[1][0], 'p': knowledge_graph[1][1], 'o': knowledge_graph[1][2]}
-            ))
+            s, p, o = knowledge_graph[1]
+            prepared_kg.append((knowledge_graph[0], {'s': s, 'p': p, 'o': o}))
         elif dataset_name in ['DBpedia']:
-            s, p, o = str(knowledge_graph[1]).split('/')[-1].replace('_', ' ')
+            s, p, o = map(lambda x: str(x).replace('_', ' '), knowledge_graph[1])
             prepared_kg.append((knowledge_graph[0], {'s': s, 'p': p, 'o': o}))
         else:
-            s, p, o = str(knowledge_graph[1]).replace('_', ' ')
+            # replace "_" with " " for YAGO and other datasets for all the elements in knowledge graph
+            # Assuming knowledge_graph[1] is a tuple of (s, p, o)
+            s, p, o = map(lambda x: str(x).replace('_', ' '), knowledge_graph[1])
             prepared_kg.append((knowledge_graph[0], {'s': s, 'p': p, 'o': o}))
 
     print(f'  {GREEN}✓ Knowledge graph prepared with {len(prepared_kg)} facts{END}')

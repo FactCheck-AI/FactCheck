@@ -4,9 +4,9 @@ import json_repair
 
 from data_loader import load_dataset
 
-model_name = 'qwen2.5'
-
-with open(f'results/paper_results/FactBench_{model_name}_best_model.json', 'r') as f:
+model_name = 'llama3.1'
+dataset = 'DBpedia'
+with open(f'results/paper_results/{dataset}_{model_name}_best_model.json', 'r') as f:
     data = json.load(f)
 
 corrected_answers = []
@@ -17,7 +17,7 @@ def get_answer_from_llm(json_string: str, actual_answer: str) -> str:
     # if decoded_object is [], loop over it
     if isinstance(decoded_object, list):
         for obj in decoded_object:
-            if not 'output' in obj:
+            if not 'output' in str(obj):
                 continue
             try:
                 if obj['output'] == 'yes':
@@ -40,7 +40,7 @@ def get_answer_from_llm(json_string: str, actual_answer: str) -> str:
     return "T"
 
 gt = {}
-kg = load_dataset('FactBench')
+kg = load_dataset(dataset)
 for identifier, kg in kg:
     gt[identifier] = "T" if kg['label'] else "F"
 
@@ -75,5 +75,5 @@ for identifier, answer in data.items():
         }
     )
 
-with open(f'results/paper_results/FactBench_{model_name}_corrected_answers.json', 'w') as f:
+with open(f'results/paper_results/{dataset}_{model_name}_corrected_answers.json', 'w') as f:
     json.dump(corrected_answers, f, indent=4)
