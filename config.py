@@ -1,11 +1,9 @@
-import yaml
-import requests
-import subprocess
 import sys
-import os
-from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
-import json
+from typing import Dict, List, Any
+
+import requests
+import yaml
 
 # Define colors for terminal output
 BLUE = "\033[94m"
@@ -18,12 +16,14 @@ END = "\033[0m"
 CYAN = "\033[96m"
 MAGENTA = "\033[95m"
 
+
 @dataclass
 class ValidationResult:
     """Result of configuration validation"""
     is_valid: bool
     errors: List[str]
     warnings: List[str]
+
 
 class ConfigValidator:
     """Validates configuration parameters"""
@@ -185,7 +185,8 @@ class ConfigValidator:
 
             # Check if we have enough models for voting
             if len(llms) < num_votes:
-                errors.append(f"Number of LLMs ({len(llms)}) should be greater than or equal to num_votes ({num_votes})")
+                errors.append(
+                    f"Number of LLMs ({len(llms)}) should be greater than or equal to num_votes ({num_votes})")
 
             # Check if each model has a corresponding higher parameter model
             if not higher_param_models:
@@ -198,8 +199,10 @@ class ConfigValidator:
                     else:
                         higher_model = higher_param_models[model_key]
                         # Check if the higher parameter model is available in Ollama
-                        if self.ollama_running and higher_model.lower() not in [m.lower() for m in self.available_ollama_models]:
-                            warnings.append(f"Higher parameter model '{higher_model}' for '{model}' not found in Ollama")
+                        if self.ollama_running and higher_model.lower() not in [m.lower() for m in
+                                                                                self.available_ollama_models]:
+                            warnings.append(
+                                f"Higher parameter model '{higher_model}' for '{model}' not found in Ollama")
 
             # Check if base models are available in Ollama
             if "llms" in mv_config:
@@ -280,6 +283,7 @@ class ConfigValidator:
                               f"Valid options: {', '.join(self.VALID_LOG_LEVELS)}")
 
         return errors
+
 
 class ConfigReader:
     """Reads and validates configuration from YAML file"""
@@ -473,7 +477,8 @@ class ConfigReader:
             if chunking_strategy == 'fixed_size' and 'chunk_size' in rag:
                 print(f"  {YELLOW}Chunk Size:{END} {GREEN}{rag.get('chunk_size', 'Not specified')}{END}")
             elif chunking_strategy == 'small2big' and 'chunks_small2big' in rag:
-                print(f"  {YELLOW}Chunk Sizes (Small2Big):{END} {GREEN}{rag.get('chunks_small2big', 'Not specified')}{END}")
+                print(
+                    f"  {YELLOW}Chunk Sizes (Small2Big):{END} {GREEN}{rag.get('chunks_small2big', 'Not specified')}{END}")
             elif chunking_strategy == 'sliding_window' and 'window_size' in rag:
                 print(f"  {YELLOW}Window Size:{END} {GREEN}{rag.get('window_size', 'Not specified')}{END}")
 
@@ -518,6 +523,7 @@ class ConfigReader:
 
         print("\n" + "=" * width)
 
+
 def run_fact_check_experiment(config: Dict[str, Any]) -> None:
     """
     Main function to run the fact-check experiment with the given configuration.
@@ -552,8 +558,11 @@ def run_fact_check_experiment(config: Dict[str, Any]) -> None:
         print(f"{GREEN}✓ Running GIV-F method...{END}")
     else:
         print(f"{GREEN}✓ Running RAG method...{END}")
+        from methods.rag import run_rag_method
+        run_rag_method(config)
 
     print(f"{GREEN}✅ Experiment completed successfully!{END}")
+
 
 def main():
     """Main function to read configuration and run the experiment"""
@@ -586,6 +595,7 @@ def main():
     else:
         print(f"\n{RED}❌ Configuration is invalid. Please fix the errors before proceeding.{END}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

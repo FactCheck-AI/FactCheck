@@ -3,9 +3,11 @@
 Main script to demonstrate the configuration system usage.
 """
 
-import sys
 import os
+import sys
+
 from config import ConfigReader, run_fact_check_experiment
+
 
 def main():
     """
@@ -70,6 +72,7 @@ def main():
     except Exception as e:
         print(f"\n❌ An unexpected error occurred: {str(e)}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
