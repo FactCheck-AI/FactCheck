@@ -70,7 +70,6 @@ class SimilarityNodePostprocessor(BaseNodePostprocessor):
 
             if should_use_node:
                 new_nodes.append(node)
-            print(new_nodes)
 
         logger.info(
             f"Filtered {len(nodes)} nodes to {len(new_nodes)} nodes using similarity cutoff {self.similarity_cutoff}")

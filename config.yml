@@ -6,7 +6,7 @@ dataset:
 
 # Method configuration
 method:
-  name: "DKA"  # Options: DKA, GIV-Z, GIV-F, RAG
+  name: "RAG"  # Options: DKA, GIV-Z, GIV-F, RAG
 
 # LLM configuration
 llm:
@@ -14,7 +14,7 @@ llm:
   # Commercial: gpt-4o-mini and all models available here: https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=global-standard%2Cstandard-chat-completions
   # Open Source: Qwen2.5:7B, Llama3.1:8B, Gemma2:9B, Mistral:7B, QWQ:32B and all models available here: https://ollama.com/library
   mode: "open_source"  # Options: commercial, open_source
-  model: "qwen2.5:7B"
+  model: "gemma2:9b"
 
   # Model parameters
   parameters:
@@ -43,7 +43,7 @@ majority_vote:
     - "gpt-4o"
 
 rag:
-  embedding_model: 'bge-small-en-v1.5'
+  embedding_model: 'BAAI/bge-small-en-v1.5'
   chunking_strategy: 'sliding_window'  # Options: fixed_size, sliding_window, small2big
   chunk_size: 512 # needed for fixed_size
   chunks_small2big: [128, 256, 512] # needed for small2big
