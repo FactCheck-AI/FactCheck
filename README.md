@@ -35,6 +35,7 @@
 - ✅ Open-source LLMs can effectively verify KG facts (up to 0.90 balanced accuracy)
 - ✅ RAG integration improves accuracy but increases computational cost (~10×)
 - ✅ Multi-model consensus consistently outperforms individual models (+4.5% improvement)
+- 🚧 For ablation study results, see [Ablation Study Results](results/ablation_study_results/README.md).
 
 ## 🚀 Features
 
@@ -42,6 +43,7 @@
 - **Diverse Methodologies**: Direct Knowledge Assessment (DKA), Guided Iterative Verification (GIV), RAG, and Multi-model Consensus
 - **Real-world Datasets**: FactBench, YAGO, and DBpedia with 13,530 total facts
 - **RAG Dataset**: 2+ million documents specifically curated for KG fact verification
+- **Mock API**: Simulated API for testing and development -- refer to [FactCheck MockAPI](https://github.com/FactCheck-AI/FactCheck-MockAPI).
 - **Interactive Platform**: Web-based exploration tool for verification analysis
 - **Comprehensive Evaluation**: Balanced accuracy, F1-macro, efficiency metrics, and cost analysis
 
