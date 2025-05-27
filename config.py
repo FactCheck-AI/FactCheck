@@ -554,8 +554,12 @@ def run_fact_check_experiment(config: Dict[str, Any]) -> None:
 
     elif method_name == "GIV-Z":
         print(f"{GREEN}✓ Running GIV-Z method...{END}")
+        from methods.giv_z import run_giv_z_method
+        run_giv_z_method(config)
     elif method_name == "GIV-F":
         print(f"{GREEN}✓ Running GIV-F method...{END}")
+        from methods.giv_f import run_giv_f_method
+        run_giv_f_method(config)
     else:
         print(f"{GREEN}✓ Running RAG method...{END}")
         from methods.rag import run_rag_method
