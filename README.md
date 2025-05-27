@@ -44,8 +44,13 @@
 - **Real-world Datasets**: FactBench, YAGO, and DBpedia with 13,530 total facts
 - **RAG Dataset**: 2+ million documents specifically curated for KG fact verification
 - **Mock API**: Simulated API for testing and development -- refer to [FactCheck MockAPI](https://github.com/FactCheck-AI/FactCheck-MockAPI).
-- **Interactive Platform**: Web-based exploration tool for verification analysis
+- **Interactive Platform**: [Web-based](https://factcheck.dei.unipd.it) exploration tool for verification analysis
 - **Comprehensive Evaluation**: Balanced accuracy, F1-macro, efficiency metrics, and cost analysis
+
+## 📑 Prompt templates
+Prompt templates for each methodology are available in the [prompts directory](prompts/README.md).
+
+---
 
 ## 📦 Installation
 
