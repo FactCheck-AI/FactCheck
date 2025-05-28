@@ -31,28 +31,55 @@ def create_giv_z_prompt(fact: Dict[str, Any], dataset_name: str) -> str:
     p = fact.get("p", "")
     o = fact.get("o", "")
 
-    if dataset_name.lower().startswith('dbpedia'):
-        prompt = f"""Your knowledge is limited to the year 2015. Only reply with "T" or "F" and nothing else.
-If the user provides a fact you judge accurate (based on your knowledge up to 2015), reply with the
-letter "T".
-If the user provides a fact you judge inaccurate (based on your knowledge up to 2015), reply with the
-letter "F".
+    labels = '"T", "F"'
+    responses = '"T" (true), or "F" (false)'
 
-Fact: {s} {p} {o}
+    return """You are an expert annotator for the fact verification task.
+    You will be provided a fact in the form of a subject, predicate, and object.
+    Your job is to assess the fact based solely on the knowledge you have been trained on, without using any external information.
 
-Judgment:
-"""
-    else:
-        prompt = f"""Only reply with "T" or "F" and nothing else.
-If the user provides a fact you judge accurate, reply with the letter "T".
-If the user provides a fact you judge inaccurate, reply with the letter "F".
+    ### Guidelines
+    {guidelines}
 
-Fact: {s} {p} {o}
+    Please do not spread incorrect information. Your judgment must rely only on your internal knowledge.
+    You must always answer in English.
+    The answer must contain only the judgment ({judgments}). Lastly, keep your answer concise.
 
-Judgment:
-"""
+    ### Retry Mechanism
+    If your response does not comply with the guidelines above, you will be asked to retry.
+    In the retry follow-up, you must meet the same guidelines and provide a compliant answer.
+    You will have a total of {max_attempts} retry attempts.
+    If you fail to provide a compliant answer within the attempts, your final response for the fact will be set to "NA" (Not an Answer).
 
-    return prompt
+    ### Input format
+    The fact is given in one line: first the subject, then the predicate and finally the object.
+
+    ### Fact
+    {s} {p} {o}
+
+    Judgment:
+
+    Your previous response did not meet the guidelines, please try again and provide a compliant answer.
+    You have {attempts} remaining attempts.
+    If you fail to provide a compliant answer within the remaining attempts, your final response for the fact will be set to "NA" (Not an Answer).
+
+    ### Reminder of the Guidelines
+    The answer should be {responses} based on your internal knowledge. Limit the use of "N" as much as possible.
+    Provide your judgment in English and keep it concise. Do not spread incorrect information.
+    """.format(
+        max_attempts=3,
+        judgments=labels,
+        attempts=3,
+        responses=responses,
+        s=s,
+        p=p,
+        o=o,
+        guidelines=(
+            'The answer should be "T" (true) if the fact is accurate based on your knowledge up to 2015, or "F" (false) if the fact is inaccurate based on your knowledge up to 2015.'
+            if dataset_name == 'DBpedia'
+            else 'The answer should be "T" (true) if the fact is accurate based on your knowledge, or "F" (false) if the fact is inaccurate based on your knowledge.'
+        ),
+    )
 
 
 def run_giv_z_method(config: Dict[str, Any]) -> None:
@@ -116,7 +143,7 @@ def run_giv_z_method(config: Dict[str, Any]) -> None:
         # Process result
         result = {
             "id": identifier,
-            "method": "GIV",
+            "method": "GIV-Z",
             "fact": {
                 "s": fact.get("s", ""),
                 "p": fact.get("p", ""),
