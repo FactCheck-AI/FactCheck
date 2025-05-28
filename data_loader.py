@@ -83,8 +83,18 @@ def _load_knowledge_graph(
 
     # Load raw data
     try:
+        modified_kg_file_path = None
+        if 'modified' in kg_file_path:
+            print(f'  {YELLOW}⚠️  Loading modified knowledge graph file: {kg_file_path}{END}')
+            if os.path.exists(kg_file_path.replace('_modified', '')):
+                modified_kg_file_path = kg_file_path
+                kg_file_path = kg_file_path.replace('_modified', '')
+
         with open(kg_file_path, 'r', encoding='utf-8') as f:
             id2triple = json.load(f)
+        if modified_kg_file_path:
+            with open(modified_kg_file_path, 'r', encoding='utf-8') as f:
+                id2triple_modified = json.load(f)
     except FileNotFoundError:
         raise FileNotFoundError(f"Knowledge graph file not found: {kg_file_path}")
     except json.JSONDecodeError as e:
@@ -100,6 +110,10 @@ def _load_knowledge_graph(
     # Convert to list of tuples
     kg = [(k, v) for k, v in id2triple.items()]
 
+    kg_modified = {}
+    if modified_kg_file_path:
+        kg_modified = id2triple_modified
+
     # Apply dataset-specific filtering
     kg = _apply_dataset_filtering(kg, dataset_name)
 
@@ -107,17 +121,13 @@ def _load_knowledge_graph(
     if kg_ids is not None:
         kg = _apply_id_filtering(kg, kg_ids)
 
-    kg = _prepare_kg(kg, dataset_name)
+    kg = _prepare_kg(kg, dataset_name, kg_modified)
 
     # Load ground truth data
     gt = _load_ground_truth(gt_file_path, kg)
 
     for fact_id, triple in kg:
-        if fact_id in gt:
-            triple['label'] = gt[fact_id]
-        else:
-            triple['label'] = None
-
+        triple['label'] = gt[fact_id] if fact_id in gt else None
     return kg
 
 
@@ -351,7 +361,7 @@ def validate_dataset_structure(dataset_name: str, dataset_file: str = "kg.json")
         return True
 
 
-def _prepare_kg(kg: List[Tuple[str, Any]], dataset_name: str) -> List[Tuple[str, Any]]:
+def _prepare_kg(kg: List[Tuple[str, Any]], dataset_name: str, kg_modified: dict) -> List[Tuple[str, Any]]:
     """
     Prepare the knowledge graph by converting it to a list of tuples.
 
@@ -366,18 +376,20 @@ def _prepare_kg(kg: List[Tuple[str, Any]], dataset_name: str) -> List[Tuple[str,
     print(f'  {CYAN}Preparing knowledge graph...{END}')
 
     prepared_kg = []
-    for knowledge_graph in kg:
+    for identifier, knowledge_graph in kg:
         if dataset_name == 'FactBench':
-            s, p, o = knowledge_graph[1]
-            prepared_kg.append((knowledge_graph[0], {'s': s, 'p': p, 'o': o}))
+            s, p, o = knowledge_graph
         elif dataset_name in ['DBpedia']:
-            s, p, o = map(lambda x: str(x).replace('_', ' '), knowledge_graph[1])
-            prepared_kg.append((knowledge_graph[0], {'s': s, 'p': p, 'o': o}))
+            s, p, o = map(lambda x: str(x).replace('_', ' '), knowledge_graph)
         else:
             # replace "_" with " " for YAGO and other datasets for all the elements in knowledge graph
             # Assuming knowledge_graph[1] is a tuple of (s, p, o)
-            s, p, o = map(lambda x: str(x).replace('_', ' '), knowledge_graph[1])
-            prepared_kg.append((knowledge_graph[0], {'s': s, 'p': p, 'o': o}))
+            s, p, o = map(lambda x: str(x).replace('_', ' '), knowledge_graph)
+
+        if kg_modified and identifier in kg_modified:
+            prepared_kg.append((identifier, {'s': s, 'p': p, 'o': o, 'transformed': kg_modified[identifier]}))
+        else:
+            prepared_kg.append((identifier, {'s': s, 'p': p, 'o': o}))
 
     print(f'  {GREEN}✓ Knowledge graph prepared with {len(prepared_kg)} facts{END}')
 

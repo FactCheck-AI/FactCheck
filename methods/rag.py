@@ -1,10 +1,10 @@
 """
 RAG (Retrieval-Augmented Generation) Method Implementation
 """
-
-import time
-import os
 import logging
+import os
+import re
+import time
 from typing import Dict, List, Any, Optional, cast
 
 import json_repair
@@ -17,12 +17,11 @@ from llama_index.core.postprocessor import MetadataReplacementPostProcessor
 from llama_index.core.postprocessor.types import BaseNodePostprocessor
 from llama_index.core.schema import NodeWithScore, QueryBundle
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+from llama_index.llms.azure_openai import AzureOpenAI
 from llama_index.llms.ollama import Ollama
 from pydantic import Field
-from llama_index.llms.azure_openai import AzureOpenAI
 
 from data_loader import load_dataset
-from llm_client import LLMClient
 from methods.utils import save_results
 
 # Define colors for output
@@ -214,23 +213,11 @@ def init_index(directory: str, collection_name: str, config: Dict[str, Any]) -> 
 
 
 def create_formal_sentence(fact: Dict[str, Any]) -> str:
-    # TODO: SHOULD BE FIXED SOMEHOW -- with the actual fact type and dataset wise
     """Convert fact to formal sentence."""
-    s = fact.get("s", "")
-    p = fact.get("p", "")
-    o = fact.get("o", "")
-
-    # Simple template for converting triple to natural language
-    if p.lower() in ["born", "birthplace"]:
-        return f"{s} was born in {o}"
-    elif p.lower() in ["died", "deathplace"]:
-        return f"{s} died in {o}"
-    elif p.lower() in ["award", "prize"]:
-        return f"{s} received the {o}"
-    elif p.lower() in ["author", "wrote"]:
-        return f"{s} authored {o}"
-    else:
-        return f"{s} {p} {o}"
+    if fact.get("transformed", "") != "":
+        return fact["transformed"]
+    s, p, o = fact.get("s", ""), fact.get("p", ""), fact.get("o", "")
+    return re.sub(r'(?<=[a-z])([A-Z])', r' \1', " ".join([s, p, o]))
 
 
 def init_query_engine(index: VectorStoreIndex, query: str, config: Dict[str, Any]) -> None:
@@ -330,7 +317,11 @@ def run_rag_method(config: Dict[str, Any]) -> None:
 
     # Load dataset
     print(f"\n{BOLD}📚 Loading Dataset...{END}")
-    facts = load_dataset(dataset_name, kg_ids=kg_ids)
+    facts = load_dataset(
+        dataset_name,
+        dataset_file='kg_modified.json' if dataset_name != "FactBench" else "kg.json",
+        kg_ids=kg_ids
+    )
 
     if not facts:
         print(f"{RED}✗ No facts to process. Exiting RAG method.{END}")
@@ -345,13 +336,13 @@ def run_rag_method(config: Dict[str, Any]) -> None:
         print(f"{RED}✗ Failed to initialize models: {str(e)}{END}")
         return
 
-    # Initialize LLM client for final response generation
-    try:
-        llm_client = LLMClient(config)
-        print(f"{GREEN}✓ LLM client initialized{END}")
-    except Exception as e:
-        print(f"{RED}✗ Failed to initialize LLM client: {str(e)}{END}")
-        return
+    # # Initialize LLM client for final response generation
+    # try:
+    #     llm_client = LLMClient(config)
+    #     print(f"{GREEN}✓ LLM client initialized{END}")
+    # except Exception as e:
+    #     print(f"{RED}✗ Failed to initialize LLM client: {str(e)}{END}")
+    #     return
 
     # Process facts using RAG approach
     print(f"\n{BOLD}🔍 Processing Facts with RAG Method...{END}")
@@ -386,7 +377,8 @@ def run_rag_method(config: Dict[str, Any]) -> None:
                         "s": fact.get("s", ""),
                         "p": fact.get("p", ""),
                         "o": fact.get("o", ""),
-                        "label": fact.get("label")
+                        "label": fact.get("label"),
+                        "transformed": fact.get("transformed", "")
                     },
                     "prompt": "No documents available for retrieval",
                     "response": 'F' if fact.get("label") == 'T' else 'T',
@@ -413,7 +405,8 @@ def run_rag_method(config: Dict[str, Any]) -> None:
                         "s": fact.get("s", ""),
                         "p": fact.get("p", ""),
                         "o": fact.get("o", ""),
-                        "label": fact.get("label")
+                        "label": fact.get("label"),
+                        "transformed": fact.get("transformed", "")
                     },
                     "prompt": "Failed to create document index",
                     "response": "F",
@@ -452,7 +445,8 @@ def run_rag_method(config: Dict[str, Any]) -> None:
                         "s": fact.get("s", ""),
                         "p": fact.get("p", ""),
                         "o": fact.get("o", ""),
-                        "label": fact.get("label")
+                        "label": fact.get("label"),
+                        "transformed": fact.get("transformed", "")
                     },
                     # "prompt": "rag_prompt",
                     "full_answer": answer,
@@ -486,7 +480,8 @@ def run_rag_method(config: Dict[str, Any]) -> None:
                         "s": fact.get("s", ""),
                         "p": fact.get("p", ""),
                         "o": fact.get("o", ""),
-                        "label": fact.get("label")
+                        "label": fact.get("label"),
+                        "transformed": fact.get("transformed", "")
                     },
                     "prompt": f"Error during RAG processing: {str(e)}",
                     "response": "F",
@@ -504,7 +499,8 @@ def run_rag_method(config: Dict[str, Any]) -> None:
                     "s": fact.get("s", ""),
                     "p": fact.get("p", ""),
                     "o": fact.get("o", ""),
-                    "label": fact.get("label")
+                    "label": fact.get("label"),
+                    "transformed": fact.get("transformed", "")
                 },
                 "prompt": f"Unexpected error: {str(e)}",
                 "response": "F",
