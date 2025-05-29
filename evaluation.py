@@ -53,11 +53,11 @@ def load_ground_truth(dataset_name: str) -> Dict[str, Any]:
         return {}
 
     try:
-        gt = dict()
         full_kg = load_dataset(dataset_name=dataset_name, dataset_file='kg.json')
-        for identifier, knowledge_graph in full_kg:
-            gt[identifier] = knowledge_graph.get('label')
-        return gt
+        return {
+            identifier: knowledge_graph.get('label')
+            for identifier, knowledge_graph in full_kg
+        }
     except Exception as e:
         print(f"{RED}✗ Invalid JSON in ground truth file: {e}{END}")
         return {}
