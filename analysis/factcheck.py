@@ -7,7 +7,7 @@ from sklearn.metrics import balanced_accuracy_score, precision_recall_fscore_sup
 # datasets = ['FactBench', 'YAGO', 'DBpedia']
 # models = ['gemma2:9b', 'qwen2.5:7b', 'llama3.1:8b', 'mistral:7b']
 #
-datasets = ['FactBench']
+datasets = ['DBpedia']
 
 full_gt = []
 for dataset in datasets:
@@ -78,17 +78,32 @@ full_gt_sorted = sorted(full_gt, key=lambda x: x['id'])
 #         print("{}\t {}\t {:.2f}".format(method, model, score))
 
 
-models = ['gpt-4o-mini']
+models = ['cons-up', 'cons-down']
 
 with open('results/paper_results/consensus/full_higher_parameter_df_results.json', 'r', encoding='utf-8') as f:
     full_higher_parameter_df_results = json.load(f)
 
 hp_res = {'cons-up': {}, 'cons-down': {}}
-for item in full_higher_parameter_df_results:
-    if item['consistency'] == 'high':
-        hp_res['cons-up'][f"{item['Mode']}_{item['Custom_id']}"] = item
-    else:
-        hp_res['cons-down'][f"{item['Mode']}_{item['Custom_id']}"] = item
+# for item in full_higher_parameter_df_results:
+#     if item['consistency'] == 'high':
+#         hp_res['cons-up'][f"{item['Mode']}_{item['Custom_id']}"] = item
+#     else:
+#         hp_res['cons-down'][f"{item['Mode']}_{item['Custom_id']}"] = item
+
+for kossher in ['least', 'most']:
+    for d in ["DBpedia", "YAGO", "FactBench"]:
+        with open(f'results/paper_results/consensus/RAG/{d}_final-eval-{kossher}_best_model.json', 'r', encoding='utf-8') as f:
+            rag_results = json.load(f)
+            for rr_key, rr_value in rag_results.items():
+                item = {'Answer': "T" if rr_value['short_ans'] else "F"}
+                r_key = f"{d.lower()}_{rr_key}" if d != 'FactBench' else rr_key
+                if kossher == 'least':
+                    hp_res['cons-down'][f"rag_{r_key}"] = item
+                else:
+                    hp_res['cons-up'][f"rag_{r_key}"] = item
+
+
+
 
 
 jsonl_file = 'RAG.jsonl'
@@ -132,7 +147,7 @@ for model in models:
         })
 
     # check if the key not in all_results
-    all_results_ids = [f"{item['id']}" for item in all_results]
+    all_results_ids = [f"{datasets[0].lower()}_{item['id']}" for item in all_results]
     print('difference', len(all_results_ids) - len(full_gt_sorted))
     if len(all_results) != len(full_gt_sorted):
         # print(f"Warning: Length mismatch for {method} with model {model}: {len(all_results)} vs {len(full_gt_sorted)}")
