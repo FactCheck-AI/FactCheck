@@ -28,16 +28,46 @@ from sympy import python
 
 ### Key Research Questions
 
-1. **RQ1**: How effective are LLMs in fact-checking KGs using only their internal knowledge?
-2. **RQ2**: Can LLMs effectively fact-check KGs using external evidence through RAG?
-3. **RQ3**: Do multi-model consensus approaches improve KG fact verification accuracy?
+**FactCheck** addresses three fundamental research questions in the domain of LLM-based knowledge graph fact verification:
+
+1. **RQ1: Internal Knowledge Assessment**: How effective are Large Language Models at knowledge graph fact-checking when relying solely on their internal knowledge representations acquired during pre-training?
+
+2. **RQ2: External Evidence Integration**: Does augmenting LLMs with external evidence through Retrieval-Augmented Generation (RAG) methodologies improve their capability to verify knowledge graph facts, and at what computational cost?
+
+3. **RQ3: Multi-Model Consensus**: Does aggregating predictions from multiple LLMs through consensus mechanisms lead to more reliable and robust verification of knowledge graph facts compared to individual model performance?
 
 ### Main Findings
 
-- ✅ Open-source LLMs can effectively verify KG facts (up to 0.90 balanced accuracy)
-- ✅ RAG integration improves accuracy but increases computational cost (~10×)
-- ✅ Multi-model consensus consistently outperforms individual models (+4.5% improvement)
-- 🚧 For ablation study results, see [Ablation Study Results](results/ablation_study_results/README.md).
+Our evaluation across three real-world KG datasets (**FactBench**, **YAGO**, **DBpedia**) reveals several critical insights:
+
+#### Performance Capabilities
+- **Promising but Limited**: While LLMs demonstrate promising fact verification capabilities, they remain insufficient for reliable deployment in real-world KG validation scenarios
+- **Model Hierarchy**: Open-source models achieve competitive performance, with Gemma2 consistently outperforming others (balanced accuracy up to 0.90 on FactBench with RAG)
+- **Dataset Sensitivity**: Performance varies significantly across datasets due to class imbalance and schema complexity
+
+#### External Evidence Integration
+- **Inconsistent Improvements**: RAG integration provides fluctuating performance gains, offering inconsistent improvements over streamlined internal knowledge approaches
+- **Computational Trade-offs**: External evidence integration increases computational overhead by approximately **10× processing time** (0.3s → 2.0s+ per fact)
+- **Context Dependency**: RAG effectiveness is highly dependent on dataset characteristics and retrieval quality
+
+#### Multi-Model Consensus
+- **Modest Gains**: Consensus strategies provide **average 4.5% balanced accuracy improvement** over individual models in knowledge-constrained scenarios
+- **Limited Consistency**: "Wisdom of the crowd" approaches fail to consistently outperform individual models across all experimental conditions
+- **Resource Implications**: Consensus methods require 1-1.5× additional computational resources while providing marginal accuracy improvements
+
+#### Methodological Insights
+- **Structured Prompting**: Few-shot guided iterative verification (GIV-F) consistently outperforms zero-shot approaches
+- **Evidence Quality**: External evidence effectiveness is constrained by retrieval noise and source reliability
+- **Class Imbalance Challenges**: Extreme class imbalance (as in YAGO with 99.2% correct facts) presents significant verification challenges
+
+#### Research Implications
+These findings underscore the **urgent need for systematic benchmarking** and highlight the complexity of automated KG fact verification, emphasizing that current LLM-based approaches require substantial advancement before practical deployment.
+
+---
+
+### 📊 Detailed Analysis:
+- 🔍 For comprehensive ablation study results: [Ablation Study Results](results/ablation_study_results/README.md)
+- 💰 For token usage analysis and computational cost implications: [Token Usage Analysis](results/token/Readme.md)
 
 ## 🚀 Features
 
@@ -406,7 +436,7 @@ If you use this benchmark in your research, please cite:
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+We welcome contributions!
 
 ### Areas for Contribution
 
