@@ -153,8 +153,8 @@ for metric_idx, metric in enumerate(metric_names):
 
 
     # Add legend only to the second chart to avoid duplication
-    # if metric_idx == 0:
-    #     ax.legend(loc='upper left', bbox_to_anchor=(-0.2, 1.1), fontsize=12, frameon=True)
+    if metric_idx == 0:
+        ax.legend(ncol=4, loc='upper left', bbox_to_anchor=(-0.25, 1.2), fontsize=12, frameon=True)
 
 # Add overall title
 # fig.suptitle('Model Performance Comparison: BACC vs F1 Scores',

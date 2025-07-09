@@ -66,8 +66,8 @@ These findings underscore the **urgent need for systematic benchmarking** and hi
 ---
 
 ### 📊 Detailed Analysis:
-- 🔍 For comprehensive ablation study results: [Ablation Study Results](results/ablation_study_results/README.md)
-- 💰 For token usage analysis and computational cost implications: [Token Usage Analysis](results/token/Readme.md)
+- 🔍 For comprehensive ablation study results: [Ablation Study Results](extra-experiments/ablation_study_results/README.md)
+- 💰 For token usage analysis and computational cost implications: [Token Usage Analysis](extra-experiments/token/Readme.md)
 
 ## 🚀 Features
 
