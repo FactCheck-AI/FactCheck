@@ -6,18 +6,18 @@
 
 ## 📋 Table of Contents
 
-- [Overview](#overview)
+- [Overview](#-overview)
 - [Features](#features)
-- [📦 Installation](#installation)
-- [Quick Start](#quick-start)
-- [Datasets](#datasets)
-- [Methodologies](#methodologies)
-- [Configuration](#configuration)
-- [Usage Examples](#usage-examples)
-- [Results](#results)
-- [Web Platform](#web-platform)
-- [Repository Structure](#repository-structure)
-- [Contributing](#contributing)
+- [Installation](#-installation)
+- [Quick Start](#-quick-start)
+- [Datasets](#-datasets)
+- [Methodologies](#-methodologies)
+- [Configuration](#-configuration)
+- [Usage Examples](#-usage-examples)
+- [Results](#-results)
+- [Web Platform](#-web-platform)
+- [Repository Structure](#-repository-structure)
+- [Contributing](#-contributing)
 - [Extra Experiments](https://github.com/FactCheck-AI/FactCheck/tree/main/extra-experiments)
 
 ## 🎯 Overview
