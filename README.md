@@ -1,5 +1,3 @@
-from sympy import python
-
 # FactCheck: Knowledge Graph Validation via Large Language Models
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -19,8 +17,8 @@ from sympy import python
 - [Results](#results)
 - [Web Platform](#web-platform)
 - [Repository Structure](#repository-structure)
-- [Citation](#citation)
 - [Contributing](#contributing)
+- [Extra Experiments](https://github.com/FactCheck-AI/FactCheck/tree/main/extra-experiments)
 
 ## 🎯 Overview
 
@@ -416,23 +414,6 @@ config["llm"]["model"] = "gemma2:2b"  # Instead of 9b
 [//]: # (- [ ] **Caching**: Enable result caching for repeated evaluations)
 
 [//]: # (- [ ] **Model Selection**: Choose models based on accuracy vs. speed requirements)
-
-## 📚 Citation
-
-If you use this benchmark in your research, please cite:
-
-```bibtex
-@article{shami2025factcheck,
-  title={Knowledge Graph Validation via Large Language Models},
-  author={Shami, Farzad and Marchesin, Stefano and Silvello, Gianmaria},
-  journal={},
-  volume={14},
-  number={1},
-  pages={XXX-XXX},
-  year={2025},
-  publisher={}
-}
-```
 
 ## 🤝 Contributing
 
