@@ -8,7 +8,7 @@
 
 - [Overview](#overview)
 - [Features](#features)
-- [Installation](#installation)
+- [📦 Installation](#installation)
 - [Quick Start](#quick-start)
 - [Datasets](#datasets)
 - [Methodologies](#methodologies)
