@@ -11,24 +11,24 @@ The performance plots illustrate how four different methodologies (DKA, GIV-Z, G
 ### FactBench Performance
 <div align="center">
 
-<a href="https://factcheck.dei.unipd.it"><picture>
-    <img src="https://github.com/FactCheck-AI/FactCheck/tree/main/analysis/factbench_comparison.png"  alt="FactBench Analysis" />
+<a href="https://github.com/FactCheck-AI/FactCheck/blob/main/extra-experiments/dataset-wise/README.md"><picture>
+    <img src="https://raw.githubusercontent.com/FactCheck-AI/FactCheck/e14644f1734599440b01a1fb41da8ff7c6765a40/analysis/factbench_comparison.png"  alt="FactBench Analysis" />
 </picture></a>
 </div>
 
 ### YAGO Performance
 <div align="center">
 
-<a href="https://factcheck.dei.unipd.it"><picture>
-<img src="https://github.com/FactCheck-AI/FactCheck/tree/main/analysis/yago_comparison.png"  alt="FactBench Analysis" />
+<a href="https://github.com/FactCheck-AI/FactCheck/blob/main/extra-experiments/dataset-wise/README.md"><picture>
+<img src="https://raw.githubusercontent.com/FactCheck-AI/FactCheck/e14644f1734599440b01a1fb41da8ff7c6765a40/analysis/yago_comparison.png"  alt="Yago Analysis" />
 </picture></a>
 </div>
 
 ### DBpedia Performance
 <div align="center">
 
-<a href="https://factcheck.dei.unipd.it"><picture>
-<img src="https://github.com/FactCheck-AI/FactCheck/tree/main/analysis/dbpedia_comparison.png"  alt="FactBench Analysis" />
+<a href="https://github.com/FactCheck-AI/FactCheck/blob/main/extra-experiments/dataset-wise/README.md"><picture>
+<img src="https://raw.githubusercontent.com/FactCheck-AI/FactCheck/e14644f1734599440b01a1fb41da8ff7c6765a40/analysis/dbpedia_comparison.png"  alt="Dbpedia Analysis" />
 </picture></a>
 </div>
 
@@ -57,15 +57,6 @@ The performance plots illustrate how four different methodologies (DKA, GIV-Z, G
 
 1. **Dataset Characteristics Drive Performance**: The fundamental properties of each dataset (class balance, error types, predicate diversity) significantly impact verification accuracy more than model choice alone.
 
-2. **Class Imbalance is Critical**: YAGO's extreme imbalance (99% correct facts) creates a ceiling effect where detecting the rare 1% of incorrect facts becomes extremely difficult.
+2. **RAG Benefits from Balance**: Retrieval-augmented approaches show dramatic improvements on balanced datasets but offer minimal gains on highly imbalanced ones.
 
-3. **RAG Benefits from Balance**: Retrieval-augmented approaches show dramatic improvements on balanced datasets but offer minimal gains on highly imbalanced ones.
-
-4. **Model Consistency Varies**: Different models show varying levels of robustness across datasets, with some performing consistently (GPT-4o mini) while others show high variance (Qwen2.5).
-
-## Implications for Fact Verification Systems
-
-- **Benchmark Selection**: FactBench provides the clearest performance differentiation for comparing methods
-- **Real-world Deployment**: YAGO-like challenges (rare errors in mostly correct data) represent common real-world scenarios
-- **Method Selection**: RAG excels with balanced data but may not justify complexity gains on imbalanced datasets
-- **Evaluation Strategy**: Multiple datasets with varying characteristics are essential for comprehensive method evaluation
+3. **Model Consistency Varies**: Different models show varying levels of robustness across datasets, with some performing consistently (GPT-4o mini) while others show high variance (Qwen2.5).
