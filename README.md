@@ -1,8 +1,11 @@
+> **Research use only. Not a medical device.**
+> This software was developed in the HEREDITARY project as a research prototype. It has not been assessed or certified under the EU Medical Device Regulation (EU) 2017/745. It must not be used to diagnose, treat, monitor or make any other decision about individual patients.
+
 # FactCheck: Knowledge Graph Validation via Large Language Models
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Paper](https://img.shields.io/badge/Paper-VLDB%202025-green.svg)](#citation)
+[![Paper](https://img.shields.io/badge/Paper-EDBT%202026-green.svg)](#reference)
 
 ## 📋 Table of Contents
 
@@ -433,7 +436,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔗 Links
 
-- **Paper**: [2025 Proceedings](#)
+- **Paper**: [EDBT 2026](#reference) ([edbt:2026.45](https://doi.org/10.48786/edbt.2026.45))
 - **Dataset**: [Hugging Face Repository](https://huggingface.co/FactCheck-AI)
 - **Web Platform**: [https://factcheck.dei.unipd.it/](https://factcheck.dei.unipd.it/)
 - **Issues**: [GitHub Issues](https://github.com/FactCheck-AI/factcheck-benchmark/issues)
@@ -444,6 +447,23 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Stefano Marchesin** - University of Padua - [stefano.marchesin@unipd.it](mailto:stefano.marchesin@unipd.it)  
 - **Gianmaria Silvello** - University of Padua - [gianmaria.silvello@unipd.it](mailto:gianmaria.silvello@unipd.it)
 
----
+## Acknowledgments
 
-*This work is partially supported by the HEREDITARY Project (EU Horizon Europe Grant Agreement No. GA 101137074).*
+The work was supported by the HEREDITARY project, as part of the EU Horizon Europe program under Grant Agreement 101137074.
+
+## Reference
+
+If you use or extend our work, please cite the following:
+
+```
+@inproceedings{shami_etal-edbt2026,
+  title = {Benchmarking Large Language Models for Knowledge Graph Validation},
+  author = {F. Shami and S. Marchesin and G. Silvello},
+  booktitle = {Proceedings of the 29th International Conference on Extending Database Technology, {EDBT} 2026, Tampere, Finland, March 24-27, 2026},
+  pages = {551--565},
+  publisher = {OpenProceedings.org},
+  year = {2026},
+  url = {https://doi.org/10.48786/edbt.2026.45},
+  doi = {10.48786/EDBT.2026.45}
+}
+```
